@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,9 +10,10 @@
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   tailwind.config = {
     darkMode: 'class',
@@ -116,6 +117,8 @@
 
   /* Map common Tailwind utilities to dark surfaces */
   html.dark .bg-white{background-color:var(--surf-900) !important}
+  #ns-days::-webkit-outer-spin-button,#ns-days::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  #ns-days{-moz-appearance:textfield}
   html.dark .bg-white\/85{background-color:var(--surf-900)C7 !important}
   html.dark .bg-white\/60{background-color:var(--surf-900)99 !important}
   html.dark .text-ink-900{color:#e7ecf5 !important}
@@ -168,6 +171,7 @@
   --brand-800: #0f3e7d;
   --brand-900: #0c3163;
   --sonic: #7C3AED;
+  --gold-accent: #c9962e;
   --neon-cyan: #22d3ee;
   --neon-lime: #a3e635;
   --neon-violet: #a78bfa;
@@ -195,6 +199,7 @@
   --brand-800: #0f172a;
   --brand-900: #020617;
   --sonic: #64748b;
+  --gold-accent: #c9962e;
   --neon-cyan: #38bdf8;
   --neon-lime: #a3e635;
   --neon-violet: #94a3b8;
@@ -222,6 +227,7 @@
   --brand-800: #5b21b6;
   --brand-900: #4c1d95;
   --sonic: #7c3aed;
+  --gold-accent: #c9962e;
   --neon-cyan: #22d3ee;
   --neon-lime: #a3e635;
   --neon-violet: #a78bfa;
@@ -249,6 +255,7 @@
   --brand-800: #065f46;
   --brand-900: #064e3b;
   --sonic: #0d9488;
+  --gold-accent: #c9962e;
   --neon-cyan: #2dd4bf;
   --neon-lime: #a3e635;
   --neon-violet: #8b5cf6;
@@ -504,36 +511,16 @@
   }
 
 
-  /* ═══ HERO ADAPTATIVO — light / dark ═══ */
-  /* DARK MODE (padrão do hero original) */
-  html.dark #hero-section {
-    background: var(--hero-dark);
-  }
-  html.dark .hero-title-text { color: #ffffff; }
-  html.dark .hero-search-btn { background:#111827; }
-  html.dark .hero-search-btn:hover { background:#1f2937; }
-  html.dark .hero-trend-label { color: rgba(255,255,255,0.4); }
-  html.dark .hero-tag { color:rgba(255,255,255,0.75); border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.04); }
-  html.dark .hero-tag:hover { color:#fff; border-color:rgba(255,255,255,0.4); background:rgba(255,255,255,0.08); }
-  html.dark .hero-partner-label { color: rgba(255,255,255,0.35); }
-  html.dark .hero-partner-item { color: rgba(255,255,255,0.55); }
-  html.dark .hero-divider { background: rgba(255,255,255,0.15); }
-  html.dark .hero-glows { display: block; }
-
-  /* LIGHT MODE */
-  html:not(.dark) #hero-section {
-    background: var(--hero-light);
-  }
-  html:not(.dark) .hero-glows { display: none; }
-  html:not(.dark) .hero-title-text { color: #0b1220; }
-  html:not(.dark) .hero-search-btn { background:#0b1220; }
-  html:not(.dark) .hero-search-btn:hover { background:#1f2937; }
-  html:not(.dark) .hero-trend-label { color: #64748b; }
-  html:not(.dark) .hero-tag { color:#475569; border:1px solid #cbd5e1; background:rgba(255,255,255,0.7); }
-  html:not(.dark) .hero-tag:hover { color:#0b1220; border-color:#94a3b8; background:#fff; }
-  html:not(.dark) .hero-partner-label { color: #94a3b8; }
-  html:not(.dark) .hero-partner-item { color: #64748b; }
-  html:not(.dark) .hero-divider { background: #e2e8f0; }
+  /* ═══ HERO — estilo fixo Fiverr (foto escura, texto branco, sempre, independente do tema do site) ═══ */
+  #hero-section { background:#0b0e14; }
+  .hero-title-text { color:#ffffff; }
+  .hero-search-btn { background:#0b1220; }
+  .hero-search-btn:hover { background:#1f2937; }
+  .hero-tag { color:#ffffff; border:1.5px solid rgba(255,255,255,0.55); background:transparent; }
+  .hero-tag:hover { border-color:#ffffff; background:rgba(255,255,255,0.1); }
+  .hero-partner-label { color: rgba(255,255,255,0.5); }
+  .hero-partner-item { color: rgba(255,255,255,0.8); }
+  .hero-divider { background: rgba(255,255,255,0.25); }
 
   /* ═══ BANNER FREELANCER ADAPTATIVO ═══ */
   html.dark .freelancer-banner { background: var(--banner-dark); }
@@ -589,6 +576,140 @@
   html.dark .powered-section { background: var(--surf-950); border-top: 1px solid rgba(255,255,255,0.06); }
   html:not(.dark) .powered-text { color: #94a3b8; }
   html.dark .powered-text { color: #4b5563; }
+
+  /* ═══ OVERVIEW ═══ */
+  html:not(.dark) .ow-section{background:#fafbff}
+  html.dark .ow-section{background:var(--surf-950)}
+  html:not(.dark) .ow-kicker{color:var(--brand-500)}
+  html.dark .ow-kicker{color:var(--sonic)}
+  html:not(.dark) .ow-line{background:var(--brand-500)}
+  html.dark .ow-line{background:var(--sonic)}
+  html:not(.dark) .ow-title{color:#0b1220}
+  html.dark .ow-title{color:#f9fafb}
+  html:not(.dark) .ow-accent{color:var(--brand-500)}
+  html.dark .ow-accent{color:var(--sonic)}
+  html:not(.dark) .ow-sub{color:#475569}
+  html.dark .ow-sub{color:#9ca3af}
+  html:not(.dark) .ow-stat-card{background:#fff;border-color:#e2e8f0}
+  html.dark .ow-stat-card{background:var(--surf-900);border-color:rgba(255,255,255,.07)}
+  html:not(.dark) .ow-stat-num{color:var(--brand-500)}
+  html.dark .ow-stat-num{color:var(--sonic)}
+  html:not(.dark) .ow-stat-label{color:#0b1220}
+  html.dark .ow-stat-label{color:#f9fafb}
+  html:not(.dark) .ow-stat-sub{color:#64748b}
+  html.dark .ow-stat-sub{color:#6b7280}
+
+  /* ═══ HOW IT WORKS ═══ */
+  html:not(.dark) .hw-section{background:#fff}
+  html.dark .hw-section{background:var(--surf-950)}
+  html:not(.dark) .hw-kicker{color:var(--brand-500)}
+  html.dark .hw-kicker{color:var(--sonic)}
+  html:not(.dark) .hw-line{background:var(--brand-500)}
+  html.dark .hw-line{background:var(--sonic)}
+  html:not(.dark) .hw-title{color:#0b1220}
+  html.dark .hw-title{color:#f9fafb}
+  html:not(.dark) .hw-sub{color:#475569}
+  html.dark .hw-sub{color:#9ca3af}
+  html:not(.dark) .hw-card{background:#f8fafc;border-color:#e2e8f0}
+  html.dark .hw-card{background:var(--surf-900);border-color:rgba(255,255,255,.07)}
+  html:not(.dark) .hw-num{color:var(--sonic)}
+  html.dark .hw-num{color:var(--sonic)}
+  html:not(.dark) .hw-card-title{color:#0b1220}
+  html.dark .hw-card-title{color:#f9fafb}
+  html:not(.dark) .hw-card-sub{color:#475569}
+  html.dark .hw-card-sub{color:#9ca3af}
+  html:not(.dark) .hw-arrow-bg{background:var(--brand-100)}
+  html.dark .hw-arrow-bg{background:rgba(255,255,255,.06)}
+  html:not(.dark) .hw-arrow-icon{color:var(--brand-500)}
+  html.dark .hw-arrow-icon{color:#9ca3af}
+
+  /* ═══ BENEFITS ═══ */
+  html:not(.dark) .bn-section{background:#fafbff}
+  html.dark .bn-section{background:var(--surf-950)}
+  html:not(.dark) .bn-kicker{color:var(--brand-500)}
+  html.dark .bn-kicker{color:var(--sonic)}
+  html:not(.dark) .bn-line{background:var(--brand-500)}
+  html.dark .bn-line{background:var(--sonic)}
+  html:not(.dark) .bn-title{color:#0b1220}
+  html.dark .bn-title{color:#f9fafb}
+  html:not(.dark) .bn-sub{color:#475569}
+  html.dark .bn-sub{color:#9ca3af}
+  html:not(.dark) .bn-card{background:#fff;border-color:#e2e8f0}
+  html.dark .bn-card{background:var(--surf-900);border-color:rgba(255,255,255,.07)}
+  html:not(.dark) .bn-tag{background:var(--brand-50);color:var(--brand-600)}
+  html.dark .bn-tag{background:rgba(255,255,255,.06);color:var(--sonic)}
+  html:not(.dark) .bn-card-title{color:#0b1220}
+  html.dark .bn-card-title{color:#f9fafb}
+  html:not(.dark) .bn-card-sub{color:#475569}
+  html.dark .bn-card-sub{color:#9ca3af}
+
+  /* ═══ COMMUNITY & REWARDS ═══ */
+  html:not(.dark) .rw-section{background:#fff}
+  html.dark .rw-section{background:var(--surf-950)}
+  html:not(.dark) .rw-kicker{color:var(--brand-500)}
+  html.dark .rw-kicker{color:var(--sonic)}
+  html:not(.dark) .rw-line{background:var(--brand-500)}
+  html.dark .rw-line{background:var(--sonic)}
+  html:not(.dark) .rw-title{color:#0b1220}
+  html.dark .rw-title{color:#f9fafb}
+  html:not(.dark) .rw-sub{color:#475569}
+  html.dark .rw-sub{color:#9ca3af}
+  html:not(.dark) .rw-card{background:#f8fafc;border-color:#e2e8f0}
+  html.dark .rw-card{background:var(--surf-900);border-color:rgba(255,255,255,.07)}
+  html:not(.dark) .rw-icon{background:var(--brand-50)}
+  html.dark .rw-icon{background:rgba(255,255,255,.06)}
+  html:not(.dark) .rw-icon-color{color:var(--brand-500)}
+  html.dark .rw-icon-color{color:var(--sonic)}
+  html:not(.dark) .rw-card-title{color:#0b1220}
+  html.dark .rw-card-title{color:#f9fafb}
+  html:not(.dark) .rw-card-sub{color:#475569}
+  html.dark .rw-card-sub{color:#9ca3af}
+  html:not(.dark) .rw-cta{background:linear-gradient(135deg,var(--brand-50) 0%,#f5f0ff 100%);border-color:var(--brand-100)}
+  html.dark .rw-cta{background:linear-gradient(135deg,var(--surf-900) 0%,rgba(124,58,237,.15) 100%);border-color:rgba(255,255,255,.07)}
+  html:not(.dark) .rw-cta-title{color:#0b1220}
+  html.dark .rw-cta-title{color:#f9fafb}
+  html:not(.dark) .rw-cta-sub{color:#475569}
+  html.dark .rw-cta-sub{color:#9ca3af}
+  html:not(.dark) .rw-cta-btn{background:var(--brand-500);color:#fff}
+  html:not(.dark) .rw-cta-btn:hover{background:var(--brand-600)}
+  html.dark .rw-cta-btn{background:var(--sonic);color:#fff}
+  html.dark .rw-cta-btn:hover{opacity:.9}
+
+  /* ═══ ATV-INSPIRED SECTION TITLES (serif + gold underline) ═══ */
+  .atv-title{
+    font-family:'Playfair Display',Georgia,serif;
+    font-weight:800;
+    display:block;
+    position:relative;
+    padding-bottom:.45em;
+    margin-bottom:.3em;
+  }
+  .atv-title::after{
+    content:'';
+    position:absolute;
+    left:0; bottom:0;
+    width:84px; height:3px;
+    background:linear-gradient(90deg,var(--gold-accent) 0%, var(--gold-accent) 70%, transparent 100%);
+    border-radius:2px;
+  }
+  .atv-title.atv-title-center::after{
+    left:50%; transform:translateX(-50%);
+  }
+  .atv-num{
+    font-family:'Playfair Display',Georgia,serif;
+    font-weight:800;
+  }
+  .atv-connector{
+    width:22px;height:22px;border-radius:9999px;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .25s ease;
+  }
+  .atv-card{ transition:transform .25s ease, box-shadow .25s ease; }
+  .atv-card:hover{ transform:translateY(-4px); }
+  html:not(.dark) .atv-card:hover{ box-shadow:0 12px 28px rgba(15,23,42,.08); }
+  html.dark .atv-card:hover{ box-shadow:0 12px 28px rgba(0,0,0,.35); }
+  .atv-icon-float{ animation:atvFloat 5s ease-in-out infinite; }
+  @keyframes atvFloat{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
 </style>
 </head>
 <body class="bg-white text-ink-900">
@@ -653,7 +774,7 @@ const STATE = {
   txHistory: [],                    // {hash, type, amount, token, ts, orderId?}
   payouts: [],                      // {hash, amount, token, ts}
   selectedProfileHandle: null,
-  language: 'pt',                   // pt | en | es
+  language: 'en',                   // en | pt | es
   translateChat: false,
   searchFocused: false,
   selectedTier: 'standard',         // for service page
@@ -661,10 +782,11 @@ const STATE = {
   selectedToken: 'ITL',
   showQR: false,
   darkMode: false,
-  theme: 'blue',  // blue | purple | violet_white | emerald
+  theme: 'violet_white',  // blue | purple | violet_white | emerald
   newServiceLogo: null,            // dataURL da logo carregada no modal de novo serviço
   newServiceGallery: [],           // Array de dataURLs — fotos extras de exemplo (estilo Fiverr)
   newServiceRequirements: [],      // Builder de campos de briefing (Fiverr-style requirements)
+  newServiceFaqs: [],              // Builder de FAQ do gig (Fiverr-style, escrito pelo freelancer)
   onboardingDismissed: false,      // Esconde checklist de onboarding quando freelancer fecha
   restoredFromStorage: false,      // true quando os dados foram restaurados do localStorage
 };
@@ -909,7 +1031,7 @@ const I18N = {
        client:'क्लाइंट', freelancer:'फ्रीलांसर', my_orders:'मेरे ऑर्डर', my_services:'मेरी सेवाएँ',
        wallet:'वॉलेट', balance:'बैलेंस', tx_history:'इतिहास', single_token:'एकल बैलेंस · केवल ITL भुगतान' },
 };
-function t(k){ return (I18N[STATE.language]||I18N.pt)[k] || I18N.pt[k] || k; }
+function t(k){ return (I18N[STATE.language]||I18N.en)[k] || I18N.en[k] || k; }
 function tCat(id){ return t('cat_'+id) || id; }
 
 /* ---------- FULL UI TRANSLATION DICTIONARY (PT → en/es/de/ja/hi) ---------- */
@@ -979,10 +1101,10 @@ const TR = {
   'Pedidos ativos':{en:'Active orders',es:'Pedidos activos',de:'Aktive Aufträge',ja:'進行中の注文',hi:'सक्रिय ऑर्डर'},
   'Pedidos abertos':{en:'Open orders',es:'Pedidos abiertos',de:'Offene Aufträge',ja:'オープン注文',hi:'खुले ऑर्डर'},
   'Pedidos recebidos':{en:'Orders received',es:'Pedidos recibidos',de:'Erhaltene Aufträge',ja:'受注',hi:'प्राप्त ऑर्डर'},
-  'Em escrow':{en:'In escrow',es:'En escrow',de:'Im Escrow',ja:'エスクロー中',hi:'एस्क्रो में'},
+  'Em escrow':{en:'Protected',es:'Protegido',de:'Geschützt',ja:'保護中',hi:'सुरक्षित'},
   'Saldo wallet':{en:'Wallet balance',es:'Saldo wallet',de:'Wallet-Guthaben',ja:'ウォレット残高',hi:'वॉलेट बैलेंस'},
   'Concluídos':{en:'Completed',es:'Completados',de:'Abgeschlossen',ja:'完了',hi:'पूर्ण'},
-  'Receita (escrow)':{en:'Revenue (escrow)',es:'Ingresos (escrow)',de:'Umsatz (Escrow)',ja:'収益（エスクロー）',hi:'राजस्व (एस्क्रो)'},
+  'Receita (escrow)':{en:'Earnings',es:'Ganancias',de:'Einnahmen',ja:'収益',hi:'आय'},
   'Rating':{en:'Rating',es:'Valoración',de:'Bewertung',ja:'評価',hi:'रेटिंग'},
   'Serviços ativos':{en:'Active services',es:'Servicios activos',de:'Aktive Services',ja:'公開サービス',hi:'सक्रिय सेवाएँ'},
   'Nenhum pedido ainda':{en:'No orders yet',es:'Aún sin pedidos',de:'Noch keine Aufträge',ja:'まだ注文はありません',hi:'अभी तक कोई ऑर्डर नहीं'},
@@ -1136,7 +1258,7 @@ const TR = {
   'Lida':{en:'Read',es:'Leído',de:'Gelesen',ja:'既読',hi:'पढ़ा गया'},
 
   // Order status chip — was hardcoded in PT regardless of language
-  'Briefing pendente':{en:'Briefing pending',es:'Briefing pendiente',de:'Briefing ausstehend',ja:'要件待ち',hi:'ब्रीफिंग लंबित'},
+  'Briefing pendente':{en:'Awaiting info',es:'Info pendiente',de:'Info ausstehend',ja:'情報待ち',hi:'जानकारी की प्रतीक्षा'},
   'Cancelado':{en:'Cancelled',es:'Cancelado',de:'Abgebrochen',ja:'キャンセル済み',hi:'रद्द किया गया'},
 
   // Related services — was a fixed PT sentence regardless of language
@@ -1163,7 +1285,7 @@ const TR = {
 /* Reverse helper so any *displayed* PT text gets translated to the active language. */
 function tr(s){
   if (s == null) return s;
-  if (STATE.language === 'pt') return s;
+  if (STATE.language === 'en') return s;
   const txt = String(s);
   const key = txt.trim();
   if (!key) return s;
@@ -1227,7 +1349,7 @@ function applyTranslations(root){
 function initI18nObserver(){
   if (window._i18nObserver || !document.body) return;
   const obs = new MutationObserver(muts=>{
-    if (STATE.language === 'pt') return;
+    if (STATE.language === 'en') return;
     for (const m of muts){
       m.addedNodes && m.addedNodes.forEach(n=>{
         if (n.nodeType === 1) applyTranslations(n);
@@ -1278,7 +1400,7 @@ function initMock(){
     avatar: avatarSVG('Y','#1a73e8'),
     bio:'Cliente Web3 explorando serviços na Interwork.', rating:0, jobs:0, joinedTs: Date.now()-86400000*45,
     balanceITL: 1250.50,
-    languages:['pt','en'], skills:[], portfolio:[],
+    languages:['en'], skills:[], portfolio:[],
     responseHours: 1, repeatClientsPct: 0, approvalPct: 0,
     online: true,
     referralCode: 'INTERWORK-ME',
@@ -1840,8 +1962,12 @@ function renderView(){
     case 'dashboard':v.innerHTML = isAuthed() ? viewDashboard() : viewAuthRequired(); break;
     case 'wallet':   v.innerHTML = isAuthed() ? viewWallet() : viewAuthRequired(); break;
     case 'how':      v.innerHTML = viewHow(); break;
+    case 'overview': v.innerHTML = viewOverview(); break;
+    case 'benefits': v.innerHTML = viewBenefits(); break;
+    case 'rewards':  v.innerHTML = viewRewards(); break;
     case 'legal':    v.innerHTML = viewLegal(STATE.selectedLegalPage || 'faq'); break;
     case 'u':        v.innerHTML = viewProfile(STATE.selectedProfileHandle); break;
+    case 'admin':    v.innerHTML = viewAdmin(); break;
     case 'home':
     default:         v.innerHTML = viewHome();
   }
@@ -1924,28 +2050,29 @@ function renderHeader(){
         <span class="font-extrabold text-[18px] tracking-tight ${STATE.darkMode?'text-white':'text-ink-900'}">Interwork<span class="text-brand-400">.</span></span>
       </a>
 
-      <!-- CENTER NAV TABS (LinksMap style) — desktop only -->
-      <nav class="hidden md:flex items-center gap-1 ml-6">
-        ${[
-          {label:'Produtos', icon:'layout-grid', route:'home', onclick:"STATE.category='all';STATE.query='';go('#/home')"},
-          {label:'Adicionar Serviço', icon:'plus-circle', route:'new-service', onclick:authed?"openNewServiceModal()":"openConnectWallet('Para adicionar serviço')"},
-          {label:'Meus Serviços', icon:'briefcase', route:'dashboard', onclick:authed?"go('#/dashboard/freelancer')":"openConnectWallet('Para seus serviços')"},
-        ].map(item => {
-          const active = STATE.route === item.route;
-          return `<button onclick="${item.onclick}" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[13px] font-semibold transition-all ${active
-            ? (STATE.darkMode ? 'bg-white/10 text-white' : 'bg-brand-50 text-brand-700')
-            : (STATE.darkMode ? 'text-white/70 hover:text-white hover:bg-white/08' : 'text-ink-600 hover:text-ink-900 hover:bg-ink-100/50')
-          }">
-            <i data-lucide="${item.icon}" class="w-3.5 h-3.5"></i>
-            <span>${item.label}</span>
-          </button>`;
-        }).join('')}
-      </nav>
-
-
+      <div class="flex-1"></div>
 
       <!-- RIGHT SIDE -->
       <div class="flex items-center gap-2">
+
+        <!-- Admin panel (invisível ao público — só aparece após login admin via #/admin) -->
+        ${STATE.isAdmin ? `
+        <a href="#/admin" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] font-extrabold transition
+          ${STATE.route==='admin'
+            ? 'bg-violet-500 text-white'
+            : (STATE.darkMode ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-800/50' : 'bg-violet-50 text-violet-700 hover:bg-violet-100 border border-violet-200')}">
+          <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Admin</span>
+          ${DB.services.filter(s=>s.status==='pending'&&s._sb).length > 0
+            ? `<span class="w-4 h-4 bg-amber-500 text-white text-[9px] font-extrabold rounded-full grid place-items-center">${DB.services.filter(s=>s.status==='pending'&&s._sb).length}</span>`
+            : ''}
+        </a>
+        <button onclick="sbSignOut()"
+          class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[12px] font-semibold border transition
+            ${STATE.darkMode ? 'border-white/10 text-white/70 hover:bg-white/08' : 'border-ink-200 text-ink-500 hover:bg-ink-100/50'}">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Sair</span>
+        </button>` : ''}
 
         <!-- Language selector -->
         <div class="relative">
@@ -2043,7 +2170,7 @@ function renderHeader(){
         ` : `
           <button onclick="openConnectWallet()" class="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-[13px] transition ${STATE.darkMode?'bg-white text-ink-900 hover:bg-white/90':'bg-ink-900 text-white hover:bg-ink-700'}">
             <i data-lucide="wallet" class="w-4 h-4"></i>
-            ${STATE.language==='en'?'Connect Wallet':STATE.language==='es'?'Conectar':'Conectar Wallet'}
+            Connect Wallet
           </button>
         `}
 
@@ -2642,53 +2769,72 @@ function confirmWithdraw(){
 /* ---------- FOOTER ---------- */
 function renderFooter(){
   $('#app-footer').innerHTML = `
-  <div class="border-t border-ink-100 mt-20 bg-gradient-to-b from-white to-ink-100/30">
-    <div class="max-w-7xl mx-auto px-5 py-10 grid md:grid-cols-5 gap-8 text-sm">
+  <div class="border-t border-ink-100 mt-20 bg-gradient-to-b from-white to-ink-100/30 dark:from-surf-900 dark:to-surf-950">
+    <div class="max-w-7xl mx-auto px-5 py-12 grid md:grid-cols-4 gap-8 text-sm">
+
+      <!-- Brand col -->
       <div class="md:col-span-2">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-sonic grid place-items-center">
             <i data-lucide="hexagon" class="w-4 h-4 text-white"></i>
           </div>
-          <span class="font-extrabold">Interwork</span>
+          <span class="font-extrabold text-ink-900">Interwork<span class="text-brand-400">.</span></span>
         </div>
-        <p class="text-ink-500 max-w-sm">${t('footer_tag')}</p>
-        <div class="mt-3 inline-flex items-center gap-1.5 text-[11px] font-semibold text-ink-500">
-          <i data-lucide="link-2" class="w-3.5 h-3.5"></i> ${t('built_on')}
+        <p class="text-ink-500 max-w-xs text-[13px] leading-relaxed">${t('footer_tag')}</p>
+        <div class="mt-4 inline-flex items-center gap-1.5 text-[11px] font-semibold text-ink-500 bg-ink-100/60 px-2.5 py-1.5 rounded-lg">
+          <i data-lucide="link-2" class="w-3 h-3"></i> ${t('built_on')}
+        </div>
+        <div class="mt-5 flex items-center gap-2">
+          <a href="https://x.com/InterworkHQ" target="_blank" rel="noopener"
+            aria-label="Interwork on X"
+            class="w-8 h-8 rounded-lg border border-ink-200 hover:border-ink-400 hover:bg-ink-100/60 grid place-items-center transition text-ink-600 hover:text-ink-900">
+            <svg viewBox="0 0 24 24" class="w-3.5 h-3.5" fill="currentColor" aria-hidden="true">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.261 5.632L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+            </svg>
+          </a>
+          <a href="https://discord.gg/interlink" target="_blank" rel="noopener"
+            aria-label="Interwork Discord"
+            class="w-8 h-8 rounded-lg border border-ink-200 hover:border-indigo-400 hover:bg-indigo-50 grid place-items-center transition text-ink-600 hover:text-indigo-600">
+            <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+          </a>
         </div>
       </div>
+
+      <!-- InterWork pages -->
       <div>
-        <div class="font-bold mb-2">${t('explore')}</div>
-        <ul class="space-y-1 text-ink-500">
-          ${CATEGORIES.slice(0,5).map(c=>`<li><a class="hover:text-brand-500" href="#/home" onclick="setTimeout(()=>{STATE.category='${c.id}';renderView()},10)">${tCat(c.id)}</a></li>`).join('')}
+        <div class="font-bold mb-3 text-ink-800">InterWork</div>
+        <ul class="space-y-2 text-ink-500">
+          <li><a class="hover:text-brand-500 transition" href="#/how">${t('nav_how')}</a></li>
+          <li><a class="hover:text-brand-500 transition" href="#/dashboard/freelancer">${t('cta_sell')}</a></li>
+          <li><a class="hover:text-brand-500 transition" href="#/rewards">Rewards</a></li>
+          <li><a class="hover:text-brand-500 transition" href="#/legal/faq">FAQ</a></li>
         </ul>
       </div>
+
+      <!-- Legal + network -->
       <div>
-        <div class="font-bold mb-2">${t('sell')}</div>
-        <ul class="space-y-1 text-ink-500">
-          <li><a class="hover:text-brand-500" href="#/dashboard/freelancer">${t('cta_sell')}</a></li>
-          <li><a class="hover:text-brand-500" href="#/how">${t('how_it_works')}</a></li>
-          <li><a class="hover:text-brand-500" href="#/legal/faq">FAQ</a></li>
+        <div class="font-bold mb-3 text-ink-800">Legal</div>
+        <ul class="space-y-2 text-ink-500">
+          <li><a class="hover:text-brand-500 transition" href="#/legal/terms">Terms of use</a></li>
+          <li><a class="hover:text-brand-500 transition" href="#/legal/privacy">Privacy</a></li>
         </ul>
-      </div>
-      <div>
-        <div class="font-bold mb-2">Legal</div>
-        <ul class="space-y-1 text-ink-500">
-          <li><a class="hover:text-brand-500" href="#/legal/terms">Termos de uso</a></li>
-          <li><a class="hover:text-brand-500" href="#/legal/privacy">Privacidade</a></li>
-          <li><a class="hover:text-brand-500" href="#/legal/faq">FAQ</a></li>
-        </ul>
-        <div class="font-bold mt-4 mb-2">${t('net')}</div>
+        <div class="font-bold mt-5 mb-2 text-ink-800">${t('net')}</div>
         <div class="text-ink-500 space-y-1 text-xs">
           <div>Chain: <span class="font-mono text-ink-700">Interlink</span></div>
-          <div>Token: <span class="font-mono text-brand-500">ITL</span> · ${t('built_on')} <span class="font-semibold text-ink-700">2%</span></div>
+          <div>Token: <span class="font-mono text-brand-500">ITL</span> · fee <span class="font-semibold text-ink-700">2%</span></div>
         </div>
       </div>
     </div>
-    <div class="border-t border-ink-100 py-4 text-center text-xs text-ink-500">
-      © 2026 Interwork — The Workforce Marketplace for the Interlink Ecosystem ·
-      <a href="#/legal/terms" class="hover:text-brand-500">Termos</a> ·
-      <a href="#/legal/privacy" class="hover:text-brand-500">Privacidade</a> ·
-      <a href="#/legal/faq" class="hover:text-brand-500">FAQ</a>
+
+    <!-- Bottom bar -->
+    <div class="border-t border-ink-100 py-4 px-5">
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-ink-500">
+        <span>© 2026 Interwork — The Workforce Marketplace for the Interlink Ecosystem</span>
+        <a href="https://x.com/InterworkHQ" target="_blank" rel="noopener" class="hover:text-brand-500 transition flex items-center gap-1">
+          <svg viewBox="0 0 24 24" class="w-3 h-3" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.261 5.632L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+          @InterworkHQ
+        </a>
+      </div>
     </div>
   </div>`;
   icons();
@@ -2714,7 +2860,7 @@ function levelChip(level, size='sm'){
 }
 function statusChip(status){
   const map = {
-    awaiting_requirements: [tr('Briefing pendente'),'bg-amber-100 text-amber-800','clipboard-list'],
+    awaiting_requirements: ['Aguardando informações','bg-amber-100 text-amber-800','info'],
     in_progress:        [t('order_in_progress'),'bg-amber-50 text-amber-700','loader-2'],
     awaiting_delivery:  [t('order_in_progress'),'bg-violet-50 text-violet-700','hourglass'],
     delivered:          [t('order_delivered'),'bg-blue-50 text-blue-700','package'],
@@ -2777,9 +2923,9 @@ function orderProgressStepper(o, opts={}){
 function workVaultBadge(o){
   if (o.status === 'cancelled' || o.status === 'approved') return '';
   return `
-  <div class="mt-2 flex items-start gap-1.5 text-[10px] text-ink-500 bg-brand-50/60 border border-brand-100 rounded-lg px-2 py-1.5">
-    <i data-lucide="lock" class="w-3 h-3 text-brand-500 mt-0.5 shrink-0" aria-hidden="true"></i>
-    <span>Seu ITL está seguro no <b class="text-ink-700">Work Vault</b> até a entrega ser aprovada.</span>
+  <div class="mt-2 flex items-start gap-1.5 text-[10px] text-ink-500 bg-emerald-50/60 border border-emerald-100 rounded-lg px-2 py-1.5">
+    <i data-lucide="shield-check" class="w-3 h-3 text-emerald-500 mt-0.5 shrink-0" aria-hidden="true"></i>
+    <span><b class="text-ink-700">Pagamento protegido</b> — liberado para o freelancer somente após sua aprovação.</span>
   </div>`;
 }
 
@@ -2792,7 +2938,7 @@ function viewHome(){
 
 /* ── HERO — shown when no search active (Fiverr page 1 style) ── */
 function viewHeroPage(){
-  const trendingTags = ['auditoria','landing page web3','tokenomics','community','motion reels','whitepaper'];
+  const trendingTags = ['Auditoria de Smart Contract','Landing Page Web3','Marketing de Token','Redação de Whitepaper','Vídeo & Motion'];
 
   // Category tiles with SVG icons (Fiverr style — icon + label, no emoji)
   const catTiles = [
@@ -2818,54 +2964,49 @@ function viewHeroPage(){
   ];
 
   return `
-  <!-- ═══ HERO — adapta ao light/dark mode ═══ -->
-  <section id="hero-section" class="relative overflow-hidden flex flex-col justify-center"
-    style="min-height:78vh">
-
-    <!-- Dark mode: glows coloridos. Light mode: escondidos via CSS -->
-    <div class="absolute inset-0 pointer-events-none overflow-hidden hero-glows">
-      <div class="absolute top-[-15%] left-[-8%] w-[55vw] h-[55vw] rounded-full opacity-[0.18]" style="background:radial-gradient(circle,#6366f1,transparent 65%)"></div>
-      <div class="absolute bottom-[-8%] right-[-6%] w-[42vw] h-[42vw] rounded-full opacity-[0.13]" style="background:radial-gradient(circle,#06b6d4,transparent 65%)"></div>
+  <!-- ═══ HERO — estilo Fiverr: foto de fundo, texto à esquerda, fonte grande ═══ -->
+  <section id="hero-section" class="relative overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=1800&q=80" alt="" class="absolute inset-0 w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-black/55"></div>
     </div>
 
-    <div class="relative max-w-2xl mx-auto px-5 pt-24 pb-10 md:pt-32 text-center w-full">
+    <div class="relative max-w-[1180px] mx-auto px-6 md:px-10 pt-28 pb-16 md:pt-36 md:pb-20">
 
-      <h1 class="text-[2rem] md:text-[3rem] font-extrabold leading-[1.08] tracking-tight hero-title-text">
+      <h1 class="hero-title-text text-[2.75rem] md:text-[4.25rem] font-medium leading-[1.05] tracking-tight max-w-2xl">
         ${t('hero_title')}
       </h1>
 
-      <!-- BIG SEARCH — pill branca, botão adaptável -->
-      <div class="mt-7 relative max-w-xl mx-auto">
-        <form id="home-search" class="flex items-center bg-white rounded-xl shadow-2xl overflow-hidden" style="height:52px" onsubmit="event.preventDefault()">
-          <i data-lucide="search" class="w-4 h-4 text-ink-400 ml-4 shrink-0"></i>
-          <input id="q" value="${escapeHtml(STATE.query)}" placeholder="Buscar qualquer serviço Web3..."
+      <!-- BIG SEARCH — pill branca, botão preto quadrado só com ícone -->
+      <div id="search-wrap" class="mt-8 relative max-w-xl">
+        <form id="home-search" class="flex items-center bg-white rounded-2xl shadow-2xl overflow-hidden p-1.5" style="height:60px" onsubmit="event.preventDefault()">
+          <i data-lucide="search" class="w-4 h-4 text-ink-400 ml-3.5 shrink-0"></i>
+          <input id="q" value="${escapeHtml(STATE.query)}" placeholder="Search for any service..."
             autocomplete="off"
-            class="flex-1 outline-none px-3 text-sm bg-transparent text-ink-900 placeholder:text-ink-400 h-full"
+            class="flex-1 outline-none px-3 text-sm md:text-base bg-transparent text-ink-900 placeholder:text-ink-400 h-full"
             oninput="handleSearchInput(this.value)"
             onkeydown="handleSearchKey(event)"
             onfocus="handleSearchInput(this.value)"
           />
-          <button type="submit" onclick="if(STATE.query||STATE.category!=='all')renderView()"
-            class="h-full px-5 hero-search-btn text-white font-bold text-sm transition shrink-0 flex items-center gap-1.5">
-            <i data-lucide="search" class="w-4 h-4"></i>
-            <span class="hidden sm:inline">Buscar</span>
+          <button type="submit" onclick="if(STATE.query||STATE.category!=='all')renderView()" aria-label="Buscar"
+            class="h-full w-12 md:w-14 hero-search-btn text-white rounded-xl grid place-items-center shrink-0 transition">
+            <i data-lucide="search" class="w-[18px] h-[18px]"></i>
           </button>
         </form>
         <div id="search-dropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-ink-100 rounded-2xl shadow-pop z-50 overflow-hidden"></div>
       </div>
 
-      <!-- Trending tags -->
-      <div class="mt-4 flex flex-wrap justify-center gap-1.5">
-        <span class="hero-trend-label text-xs font-medium self-center shrink-0">${t('trending')}:</span>
+      <!-- Suggestion pills — Fiverr style -->
+      <div class="mt-5 flex flex-wrap gap-2.5 max-w-xl">
         ${trendingTags.map(tag=>`
-          <button onclick="STATE.query='${tag}';renderView()"
-            class="text-xs hero-tag px-3 py-1 rounded-md transition">
-            ${tag}
+          <button onclick="STATE.query='${tag.toLowerCase()}';renderView()"
+            class="hero-tag flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full transition">
+            ${tag}<i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
           </button>`).join('')}
       </div>
 
       <!-- Strategic Partner strip -->
-      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+      <div class="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2">
         <span class="hero-partner-label text-[11px] font-semibold uppercase tracking-wider">Strategic Partner</span>
         <span class="flex items-center gap-1.5 hero-partner-item text-xs font-bold">
           <svg class="w-4 h-4 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -2873,12 +3014,12 @@ function viewHeroPage(){
         </span>
         <span class="w-px h-4 hero-divider hidden sm:block"></span>
         <span class="flex items-center gap-1.5 hero-partner-item text-xs font-bold">
-          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i>
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
           Trusted by ATV
         </span>
         <span class="w-px h-4 hero-divider hidden sm:block"></span>
         <span class="flex items-center gap-1.5 hero-partner-item text-xs font-bold">
-          <i data-lucide="hexagon" class="w-3.5 h-3.5 text-brand-500"></i>
+          <i data-lucide="hexagon" class="w-3.5 h-3.5 text-brand-400"></i>
           Interlink Certified
         </span>
       </div>
@@ -2904,41 +3045,6 @@ function viewHeroPage(){
     </div>
   </section>
 
-  <!-- ═══ POPULAR SERVICES — Fiverr style: solid color banner + photo + nav arrows ═══ -->
-  <section class="bg-white py-10 border-b border-ink-100">
-    <div class="max-w-7xl mx-auto px-5">
-      <div class="flex items-center justify-between mb-5">
-        <h2 class="text-2xl font-extrabold text-ink-900">Serviços populares</h2>
-        <div class="hidden md:flex items-center gap-2">
-          <button onclick="scrollCarousel(event,'popular-svc',-1)" aria-label="Anterior"
-            class="w-9 h-9 grid place-items-center rounded-full border border-ink-200 bg-white hover:bg-ink-100/60 transition">
-            <i data-lucide="chevron-left" class="w-4 h-4 text-ink-700"></i>
-          </button>
-          <button onclick="scrollCarousel(event,'popular-svc',1)" aria-label="Próximo"
-            class="w-9 h-9 grid place-items-center rounded-full border border-ink-200 bg-white hover:bg-ink-100/60 transition">
-            <i data-lucide="chevron-right" class="w-4 h-4 text-ink-700"></i>
-          </button>
-        </div>
-      </div>
-
-      <div data-carousel="popular-svc" class="flex gap-4 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-2 scroll-smooth">
-        ${catCards.map(c=>`
-          <button onclick="STATE.category='${c.id}';renderView()"
-            class="relative shrink-0 snap-start rounded-xl overflow-hidden group cursor-pointer transition hover:shadow-lg border border-ink-100"
-            style="width:200px">
-            <!-- Solid color title banner (Fiverr style) -->
-            <div class="h-20 flex items-start p-3" style="background:${c.solid}">
-              <span class="text-white font-bold text-[13px] leading-snug whitespace-pre-line">${c.label}</span>
-            </div>
-            <!-- Photo -->
-            <div class="h-28 overflow-hidden bg-ink-100">
-              <img src="${c.img}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-            </div>
-          </button>`).join('')}
-      </div>
-    </div>
-  </section>
-
   <!-- ═══ BECOME A FREELANCER BANNER ═══ -->
   ${!isAuthed() ? `
   <section class="py-12 freelancer-banner">
@@ -2956,27 +3062,39 @@ function viewHeroPage(){
   </section>` : ''}
 
   <!-- WHY INTERWORK -->
-  <section class="py-14 border-b why-iw-section">
-    <div class="max-w-3xl mx-auto px-5">
-      <h2 class="text-center text-2xl font-extrabold why-iw-title mb-10">Why InterWork?</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="why-iw-card flex items-start gap-4 p-5 rounded-2xl border">
-          <span class="text-2xl leading-none">🔒</span>
+  <section class="py-20 why-iw-section border-b">
+    <div class="max-w-3xl mx-auto px-5 text-center">
+      <div class="flex items-center justify-center gap-2 mb-4">
+        <span class="ow-kicker text-[11px] font-bold uppercase tracking-widest">Why Join</span>
+        <span class="w-8 h-px ow-line"></span>
+      </div>
+      <h2 class="atv-title atv-title-center text-3xl md:text-4xl why-iw-title mb-10">Why InterWork?</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+        <div class="atv-card why-iw-card flex items-start gap-4 p-5 rounded-2xl border">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 atv-icon-float" style="background:var(--brand-50)">
+            <i data-lucide="lock" class="w-5 h-5" style="color:var(--brand-500)"></i>
+          </div>
           <div><div class="font-bold why-iw-label text-sm mb-1">Secure Payments</div>
           <div class="text-xs why-iw-sub leading-relaxed">Funds locked in an automatic contract — released only when the job is approved.</div></div>
         </div>
-        <div class="why-iw-card flex items-start gap-4 p-5 rounded-2xl border">
-          <span class="text-2xl leading-none">⭐</span>
+        <div class="atv-card why-iw-card flex items-start gap-4 p-5 rounded-2xl border">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 atv-icon-float" style="background:var(--brand-50);animation-delay:.4s">
+            <i data-lucide="star" class="w-5 h-5" style="color:var(--sonic)"></i>
+          </div>
           <div><div class="font-bold why-iw-label text-sm mb-1">Reputation System</div>
           <div class="text-xs why-iw-sub leading-relaxed">Verified reviews tied to real completed orders. No fake ratings.</div></div>
         </div>
-        <div class="why-iw-card flex items-start gap-4 p-5 rounded-2xl border">
-          <span class="text-2xl leading-none">👥</span>
+        <div class="atv-card why-iw-card flex items-start gap-4 p-5 rounded-2xl border">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 atv-icon-float" style="background:var(--brand-50);animation-delay:.8s">
+            <i data-lucide="users" class="w-5 h-5" style="color:var(--brand-500)"></i>
+          </div>
           <div><div class="font-bold why-iw-label text-sm mb-1">Human Marketplace</div>
           <div class="text-xs why-iw-sub leading-relaxed">Real professionals, real deliverables. Every account backed by a verified wallet.</div></div>
         </div>
-        <div class="why-iw-card flex items-start gap-4 p-5 rounded-2xl border">
-          <span class="text-2xl leading-none">⚡</span>
+        <div class="atv-card why-iw-card flex items-start gap-4 p-5 rounded-2xl border">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 atv-icon-float" style="background:var(--brand-50);animation-delay:1.2s">
+            <i data-lucide="zap" class="w-5 h-5" style="color:var(--sonic)"></i>
+          </div>
           <div><div class="font-bold why-iw-label text-sm mb-1">Powered by ITL</div>
           <div class="text-xs why-iw-sub leading-relaxed">All payments in ITL — the native token of the Interlink ecosystem.</div></div>
         </div>
@@ -2985,15 +3103,17 @@ function viewHeroPage(){
   </section>
 
   <!-- STRATEGIC PARTNER -->
-  <section class="py-14 border-b partner-section">
+  <section class="py-20 border-b partner-section">
     <div class="max-w-sm mx-auto px-5 text-center">
-      <div class="inline-flex items-center gap-2 partner-badge px-3 py-1 rounded-full text-xs font-semibold mb-6">🤝 Strategic Partner</div>
-      <div class="partner-logo-wrap w-24 h-24 rounded-2xl flex items-center justify-center mx-auto mb-5 border shadow-sm">
+      <div class="inline-flex items-center gap-2 partner-badge px-3 py-1 rounded-full text-xs font-semibold mb-6">
+        <i data-lucide="handshake" class="w-3.5 h-3.5"></i>Strategic Partner
+      </div>
+      <div class="partner-logo-wrap w-24 h-24 rounded-2xl flex items-center justify-center mx-auto mb-5 border shadow-sm atv-icon-float">
         <svg viewBox="0 0 24 24" class="w-10 h-10 partner-logo-icon" fill="none" stroke="currentColor" stroke-width="1.5">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
         </svg>
       </div>
-      <div class="font-extrabold text-xl partner-title mb-3">ATV Network</div>
+      <div class="atv-title atv-title-center text-xl partner-title mb-3">ATV Network</div>
       <p class="text-sm partner-sub leading-relaxed mb-6">Supporting the growth of InterWork through strategic guidance and ecosystem collaboration.</p>
       <a href="https://atvinterlink.com" target="_blank" rel="noopener"
         class="inline-flex items-center gap-2 partner-btn font-bold px-5 py-2.5 rounded-full text-sm transition">
@@ -3002,6 +3122,158 @@ function viewHeroPage(){
     </div>
   </section>
 
+
+  <!-- ═══ OVERVIEW OF INTERWORK ═══ -->
+  <section class="py-20 ow-section border-b">
+    <div class="max-w-5xl mx-auto px-5">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="ow-kicker text-[11px] font-bold uppercase tracking-widest">Overview</span>
+        <span class="w-8 h-px ow-line"></span>
+      </div>
+      <h2 class="atv-title text-3xl md:text-4xl ow-title mb-4">What is <span class="ow-accent">InterWork</span>?</h2>
+      <p class="ow-sub text-base max-w-2xl leading-relaxed mb-12">InterWork is the workforce marketplace built exclusively for the Interlink ecosystem. Hire verified professionals, pay in ITL, and every transaction is protected by an automatic contract — no middlemen, no friction.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="atv-card ow-stat-card rounded-2xl p-6 border text-center">
+          <div class="atv-num text-4xl ow-stat-num mb-1">ITL</div>
+          <div class="ow-stat-label text-sm font-semibold mb-1">Native Currency</div>
+          <div class="ow-stat-sub text-xs">All payments inside the Interlink ecosystem</div>
+        </div>
+        <div class="atv-card ow-stat-card rounded-2xl p-6 border text-center">
+          <div class="atv-num text-4xl ow-stat-num mb-1">100%</div>
+          <div class="ow-stat-label text-sm font-semibold mb-1">On-Platform</div>
+          <div class="ow-stat-sub text-xs">No external wallets or payment processors needed</div>
+        </div>
+        <div class="atv-card ow-stat-card rounded-2xl p-6 border text-center">
+          <div class="atv-num text-4xl ow-stat-num mb-1">0</div>
+          <div class="ow-stat-label text-sm font-semibold mb-1">Middlemen</div>
+          <div class="ow-stat-sub text-xs">Direct connection between client and freelancer</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HOW INTERWORK WORKS ═══ -->
+  <section class="py-20 hw-section border-b">
+    <div class="max-w-5xl mx-auto px-5">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="hw-kicker text-[11px] font-bold uppercase tracking-widest">Process</span>
+        <span class="w-8 h-px hw-line"></span>
+      </div>
+      <h2 class="atv-title text-3xl md:text-4xl hw-title mb-4">How InterWork Works</h2>
+      <p class="hw-sub text-base max-w-2xl leading-relaxed mb-14">Four simple steps from hiring to payment — fully protected at every stage.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="atv-card hw-card rounded-2xl p-6 border relative">
+          <div class="atv-num text-5xl hw-num mb-4 leading-none">01</div>
+          <div class="hw-card-title font-bold text-sm mb-2">Browse & Hire</div>
+          <div class="hw-card-sub text-xs leading-relaxed">Find verified freelancers by category or skill. Review portfolios and ratings before committing.</div>
+          <div class="atv-connector hw-arrow hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10" style="background:var(--gold-accent)">
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-white"></i>
+          </div>
+        </div>
+        <div class="atv-card hw-card rounded-2xl p-6 border relative">
+          <div class="atv-num text-5xl hw-num mb-4 leading-none">02</div>
+          <div class="hw-card-title font-bold text-sm mb-2">Lock Payment</div>
+          <div class="hw-card-sub text-xs leading-relaxed">ITL is locked in an automatic contract. The freelancer knows the funds are guaranteed before starting.</div>
+          <div class="atv-connector hw-arrow hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10" style="background:var(--gold-accent)">
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-white"></i>
+          </div>
+        </div>
+        <div class="atv-card hw-card rounded-2xl p-6 border relative">
+          <div class="atv-num text-5xl hw-num mb-4 leading-none">03</div>
+          <div class="hw-card-title font-bold text-sm mb-2">Work & Deliver</div>
+          <div class="hw-card-sub text-xs leading-relaxed">The freelancer completes the job and submits the delivery. You review and request revisions if needed.</div>
+          <div class="atv-connector hw-arrow hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10" style="background:var(--gold-accent)">
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-white"></i>
+          </div>
+        </div>
+        <div class="atv-card hw-card rounded-2xl p-6 border">
+          <div class="atv-num text-5xl hw-num mb-4 leading-none">04</div>
+          <div class="hw-card-title font-bold text-sm mb-2">Approve & Release</div>
+          <div class="hw-card-sub text-xs leading-relaxed">You approve the delivery and the contract releases payment instantly to the freelancer in ITL.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ BENEFITS OF JOINING ═══ -->
+  <section class="py-20 bn-section border-b">
+    <div class="max-w-5xl mx-auto px-5">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="bn-kicker text-[11px] font-bold uppercase tracking-widest">Why Join</span>
+        <span class="w-8 h-px bn-line"></span>
+      </div>
+      <h2 class="atv-title text-3xl md:text-4xl bn-title mb-4">Benefits of Joining</h2>
+      <p class="bn-sub text-base max-w-2xl leading-relaxed mb-14">Early participants shape the foundation of how ITL value is formed for years to come.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="atv-card bn-card rounded-2xl p-6 border">
+          <div class="inline-flex items-center gap-1.5 bn-tag text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-4">Certification</div>
+          <div class="bn-card-title font-extrabold text-base mb-2">Official Recognition</div>
+          <div class="bn-card-sub text-sm leading-relaxed">Receive certification for your verified role in building and validating the InterWork ecosystem — proof of real contribution, not passive participation.</div>
+        </div>
+        <div class="atv-card bn-card rounded-2xl p-6 border">
+          <div class="inline-flex items-center gap-1.5 bn-tag text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-4">Support</div>
+          <div class="bn-card-title font-extrabold text-base mb-2">Foundation Backing</div>
+          <div class="bn-card-sub text-sm leading-relaxed">Active participants may receive ecosystem incentives, funding support, and assistance expanding their reach across the Interlink network.</div>
+        </div>
+        <div class="atv-card bn-card rounded-2xl p-6 border">
+          <div class="inline-flex items-center gap-1.5 bn-tag text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-4">Impact</div>
+          <div class="bn-card-title font-extrabold text-base mb-2">Shape a New Value Model</div>
+          <div class="bn-card-sub text-sm leading-relaxed">Contribute directly to a global movement where token value is formed through real transactions — every job you complete adds to something larger.</div>
+        </div>
+        <div class="atv-card bn-card rounded-2xl p-6 border">
+          <div class="inline-flex items-center gap-1.5 bn-tag text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-4">Positioning</div>
+          <div class="bn-card-title font-extrabold text-base mb-2">Early Mover Advantage</div>
+          <div class="bn-card-sub text-sm leading-relaxed">Early participants gain deeper insight, stronger positioning, and closer access to core ecosystem dynamics as InterLink Layer 1 launches.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ COMMUNITY & REWARD PROGRAMS ═══ -->
+  <section class="py-20 rw-section border-b">
+    <div class="max-w-5xl mx-auto px-5">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="rw-kicker text-[11px] font-bold uppercase tracking-widest">Community</span>
+        <span class="w-8 h-px rw-line"></span>
+      </div>
+      <h2 class="atv-title text-3xl md:text-4xl rw-title mb-4">Community Development<br class="hidden sm:block"/> & Reward Programs</h2>
+      <p class="rw-sub text-base max-w-2xl leading-relaxed mb-14">InterWork is built by its community. The more you contribute, the more you earn — in reputation, in ITL, and in influence.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
+        <div class="atv-card rw-card rounded-2xl p-6 border text-center">
+          <div class="rw-icon w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 atv-icon-float">
+            <i data-lucide="trophy" class="w-6 h-6 rw-icon-color"></i>
+          </div>
+          <div class="rw-card-title font-extrabold text-sm mb-2">Top Freelancer Badge</div>
+          <div class="rw-card-sub text-xs leading-relaxed">Complete 10+ orders with 5-star ratings to unlock the verified top freelancer status — visible to all clients.</div>
+        </div>
+        <div class="atv-card rw-card rounded-2xl p-6 border text-center">
+          <div class="rw-icon w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 atv-icon-float" style="animation-delay:.3s">
+            <i data-lucide="coins" class="w-6 h-6 rw-icon-color"></i>
+          </div>
+          <div class="rw-card-title font-extrabold text-sm mb-2">ITL Reward Pools</div>
+          <div class="rw-card-sub text-xs leading-relaxed">High-performing freelancers and active clients participate in quarterly ITL reward pools distributed by the ecosystem.</div>
+        </div>
+        <div class="atv-card rw-card rounded-2xl p-6 border text-center">
+          <div class="rw-icon w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 atv-icon-float" style="animation-delay:.6s">
+            <i data-lucide="users" class="w-6 h-6 rw-icon-color"></i>
+          </div>
+          <div class="rw-card-title font-extrabold text-sm mb-2">Referral Program</div>
+          <div class="rw-card-sub text-xs leading-relaxed">Invite professionals to join InterWork and earn ITL for every active member you bring into the ecosystem.</div>
+        </div>
+      </div>
+      <!-- CTA strip -->
+      <div class="rw-cta rounded-2xl p-8 flex flex-col sm:flex-row items-center justify-between gap-5 border">
+        <div>
+          <div class="rw-cta-title font-extrabold text-lg mb-1">Ready to start earning ITL?</div>
+          <div class="rw-cta-sub text-sm">Connect your wallet and join the InterWork community today.</div>
+        </div>
+        <button onclick="openConnectWallet('seller')"
+          class="rw-cta-btn shrink-0 font-bold px-6 py-3 rounded-full text-sm flex items-center gap-2 transition">
+          <i data-lucide="wallet" class="w-4 h-4"></i>Connect Wallet
+        </button>
+      </div>
+    </div>
+  </section>
   <!-- POWERED BY INTERLINK -->
   <section class="py-6 powered-section">
     <div class="max-w-7xl mx-auto px-5 flex items-center justify-center gap-2">
@@ -3744,10 +4016,11 @@ function viewService(id){
         </div>` : ''}
 
         <!-- FAQ -->
+        ${(() => { const faqList = (s.faqs && s.faqs.length) ? s.faqs.map(f=>[f.q,f.a]) : gigFaqsByCategory(s.category); return faqList.length ? `
         <div class="bg-white border border-ink-100 rounded-2xl p-6">
           <h2 class="font-extrabold text-lg mb-4">FAQ</h2>
           <div class="divide-y divide-ink-100">
-            ${gigFaqsByCategory(s.category).map((f,i)=>`
+            ${faqList.map((f,i)=>`
               <details ${i===0?'open':''} class="group py-4 first:pt-0 last:pb-0">
                 <summary class="cursor-pointer flex items-center justify-between gap-3 list-none">
                   <span class="font-bold text-sm text-ink-900">${escapeHtml(f[0])}</span>
@@ -3757,7 +4030,7 @@ function viewService(id){
               </details>
             `).join('')}
           </div>
-        </div>
+        </div>` : ''; })()}
 
         <!-- REVIEWS — Fiverr style, no final -->
         <div class="bg-white border border-ink-100 rounded-2xl p-6">
@@ -4065,7 +4338,7 @@ function dashClient(){
   const totalPaid = completed.reduce((a,o)=>a+(o.total||o.price||0), 0);
   const stats = [
     ['Pedidos ativos', active.length,'briefcase','brand'],
-    ['Em escrow', fmtITL(active.reduce((a,o)=>a+o.total,0)),'lock','sonic'],
+    ['Protegido', fmtITL(active.reduce((a,o)=>a+o.total,0)),'shield-check','emerald'],
     ['Saldo wallet', fmtITL(me.balanceITL),'wallet','emerald'],
     ['Concluídos', completed.length,'check-circle-2','amber'],
   ];
@@ -4140,8 +4413,6 @@ function dashFreelancer(){
   const mySvc = DB.services.filter(s=>s.freelancerId===freelancerId);
   const myOrders = STATE.orders.filter(o=>o.freelancerId===freelancerId);
   return `
-  ${renderOnboardingChecklist()}
-
   <div class="bg-white border border-ink-100 rounded-2xl p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
     <div>
       <div class="text-xs text-ink-500 font-bold uppercase tracking-wider">Saldo disponível para saque</div>
@@ -4155,10 +4426,10 @@ function dashFreelancer(){
 
   <div class="grid sm:grid-cols-4 gap-4 mb-6">
     ${[
-      ['Receita (escrow)', fmtITL(myOrders.reduce((a,o)=>a+o.price,0)),'coins','brand'],
+      ['Ganhos', fmtITL(myOrders.reduce((a,o)=>a+o.price,0)),'coins','brand'],
       ['Pedidos abertos', myOrders.filter(o=>!['approved','cancelled'].includes(o.status)).length,'briefcase','sonic'],
       ['Rating', u.rating.toFixed(1)+' ★','star','amber'],
-      ['Serviços ativos', mySvc.length,'layers','emerald'],
+      ['Serviços ativos', 1,'layers','emerald'],
     ].map(([k,v,i,c])=>`
       <div class="bg-white border border-ink-100 rounded-2xl p-4">
         <div class="w-9 h-9 rounded-xl bg-${c}-50 grid place-items-center mb-2"><i data-lucide="${i}" class="w-4 h-4 text-${c}-600"></i></div>
@@ -4189,6 +4460,8 @@ function dashFreelancer(){
               <div class="flex-1 min-w-0">
                 <div class="text-sm font-semibold truncate">${escapeHtml(s.title)}</div>
                 <div class="text-xs text-ink-500 flex items-center gap-2">${stars(s.rating,'w-3 h-3')} <span>${s.rating.toFixed(1)} • ${fmtITL(s.price)}</span></div>
+                ${s.status === 'pending' ? `<span class="chip bg-amber-50 text-amber-700 text-[10px] mt-0.5"><i data-lucide="clock" class="w-2.5 h-2.5"></i>Aguardando aprovação</span>` : ''}
+                ${s.status === 'rejected' ? `<span class="chip bg-rose-50 text-rose-700 text-[10px] mt-0.5" title="${escapeHtml(s.rejectedReason||'')}"><i data-lucide="x-circle" class="w-2.5 h-2.5"></i>Rejeitado${s.rejectedReason ? ' — '+escapeHtml(s.rejectedReason.slice(0,30)) : ''}</span>` : ''}
               </div>
             </a>
             <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition shrink-0">
@@ -4214,8 +4487,6 @@ function orderRow(o, perspective){
   const other = perspective==='client' ? getUser(o.freelancerId) : getUser(o.clientId);
   return `
   <div class="p-5">
-    <div class="mb-1 px-1">${orderProgressStepper(o)}</div>
-    <div class="mb-4 px-1">${workVaultBadge(o)}</div>
     <div class="grid md:grid-cols-12 gap-4 items-center">
     <div class="md:col-span-5 flex items-center gap-3 min-w-0">
       <img src="${s.thumb}" class="w-14 h-14 rounded-lg object-cover" />
@@ -4241,7 +4512,7 @@ function orderRow(o, perspective){
     </div>
 
     <div class="md:col-span-2">
-      <div class="text-[10px] text-ink-500 uppercase font-bold tracking-wider flex items-center gap-1"><i data-lucide="lock" class="w-2.5 h-2.5" aria-hidden="true"></i>Work Vault</div>
+      <div class="text-[10px] text-ink-500 uppercase font-bold tracking-wider flex items-center gap-1"><i data-lucide="shield-check" class="w-2.5 h-2.5 text-emerald-500" aria-hidden="true"></i>Protegido</div>
       <div class="font-extrabold text-sonic text-sm">${fmtITL(o.total)}</div>
     </div>
 
@@ -4253,6 +4524,7 @@ function orderRow(o, perspective){
     </div>
     </div>
 
+    ${(!['approved','cancelled'].includes(o.status)) ? workVaultBadge(o) : ''}
     ${(o.deliverable && (o.status==='delivered' || o.status==='approved')) ? `
     <div class="md:col-span-12 mt-1 rounded-xl border border-brand-100 bg-brand-50/40 p-3">
       <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-brand-700">
@@ -4650,6 +4922,9 @@ function openNewServiceModal(editId){
   STATE.newServiceRequirements = editing
     ? ((existing.requirements || []).map(r => ({...r})))
     : defaultRequirements();
+  STATE.newServiceFaqs = editing
+    ? ((existing.faqs || gigFaqsByCategory(existing.category)).map(f => Array.isArray(f) ? {q:f[0], a:f[1]} : {...f}))
+    : defaultFaqs();
 
   // Wizard state
   STATE._nsStep = 1;
@@ -4672,13 +4947,13 @@ function renderNewServiceWizard(){
   const editing = !!STATE._nsEdit;
 
   const steps = [
-    { n:1, label:'Detalhes',   icon:'file-text' },
-    { n:2, label:'Mídia',      icon:'image' },
-    { n:3, label:'Preço & Briefing', icon:'tag' },
-    { n:4, label:'Revisar',    icon:'check-circle' },
+    { n:1, label:'Visão Geral',        icon:'file-text' },
+    { n:2, label:'Descrição & FAQ',    icon:'help-circle' },
+    { n:3, label:'Preço & Mídia',      icon:'tag' },
+    { n:4, label:'Revisar',            icon:'check-circle' },
   ];
 
-  const stepBar = `<div class="flex items-center gap-0 px-6 pt-5 pb-4">
+  const stepBar = `<div class="flex items-center gap-0 px-5 py-3 bg-white/95 rounded-2xl shadow-pop">
     ${steps.map((s,i)=>{
       const done = step > s.n;
       const active = step === s.n;
@@ -4693,15 +4968,20 @@ function renderNewServiceWizard(){
     }).join('')}
   </div>`;
 
-  // ── STEP 1: Detalhes ──
+  // ── STEP 1: Visão Geral (título estilo Fiverr "Eu vou...", categoria, país, tags) ──
+  const titleLen = (v.title||'').length;
+  const tagCount = (v.tags||'').split(',').map(x=>x.trim()).filter(Boolean).length;
   const step1 = `
     <div class="px-6 pb-2 space-y-4">
       <div>
         <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Título do Serviço *</label>
-        <input id="ns-title" value="${escapeHtml(v.title)}" maxlength="80"
+        <input id="ns-title" value="${escapeHtml(v.title)}" maxlength="80" oninput="$('#ns-title-count').textContent=this.value.length"
           class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm focus:border-brand-400 outline-none"
-          placeholder="Ex: Design profissional de logo para sua marca"/>
-        <div class="text-[10px] text-ink-400 mt-1">Seja específico — clientes buscam por palavras do título.</div>
+          placeholder="Eu vou criar um logo profissional para sua marca"/>
+        <div class="flex items-center justify-between mt-1">
+          <div class="text-[10px] text-ink-400">Dica: comece com "Eu vou…" — fica claro o que você entrega.</div>
+          <div class="text-[10px] text-ink-400"><span id="ns-title-count">${titleLen}</span>/80</div>
+        </div>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
@@ -4709,6 +4989,7 @@ function renderNewServiceWizard(){
           <select id="ns-cat" class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm focus:border-brand-400 outline-none">
             ${CATEGORIES.map(c=>`<option value="${c.id}" ${(v.cat||'')==c.id?'selected':''}>${c.label}</option>`).join('')}
           </select>
+          ${editing ? `<div class="text-[10px] text-ink-400 mt-1">Alterar a categoria pode afetar como seu serviço é encontrado.</div>` : `<div class="text-[10px] text-ink-400 mt-1">Escolha com atenção — clientes filtram a busca por categoria.</div>`}
         </div>
         <div>
           <label class="text-xs font-bold uppercase tracking-wider text-ink-500">País *</label>
@@ -4718,26 +4999,89 @@ function renderNewServiceWizard(){
         </div>
       </div>
       <div>
-        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Descrição *</label>
-        <textarea id="ns-desc" rows="5" maxlength="1200"
-          class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm resize-none focus:border-brand-400 outline-none"
-          placeholder="Descreva o que está incluso, seu processo, diferenciais e resultados esperados…">${escapeHtml(v.desc)}</textarea>
-        <div class="text-[10px] text-ink-400 mt-1">Mínimo 80 caracteres.</div>
+        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Tags / Palavras-chave <span class="font-normal normal-case text-ink-400">(separe por vírgula · até 10)</span></label>
+        <input id="ns-tags" value="${escapeHtml(v.tags)}" oninput="$('#ns-tags-count').textContent=this.value.split(',').map(x=>x.trim()).filter(Boolean).length"
+          class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm focus:border-brand-400 outline-none"
+          placeholder="Ex: logo, branding, identidade visual, design"/>
+        <div class="text-[10px] text-ink-400 mt-1"><span id="ns-tags-count">${tagCount}</span>/10 tags · ajudam clientes a te encontrar na busca.</div>
       </div>
     </div>`;
 
-  // ── STEP 2: Mídia ──
+  // ── STEP 2: Descrição & FAQ + Briefing ──
+  const descLen = (v.desc||'').length;
+  const step2 = `
+    <div class="px-6 pb-2 space-y-5">
+      <div>
+        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Descrição *</label>
+        <textarea id="ns-desc" rows="5" maxlength="1200" oninput="$('#ns-desc-count').textContent=this.value.length"
+          class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm resize-none focus:border-brand-400 outline-none"
+          placeholder="Descreva o que está incluso, seu processo, diferenciais e resultados esperados…">${escapeHtml(v.desc)}</textarea>
+        <div class="flex items-center justify-between mt-1">
+          <div class="text-[10px] text-ink-400">Mínimo 80 caracteres.</div>
+          <div class="text-[10px] text-ink-400"><span id="ns-desc-count">${descLen}</span>/1200</div>
+        </div>
+      </div>
+
+      <div class="border-t border-ink-100 pt-4">
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="text-xs font-bold uppercase tracking-wider text-ink-500">FAQ <span class="font-normal normal-case text-ink-400">(opcional, mas recomendado)</span></label>
+        </div>
+        <div class="text-[10px] text-ink-400 mb-2">Responda aqui as perguntas que clientes mais fazem — isso reduz mensagens repetidas no chat.</div>
+        <div id="ns-faq-list" class="space-y-2"></div>
+        <button type="button" onclick="addFaq()" class="mt-2 w-full border-2 border-dashed border-ink-200 hover:border-brand-300 hover:bg-brand-50/30 text-xs font-semibold py-2 rounded-xl flex items-center justify-center gap-2 text-ink-600 transition">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>Adicionar pergunta
+        </button>
+      </div>
+
+      <div class="border-t border-ink-100 pt-4">
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Briefing do Cliente *</label>
+        </div>
+        <div class="text-[10px] text-ink-400 mb-2">O que você precisa saber do cliente antes de começar o trabalho — ele preenche isso após o pagamento.</div>
+        <div id="ns-req-list" class="space-y-2"></div>
+        <button type="button" onclick="addRequirement()" class="mt-2 w-full border-2 border-dashed border-ink-200 hover:border-brand-300 hover:bg-brand-50/30 text-xs font-semibold py-2 rounded-xl flex items-center justify-center gap-2 text-ink-600 transition">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>Adicionar pergunta ao briefing
+        </button>
+      </div>
+    </div>`;
+
+  // ── STEP 3: Preço, Prazo & Mídia ──
   const galleryPreviews = STATE.newServiceGallery.map((src,i)=>`
     <div class="relative group aspect-square rounded-xl overflow-hidden border border-ink-100 bg-ink-100/30 gig-thumb-drag" data-gi="${i}">
       <img src="${src}" class="w-full h-full object-cover pointer-events-none"/>
-      <button onclick="removeGalleryItem(${i})" class="absolute top-1 right-1 w-6 h-6 bg-black/60 text-white rounded-full grid place-items-center opacity-0 group-hover:opacity-100 transition">
+      <button onclick="removeGalleryImg(${i})" class="absolute top-1 right-1 w-6 h-6 bg-black/60 text-white rounded-full grid place-items-center opacity-0 group-hover:opacity-100 transition">
         <i data-lucide="x" class="w-3 h-3"></i>
       </button>
     </div>`).join('');
 
-  const step2 = `
+  const step3 = `
     <div class="px-6 pb-2 space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Preço (ITL) *</label>
+          <div class="relative mt-1.5">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-500 text-sm font-bold">⬡</span>
+            <input id="ns-price" type="number" min="1" value="${v.price||250}"
+              class="w-full border border-ink-200 rounded-xl pl-8 pr-3 py-2.5 text-sm focus:border-brand-400 outline-none"/>
+          </div>
+        </div>
+        <div>
+          <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Prazo de Entrega *</label>
+          <div class="relative mt-1.5">
+            <input id="ns-days" type="number" min="1" max="90" value="${v.days||7}"
+              class="w-full border border-ink-200 rounded-xl pl-3 pr-12 py-2.5 text-sm focus:border-brand-400 outline-none"/>
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400 text-xs pointer-events-none">dias</span>
+          </div>
+        </div>
+      </div>
       <div>
+        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">O que inclui <span class="font-normal normal-case text-ink-400">(separe por vírgula)</span></label>
+        <input id="ns-inc" value="${escapeHtml(v.inc)}"
+          class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm focus:border-brand-400 outline-none"
+          placeholder="Ex: 3 propostas, revisões ilimitadas, arquivo editável"/>
+      </div>
+
+      <div class="border-t border-ink-100 pt-4">
         <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Foto Principal / Logo *</label>
         <div class="mt-2 flex items-center gap-4">
           <div id="ns-logo-preview" class="w-24 h-24 rounded-2xl border-2 border-dashed border-ink-200 grid place-items-center bg-ink-100/20 overflow-hidden shrink-0">
@@ -4768,81 +5112,74 @@ function renderNewServiceWizard(){
       </div>
     </div>`;
 
-  // ── STEP 3: Preço & Briefing ──
-  const step3 = `
-    <div class="px-6 pb-2 space-y-4">
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Preço (ITL) *</label>
-          <div class="relative mt-1.5">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-500 text-sm font-bold">⬡</span>
-            <input id="ns-price" type="number" min="1" value="${v.price||250}"
-              class="w-full border border-ink-200 rounded-xl pl-8 pr-3 py-2.5 text-sm focus:border-brand-400 outline-none"/>
-          </div>
-        </div>
-        <div>
-          <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Prazo de Entrega *</label>
-          <div class="relative mt-1.5">
-            <input id="ns-days" type="number" min="1" max="90" value="${v.days||7}"
-              class="w-full border border-ink-200 rounded-xl px-3 py-2.5 text-sm focus:border-brand-400 outline-none"/>
-            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400 text-xs">dias</span>
-          </div>
-        </div>
-      </div>
-      <div>
-        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">O que inclui <span class="font-normal normal-case text-ink-400">(separe por vírgula)</span></label>
-        <input id="ns-inc" value="${escapeHtml(v.inc)}"
-          class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm focus:border-brand-400 outline-none"
-          placeholder="Ex: 3 propostas, revisões ilimitadas, arquivo editável"/>
-      </div>
-      <div>
-        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Tags / Palavras-chave <span class="font-normal normal-case text-ink-400">(separe por vírgula · até 10)</span></label>
-        <input id="ns-tags" value="${escapeHtml(v.tags)}"
-          class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm focus:border-brand-400 outline-none"
-          placeholder="Ex: logo, branding, identidade visual, design"/>
-      </div>
-
-    </div>`;
-
   // ── STEP 4: Revisar ──
   const me = getUser(STATE.currentUserId);
   const catLabel = CATEGORIES.find(c=>c.id===v.cat)?.label || v.cat;
   const coObj = COUNTRIES.find(c=>c.id===v.co);
   const priceFmt = fmtITL(+(v.price||0));
   const tagList = (v.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+  const incList = (v.inc||'').split(',').map(t=>t.trim()).filter(Boolean);
+  const faqPreview = (STATE.newServiceFaqs||[]).filter(f=>f.q && f.q.trim());
+  const reqPreview = (STATE.newServiceRequirements||[]).filter(r=>r.label && r.label.trim());
 
   const step4 = `
-    <div class="px-6 pb-2 space-y-3">
+    <div class="px-6 pb-2 space-y-4">
+      <!-- Preview visual no topo, como "Foto da Loja" no print -->
       <div class="rounded-2xl border border-ink-100 overflow-hidden">
         ${STATE.newServiceLogo
-          ? `<img src="${STATE.newServiceLogo}" class="w-full h-36 object-cover"/>`
-          : `<div class="w-full h-36 bg-gradient-to-br from-brand-100 to-sonic/20 flex items-center justify-center"><i data-lucide="image" class="w-10 h-10 text-brand-300"></i></div>`}
+          ? `<img src="${STATE.newServiceLogo}" class="w-full h-32 object-cover"/>`
+          : `<div class="w-full h-32 bg-gradient-to-br from-brand-100 to-sonic/20 flex items-center justify-center"><i data-lucide="image" class="w-9 h-9 text-brand-300"></i></div>`}
         <div class="p-4">
-          <div class="flex items-start gap-2 justify-between">
-            <div>
-              <span class="chip bg-brand-50 text-brand-700 text-[11px]">${escapeHtml(catLabel)}</span>
-              <div class="font-extrabold text-base mt-1.5 leading-snug">${escapeHtml(v.title||'—')}</div>
-              <div class="text-xs text-ink-500 mt-1 line-clamp-2">${escapeHtml(v.desc||'—')}</div>
-            </div>
-            <div class="text-right shrink-0">
-              <div class="font-extrabold text-brand-600">${priceFmt} ITL</div>
-              <div class="text-[11px] text-ink-400">${v.days||'?'} dias</div>
-            </div>
-          </div>
-          ${tagList.length ? `<div class="flex flex-wrap gap-1 mt-3">${tagList.map(tg=>`<span class="chip bg-ink-100/60 text-ink-500 text-[11px]">#${escapeHtml(tg)}</span>`).join('')}</div>` : ''}
-          <div class="flex items-center gap-2 mt-3 pt-3 border-t border-ink-100">
-            <div class="w-7 h-7 rounded-full bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs">
-              ${(me?.name||'U')[0].toUpperCase()}
-            </div>
-            <div class="text-xs text-ink-600 font-semibold">${escapeHtml(me?.name||'Usuário')}</div>
-            ${coObj ? `<span class="text-xs">${coObj.flag} ${coObj.name}</span>` : ''}
-            ${STATE.newServiceGallery.length ? `<span class="ml-auto text-[11px] text-ink-400">${STATE.newServiceGallery.length} foto${STATE.newServiceGallery.length>1?'s':''}</span>` : ''}
-          </div>
+          <span class="chip bg-brand-50 text-brand-700 text-[11px]">${escapeHtml(catLabel)}</span>
+          <div class="font-extrabold text-base mt-1.5 leading-snug">${escapeHtml(v.title||'—')}</div>
+          <div class="text-xs text-ink-500 mt-1 line-clamp-2">${escapeHtml(v.desc||'—')}</div>
         </div>
       </div>
+
+      <!-- Revisão em lista rótulo + valor -->
+      <div class="rounded-2xl border border-ink-100 divide-y divide-ink-100">
+        ${[
+          ['Título',     v.title || '—'],
+          ['Categoria',  catLabel || '—'],
+          ['País',       coObj ? `${coObj.flag} ${coObj.name}` : '—'],
+          ['Preço',      `${priceFmt} ITL`],
+          ['Prazo',      `${v.days||'?'} dias`],
+          ['Inclui',     incList.length ? incList.join(', ') : '—'],
+          ['Tags',       tagList.length ? tagList.map(tg=>'#'+tg).join(' ') : '—'],
+          ['Fotos',      STATE.newServiceGallery.length ? `${STATE.newServiceGallery.length} imagem${STATE.newServiceGallery.length>1?'ns':''} na galeria` : 'Nenhuma'],
+        ].map(([label,value])=>`
+          <div class="flex items-start justify-between gap-4 px-4 py-3">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-ink-400 shrink-0 pt-0.5">${label}</span>
+            <span class="text-sm text-ink-800 text-right">${escapeHtml(String(value))}</span>
+          </div>`).join('')}
+      </div>
+
+      ${faqPreview.length ? `
+      <div class="rounded-2xl border border-ink-100 p-4">
+        <div class="font-bold text-sm mb-2 flex items-center gap-1.5"><i data-lucide="help-circle" class="w-3.5 h-3.5 text-brand-500"></i>FAQ (${faqPreview.length})</div>
+        <div class="space-y-1.5">
+          ${faqPreview.slice(0,3).map(f=>`<div class="text-xs text-ink-600"><span class="font-semibold text-ink-800">${escapeHtml(f.q)}</span></div>`).join('')}
+          ${faqPreview.length>3?`<div class="text-[11px] text-ink-400">+${faqPreview.length-3} pergunta(s)</div>`:''}
+        </div>
+      </div>` : ''}
+
+      ${reqPreview.length ? `
+      <div class="rounded-2xl border border-ink-100 p-4">
+        <div class="font-bold text-sm mb-2 flex items-center gap-1.5"><i data-lucide="clipboard-list" class="w-3.5 h-3.5 text-brand-500"></i>Briefing do cliente (${reqPreview.length})</div>
+        <div class="space-y-1.5">
+          ${reqPreview.slice(0,3).map(r=>`<div class="text-xs text-ink-600">${escapeHtml(r.label)}${r.required?` <span class="text-amber-500 font-bold">*</span>`:''}</div>`).join('')}
+          ${reqPreview.length>3?`<div class="text-[11px] text-ink-400">+${reqPreview.length-3} pergunta(s)</div>`:''}
+        </div>
+      </div>` : ''}
+
       <div class="flex items-start gap-2 rounded-xl bg-amber-50 border border-amber-200 px-3 py-2.5 text-xs text-amber-800">
         <i data-lucide="clock" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-amber-500"></i>
         <span>Após publicar, seu serviço será enviado para <strong>revisão da equipe Interwork</strong>. Ele aparece no marketplace assim que for aprovado — geralmente em até 24h.</span>
+      </div>
+
+      <div class="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2.5 text-xs text-emerald-800">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+        <span>Wallet conectada — pronto para enviar</span>
       </div>
     </div>`;
 
@@ -4858,40 +5195,43 @@ function renderNewServiceWizard(){
 
   $('#modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
-    <div class="bg-white w-full max-w-lg rounded-2xl shadow-pop overflow-hidden flex flex-col" style="max-height:92vh">
+    <div class="w-full max-w-lg flex flex-col" style="max-height:92vh" onclick="event.stopPropagation()">
 
-      <!-- Header -->
-      <div class="px-6 pt-5 pb-0 flex items-center justify-between shrink-0">
-        <div>
-          <div class="font-extrabold text-base flex items-center gap-2">
-            <i data-lucide="${STATE._nsEdit?'pencil':'plus-circle'}" class="w-5 h-5 text-brand-500"></i>
-            ${STATE._nsEdit?'Editar serviço':'Publicar novo serviço'}
+      <!-- Step bar — fora do card, estilo wizard externo -->
+      <div class="shrink-0 mb-3">${stepBar}</div>
+
+      <div class="bg-white w-full rounded-2xl shadow-pop overflow-hidden flex flex-col flex-1 min-h-0">
+
+        <!-- Header -->
+        <div class="px-6 pt-5 pb-3 flex items-center justify-between shrink-0 border-b border-ink-100">
+          <div>
+            <div class="font-extrabold text-base flex items-center gap-2">
+              <i data-lucide="${STATE._nsEdit?'pencil':'plus-circle'}" class="w-5 h-5 text-brand-500"></i>
+              ${STATE._nsEdit?'Editar serviço':'Publicar novo serviço'}
+            </div>
+            <div class="text-xs text-ink-500 mt-0.5">Passo ${step} de 4 — ${steps[step-1].label}</div>
           </div>
-          <div class="text-xs text-ink-500 mt-0.5">Passo ${step} de 4 — ${steps[step-1].label}</div>
+          <button onclick="closeModal()" aria-label="Fechar" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-ink-100/50">
+            <i data-lucide="x" class="w-4 h-4 text-ink-500"></i>
+          </button>
         </div>
-        <button onclick="closeModal()" aria-label="Fechar" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-ink-100/50">
-          <i data-lucide="x" class="w-4 h-4 text-ink-500"></i>
-        </button>
-      </div>
 
-      <!-- Step bar -->
-      ${stepBar}
-
-      <!-- Body -->
-      <div class="overflow-y-auto scrollbar-thin flex-1">
+        <!-- Body -->
+        <div class="overflow-y-auto scrollbar-thin flex-1 pt-4">
         ${bodyContent}
-      </div>
+        </div>
 
-      <!-- Footer -->
-      <div class="px-6 py-4 border-t border-ink-100 flex gap-2 shrink-0">
-        ${btnBack}
-        ${btnNext}
+        <!-- Footer -->
+        <div class="px-6 py-4 border-t border-ink-100 flex gap-2 shrink-0">
+          ${btnBack}
+          ${btnNext}
+        </div>
       </div>
     </div>
   </div>`;
 
-  if(step===2){ renderGalleryPreview(); }
-  if(step===3){ renderRequirementsBuilder(); }
+  if(step===2){ renderFaqBuilder(); renderRequirementsBuilder(); }
+  if(step===3){ renderGalleryPreview(); }
   icons();
 }
 
@@ -4902,16 +5242,20 @@ function nsWizardNav(dir){
     // Validate current step
     if(step===1){
       const title = ($('#ns-title')?.value||'').trim();
-      const desc  = ($('#ns-desc')?.value||'').trim();
       if(title.length < 5){ toast('Título muito curto (mínimo 5 caracteres).','warn'); return; }
-      if(desc.length < 20){ toast('Descrição muito curta (mínimo 20 caracteres).','warn'); return; }
       STATE._nsV.title = title;
       STATE._nsV.cat   = $('#ns-cat')?.value || '';
       STATE._nsV.co    = $('#ns-co')?.value  || '';
-      STATE._nsV.desc  = desc;
+      STATE._nsV.tags  = ($('#ns-tags')?.value||'').trim();
     }
     if(step===2){
-      // no mandatory fields — logo optional at this step
+      const desc  = ($('#ns-desc')?.value||'').trim();
+      if(desc.length < 20){ toast('Descrição muito curta (mínimo 20 caracteres).','warn'); return; }
+      STATE._nsV.desc = desc;
+      collectFaqsFromBuilder();
+      collectRequirementsFromBuilder();
+      const validReqs = STATE.newServiceRequirements.filter(r=>r.label && r.label.trim());
+      if(!validReqs.length){ toast('Adicione pelo menos uma pergunta de briefing para o cliente.','warn'); return; }
     }
     if(step===3){
       const price = parseFloat($('#ns-price')?.value||'0');
@@ -4921,7 +5265,6 @@ function nsWizardNav(dir){
       STATE._nsV.price = price;
       STATE._nsV.days  = days;
       STATE._nsV.inc   = ($('#ns-inc')?.value||'').trim();
-      STATE._nsV.tags  = ($('#ns-tags')?.value||'').trim();
     }
   }
   STATE._nsStep = Math.max(1, Math.min(4, step + dir));
@@ -5104,6 +5447,8 @@ function createService(){
   const inc   = (v.inc||'').split(',').map(x=>x.trim()).filter(Boolean);
   const tags  = (v.tags||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean).slice(0,10);
   if (!title || !desc || !price){ toast('Preencha título, descrição e preço.', 'warn'); return; }
+  const requirements = collectRequirementsFromBuilder();
+  const faqs = collectFaqsFromBuilder();
   const me = getUser(STATE.currentUserId);
   const svc = {
     id: uid('s'), title, category:cat, freelancerId: STATE.currentUserId, price, deliveryDays:days,
@@ -5111,7 +5456,8 @@ function createService(){
     description: desc, thumb: STATE.newServiceLogo || thumbSVG(title, getCategory(cat).color),
     gallery: STATE.newServiceGallery.slice(),
     tags,
-    requirements: [],
+    requirements,
+    faqs,
     status: 'pending',
     createdTs: Date.now(), reviews:[],
   };
@@ -5119,9 +5465,17 @@ function createService(){
   STATE.newServiceLogo = null;
   STATE.newServiceGallery = [];
   STATE.newServiceRequirements = [];
+  STATE.newServiceFaqs = [];
   STATE._nsV = null;
   STATE._nsStep = 1;
   closeModal();
+  // ── Salva no Supabase se configurado ──
+  if (SB_READY && sb){
+    sbCreateService(svc).then(({ error }) => {
+      if (error) toast('Aviso: erro ao salvar no banco. '+error.message, 'warn');
+      else toast('Serviço enviado para revisão! ✅', 'success');
+    });
+  }
   openModal('Serviço enviado para revisão ✅', `
     <div class="px-6 pb-6 text-center space-y-4">
       <div class="w-16 h-16 rounded-full bg-amber-50 border-2 border-amber-200 flex items-center justify-center mx-auto">
@@ -5161,11 +5515,13 @@ function saveService(id){
   s.includes      = inc.length ? inc : ['Pacote padrão'];
   s.tags          = tags;
   s.requirements  = collectRequirementsFromBuilder();
+  s.faqs          = collectFaqsFromBuilder();
   s.thumb         = STATE.newServiceLogo || thumbSVG(title, getCategory(cat).color);
   s.gallery       = STATE.newServiceGallery.slice();
   STATE.newServiceLogo = null;
   STATE.newServiceGallery = [];
   STATE.newServiceRequirements = [];
+  STATE.newServiceFaqs = [];
   STATE._nsV = null;
   STATE._nsStep = 1;
   closeModal();
@@ -5205,6 +5561,62 @@ const REQ_TYPES = [
   { id:'select',   label:'Múltipla escolha',      icon:'list' },
   { id:'file',     label:'Anexo de arquivo',      icon:'paperclip' },
 ];
+
+/* ============ GIG FAQ BUILDER (Fiverr-style, escrito pelo freelancer) ============ */
+
+function defaultFaqs(){
+  return [ { id: uid('faq'), q:'', a:'' } ];
+}
+
+function addFaq(){
+  if (STATE.newServiceFaqs.length >= 10){ toast('Limite de 10 perguntas no FAQ.','warn'); return; }
+  STATE.newServiceFaqs.push({ id: uid('faq'), q:'', a:'' });
+  renderFaqBuilder();
+}
+
+function removeFaq(faqId){
+  const i = STATE.newServiceFaqs.findIndex(f=>f.id===faqId);
+  if (i>=0){ STATE.newServiceFaqs.splice(i,1); renderFaqBuilder(); }
+}
+
+function updateFaqField(faqId, key, value){
+  const f = STATE.newServiceFaqs.find(x=>x.id===faqId);
+  if (f) f[key] = value;
+}
+
+function collectFaqsFromBuilder(){
+  STATE.newServiceFaqs.forEach(f => {
+    const q = document.getElementById('faq-q-'+f.id);
+    const a = document.getElementById('faq-a-'+f.id);
+    if (q) f.q = q.value.trim();
+    if (a) f.a = a.value.trim();
+  });
+  return STATE.newServiceFaqs
+    .filter(f => f.q && f.a)
+    .map(f => ({ id:f.id, q:f.q, a:f.a }));
+}
+
+function renderFaqBuilder(){
+  const wrap = document.getElementById('ns-faq-list');
+  if (!wrap) return;
+  if (!STATE.newServiceFaqs.length){
+    wrap.innerHTML = `<div class="text-xs text-ink-500 italic px-1">Nenhuma pergunta ainda. FAQ é opcional, mas ajuda a vender melhor.</div>`;
+    return;
+  }
+  wrap.innerHTML = STATE.newServiceFaqs.map((f, idx) => `
+    <div class="border border-ink-100 rounded-xl p-3 bg-ink-100/20">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="chip bg-white border border-ink-100 text-ink-700 text-[10px]">#${idx+1}</span>
+        <button type="button" onclick="removeFaq('${f.id}')" class="ml-auto w-7 h-7 grid place-items-center rounded-lg hover:bg-rose-100 text-ink-500 hover:text-rose-600" title="Remover">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+      <input id="faq-q-${f.id}" value="${escapeHtml(f.q||'')}" placeholder="Pergunta (ex: Você entrega os arquivos fonte?)" class="w-full border border-ink-100 rounded-lg px-2 py-1.5 text-sm" oninput="updateFaqField('${f.id}','q',this.value)"/>
+      <textarea id="faq-a-${f.id}" rows="2" placeholder="Resposta…" class="w-full border border-ink-100 rounded-lg px-2 py-1.5 text-xs mt-2 resize-none" oninput="updateFaqField('${f.id}','a',this.value)">${escapeHtml(f.a||'')}</textarea>
+    </div>
+  `).join('');
+  icons();
+}
 
 function defaultRequirements(){
   // Todo serviço já vem com 1 campo obrigatório — garante que sempre tem briefing.
@@ -5418,62 +5830,14 @@ function submitRequirements(orderId){
 
 /* ============ ONBOARDING CHECKLIST (Upwork-style, mas funcional) ============ */
 function onboardingItems(){
-  const me = getUser(STATE.currentUserId);
-  // No demo dashFreelancer, pretende-se ser 'u_ana'
-  const freelancerId = 'u_ana';
-  const u = getUser(freelancerId);
-  const mySvc = DB.services.filter(s=>s.freelancerId===freelancerId);
-  const myOrders = STATE.orders.filter(o=>o.freelancerId===freelancerId);
+  const u = getUser(STATE.currentUserId) || getUser('u_ana');
+  const mySvc = DB.services.filter(sv=>sv.freelancerId===u.id);
+  const myOrders = STATE.orders.filter(o=>o.freelancerId===u.id);
   return [
-    {
-      id:'wallet',
-      label:'Conectar wallet ITLX',
-      desc:'Necessário pra receber pagamentos em ITL.',
-      done: !!STATE.walletConnected,
-      cta:{ label:'Conectar', onclick:"toast('Wallet já conectada','info')" }
-    },
-    {
-      id:'human',
-      label:'Verificar humanidade (Interlink ID)',
-      desc:'SBT "Verified Human" no seu perfil. Sem isso clientes não confiam.',
-      done: !!u.verified,
-      cta:{ label:'Verificar', onclick:"toast('Verificação simulada — perfil já é Verified Human','success')" }
-    },
-    {
-      id:'profile',
-      label:'Completar perfil (bio + 3 skills)',
-      desc:'Bio detalhada e skills facilitam reviewer match.',
-      done: (u.bio||'').length > 30 && (u.skills||[]).length >= 3,
-      cta:{ label:'Editar perfil', onclick:`go('#/u/${u.handle}')` }
-    },
-    {
-      id:'portfolio',
-      label:'Adicionar 3+ itens ao portfólio',
-      desc:'Mostra trabalhos anteriores — aumenta conversão.',
-      done: (u.portfolio||[]).length >= 3,
-      cta:{ label:'Ir ao perfil', onclick:`go('#/u/${u.handle}')` }
-    },
-    {
-      id:'firstgig',
-      label:'Publicar primeira gig',
-      desc:'Crie pelo menos 1 serviço pra começar a receber pedidos.',
-      done: mySvc.length >= 1,
-      cta:{ label:'Criar serviço', onclick:'openNewServiceModal()' }
-    },
-    {
-      id:'requirements',
-      label:'Definir briefing obrigatório',
-      desc:'Pelo menos 1 gig com requirements — reduz disputas drasticamente.',
-      done: mySvc.some(s => (s.requirements||[]).length > 0),
-      cta:{ label:'Configurar', onclick: mySvc.length ? `openEditServiceModal('${mySvc[0].id}')` : 'openNewServiceModal()' }
-    },
-    {
-      id:'firstsale',
-      label:'Primeira venda concluída',
-      desc:'Após primeira venda você desbloqueia Level 1 e SBT.',
-      done: myOrders.some(o => o.status==='approved'),
-      cta:{ label:'Ver pedidos', onclick:"go('#/dashboard/freelancer')" }
-    },
+    { label:'Conectar carteira',         done: !!STATE.walletConnected,                                           cta:{ label:'Conectar', onclick:"toast('Carteira já conectada','info')" } },
+    { label:'Completar seu perfil',      done: !!(u.bio&&u.bio.length>20&&(u.skills||[]).length>=1),              cta:{ label:'Editar perfil', onclick:`go('#/u/${u.handle}')` } },
+    { label:'Publicar um serviço',       done: mySvc.length >= 1,                                                 cta:{ label:'Criar serviço', onclick:'openNewServiceModal()' } },
+    { label:'Receber primeiro pedido',   done: myOrders.some(o=>o.status==='approved'),                           cta:{ label:'Ver pedidos', onclick:"go('#/dashboard/freelancer')" } },
   ];
 }
 
@@ -5481,36 +5845,33 @@ function renderOnboardingChecklist(){
   if (STATE.onboardingDismissed) return '';
   const items = onboardingItems();
   const done = items.filter(i=>i.done).length;
-  const total = items.length;
-  if (done === total) return ''; // some auto quando 100%
-  const pct = Math.round((done/total)*100);
+  if (done === items.length){ STATE.onboardingDismissed=true; return ''; }
+  const pct = Math.round((done/items.length)*100);
+  const expanded = STATE._onboardingExpanded;
   return `
-  <div class="bg-gradient-to-br from-amber-50 via-white to-brand-50/40 border border-amber-200 rounded-2xl p-5 mb-6">
-    <div class="flex items-center gap-3 mb-3">
-      <div class="w-10 h-10 rounded-xl bg-amber-100 grid place-items-center"><i data-lucide="rocket" class="w-5 h-5 text-amber-700"></i></div>
-      <div class="flex-1 min-w-0">
-        <div class="font-extrabold text-base">Onboarding — ${done} de ${total} concluídos</div>
-        <div class="text-xs text-ink-500">Cada item desbloqueia mais confiança e visibilidade no marketplace.</div>
+  <div class="bg-white border border-ink-100 rounded-2xl shadow-card overflow-hidden mb-5">
+    <button onclick="STATE._onboardingExpanded=!STATE._onboardingExpanded;renderView()"
+      class="w-full flex items-center gap-3 px-4 py-3 hover:bg-ink-50/50 transition text-left">
+      <i data-lucide="rocket" class="w-4 h-4 text-brand-500 shrink-0"></i>
+      <span class="font-semibold text-sm flex-1">Primeiros passos — ${done} de ${items.length} concluídos</span>
+      <div class="w-24 bg-ink-100 rounded-full h-1.5 shrink-0">
+        <div class="bg-brand-500 h-1.5 rounded-full transition-all" style="width:${pct}%"></div>
       </div>
-      <button onclick="STATE.onboardingDismissed=true;render()" title="Esconder" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-ink-100/50 text-ink-500">
-        <i data-lucide="x" class="w-4 h-4"></i>
+      <span class="text-xs text-ink-400 font-semibold w-7 text-right">${pct}%</span>
+      <i data-lucide="${expanded?'chevron-up':'chevron-down'}" class="w-4 h-4 text-ink-400 shrink-0"></i>
+      <button onclick="event.stopPropagation();STATE.onboardingDismissed=true;renderView()" class="text-ink-300 hover:text-ink-500 ml-1 p-0.5">
+        <i data-lucide="x" class="w-3.5 h-3.5"></i>
       </button>
-    </div>
-    <div class="progress mb-4"><span style="width:${pct}%"></span></div>
-    <div class="grid sm:grid-cols-2 gap-2">
-      ${items.map(it => `
-        <div class="flex items-start gap-3 p-3 rounded-xl ${it.done?'bg-emerald-50/50 border border-emerald-100':'bg-white border border-ink-100'}">
-          <div class="w-6 h-6 rounded-full grid place-items-center shrink-0 ${it.done?'bg-emerald-500 text-white':'border-2 border-ink-100 text-ink-300'}">
-            ${it.done ? '<i data-lucide="check" class="w-3.5 h-3.5"></i>' : '<span class="text-[10px] font-bold">•</span>'}
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="text-sm font-bold ${it.done?'line-through text-ink-500':'text-ink-900'}">${escapeHtml(it.label)}</div>
-            <div class="text-[11px] text-ink-500 mt-0.5">${escapeHtml(it.desc)}</div>
-            ${!it.done ? `<button onclick="${it.cta.onclick}" class="mt-2 text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">${escapeHtml(it.cta.label)} <i data-lucide="arrow-right" class="w-3 h-3"></i></button>` : ''}
-          </div>
-        </div>
-      `).join('')}
-    </div>
+    </button>
+    ${expanded ? `
+    <div class="border-t border-ink-100 px-4 py-3 grid sm:grid-cols-2 gap-2">
+      ${items.map(it=>`
+        <div class="flex items-center gap-3 p-2.5 rounded-xl ${it.done?'opacity-50':''}">
+          <i data-lucide="${it.done?'check-circle-2':'circle'}" class="w-4 h-4 shrink-0 ${it.done?'text-emerald-500':'text-ink-200'}"></i>
+          <span class="text-sm ${it.done?'line-through text-ink-400':'text-ink-700 font-medium'}">${it.label}</span>
+          ${!it.done?`<button onclick="${it.cta.onclick}" class="ml-auto text-xs font-bold text-brand-500 hover:text-brand-600 shrink-0">${it.cta.label} →</button>`:''}
+        </div>`).join('')}
+    </div>` : ''}
   </div>`;
 }
 
@@ -5665,7 +6026,6 @@ function viewProfile(handle){
         </ul>
       </div>
 
-      ${sbtCard(u)}
     </aside>
   </div>
 
@@ -6010,7 +6370,7 @@ function saveProfile(){
   u.bio  = $('#ep-bio').value.trim();
   u.skills = $('#ep-skills').value.split(',').map(s=>s.trim()).filter(Boolean);
   u.languages = Array.from($('#ep-langs').selectedOptions).map(o=>o.value);
-  if (u.languages.length===0) u.languages = ['pt'];
+  if (u.languages.length===0) u.languages = ['en'];
   u.responseHours = Math.max(1, Math.min(48, +$('#ep-resp').value || 4));
   u.country = $('#ep-country').value;
   const hash = txHash();
@@ -6189,28 +6549,346 @@ function docSections(sections){
 
 function viewHow(){
   const steps = [
-    ['Escolha o serviço','Filtre por categoria, país e rating. Veja o portfólio e converse antes de contratar.','search'],
-    ['Trave o pagamento em ITL','O valor + 2% de taxa fica bloqueado no smart contract de escrow na rede Interlink.','lock'],
-    ['Acompanhe a entrega','Chat integrado, barra de progresso e prazos transparentes.','message-circle'],
-    ['Aprove e libere o ITL','Você aprova a entrega e o contrato libera automaticamente o pagamento ao freelancer.','check-circle-2'],
+    {
+      n:1, icon:'search', color:'#1a73e8', bg:'#eff6ff',
+      title:'Create a Job',
+      desc:'Browse by category, skill, rating or location. Preview portfolios and message freelancers before committing — no commitment until you confirm.',
+    },
+    {
+      n:2, icon:'lock', color:'#7C3AED', bg:'#f5f3ff',
+      title:'Secure ITL in Escrow',
+      desc:'When you hire, the agreed ITL amount is locked in a smart contract on the Interlink chain. Neither side can touch it until the work is done.',
+    },
+    {
+      n:3, icon:'briefcase', color:'#10b981', bg:'#f0fdf4',
+      title:'Complete the Work',
+      desc:'The freelancer delivers directly inside the platform. You get progress updates, file previews and an integrated chat — all time-stamped on-chain.',
+    },
+    {
+      n:4, icon:'check-circle-2', color:'#f59e0b', bg:'#fffbeb',
+      title:'Release Payment',
+      desc:'Happy with the result? Approve the delivery and the smart contract instantly releases the ITL to the freelancer. No waiting, no middlemen.',
+    },
+    {
+      n:5, icon:'send', color:'#06b6d4', bg:'#ecfeff',
+      title:'Submit to ATV',
+      desc:'Once a job is approved, that transaction is real: real ITL, real proof of payment, real delivery. You can submit it to the Interlink ecosystem\'s ATV — Average Transaction Value — so it counts toward how $ITL\'s value is actually measured, not guessed at.',
+    },
   ];
+
   return `
-  <div class="max-w-5xl mx-auto px-5 py-12">
-    <div class="text-center mb-10">
-      <span class="chip bg-brand-50 text-brand-700">Como funciona</span>
-      <h1 class="text-4xl font-extrabold mt-3">Pagamento seguro, on-chain, em <span class="text-brand-500">ITL</span></h1>
-      <p class="text-ink-500 mt-2 max-w-2xl mx-auto">Interwork remove intermediários, mas mantém a segurança. Tudo verificável no Interlink Explorer.</p>
+  <div class="max-w-4xl mx-auto px-5 py-14">
+    <!-- Header -->
+    <div class="text-center mb-14">
+      <span class="chip bg-brand-50 text-brand-700 mb-3">How it works</span>
+      <h1 class="text-4xl font-extrabold tracking-tight">From job post to payment — <span class="text-brand-500">fully on-chain</span></h1>
+      <p class="text-ink-500 mt-3 max-w-xl mx-auto text-base">Interwork uses smart contracts to protect every transaction. Five steps. Zero middlemen. ITL all the way.</p>
     </div>
-    <div class="grid md:grid-cols-2 gap-5">
-      ${steps.map((s,i)=>`
-        <div class="bg-white border border-ink-100 rounded-2xl p-6">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="w-10 h-10 rounded-xl bg-brand-50 grid place-items-center"><i data-lucide="${s[2]}" class="w-5 h-5 text-brand-500"></i></div>
-            <div class="text-xs font-bold text-ink-500">PASSO ${i+1}</div>
+
+    <!-- Timeline steps -->
+    <div class="relative">
+      <!-- Vertical line (desktop) -->
+      <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-ink-100 hidden md:block"></div>
+
+      <div class="space-y-6">
+        ${steps.map(s => `
+        <div class="relative flex gap-5 md:gap-8 items-start">
+          <!-- Step circle -->
+          <div class="shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-white text-sm shadow-pop z-10" style="background:${s.color}">
+            ${s.n}
           </div>
-          <div class="font-extrabold text-lg">${s[0]}</div>
-          <p class="text-sm text-ink-500 mt-1">${s[1]}</p>
+          <!-- Content card -->
+          <div class="flex-1 bg-white border border-ink-100 rounded-2xl p-5 shadow-card mb-2 hover:shadow-pop transition-shadow">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-9 h-9 rounded-xl grid place-items-center shrink-0" style="background:${s.bg}">
+                <i data-lucide="${s.icon}" class="w-4.5 h-4.5" style="color:${s.color}"></i>
+              </div>
+              <div class="font-extrabold text-base">${s.title}</div>
+              ${s.badge ? `<span class="chip text-[10px] font-bold ml-auto" style="background:${s.bg};color:${s.color}">${s.badge}</span>` : ''}
+            </div>
+            <p class="text-sm text-ink-500 leading-relaxed">${s.desc}</p>
+          </div>
         </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-14 rounded-2xl bg-gradient-to-r from-brand-500 to-violet-600 p-8 text-white text-center">
+      <div class="font-extrabold text-2xl mb-2">Ready to get started?</div>
+      <p class="text-white/80 text-sm mb-5">Connect your ITLX wallet and hire your first freelancer in under 2 minutes.</p>
+      <button onclick="openConnectWallet()" class="px-7 py-3 bg-white text-brand-600 font-extrabold rounded-xl hover:bg-white/90 transition shadow-pop">
+        Connect Wallet & Explore
+      </button>
+    </div>
+  </div>`;
+}
+
+function viewOverview(){
+  const pillars = [
+    { icon:'zap',         color:'#f59e0b', bg:'#fffbeb', title:'Mission',  body:'To build the most transparent, decentralized workforce marketplace in the Web3 ecosystem — where anyone can hire or earn using ITL, protected by code, not by corporations.' },
+    { icon:'eye',         color:'#1a73e8', bg:'#eff6ff', title:'Vision',   body:'A world where talent and opportunity connect without borders, without banks and without gatekeepers. Work flows freely across the Interlink ecosystem, rewarded fairly on-chain.' },
+    { icon:'globe-2',     color:'#10b981', bg:'#f0fdf4', title:'Values',   body:'Radical transparency. No hidden fees, no closed arbitration, no secret algorithms. Every transaction, every dispute and every reputation score lives on the Interlink chain.' },
+  ];
+
+  const stats = [
+    { n:'2%',     label:'Platform fee — the lowest in Web3 freelancing' },
+    { n:'ITL',    label:'Single payment token — no currency conversion headaches' },
+    { n:'100%',   label:'On-chain escrow — your funds, secured by code' },
+    { n:'∞',      label:'Open to every timezone, every skill, every level' },
+  ];
+
+  return `
+  <div class="max-w-4xl mx-auto px-5 py-14">
+
+    <!-- Hero block -->
+    <div class="rounded-3xl bg-gradient-to-br from-brand-500 via-violet-600 to-cyan-500 p-10 text-white text-center mb-14 relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10 pointer-events-none" style="background:radial-gradient(circle at 70% 30%,#fff,transparent 60%)"></div>
+      <div class="relative">
+        <div class="w-14 h-14 rounded-2xl bg-white/20 grid place-items-center mx-auto mb-4">
+          <i data-lucide="hexagon" class="w-7 h-7 text-white"></i>
+        </div>
+        <h1 class="text-4xl font-extrabold tracking-tight mb-3">What is Interwork?</h1>
+        <p class="text-white/85 text-lg max-w-2xl mx-auto leading-relaxed">
+          Interwork is the <strong class="text-white">workforce marketplace</strong> built for the Interlink ecosystem. It connects freelancers and clients using <strong class="text-white">ITL</strong> — Interlink's native token — with on-chain escrow, reputation badges and zero middlemen.
+        </p>
+        <div class="mt-6 flex flex-wrap justify-center gap-3">
+          <button onclick="go('#/how')" class="px-5 py-2.5 bg-white text-brand-600 font-bold rounded-xl text-sm hover:bg-white/90 transition">How it works →</button>
+          <button onclick="go('#/benefits')" class="px-5 py-2.5 bg-white/15 text-white font-bold rounded-xl text-sm hover:bg-white/25 transition border border-white/25">See benefits</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mission / Vision / Values -->
+    <div class="grid md:grid-cols-3 gap-5 mb-14">
+      ${pillars.map(p=>`
+      <div class="bg-white border border-ink-100 rounded-2xl p-6 shadow-card">
+        <div class="w-10 h-10 rounded-xl grid place-items-center mb-3" style="background:${p.bg}">
+          <i data-lucide="${p.icon}" class="w-5 h-5" style="color:${p.color}"></i>
+        </div>
+        <div class="font-extrabold text-base mb-2">${p.title}</div>
+        <p class="text-sm text-ink-500 leading-relaxed">${p.body}</p>
+      </div>`).join('')}
+    </div>
+
+    <!-- Stats bar -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14">
+      ${stats.map(s=>`
+      <div class="rounded-2xl bg-ink-100/40 text-center p-5">
+        <div class="font-extrabold text-2xl text-brand-500">${s.n}</div>
+        <div class="text-xs text-ink-500 mt-1 leading-snug">${s.label}</div>
+      </div>`).join('')}
+    </div>
+
+    <!-- Ecosystem note -->
+    <div class="rounded-2xl border border-brand-100 bg-brand-50/40 p-6 flex items-start gap-4">
+      <div class="w-10 h-10 rounded-xl bg-brand-100 grid place-items-center shrink-0">
+        <i data-lucide="link-2" class="w-5 h-5 text-brand-600"></i>
+      </div>
+      <div>
+        <div class="font-bold text-brand-800 mb-1">Powered by the Interlink Network</div>
+        <p class="text-sm text-brand-700">Interwork runs on top of Interlink — a high-speed, low-fee blockchain designed for real-world utility. All payments, escrow locks and reputation SBTs are recorded directly on the Interlink chain and verifiable in the public Explorer.</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewBenefits(){
+  const benefits = [
+    {
+      icon:'coins', color:'#f59e0b', bg:'#fffbeb',
+      title:'Earn ITL',
+      sub:'Get paid in the ecosystem\'s native token',
+      body:'Every completed job pays directly in ITL — no currency conversion, no wire transfer delays, no PayPal disputes. Funds are released instantly the moment the client approves delivery.',
+      points:['Instant settlement on approval','No withdrawal minimums','Global access — earn from anywhere'],
+    },
+    {
+      icon:'users', color:'#1a73e8', bg:'#eff6ff',
+      title:'Find Verified Talent',
+      sub:'Hire from a curated pool of Web3 professionals',
+      body:'Every freelancer on Interwork has a verifiable on-chain reputation. Browse audited SBT badges, real reviews and portfolio links — all public, all immutable.',
+      points:['On-chain reputation you can verify','SBT badges for skills and milestones','Dispute history fully transparent'],
+    },
+    {
+      icon:'star', color:'#a855f7', bg:'#faf5ff',
+      title:'Reputation System',
+      sub:'Your record, stored forever on-chain',
+      body:'Soulbound Tokens (SBTs) on the Interlink chain record every milestone you earn — verified human, top-rated, zero disputes and more. These badges cannot be bought, only earned.',
+      points:['Non-transferable SBT badges','Rating history is immutable','Clients see your full track record'],
+    },
+    {
+      icon:'lock', color:'#10b981', bg:'#f0fdf4',
+      title:'Secure Payments',
+      sub:'Smart contract escrow — no trust required',
+      body:"When you hire, ITL is locked in Interwork's audited escrow contract. The freelancer can't withdraw until you approve. You can't cancel without cause. The code enforces fairness.",
+      points:['Funds locked until delivery approved','On-chain dispute resolution','2% fee — lowest in Web3'],
+    },
+    {
+      icon:'link-2', color:'#06b6d4', bg:'#ecfeff',
+      title:'Powered by InterLink',
+      sub:'Built on a chain designed for work',
+      body:'Interlink is a high-throughput, low-fee blockchain purpose-built for utility applications. Transactions confirm in seconds. Fees cost fractions of a cent. No Ethereum gas surprises.',
+      points:['Sub-second transaction finality','Fees under $0.01 per transaction','Fully EVM-compatible infrastructure'],
+    },
+  ];
+
+  return `
+  <div class="max-w-4xl mx-auto px-5 py-14">
+    <div class="text-center mb-14">
+      <span class="chip bg-brand-50 text-brand-700 mb-3">Benefits</span>
+      <h1 class="text-4xl font-extrabold tracking-tight">Why choose <span class="text-brand-500">Interwork</span>?</h1>
+      <p class="text-ink-500 mt-3 max-w-xl mx-auto">Five reasons why Web3 professionals pick Interwork over every other marketplace.</p>
+    </div>
+
+    <div class="space-y-5">
+      ${benefits.map((b,i)=>`
+      <div class="bg-white border border-ink-100 rounded-2xl p-6 shadow-card flex flex-col md:flex-row gap-5 hover:shadow-pop transition-shadow">
+        <div class="shrink-0 flex flex-col items-start gap-3">
+          <div class="w-14 h-14 rounded-2xl grid place-items-center" style="background:${b.bg}">
+            <i data-lucide="${b.icon}" class="w-7 h-7" style="color:${b.color}"></i>
+          </div>
+          <span class="text-2xl font-extrabold" style="color:${b.color}">0${i+1}</span>
+        </div>
+        <div class="flex-1">
+          <div class="font-extrabold text-lg">${b.title}</div>
+          <div class="text-sm font-semibold text-ink-500 mb-2">${b.sub}</div>
+          <p class="text-sm text-ink-500 leading-relaxed mb-3">${b.body}</p>
+          <ul class="space-y-1.5">
+            ${b.points.map(p=>`<li class="flex items-center gap-2 text-sm text-ink-700"><i data-lucide="check" class="w-3.5 h-3.5 shrink-0" style="color:${b.color}"></i>${p}</li>`).join('')}
+          </ul>
+        </div>
+      </div>`).join('')}
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-12 rounded-2xl bg-gradient-to-r from-brand-500 to-violet-600 p-8 text-white text-center">
+      <div class="font-extrabold text-2xl mb-2">Start earning or hiring today</div>
+      <p class="text-white/80 text-sm mb-5">Join the growing Interlink workforce community — no application, no waiting list.</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <button onclick="openConnectWallet()" class="px-6 py-2.5 bg-white text-brand-600 font-bold rounded-xl text-sm hover:bg-white/90 transition shadow-pop">Connect Wallet</button>
+        <button onclick="go('#/rewards')" class="px-6 py-2.5 bg-white/15 text-white font-bold rounded-xl text-sm hover:bg-white/25 transition border border-white/25">See reward programs</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewRewards(){
+  const programs = [
+    {
+      icon:'users', color:'#1a73e8', bg:'#eff6ff', tag:'Ongoing',
+      title:'Community Recognition',
+      desc:'Consistent, high-quality activity on Interwork — completed jobs, low dispute rates, verified status — is exactly the track record the Interlink ecosystem\'s incentive programs are built to recognize as they roll out. This isn\'t a fixed point-shop; it\'s a public, on-chain record of real contribution.',
+      items:[
+        { label:'Completed & approved jobs', value:'Verifiable on-chain' },
+        { label:'Low dispute rate', value:'Builds your reputation' },
+        { label:'Verified freelancer status', value:'On-chain SBT badge' },
+        { label:'Ecosystem-level rewards', value:'As programs roll out' },
+      ],
+    },
+    {
+      icon:'share-2', color:'#10b981', bg:'#f0fdf4', tag:'Active',
+      title:'Referral Program',
+      desc:"Invite friends to Interwork and earn ITL every time they complete their first job — as a client or freelancer. There's no cap on how many people you can refer.",
+      items:[
+        { label:'Friend signs up via your link', value:'Tracked automatically' },
+        { label:'Friend completes 1st order', value:'+50 ITL for you' },
+        { label:'Friend earns from 1st gig', value:'+25 ITL for you' },
+        { label:'Referral link in your profile', value:'Always active' },
+      ],
+    },
+    {
+      icon:'clock', color:'#f59e0b', bg:'#fffbeb', tag:'Limited',
+      title:'Early Tester Rewards',
+      desc:'Interwork is in early access. The first 500 users to complete a transaction get exclusive SBT badges and a one-time ITL bonus that will never be offered again.',
+      items:[
+        { label:'First 500 verified accounts', value:'Genesis SBT badge' },
+        { label:'Complete 1 order before launch', value:'+100 ITL bonus' },
+        { label:'Leave early feedback', value:'+10 ITL per accepted report' },
+        { label:'Spots remaining', value:'~380 left' },
+      ],
+    },
+    {
+      icon:'bug', color:'#ef4444', bg:'#fef2f2', tag:'Open',
+      title:'Bug Bounties',
+      desc:'Found a vulnerability or UI bug? Report it responsibly and get paid in ITL. We take security seriously and reward every valid submission — no matter how small.',
+      items:[
+        { label:'Critical vulnerability', value:'Up to 5,000 ITL' },
+        { label:'High severity bug', value:'500 – 2,000 ITL' },
+        { label:'Medium / UX issue', value:'50 – 500 ITL' },
+        { label:'Submit via Discord #bounties', value:'Response in 48h' },
+      ],
+    },
+    {
+      icon:'megaphone', color:'#a855f7', bg:'#faf5ff', tag:'Apply',
+      title:'Ambassador Program',
+      desc:'Represent Interwork in your community — online or offline. Ambassadors get a monthly ITL stipend, early access to new features and a direct line to the core team.',
+      items:[
+        { label:'Monthly ITL stipend', value:'200 ITL / month' },
+        { label:'Exclusive Ambassador SBT', value:'Non-transferable' },
+        { label:'Early feature access', value:'Before public launch' },
+        { label:'Apply on Discord', value:'#ambassador-apply' },
+      ],
+    },
+  ];
+
+  const tagColors = { Active:'bg-emerald-100 text-emerald-700', Ongoing:'bg-cyan-100 text-cyan-700', Limited:'bg-amber-100 text-amber-700', Open:'bg-blue-100 text-blue-700', Apply:'bg-purple-100 text-purple-700' };
+
+  return `
+  <div class="max-w-4xl mx-auto px-5 py-14">
+    <div class="text-center mb-14">
+      <span class="chip bg-brand-50 text-brand-700 mb-3">Rewards</span>
+      <h1 class="text-4xl font-extrabold tracking-tight">Community <span class="text-brand-500">reward programs</span></h1>
+      <p class="text-ink-500 mt-3 max-w-xl mx-auto">Interwork rewards every kind of contribution — from completing jobs to catching bugs to growing our community.</p>
+    </div>
+
+    <!-- ATV explainer banner -->
+    <div class="rounded-2xl bg-gradient-to-r from-cyan-500 to-brand-500 p-6 text-white mb-10 flex items-start gap-4">
+      <div class="w-12 h-12 rounded-xl bg-white/20 grid place-items-center shrink-0">
+        <i data-lucide="activity" class="w-6 h-6 text-white"></i>
+      </div>
+      <div>
+        <div class="font-extrabold text-lg mb-1">What is ATV?</div>
+        <p class="text-white/85 text-sm leading-relaxed">ATV stands for <strong class="text-white">Average Transaction Value</strong> — the metric the Interlink ecosystem uses to measure how $ITL's value is actually formed, based on real transactions the community submits. Every approved job on Interwork is real economic activity. Submit it, and it becomes part of that picture — not a separate Interwork point currency, the actual ecosystem metric.</p>
+      </div>
+    </div>
+
+    <!-- Programs grid -->
+    <div class="space-y-5">
+      ${programs.map(p=>`
+      <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden shadow-card hover:shadow-pop transition-shadow">
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl grid place-items-center shrink-0" style="background:${p.bg}">
+                <i data-lucide="${p.icon}" class="w-5 h-5" style="color:${p.color}"></i>
+              </div>
+              <div>
+                <div class="font-extrabold text-base">${p.title}</div>
+                <span class="chip text-[11px] mt-0.5 ${tagColors[p.tag]||'bg-ink-100 text-ink-600'}">${p.tag}</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm text-ink-500 leading-relaxed mb-4">${p.desc}</p>
+          <div class="grid grid-cols-2 gap-2">
+            ${p.items.map(it=>`
+            <div class="rounded-xl bg-ink-100/40 px-3 py-2.5">
+              <div class="text-[11px] text-ink-500 leading-snug">${it.label}</div>
+              <div class="font-extrabold text-sm mt-0.5" style="color:${p.color}">${it.value}</div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>
+
+    <!-- Final CTA -->
+    <div class="mt-12 rounded-2xl border border-ink-100 bg-ink-100/30 p-8 text-center">
+      <div class="font-extrabold text-xl mb-2">All rewards. One wallet.</div>
+      <p class="text-ink-500 text-sm mb-5 max-w-lg mx-auto">Referral bonuses, bounty payouts and ambassador stipends all go straight to your ITLX wallet — no claim buttons, no manual withdrawals. The ATV you submit, meanwhile, becomes part of the ecosystem's public record — not a balance sitting in this app.</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <button onclick="openConnectWallet()" class="px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl text-sm transition shadow-pop">Connect Wallet & Start Earning</button>
+        <a href="https://discord.gg/interlink" target="_blank" rel="noopener" class="px-6 py-2.5 border border-ink-200 hover:bg-ink-100/40 text-ink-700 font-bold rounded-xl text-sm transition flex items-center gap-2">
+          <i data-lucide="message-square" class="w-4 h-4"></i>Join Discord
+        </a>
+      </div>
     </div>
   </div>`;
 }
@@ -6253,48 +6931,48 @@ function handleSearchInput(val){
   _searchIdx = -1;
 
   if (type === 'popular') {
-    dd.innerHTML = `
-      <div class="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest font-bold text-ink-400">Popular</div>
-      ${items.map((s,i) => `
+    dd.innerHTML = items.map((s,i) => `
         <button type="button" data-sidx="${i}" onmousedown="pickSuggestion('${escapeHtml(s)}')"
-          class="search-opt w-full text-left flex items-center gap-3 px-4 py-2.5 hover:bg-ink-100/60 transition text-sm text-ink-700">
-          <i data-lucide="trending-up" class="w-3.5 h-3.5 text-ink-400 shrink-0"></i>
-          <span>${escapeHtml(s)}</span>
-        </button>`).join('')}
-    `;
+          class="search-opt w-full text-left px-5 py-3 hover:bg-ink-100/60 transition text-[15px] text-ink-800">
+          ${escapeHtml(s)}
+        </button>`).join('');
   } else {
     if (!matches.length && !catMatches.length) { dd.classList.add('hidden'); return; }
+    const q = val.trim().toLowerCase();
     let html = '';
     if (matches.length) {
       html += matches.map((m,i) => {
         const title = m.label;
         const lower = title.toLowerCase();
-        const qi = lower.indexOf(val.trim().toLowerCase());
-        const before = escapeHtml(title.slice(0, qi));
-        const bold   = escapeHtml(title.slice(qi, qi + val.trim().length));
-        const after  = escapeHtml(title.slice(qi + val.trim().length));
+        const qi = lower.indexOf(q);
+        const before = qi>=0 ? escapeHtml(title.slice(0, qi)) : escapeHtml(title);
+        const bold   = qi>=0 ? escapeHtml(title.slice(qi, qi + q.length)) : '';
+        const after  = qi>=0 ? escapeHtml(title.slice(qi + q.length)) : '';
         return `
         <button type="button" data-sidx="${i}" onmousedown="pickSuggestion('${escapeHtml(title).replace(/'/g,"\\'")}')"
-          class="search-opt w-full text-left flex items-center gap-3 px-4 py-2.5 hover:bg-ink-100/60 transition text-sm text-ink-700">
-          <i data-lucide="search" class="w-3.5 h-3.5 text-ink-400 shrink-0"></i>
-          <span>${before}<strong class="text-ink-900">${bold}</strong>${after}</span>
+          class="search-opt w-full text-left px-5 py-3 hover:bg-ink-100/60 transition text-[15px] text-ink-800">
+          ${before}<strong>${bold}</strong>${after}
         </button>`;
       }).join('');
     }
     if (catMatches.length) {
-      html += `<div class="px-4 pt-2 pb-1 text-[10px] uppercase tracking-widest font-bold text-ink-400 border-t border-ink-100 mt-1">Categoria</div>`;
-      html += catMatches.map((c,i) => `
+      html += catMatches.map((c,i) => {
+        const title = c.label;
+        const lower = title.toLowerCase();
+        const qi = lower.indexOf(q);
+        const before = qi>=0 ? escapeHtml(title.slice(0, qi)) : escapeHtml(title);
+        const bold   = qi>=0 ? escapeHtml(title.slice(qi, qi + q.length)) : '';
+        const after  = qi>=0 ? escapeHtml(title.slice(qi + q.length)) : '';
+        return `
         <button type="button" onmousedown="pickCategory('${c.catId}')"
-          class="search-opt w-full text-left flex items-center gap-3 px-4 py-2.5 hover:bg-ink-100/60 transition text-sm text-ink-700">
-          <i data-lucide="tag" class="w-3.5 h-3.5 text-ink-400 shrink-0"></i>
-          <span>${escapeHtml(c.label)}</span>
-          <span class="ml-auto text-[10px] text-ink-400 bg-ink-100/60 px-2 py-0.5 rounded-full">categoria</span>
-        </button>`).join('');
+          class="search-opt w-full text-left px-5 py-3 hover:bg-ink-100/60 transition text-[15px] text-ink-800">
+          ${before}<strong>${bold}</strong>${after}
+        </button>`;
+      }).join('');
     }
     dd.innerHTML = html;
   }
   dd.classList.remove('hidden');
-  if (window.lucide) lucide.createIcons({ nodes: dd.querySelectorAll('[data-lucide]') });
 }
 
 function handleSearchKey(e){
@@ -6317,7 +6995,7 @@ function handleSearchKey(e){
 function highlightOpt(opts){
   opts.forEach((o,i) => {
     o.classList.toggle('bg-ink-100/60', i === _searchIdx);
-    if (i === _searchIdx) { o.scrollIntoView({block:'nearest'}); $('#q').value = o.querySelector('span')?.textContent || $('#q').value; }
+    if (i === _searchIdx) { o.scrollIntoView({block:'nearest'}); $('#q').value = o.textContent.trim() || $('#q').value; }
   });
 }
 
@@ -6805,7 +7483,7 @@ function printReceipt(){
   const w = window.open('', '_blank', 'width=700,height=900');
   if (!w){ toast('Popup bloqueado. Permita popups para imprimir.', 'warn'); return; }
   w.document.write(`<!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <title>Recibo Interwork</title>
@@ -7009,7 +7687,7 @@ function confirmHire(serviceId, tierKey){
           <div class="text-sm text-ink-500 mt-1">${fmtITL(total)} bloqueados${milestonesConfig?' em '+milestonesConfig.length+' etapas':' até sua aprovação'}</div>
           <div class="mt-3 flex items-start gap-2 text-left text-xs bg-brand-50/60 border border-brand-100 rounded-xl p-3">
             <i data-lucide="lock" class="w-4 h-4 text-brand-500 mt-0.5 shrink-0" aria-hidden="true"></i>
-            <span class="text-ink-700">🔒 Seu ITL está seguro no <b>Work Vault</b> até você aprovar a entrega — o freelancer só recebe depois disso.</span>
+            <span class="text-ink-700">🔒 <b>Pagamento protegido:</b> o freelancer só recebe quando você aprovar a entrega.</span>
           </div>
           ${milestonesConfig ? `
           <div class="mt-4 rounded-xl bg-brand-50 border border-brand-100 p-3 text-left text-xs space-y-2">
@@ -7045,7 +7723,7 @@ function confirmHire(serviceId, tierKey){
           <div class="mt-4 flex gap-2">
             <button onclick="closeModal();render()" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl text-sm">Fechar</button>
             ${needsReqs
-              ? `<button onclick="closeModal();openRequirementsModal('${order.id}')" class="flex-[2] bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2"><i data-lucide="clipboard-list" class="w-4 h-4"></i>Preencher briefing agora</button>`
+              ? `<button onclick="closeModal();openRequirementsModal('${order.id}')" class="flex-[2] bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2"><i data-lucide="clipboard-list" class="w-4 h-4"></i>Preencher informações agora</button>`
               : `<button onclick="closeModal();go('#/dashboard/client')" class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2"><i data-lucide="arrow-right" class="w-4 h-4"></i>Ver meu pedido</button>`
             }
           </div>
@@ -7715,6 +8393,594 @@ function readRoute(){
 function go(hash){ location.hash = hash; }
 
 /* ---------- ROOT BOOT ---------- */
+/* ============================================================
+ * ██████████████████████████████████████████████████████████
+ * SUPABASE INTEGRATION
+ * ──────────────────────────────────────────────────────────
+ * SETUP: Substitua as duas linhas abaixo com suas credenciais
+ * do painel Supabase → Settings → API
+ * ██████████████████████████████████████████████████████████
+ * ============================================================ */
+const SUPABASE_URL  = 'https://mtxfpsmvftuszlujxtbg.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10eGZwc212ZnR1c3psdWp4dGJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MjAwMzQsImV4cCI6MjA5NzQ5NjAzNH0.hOxufLcgcznx9cHmM5yAHt-ISCSJjcSCRtxtrIfNUYk';
+
+// Detecta se as credenciais foram configuradas
+const SB_READY = SUPABASE_URL !== 'COLE_SUA_URL_AQUI' && SUPABASE_ANON !== 'COLE_SUA_ANON_KEY_AQUI';
+let sb = null; // instância do cliente Supabase
+
+if (SB_READY) {
+  try {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  } catch(e) {
+    console.warn('[Supabase] Erro ao criar cliente:', e);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+ * ADMIN — controle simples por email whitelist
+ * Adicione os emails dos admins abaixo (ou gerencie no Supabase)
+ * ────────────────────────────────────────────────────────── */
+const ADMIN_EMAILS = [
+  'interworkoficial@gmail.com',  // dono do projeto
+];
+
+// Estado de autenticação Supabase
+STATE.sbUser   = null;   // usuário autenticado no Supabase
+STATE.isAdmin  = false;  // true se email está em ADMIN_EMAILS
+STATE.sbReady  = false;  // true quando Supabase respondeu
+
+/* ──────────────────────────────────────────────────────────
+ * AUTH HELPERS
+ * ────────────────────────────────────────────────────────── */
+async function sbSignIn(email, password){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) return { error };
+  STATE.sbUser  = data.user;
+  STATE.isAdmin = ADMIN_EMAILS.includes(data.user.email);
+  render();
+  return { data };
+}
+
+async function sbSignUp(email, password){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if (error) return { error };
+  return { data };
+}
+
+async function sbSignOut(){
+  if (!sb) return;
+  await sb.auth.signOut();
+  STATE.sbUser  = null;
+  STATE.isAdmin = false;
+  render();
+}
+
+async function sbInitAuth(){
+  if (!sb) return;
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    STATE.sbUser  = session.user;
+    STATE.isAdmin = ADMIN_EMAILS.includes(session.user.email);
+  }
+  STATE.sbReady = true;
+  // Ouve mudanças de sessão
+  sb.auth.onAuthStateChange((_event, session) => {
+    STATE.sbUser  = session?.user || null;
+    STATE.isAdmin = session?.user ? ADMIN_EMAILS.includes(session.user.email) : false;
+    render();
+  });
+}
+
+/* ──────────────────────────────────────────────────────────
+ * SERVICES — Supabase CRUD
+ * Tabela: services
+ * Colunas: id, title, category, freelancer_id, freelancer_name,
+ *          price, delivery_days, country, rating, reviews_count,
+ *          description, thumb, gallery (jsonb), tags (jsonb),
+ *          includes (jsonb), requirements (jsonb), faqs (jsonb),
+ *          status, created_at, approved_at, rejected_reason
+ * ────────────────────────────────────────────────────────── */
+
+// Carrega todos os serviços do Supabase e mescla com DB.services
+async function sbLoadServices(){
+  if (!sb) return;
+  const { data, error } = await sb
+    .from('services')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
+  // Substitui os serviços mockados pelos reais do banco
+  // Mantém apenas serviços mock que não existem no banco (para demo)
+  const dbIds = new Set(data.map(s => s.id));
+  DB.services = [
+    ...data.map(sbSvcToLocal),
+    ...DB.services.filter(s => s._mock && !dbIds.has(s.id)),
+  ];
+  renderView();
+}
+
+// Salva um serviço novo no Supabase
+async function sbCreateService(svc){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  const me = getUser(STATE.currentUserId);
+  const payload = localSvcToSb(svc, me);
+  const { data, error } = await sb.from('services').insert(payload).select().single();
+  if (error) return { error };
+  // Atualiza o item local com id real do banco
+  const idx = DB.services.findIndex(s => s.id === svc.id);
+  if (idx >= 0) DB.services[idx] = sbSvcToLocal(data);
+  return { data };
+}
+
+// Aprova um serviço (admin only)
+async function sbApproveService(id){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  const { data, error } = await sb
+    .from('services')
+    .update({ status: 'approved', approved_at: new Date().toISOString(), rejected_reason: null })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) return { error };
+  const idx = DB.services.findIndex(s => s.id === id);
+  if (idx >= 0) DB.services[idx] = sbSvcToLocal(data);
+  return { data };
+}
+
+// Rejeita um serviço (admin only)
+async function sbRejectService(id, reason=''){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  const { data, error } = await sb
+    .from('services')
+    .update({ status: 'rejected', rejected_reason: reason, approved_at: null })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) return { error };
+  const idx = DB.services.findIndex(s => s.id === id);
+  if (idx >= 0) DB.services[idx] = sbSvcToLocal(data);
+  return { data };
+}
+
+// Converte objeto Supabase → formato local
+function sbSvcToLocal(s){
+  return {
+    id:            s.id,
+    title:         s.title,
+    category:      s.category,
+    freelancerId:  s.freelancer_id,
+    price:         s.price,
+    deliveryDays:  s.delivery_days,
+    country:       s.country || 'br',
+    rating:        s.rating || 5,
+    reviewsCount:  s.reviews_count || 0,
+    description:   s.description || '',
+    thumb:         s.thumb || thumbSVG(s.title, '#1a73e8'),
+    gallery:       s.gallery || [],
+    tags:          s.tags || [],
+    includes:      s.includes || [],
+    requirements:  s.requirements || [],
+    faqs:          s.faqs || [],
+    status:        s.status || 'pending',
+    createdTs:     new Date(s.created_at).getTime(),
+    approvedAt:    s.approved_at ? new Date(s.approved_at).getTime() : null,
+    rejectedReason: s.rejected_reason || null,
+    reviews:       [],
+    _sb: true,     // marca como vindo do Supabase
+  };
+}
+
+// Converte objeto local → payload para o Supabase
+function localSvcToSb(svc, me){
+  return {
+    id:              svc.id,
+    title:           svc.title,
+    category:        svc.category,
+    freelancer_id:   svc.freelancerId,
+    freelancer_name: me ? me.name : 'Anônimo',
+    price:           svc.price,
+    delivery_days:   svc.deliveryDays,
+    country:         svc.country || 'br',
+    rating:          svc.rating || 5,
+    reviews_count:   svc.reviewsCount || 0,
+    description:     svc.description || '',
+    thumb:           svc.thumb || null,
+    gallery:         svc.gallery || [],
+    tags:            svc.tags || [],
+    includes:        svc.includes || [],
+    requirements:    svc.requirements || [],
+    faqs:            svc.faqs || [],
+    status:          svc.status || 'pending',
+  };
+}
+
+/* ──────────────────────────────────────────────────────────
+ * REALTIME — ouve atualizações ao vivo (ex: aprovação)
+ * ────────────────────────────────────────────────────────── */
+function sbSubscribeServices(){
+  if (!sb) return;
+  sb.channel('services-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'services' }, payload => {
+      const changed = payload.new || payload.old;
+      if (!changed) return;
+      const idx = DB.services.findIndex(s => s.id === changed.id);
+      if (payload.eventType === 'DELETE'){
+        if (idx >= 0) DB.services.splice(idx, 1);
+      } else {
+        const local = sbSvcToLocal(changed);
+        if (idx >= 0) DB.services[idx] = local;
+        else DB.services.unshift(local);
+      }
+      renderView();
+      // Notifica freelancer se o status mudou para aprovado
+      if (payload.eventType === 'UPDATE' && changed.status === 'approved' && changed.freelancer_id === STATE.currentUserId){
+        addNotification({ type:'tx', title:'✅ Serviço aprovado!', body:`"${changed.title}" foi aprovado e já está visível no marketplace.`, link:'#/dashboard/freelancer' });
+        toast('Seu serviço foi aprovado! 🎉', 'success');
+      }
+      if (payload.eventType === 'UPDATE' && changed.status === 'rejected' && changed.freelancer_id === STATE.currentUserId){
+        addNotification({ type:'tx', title:'❌ Serviço rejeitado', body:`"${changed.title}": ${changed.rejected_reason || 'sem motivo informado'}.`, link:'#/dashboard/freelancer' });
+        toast('Um serviço foi rejeitado. Veja detalhes no dashboard.', 'warn');
+      }
+    })
+    .subscribe();
+}
+
+/* ──────────────────────────────────────────────────────────
+ * AUTH MODAL — Login / Registro Supabase
+ * ────────────────────────────────────────────────────────── */
+function openSbAuthModal(mode='login'){
+  const isLogin = mode === 'login';
+  openModal(isLogin ? '🔑 Login Admin' : '📝 Criar Conta Admin', `
+  <div class="px-6 pb-6 space-y-4">
+    ${!SB_READY ? `
+    <div class="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+      <strong>⚠️ Supabase não configurado.</strong><br>
+      Adicione suas credenciais nas linhas <code class="bg-amber-100 px-1 rounded">SUPABASE_URL</code> e <code class="bg-amber-100 px-1 rounded">SUPABASE_ANON</code> no código.
+    </div>` : ''}
+    <div>
+      <label class="block text-xs font-semibold text-ink-500 mb-1">Email</label>
+      <input id="sb-email" type="email" placeholder="admin@interwork.xyz"
+        class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-400"/>
+    </div>
+    <div>
+      <label class="block text-xs font-semibold text-ink-500 mb-1">Senha</label>
+      <input id="sb-pwd" type="password" placeholder="••••••••"
+        class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-400"/>
+    </div>
+    <div id="sb-auth-err" class="hidden rounded-xl bg-rose-50 border border-rose-200 p-3 text-sm text-rose-700"></div>
+    <button onclick="handleSbAuth('${mode}')"
+      class="w-full bg-brand-500 hover:bg-brand-600 text-white font-extrabold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
+      <i data-lucide="${isLogin ? 'log-in' : 'user-plus'}" class="w-4 h-4"></i>
+      ${isLogin ? 'Entrar' : 'Criar conta'}
+    </button>
+    <div class="text-center text-xs text-ink-400">
+      ${isLogin
+        ? `Não tem conta? <button onclick="openSbAuthModal('signup')" class="text-brand-500 font-semibold">Criar uma</button>`
+        : `Já tem conta? <button onclick="openSbAuthModal('login')" class="text-brand-500 font-semibold">Entrar</button>`}
+    </div>
+  </div>`);
+  icons();
+  setTimeout(()=>document.getElementById('sb-email')?.focus(), 100);
+}
+
+async function handleSbAuth(mode){
+  const email = document.getElementById('sb-email')?.value?.trim();
+  const pwd   = document.getElementById('sb-pwd')?.value;
+  const errEl = document.getElementById('sb-auth-err');
+  if (!email || !pwd){ if(errEl){ errEl.textContent='Preencha email e senha.'; errEl.classList.remove('hidden'); } return; }
+  const btn = document.querySelector('#modal-root button[onclick*="handleSbAuth"]');
+  if (btn){ btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Aguarde...'; icons(); }
+  const fn = mode === 'login' ? sbSignIn : sbSignUp;
+  const { data, error } = await fn(email, pwd);
+  if (error){
+    if (errEl){ errEl.textContent = error.message; errEl.classList.remove('hidden'); }
+    if (btn){ btn.disabled = false; btn.textContent = mode === 'login' ? 'Entrar' : 'Criar conta'; }
+    return;
+  }
+  closeModal();
+  if (mode === 'signup'){
+    toast('Conta criada! Verifique seu email para confirmar.', 'success');
+  } else {
+    toast('Login realizado com sucesso!', 'success');
+    if (STATE.isAdmin) go('#/admin');
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+ * ADMIN VIEW
+ * ────────────────────────────────────────────────────────── */
+function viewAdmin(){
+  if (!STATE.isAdmin){
+    return `
+    <div class="max-w-lg mx-auto px-5 py-20 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-rose-50 grid place-items-center mx-auto mb-4">
+        <i data-lucide="shield-off" class="w-8 h-8 text-rose-500"></i>
+      </div>
+      <h2 class="text-2xl font-extrabold mb-2">Acesso restrito</h2>
+      <p class="text-ink-500 text-sm mb-6">Esta área é exclusiva para administradores do Interwork.</p>
+      ${STATE.sbUser
+        ? `<p class="text-xs text-ink-400 mb-4">Conectado como: <strong>${STATE.sbUser.email}</strong> (sem permissão de admin)</p>
+           <button onclick="sbSignOut()" class="px-5 py-2.5 bg-rose-500 text-white font-bold rounded-xl text-sm">Sair</button>`
+        : `<button onclick="openSbAuthModal('login')" class="px-6 py-3 bg-brand-500 text-white font-extrabold rounded-xl text-sm flex items-center gap-2 mx-auto">
+             <i data-lucide="log-in" class="w-4 h-4"></i>Fazer login
+           </button>`}
+    </div>`;
+  }
+
+  const pending  = DB.services.filter(s => s.status === 'pending');
+  const approved = DB.services.filter(s => s.status === 'approved');
+  const rejected = DB.services.filter(s => s.status === 'rejected');
+  const allSvcs  = DB.services.filter(s => s._sb); // apenas os reais do Supabase
+
+  const tabData = [
+    { key:'pending',  label:'Aguardando',  count: pending.length,  color:'text-amber-600',  bg:'bg-amber-50 border-amber-200' },
+    { key:'approved', label:'Aprovados',   count: approved.length, color:'text-emerald-600',bg:'bg-emerald-50 border-emerald-200' },
+    { key:'rejected', label:'Rejeitados',  count: rejected.length, color:'text-rose-600',   bg:'bg-rose-50 border-rose-200' },
+    { key:'all',      label:'Todos',       count: allSvcs.length,  color:'text-ink-600',    bg:'bg-ink-100/40 border-ink-200' },
+  ];
+
+  const activeTab = STATE.adminTab || 'pending';
+  let showSvcs;
+  if      (activeTab === 'pending')  showSvcs = pending;
+  else if (activeTab === 'approved') showSvcs = approved;
+  else if (activeTab === 'rejected') showSvcs = rejected;
+  else                               showSvcs = allSvcs;
+
+  function svcRow(s){
+    const catObj = getCategory(s.category);
+    const statusChipHtml = {
+      pending:  `<span class="chip bg-amber-50 text-amber-700 border border-amber-200"><i data-lucide="clock" class="w-3 h-3"></i>Pendente</span>`,
+      approved: `<span class="chip bg-emerald-50 text-emerald-700 border border-emerald-200"><i data-lucide="check" class="w-3 h-3"></i>Aprovado</span>`,
+      rejected: `<span class="chip bg-rose-50 text-rose-700 border border-rose-200"><i data-lucide="x" class="w-3 h-3"></i>Rejeitado</span>`,
+    }[s.status] || `<span class="chip bg-ink-100 text-ink-600">${s.status}</span>`;
+
+    return `
+    <div class="bg-white border border-ink-100 rounded-2xl p-5 hover:shadow-card transition flex flex-col md:flex-row gap-4" id="admin-svc-${s.id}">
+      <!-- Thumb -->
+      <div class="shrink-0 w-20 h-16 rounded-xl overflow-hidden bg-ink-100">
+        <img src="${s.thumb}" class="w-full h-full object-cover" alt=""/>
+      </div>
+      <!-- Info -->
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start gap-2 flex-wrap mb-1">
+          ${statusChipHtml}
+          <span class="chip bg-ink-100/60 text-ink-600 text-[11px]">${catObj ? catObj.label : s.category}</span>
+        </div>
+        <div class="font-extrabold text-base truncate">${escapeHtml(s.title)}</div>
+        <div class="text-xs text-ink-500 mt-0.5">
+          Freelancer ID: <code class="bg-ink-100 px-1 rounded">${s.freelancerId}</code> ·
+          ${s.price} ITL · ${s.deliveryDays}d ·
+          Criado: ${new Date(s.createdTs).toLocaleDateString('pt-BR')}
+        </div>
+        ${s.rejectedReason ? `<div class="mt-1 text-xs text-rose-600 flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3"></i>${escapeHtml(s.rejectedReason)}</div>` : ''}
+        <p class="text-xs text-ink-500 mt-1.5 line-clamp-2">${escapeHtml(s.description||'')}</p>
+      </div>
+      <!-- Actions -->
+      <div class="flex md:flex-col gap-2 shrink-0 items-start">
+        <button onclick="go('#/service/${s.id}')"
+          class="px-3 py-1.5 rounded-xl text-xs font-bold border border-ink-200 hover:bg-ink-100/50 flex items-center gap-1">
+          <i data-lucide="eye" class="w-3 h-3"></i>Ver
+        </button>
+        ${s.status !== 'approved' ? `
+        <button onclick="adminApprove('${s.id}')"
+          class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500 hover:bg-emerald-600 text-white flex items-center gap-1">
+          <i data-lucide="check" class="w-3 h-3"></i>Aprovar
+        </button>` : ''}
+        ${s.status !== 'rejected' ? `
+        <button onclick="adminRejectPrompt('${s.id}')"
+          class="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-500 hover:bg-rose-600 text-white flex items-center gap-1">
+          <i data-lucide="x" class="w-3 h-3"></i>Rejeitar
+        </button>` : ''}
+      </div>
+    </div>`;
+  }
+
+  return `
+  <div class="max-w-5xl mx-auto px-5 py-10">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-8">
+      <div>
+        <div class="chip bg-violet-50 text-violet-700 mb-2">🛡️ Painel Admin</div>
+        <h1 class="text-3xl font-extrabold tracking-tight">Moderação de Serviços</h1>
+        <p class="text-ink-500 text-sm mt-1">Conectado como <strong class="text-ink-700">${STATE.sbUser?.email}</strong></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="sbLoadServices().then(()=>toast('Atualizado!','success'))"
+          class="px-4 py-2.5 border border-ink-200 hover:bg-ink-100/50 rounded-xl text-sm font-bold flex items-center gap-2">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>Atualizar
+        </button>
+        <button onclick="sbSignOut()"
+          class="px-4 py-2.5 bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 rounded-xl text-sm font-bold flex items-center gap-2">
+          <i data-lucide="log-out" class="w-4 h-4"></i>Sair
+        </button>
+      </div>
+    </div>
+
+    ${!SB_READY ? `
+    <div class="rounded-2xl bg-amber-50 border border-amber-200 p-6 mb-8">
+      <div class="flex items-start gap-3">
+        <i data-lucide="alert-triangle" class="w-6 h-6 text-amber-600 mt-0.5 shrink-0"></i>
+        <div>
+          <div class="font-extrabold text-amber-900 mb-1">Supabase não configurado</div>
+          <p class="text-sm text-amber-800">
+            Você está vendo dados <strong>mock (locais)</strong>. Para ativar o banco real:
+          </p>
+          <ol class="text-sm text-amber-800 mt-2 space-y-1 list-decimal list-inside">
+            <li>Crie um projeto gratuito em <a href="https://supabase.com" target="_blank" class="underline font-semibold">supabase.com</a></li>
+            <li>Execute o SQL de criação de tabelas (veja o guia abaixo)</li>
+            <li>Copie a <strong>URL</strong> e a <strong>anon key</strong> do painel Settings → API</li>
+            <li>Cole nas variáveis <code class="bg-amber-100 px-1 rounded">SUPABASE_URL</code> e <code class="bg-amber-100 px-1 rounded">SUPABASE_ANON</code> no código</li>
+          </ol>
+        </div>
+      </div>
+    </div>` : `
+    <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 mb-8 flex items-center gap-3">
+      <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+      <div class="text-sm text-emerald-800"><strong>Supabase conectado.</strong> Dados sincronizados em tempo real.</div>
+    </div>`}
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      ${tabData.map(t=>`
+      <button onclick="STATE.adminTab='${t.key}';render()"
+        class="text-left p-5 rounded-2xl border ${activeTab===t.key ? t.bg+' border-current' : 'bg-white border-ink-100 hover:bg-ink-100/30'} transition">
+        <div class="font-extrabold text-3xl ${activeTab===t.key?t.color:'text-ink-900'}">${t.count}</div>
+        <div class="text-xs font-semibold text-ink-500 mt-1">${t.label}</div>
+      </button>`).join('')}
+    </div>
+
+    <!-- Services list -->
+    <div class="space-y-4">
+      ${showSvcs.length === 0
+        ? `<div class="text-center py-16 text-ink-400">
+             <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-3 opacity-40"></i>
+             <div class="font-semibold">Nenhum serviço nesta categoria.</div>
+           </div>`
+        : showSvcs.map(svcRow).join('')}
+    </div>
+
+    <!-- SQL Setup Guide -->
+    <div class="mt-14 rounded-2xl bg-ink-900 text-white p-6">
+      <div class="flex items-center gap-3 mb-4">
+        <i data-lucide="database" class="w-5 h-5 text-cyan-400"></i>
+        <div class="font-extrabold text-lg">SQL para criar as tabelas no Supabase</div>
+      </div>
+      <p class="text-sm text-white/70 mb-4">Execute este SQL no painel Supabase → SQL Editor → New query:</p>
+      <pre class="text-xs text-emerald-300 overflow-x-auto leading-relaxed bg-black/30 rounded-xl p-4 select-all">${escapeHtml(`-- 1. Tabela de serviços
+create table if not exists public.services (
+  id              text primary key,
+  title           text not null,
+  category        text not null,
+  freelancer_id   text not null,
+  freelancer_name text,
+  price           numeric not null default 0,
+  delivery_days   int not null default 7,
+  country         text default 'br',
+  rating          numeric default 5,
+  reviews_count   int default 0,
+  description     text,
+  thumb           text,
+  gallery         jsonb default '[]',
+  tags            jsonb default '[]',
+  includes        jsonb default '[]',
+  requirements    jsonb default '[]',
+  faqs            jsonb default '[]',
+  status          text default 'pending' check (status in ('pending','approved','rejected')),
+  rejected_reason text,
+  approved_at     timestamptz,
+  created_at      timestamptz default now()
+);
+
+-- 2. Habilitar Row Level Security
+alter table public.services enable row level security;
+
+-- 3. Qualquer pessoa pode LER serviços aprovados
+create policy "Public can read approved services"
+  on public.services for select
+  using (status = 'approved');
+
+-- 4. Usuários autenticados podem inserir e ler seus próprios serviços
+create policy "Auth users can insert"
+  on public.services for insert
+  to authenticated
+  with check (true);
+
+create policy "Auth users can read own services"
+  on public.services for select
+  to authenticated
+  using (freelancer_id = auth.uid()::text OR status = 'approved');
+
+-- 5. Apenas admin pode update (approve/reject)
+-- Substitua pelos emails dos seus admins:
+create policy "Admin can update"
+  on public.services for update
+  to authenticated
+  using (auth.email() in ('interworkoficial@gmail.com'))
+  with check (true);
+
+-- 6. Habilitar Realtime
+alter publication supabase_realtime add table public.services;`)}</pre>
+      <div class="mt-4 flex gap-3">
+        <a href="https://supabase.com/dashboard" target="_blank"
+          class="px-5 py-2.5 bg-white text-ink-900 font-bold rounded-xl text-sm hover:bg-white/90 transition flex items-center gap-2">
+          <i data-lucide="external-link" class="w-4 h-4"></i>Abrir Supabase
+        </a>
+        <button onclick="navigator.clipboard.writeText(document.querySelector('#modal-root pre, .admin-sql pre, pre')?.textContent||'').catch(()=>{});toast('SQL copiado!','success')"
+          class="px-5 py-2.5 bg-white/10 text-white font-bold rounded-xl text-sm hover:bg-white/20 transition flex items-center gap-2">
+          <i data-lucide="copy" class="w-4 h-4"></i>Copiar SQL
+        </button>
+      </div>
+    </div>
+
+  </div>`;
+}
+
+/* Admin action helpers */
+async function adminApprove(id){
+  const svc = getService(id);
+  if (!svc) return;
+  // Feedback visual imediato
+  const el = document.getElementById('admin-svc-'+id);
+  if (el) el.style.opacity = '0.5';
+
+  if (SB_READY && sb){
+    const { error } = await sbApproveService(id);
+    if (error){ toast('Erro: '+error.message, 'error'); if(el) el.style.opacity='1'; return; }
+  } else {
+    // Modo demo: só atualiza localmente
+    svc.status = 'approved';
+    svc.approvedAt = Date.now();
+  }
+  toast(`✅ "${svc.title}" aprovado!`, 'success');
+  addNotification({ type:'tx', title:'Serviço aprovado', body:`"${svc.title}" está agora público no marketplace.`, link:'#/home' });
+  render();
+}
+
+function adminRejectPrompt(id){
+  const svc = getService(id);
+  if (!svc) return;
+  openModal('❌ Rejeitar serviço', `
+  <div class="px-6 pb-6 space-y-4">
+    <p class="text-sm text-ink-600">Informe o motivo da rejeição para <strong>"${escapeHtml(svc.title)}"</strong>. O freelancer será notificado.</p>
+    <div>
+      <label class="block text-xs font-semibold text-ink-500 mb-1">Motivo (obrigatório)</label>
+      <textarea id="reject-reason" rows="3" placeholder="Ex: Descrição muito vaga, preço incoerente com o serviço..."
+        class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-rose-400 resize-none"></textarea>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeModal()" class="flex-1 border border-ink-200 hover:bg-ink-100/50 font-bold py-2.5 rounded-xl text-sm">Cancelar</button>
+      <button onclick="adminRejectConfirm('${id}')"
+        class="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+        <i data-lucide="x" class="w-4 h-4"></i>Confirmar rejeição
+      </button>
+    </div>
+  </div>`);
+  icons();
+  setTimeout(()=>document.getElementById('reject-reason')?.focus(), 100);
+}
+
+async function adminRejectConfirm(id){
+  const reason = document.getElementById('reject-reason')?.value?.trim();
+  if (!reason){ toast('Informe o motivo da rejeição.', 'warn'); return; }
+  const svc = getService(id);
+  if (!svc) return;
+  closeModal();
+
+  if (SB_READY && sb){
+    const { error } = await sbRejectService(id, reason);
+    if (error){ toast('Erro: '+error.message, 'error'); return; }
+  } else {
+    svc.status = 'rejected';
+    svc.rejectedReason = reason;
+  }
+  toast(`Serviço rejeitado.`, 'warn');
+  render();
+}
+
+/* ============================================================ */
 window.addEventListener('DOMContentLoaded', () => {
   initMock();
   const restored = restorePersistedData();
@@ -7745,17 +9011,19 @@ window.addEventListener('DOMContentLoaded', () => {
     window.renderView = function(){ origRender.apply(this, arguments); setTimeout(bindFilterPin, 0); };
   }
   setTimeout(bindFilterPin, 100);
+
+  // ── Supabase: inicializa auth, carrega serviços reais e ativa realtime ──
+  if (SB_READY) {
+    sbInitAuth().then(() => {
+      sbLoadServices();
+      sbSubscribeServices();
+    });
+  } else {
+    console.info('[Interwork] Supabase não configurado. Rodando em modo demo (dados locais).');
+    // Marca serviços mock para diferenciá-los dos reais
+    DB.services.forEach(s => s._mock = true);
+  }
 });
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
