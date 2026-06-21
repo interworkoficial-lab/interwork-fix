@@ -9759,9 +9759,23 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   setTimeout(bindFilterPin, 100);
 
+  // ── Supabase: inicializa auth
+  if (SB_READY) {
+    sbInitAuth().then(() => {
+      sbLoadServices();
+      sbSubscribeServices();
+    });
+  } else {
+    // Marca serviços mock para diferenciá-los dos reais
+    DB.services.forEach(s => s._mock = true);
+  }
+});
+
 /* ──────────────────────────────────────────────────────────
  * PROFILES — Supabase (PRIORIDADE 1)
  * Tabela: profiles
+ * Declaradas no escopo global para que _handleReownConnected
+ * e qualquer outro código as enxergue antes do DOMContentLoaded.
  * ────────────────────────────────────────────────────────── */
 
 // 1. CARREGAR PERFIL DO USUÁRIO LOGADO
@@ -9905,18 +9919,6 @@ async function sbListFreelancers(filters = {}) {
     return [];
   }
 }
-
-  // ── Supabase: inicializa auth
-  if (SB_READY) {
-    sbInitAuth().then(() => {
-      sbLoadServices();
-      sbSubscribeServices();
-    });
-  } else {
-    // Marca serviços mock para diferenciá-los dos reais
-    DB.services.forEach(s => s._mock = true);
-  }
-});
 </script>
 </body>
 </html>
