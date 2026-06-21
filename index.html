@@ -3777,7 +3777,13 @@ function filterServices(){
   // reseta a página pra 1 sempre que algum filtro/busca/ordenação mudar
   const sig = [STATE.category,STATE.country,STATE.ratingMin,STATE.priceMax,STATE.priceMin,STATE.verifiedOnly,STATE.availableOnly,STATE.sort,STATE.query,STATE.trendingActive].join('|');
   if (STATE._filterSig !== sig){ STATE._filterSig = sig; STATE.page = 1; }
-  let arr = DB.services.filter(sv=>!sv.status||sv.status==='approved');
+  
+  // IMPORTANTE: Se o Supabase estiver pronto, usamos os dados dele (DB.services é populado via sbFetchServices)
+  let arr = (DB.services && DB.services.length > 0) ? DB.services : [];
+  
+  // Filtrar apenas aprovados (ou todos se não houver campo status)
+  arr = arr.filter(sv => !sv.status || sv.status === 'approved' || sv.status === 'active');
+  
   if (STATE.category!=='all') arr = arr.filter(s=>s.category===STATE.category);
   if (STATE.country!=='all')  arr = arr.filter(s=>s.country===STATE.country);
   if (STATE.ratingMin>0)      arr = arr.filter(s=>s.rating>=STATE.ratingMin);
@@ -9241,6 +9247,11 @@ async function handleWalletAuth(address) {
 
   try {
     console.log('🔗 Conexão Web3 Direta para:', address);
+    
+    // Garantir que os serviços sejam carregados do Supabase antes de renderizar
+    if (typeof sbFetchServices === 'function') {
+      await sbFetchServices();
+    }
     
     // 1. Buscar perfil diretamente pela Wallet
     const { data: profile, error: profileError } = await sb
