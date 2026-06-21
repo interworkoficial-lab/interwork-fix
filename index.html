@@ -1877,6 +1877,17 @@ function gallerySVG(title, color, n){
 }
 
 function getUser(id){ return DB.users.find(u=>u.id===id); }
+
+// ADICIONADO — fallback seguro: evita quebrar a renderização quando o serviço
+// pertence a um usuário real (Supabase) que ainda não existe em DB.users (mock).
+function getUserSafe(id){
+  const local = getUser(id);
+  if (local) return local;
+  return {
+    id, name: 'Usuário Interwork', handle: 'user', avatar: getAvatarSrc('U','#1a73e8').src,
+    verified: false, online: false, wallet: null, rating: 5, jobs: 0,
+  };
+}
 function getService(id){ return DB.services.find(s=>s.id===id); }
 function getCategory(id){ return CATEGORIES.find(c=>c.id===id); }
 function getCountry(id){ return COUNTRIES.find(c=>c.id===id); }
@@ -2345,7 +2356,27 @@ function openConnectWallet(reason) {
 }
 
 // Chamado pelo módulo Reown quando carteira conecta com sucesso
-window._handleReownConnected = function(address) {
+window._handleReownConnected = async function(address) {
+  // ── ADICIONADO: garante sessão real no Supabase (Anonymous Auth) ligada à wallet ──
+  try {
+    if (typeof sb !== 'undefined' && sb) {
+      let { data: sessionData } = await sb.auth.getSession();
+      if (!sessionData.session) {
+        const { error: signInError } = await sb.auth.signInAnonymously({
+          options: { data: { wallet: address, name: 'Usuário', role: 'client' } }
+        });
+        if (signInError) console.warn('[Supabase] Erro no login anônimo:', signInError.message);
+      }
+      const { data: { user } } = await sb.auth.getUser();
+      if (user) {
+        await sb.from('profiles').update({ wallet_address: address }).eq('id', user.id);
+        STATE.sbProfile = await sbLoadProfile(user.id);
+      }
+    }
+  } catch (e) {
+    console.warn('[Supabase] Falha ao sincronizar sessão da wallet:', e);
+  }
+  // ── A PARTIR DAQUI: código original, 100% intacto ──
   const shortW = address.slice(0,6) + '...' + address.slice(-4);
   const me = getUser(STATE.currentUserId) || DB.users[0];
   if (!STATE.onboardingComplete) {
@@ -3583,7 +3614,7 @@ function gigAttributesByCategory(cat){
   return MAP[cat] || MAP.design;
 }
 function serviceCard(s){
-  const u = getUser(s.freelancerId);
+  const u = getUserSafe(s.freelancerId); // ADICIONADO fallback — antes: getUser(s.freelancerId)
   const imgs = serviceCardImages(s);
   const hasMulti = imgs.length > 1;
   return `
@@ -3649,7 +3680,7 @@ function gigCarouselStep(ev, serviceId, dir){
 
 /* ---------- Recommended for you — Fiverr-style horizontal carousel card ---------- */
 function recommendedCard(s){
-  const u = getUser(s.freelancerId);
+  const u = getUserSafe(s.freelancerId); // ADICIONADO fallback — antes: getUser(s.freelancerId)
   const lvl = u.level || levelOf(u.jobs);
   return `
   <a href="#/service/${s.id}" class="gig-card group block shrink-0 w-[230px] snap-start">
@@ -3769,7 +3800,7 @@ function viewFavorites(){
 function viewService(id){
   const s = getService(id);
   if (!s) return `<div class="max-w-3xl mx-auto p-10 text-center text-ink-500">Serviço não encontrado. <a href="#/home" class="text-brand-500 font-semibold">Voltar</a></div>`;
-  const u = getUser(s.freelancerId);
+  const u = getUserSafe(s.freelancerId); // ADICIONADO fallback — antes: getUser(s.freelancerId)
   const cat = getCategory(s.category);
   const co  = getCountry(s.country);
   const recommended = recommendedFor(s);
@@ -7452,7 +7483,7 @@ const MILESTONE_PRESETS = [
 function openHireModal(serviceId, tierKey){
   if (!requireAuth('contratar')) return;
   const s = getService(serviceId);
-  const u = getUser(s.freelancerId);
+  const u = getUserSafe(s.freelancerId); // ADICIONADO fallback — antes: getUser(s.freelancerId)
   const me = getUser(STATE.currentUserId);
   const tier = { priceITL: s.price, days: s.deadline||s.days||7, label:'Padrão', revisions: 2, includes: s.includes||[] };
   const fee = +(tier.priceITL*0.02).toFixed(2);
@@ -9028,6 +9059,7 @@ function localSvcToSb(svc, me){
     title:           svc.title,
     category:        svc.category,
     freelancer_id:   svc.freelancerId,
+    freelancer_uuid: STATE.sbProfile?.id || null, // ADICIONADO — liga ao profile real da wallet (auth.uid())
     freelancer_name: me ? me.name : 'Anônimo',
     price:           svc.price,
     delivery_days:   svc.deliveryDays,
