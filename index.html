@@ -8938,13 +8938,15 @@ async function sbLoadServices(){
     .select('*')
     .order('created_at', { ascending: false });
   if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
-  // Substitui os serviços mockados pelos reais do banco
-  // Mantém apenas serviços mock que não existem no banco (para demo)
-  const dbIds = new Set(data.map(s => s.id));
-  DB.services = [
-    ...data.map(sbSvcToLocal),
-    ...DB.services.filter(s => s._mock && !dbIds.has(s.id)),
-  ];
+  // Se banco tem dados reais, mescla com mocks. Se vazio, preserva todos os mocks.
+  if (data && data.length > 0) {
+    const dbIds = new Set(data.map(s => s.id));
+    DB.services = [
+      ...data.map(sbSvcToLocal),
+      ...DB.services.filter(s => s._mock && !dbIds.has(s.id)),
+    ];
+  }
+  // banco vazio -> mantém DB.services intacto (mocks do initMock)
   renderView();
 }
 
@@ -9442,6 +9444,7 @@ async function adminRejectConfirm(id){
 /* ============================================================ */
 window.addEventListener('DOMContentLoaded', () => {
   initMock();
+  DB.services.forEach(s => s._mock = true); // marca ANTES do Supabase sobrescrever
   const restored = restorePersistedData();
   startPersistence();
   bindRouter();
