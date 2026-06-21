@@ -9171,7 +9171,7 @@ const SUPABASE_URL  = 'https://mtxfpsmvftuszlujxtbg.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10eGZwc212ZnR1c3psdWp4dGJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MjAwMzQsImV4cCI6MjA5NzQ5NjAzNH0.hOxufLcgcznx9cHmM5yAHt-ISCSJjcSCRtxtrIfNUYk';
 
 // Detecta se as credenciais foram configuradas
-const SB_READY = SUPABASE_URL !== 'COLE_SUA_URL_AQUI' && SUPABASE_ANON !== 'COLE_SUA_ANON_KEY_AQUI';
+const SB_READY = true; // Credenciais já configuradas pelo usuário
 let sb = null; // instância do cliente Supabase
 
 if (SB_READY) {
