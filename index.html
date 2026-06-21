@@ -13,64 +13,58 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- REOWN APPKIT (WalletConnect) -->
-  <script type="module">
-    import { createAppKit } from 'https://esm.sh/@reown/appkit'
-    import { mainnet, polygon, arbitrum } from 'https://esm.sh/@reown/appkit/networks'
-
-    // 1. Configuração do Reown
-    const projectId = '2ee67a36114285f54c77e2f785e69462'; // Configurado pelo usuário
-
-    const metadata = {
-      name: 'Interwork',
-      description: 'The Workforce Marketplace for the Interlink Ecosystem',
-      url: window.location.origin,
-      icons: ['https://avatars.githubusercontent.com/u/179229932']
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Reown AppKit — WalletConnect real com 530+ carteiras (bundle local) -->
+<script src="./reown-bundle.js"></script>
+<script>
+(function initReown() {
+  const MAX = 50, DELAY = 100;
+  let tries = 0;
+  function tryInit() {
+    tries++;
+    const createAppKit = window.__ReownCreateAppKit;
+    const EthersAdapter  = window.__ReownEthersAdapter;
+    const nets           = window.__ReownNetworks;
+    if (!createAppKit || !EthersAdapter || !nets) {
+      if (tries < MAX) setTimeout(tryInit, DELAY);
+      return;
     }
-
-    // 2. Inicializar AppKit
-    const modal = createAppKit({
-      networks: [mainnet, polygon, arbitrum],
-      metadata,
-      projectId,
-      features: {
-        analytics: true
-      }
-    })
-
-    // Expor para o escopo global para o resto do script usar
-    window.reownModal = modal;
-
-    // 3. Ouvir mudanças de conexão
-    modal.subscribeAccount(async (state) => {
-      if (state.isConnected && state.address) {
-        console.log('Wallet conectada:', state.address);
-        // Se já estivermos autenticados com o mesmo endereço, não fazemos nada
-        if (STATE.authenticated && STATE.currentUserId === state.address) return;
-        
-        await handleWalletAuth(state.address);
-      } else {
-        if (STATE.authenticated && !state.isConnected) {
-          await sbLogoutUser();
-          STATE.walletConnected = false;
-          STATE.authenticated = false;
-          render();
+    try {
+      const modal = createAppKit({
+        adapters: [new EthersAdapter()],
+        networks: [nets.bsc, nets.mainnet, nets.polygon],
+        defaultNetwork: nets.bsc,
+        projectId: '2ee67a36114285f54c77e2f785e69462',
+        metadata: {
+          name: 'Interwork',
+          description: 'The workforce marketplace for the Interlink ecosystem',
+          url: 'https://interwork.online',
+          icons: ['https://interwork.online/favicon.png'],
+        },
+        themeMode: 'dark',
+        features: { analytics: false, email: false, socials: false },
+      });
+      window._reownModal = modal;
+      modal.subscribeAccount(function(account) {
+        if (account && account.isConnected && account.address) {
+          if (typeof window._handleReownConnected === 'function')
+            window._handleReownConnected(account.address);
+        } else {
+          if (typeof window._handleReownDisconnected === 'function')
+            window._handleReownDisconnected();
         }
-      }
-    });
-
-    // 4. Persistência: Verificar conexão ao carregar
-    window.addEventListener('load', async () => {
-      // Pequeno delay para garantir que o AppKit inicializou
-      setTimeout(async () => {
-        const state = modal.getAccount();
-        if (state.isConnected && state.address) {
-          await handleWalletAuth(state.address);
-        }
-      }, 1000);
-    });
-  </script>
+      });
+    } catch(e) {
+      console.error('[Reown] Erro ao inicializar AppKit:', e);
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tryInit);
+  } else {
+    tryInit();
+  }
+})();
+</script>
 <script>
   tailwind.config = {
     darkMode: 'class',
@@ -221,25 +215,6 @@ html.dark {
   html.dark .bg-gradient-to-b.from-white,html.dark .from-white{--tw-gradient-from:var(--surf-900) !important}
   html.dark .from-brand-50,html.dark .via-white{--tw-gradient-from:var(--surf-900) !important;--tw-gradient-via:var(--surf-900) !important}
   html.dark .to-violet-50\/40,html.dark .to-violet-50{--tw-gradient-to:var(--neon-violet)0D !important}
-
-  /* Premium Dark Mode Enhancements */
-  html.dark .btn-premium {
-    color: #0f0f0f;
-  }
-
-  html.dark .section-title-premium {
-    background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  html.dark .stat-number {
-    background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
   html.dark input,html.dark select,html.dark textarea{background-color:var(--surf-900);color:#e2e8f0;border-color:rgba(255,255,255,.08)}
   html.dark .shadow-card{box-shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
   html.dark .shadow-pop{box-shadow:0 14px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04)}
@@ -247,212 +222,6 @@ html.dark {
   /* Glow on primary CTA */
   .cta-glow{box-shadow:0 0 0 1px rgba(34,211,238,.45), 0 8px 28px rgba(34,211,238,.28);transition:box-shadow .25s}
   .cta-glow:hover{box-shadow:0 0 0 1px rgba(34,211,238,.7), 0 12px 38px rgba(34,211,238,.45)}
-
-  /* ══════════════════════════════════════════════════════════
-     REDESIGN GOLD — Premium Web3 Styling
-     ══════════════════════════════════════════════════════════ */
-
-  /* Hero Section Enhancements */
-  .hero-premium {
-    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-premium::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 20% 50%, rgba(34, 211, 238, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.1) 0%, transparent 50%);
-    pointer-events: none;
-  }
-
-  .hero-premium .hero-content {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Premium Button Styles */
-  .btn-premium {
-    background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
-    color: #0f0f0f;
-    font-weight: 700;
-    border: none;
-    border-radius: 12px;
-    padding: 14px 32px;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.3), 0 12px 32px rgba(34, 211, 238, 0.2);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-premium::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
-    transform: translateX(-100%);
-    transition: transform 0.5s ease;
-  }
-
-  .btn-premium:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.6), 0 20px 48px rgba(34, 211, 238, 0.35);
-  }
-
-  .btn-premium:hover::before {
-    transform: translateX(100%);
-  }
-
-  /* Card Premium Styles */
-  .card-premium {
-    background: linear-gradient(135deg, rgba(28, 28, 28, 0.8) 0%, rgba(30, 30, 30, 0.6) 100%);
-    border: 1px solid rgba(34, 211, 238, 0.15);
-    border-radius: 16px;
-    padding: 24px;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .card-premium::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 0% 0%, rgba(34, 211, 238, 0.05) 0%, transparent 50%);
-    pointer-events: none;
-  }
-
-  .card-premium:hover {
-    border-color: rgba(34, 211, 238, 0.4);
-    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.2), 0 20px 40px rgba(34, 211, 238, 0.1);
-    transform: translateY(-4px);
-  }
-
-  /* Stat Card */
-  .stat-card {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%);
-    border: 1px solid rgba(34, 211, 238, 0.2);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    transition: all 0.3s ease;
-  }
-
-  .stat-card:hover {
-    border-color: rgba(34, 211, 238, 0.5);
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
-  }
-
-  .stat-number {
-    font-size: 32px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-family: 'Playfair Display', serif;
-  }
-
-  /* Feature Icon Box */
-  .feature-icon-box {
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(167, 139, 250, 0.15) 100%);
-    border: 1px solid rgba(34, 211, 238, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #22d3ee;
-    transition: all 0.3s ease;
-  }
-
-  .card-premium:hover .feature-icon-box {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.3) 0%, rgba(167, 139, 250, 0.3) 100%);
-    border-color: rgba(34, 211, 238, 0.5);
-    transform: scale(1.1);
-  }
-
-  /* Section Title Premium */
-  .section-title-premium {
-    font-size: 40px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #e7ecf5 0%, #22d3ee 50%, #a78bfa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 16px;
-    font-family: 'Playfair Display', serif;
-  }
-
-  /* Divider with Glow */
-  .divider-glow {
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0.3) 50%, transparent 100%);
-    margin: 32px 0;
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
-  }
-
-  /* Badge Premium */
-  .badge-premium {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
-    border: 1px solid rgba(34, 211, 238, 0.3);
-    font-size: 13px;
-    font-weight: 600;
-    color: #22d3ee;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* Pulse Animation */
-  @keyframes pulse-glow {
-    0%, 100% {
-      box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4);
-    }
-    50% {
-      box-shadow: 0 0 0 10px rgba(34, 211, 238, 0);
-    }
-  }
-
-  .pulse-glow {
-    animation: pulse-glow 2s infinite;
-  }
-
-  /* Floating Animation */
-  @keyframes float-up {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-8px);
-    }
-  }
-
-  .float-up {
-    animation: float-up 3s ease-in-out infinite;
-  }
-
-  /* Glass Effect */
-  .glass-effect {
-    background: rgba(28, 28, 28, 0.5);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(34, 211, 238, 0.1);
-    border-radius: 12px;
-  }
-
-  html.dark .glass-effect {
-    background: rgba(15, 15, 15, 0.6);
-  }
 
   
 /* ══════════════════════════════════════════════════════════
@@ -1032,9 +801,8 @@ const STATE = {
   dashboardTab: 'client',
   clientOrdersTab: 'active',
   toastSeq: 0,
-  walletConnected: false,           
-  authenticated: false,             
-  isRealWallet: true,               // Agora usamos wallets reais via Reown
+  walletConnected: false,           // primeira visita começa desconectada
+  authenticated: false,             // login ativo após assinatura/onboarding da wallet
   onboardingComplete: false,        // true depois de criar handle e escolher perfil
   userRole: 'client',               // client | freelancer
   walletProvider: 'ITLX',           // ITLX | MetaMask | Rabby | WalletConnect
@@ -2546,177 +2314,81 @@ function setTheme(name){
 function markRead(id){ const n=STATE.notifications.find(x=>x.id===id); if(n) n.read=true; renderHeader(); }
 function markAllRead(){ STATE.notifications.forEach(n=>n.read=true); renderHeader(); }
 
-/* ---------- WALLET CONNECT ---------- */
-function openConnectWallet(reason=''){
-  if (window.reownModal) {
-    window.reownModal.open();
-  } else {
-    toast('Erro: Reown não inicializado.', 'error');
+/* ==========================================================
+   WALLET CONNECT — integração REAL via Reown AppKit
+   QR Code verdadeiro + 530+ carteiras (MetaMask, Trust,
+   Binance, SafePal, Coinbase, OKX, Uniswap, etc.)
+   O modal é gerenciado 100% pelo SDK do Reown.
+   ========================================================== */
+
+function openConnectWallet(reason) {
+  // Modal nativo do Reown: QR real + "All Wallets" com 530+ carteiras
+  if (window._reownModal) {
+    window._reownModal.open();
+    return;
   }
-}
-function legacy_openConnectWallet(reason=''){
-
-  $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
-    <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
-
-      <!-- Header with back + title + close -->
-      <div class="px-5 pt-4 pb-3 border-b border-ink-100 flex items-center gap-2">
-        <button id="wc-back-btn" onclick="openConnectWallet('${escapeHtml(reason)}')" class="hidden w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50 text-ink-500">
-          <i data-lucide="chevron-left" class="w-4 h-4"></i>
-        </button>
-        <div id="wc-title" class="font-extrabold text-sm flex items-center gap-2 flex-1">
-          <i data-lucide="wallet" class="w-4 h-4 text-brand-500"></i>ITLX Wallet
-        </div>
-        <button onclick="closeModal()" aria-label="Fechar" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4 text-ink-500"></i></button>
-      </div>
-
-      <!-- Connect Panel -->
-      <div id="wc-qr-panel">
-        <div class="px-5 pt-6 pb-2 text-center">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-sonic mx-auto flex items-center justify-center shadow-pop mb-3">
-            <i data-lucide="wallet" class="w-8 h-8 text-white"></i>
-          </div>
-          <div class="font-extrabold text-base text-ink-900">Conectar Wallet</div>
-          <div class="text-xs text-ink-500 mt-1">Entre instantaneamente — sem formulários, sem espera.</div>
-        </div>
-
-        <div class="px-5 pb-2 mt-3 space-y-2">
-          <button onclick="connectWallet('ITLX')"
-            class="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-gradient-to-r from-brand-500 to-sonic text-white font-bold text-sm hover:opacity-90 transition shadow-pop">
-            <span class="text-lg">⚡</span>
-            <span class="flex-1 text-left">ITLX Wallet <span class="font-normal opacity-80 text-xs ml-1">— recomendado</span></span>
-            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-          </button>
-          <button onclick="showOtherWallets()" class="w-full flex items-center justify-center gap-2 text-xs font-semibold text-ink-500 hover:text-ink-700 py-2.5 rounded-xl border border-dashed border-ink-200 hover:border-ink-300 transition">
-            <i data-lucide="grid-2x2" class="w-3.5 h-3.5"></i> Outras wallets (MetaMask, Rabby…)
-          </button>
-        </div>
-
-        <div class="px-5 pb-5 mt-1 text-center text-[10px] text-ink-400">
-          Conexão gratuita · nenhum dado privado é compartilhado
-        </div>
-      </div>
-
-      <!-- Other Wallets Panel (hidden by default) -->
-      <div id="wc-other-panel" class="hidden">
-        <div class="px-5 pt-4 pb-2 text-[10px] uppercase tracking-widest font-bold text-ink-400">EVM-compatible wallets</div>
-        <div class="px-3 pb-4 space-y-1">
-          ${otherWallets.map(w=>`
-          <button onclick="connectWallet('${w.id}')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-ink-100 hover:border-brand-300 hover:bg-brand-50/30 text-left transition">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style="background:${w.color}18">${w.logo}</div>
-            <div class="flex-1">
-              <div class="font-bold text-sm text-ink-900">${w.name}</div>
-              <div class="text-[11px] text-ink-400">${w.desc}</div>
-            </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-ink-300"></i>
-          </button>`).join('')}
-          <button onclick="connectWallet('WalletConnect')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-ink-100 hover:border-brand-300 hover:bg-brand-50/30 text-left transition">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style="background:#3b99fc18">🔗</div>
-            <div class="flex-1">
-              <div class="font-bold text-sm text-ink-900">WalletConnect</div>
-              <div class="text-[11px] text-ink-400">Any mobile wallet</div>
-            </div>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-ink-300"></i>
-          </button>
-        </div>
-        <div class="px-5 pb-4 text-[11px] text-ink-400 text-center border-t border-ink-100 pt-3">
-          Connecting is free. No private data is shared.
-        </div>
-      </div>
-
-    </div>
-  </div>`;
-  icons();
-}
-
-function showOtherWallets(){
-  const qr = $('#wc-qr-panel');
-  const other = $('#wc-other-panel');
-  const title = $('#wc-title');
-  const back = $('#wc-back-btn');
-  if (qr) qr.classList.add('hidden');
-  if (other) other.classList.remove('hidden');
-  if (title) title.innerHTML = '<i data-lucide="grid-2x2" class="w-4 h-4 text-brand-500"></i>Select wallet';
-  if (back) { back.classList.remove('hidden'); back.onclick = ()=>{ if(qr)qr.classList.remove('hidden'); if(other)other.classList.add('hidden'); if(title)title.innerHTML='<i data-lucide="wallet" class="w-4 h-4 text-brand-500"></i>ITLX Wallet'; back.classList.add('hidden'); icons(); }; }
-  icons();
-}
-
-function copyWCLink(uri){
-  if (navigator.clipboard) navigator.clipboard.writeText(uri).then(()=>toast('Link copiado!','success'));
-  else toast('Link copiado!','success');
-}
-
-function generateQRDataUrl(text){
-  // Generate a real-looking QR SVG using a simple matrix approach
-  // We'll create a deterministic pattern based on the text hash
-  const size = 29;
-  const hash = Array.from(text).reduce((a,c,i)=>((a<<5)-a+c.charCodeAt(0)*((i%7)+1))>>>0, 0x12345678);
-  let cells = [];
-  for(let r=0;r<size;r++){
-    cells[r]=[];
-    for(let c2=0;c2<size;c2++){
-      // Finder patterns (corners)
-      const inFinder = (r<7&&c2<7)||(r<7&&c2>=size-7)||(r>=size-7&&c2<7);
-      const finderBorder = (r===7&&c2<=7)||(r===7&&c2>=size-8)||(r>=size-8&&c2===7)||(c2===7&&r<=7)||(c2===7&&r>=size-8)||(c2===size-8&&r<=7);
-      const timing = (r===6||c2===6)&&!inFinder&&!finderBorder;
-      if(inFinder){
-        const ir=r<7?r:r-(size-7), ic=c2<7?c2:c2-(size-7);
-        cells[r][c2]=(ir===0||ir===6||ic===0||ic===6||(ir>=2&&ir<=4&&ic>=2&&ic<=4));
-      } else if(finderBorder){ cells[r][c2]=false;
-      } else if(timing){ cells[r][c2]=(r===6?(c2%2===0):(r%2===0));
-      } else {
-        const seed = (r*size+c2)*2654435761^hash^(r*31+c2*17);
-        cells[r][c2]=(seed>>>17)%3!==0;
-      }
+  // SDK ainda carregando (module async) — aguarda até 6s
+  toast('Carregando carteiras...', 'warn');
+  let tries = 0;
+  const poll = setInterval(() => {
+    tries++;
+    if (window._reownModal) {
+      clearInterval(poll);
+      window._reownModal.open();
+      return;
     }
-  }
-  const cell=8, pad=16, total=size*cell+pad*2;
-  let rects='';
-  for(let r=0;r<size;r++) for(let c2=0;c2<size;c2++) if(cells[r][c2])
-    rects+=`<rect x="${pad+c2*cell}" y="${pad+r*cell}" width="${cell}" height="${cell}" fill="#000"/>`;
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${total}" height="${total}" viewBox="0 0 ${total} ${total}"><rect width="${total}" height="${total}" fill="#fff"/>${rects}</svg>`;
-  return 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
+    if (tries > 20) {
+      clearInterval(poll);
+      toast('Erro ao carregar SDK de carteira. Recarregue a página.', 'error');
+    }
+  }, 300);
 }
-function connectWallet(provider, realAddress = null){
-  STATE.walletProvider = provider;
-  const walletAddr = realAddress || demoWalletAddress(provider);
-  const shortW = walletAddr.slice(0,6)+'...'+walletAddr.slice(-5);
-  
-  // No Interwork, o endereço da wallet é o identificador único
-  STATE.currentUserId = walletAddr; 
 
-  let me = DB.users.find(u => u.id === walletAddr);
-  if (!me) {
-    me = {
-      id: walletAddr,
-      name: 'Usuário ' + walletAddr.slice(0,6),
-      handle: walletAddr.slice(0,8).toLowerCase() + '.interlink',
-      wallet: walletAddr,
-      balanceITL: 1000, // Demo balance
-      joinedTs: Date.now(),
-      verified: true,
-      online: true,
-      avatar: getAvatarSrc('U', '#1a73e8').src
-    };
-    DB.users.push(me);
+// Chamado pelo módulo Reown quando carteira conecta com sucesso
+window._handleReownConnected = function(address) {
+  const shortW = address.slice(0,6) + '...' + address.slice(-4);
+  const me = getUser(STATE.currentUserId) || DB.users[0];
+  if (!STATE.onboardingComplete) {
+    me.name    = 'Usuário';
+    me.handle  = shortW + '.interlink';
+    me.wallet  = address;
+    var av     = getAvatarSrc('U', '#1a73e8');
+    me.avatar  = av.src;
+    me.avatarType = av.type;
+    me.bio     = 'Cliente Web3 explorando serviços na Interwork.';
+    me.verified = true;
+    me.online  = true;
+    STATE.userRole          = 'client';
+    STATE.onboardingComplete = true;
+    STATE.dashboardTab      = 'client';
+  } else {
+    me.wallet = address;
   }
-
+  STATE.walletProvider  = 'WalletConnect';
   STATE.walletConnected = true;
-  STATE.authenticated = true;
-  STATE.onboardingComplete = true;
-  
+  STATE.authenticated   = true;
   closeModal();
-  toast(`Wallet conectada — bem-vindo!`, 'success');
-  addNotification({ type:'tx', title:'Wallet conectada', body:`${provider} na rede Interlink`, link:'#/wallet' });
+  toast('Wallet conectada — bem-vindo!', 'success');
+  addNotification({ type:'tx', title:'Wallet conectada', body:`Endereço: ${shortW}`, link:'#/wallet' });
   persistNow();
   render();
-}
-function demoWalletAddress(provider){
-  const prefix = (provider||'ITLX').split('').reduce((a,c)=>((a*31)+c.charCodeAt(0))>>>0, 11).toString(16).padStart(8,'0');
-  const suffix = Date.now().toString(16).slice(-8);
-  return '0x'+(prefix+suffix+'9b51e3aa7c1f4d29f8e6b34bd7b9af2c8a3c1c91').slice(0,40);
-}
+};
+
+// Chamado pelo módulo Reown quando carteira desconecta
+window._handleReownDisconnected = function() {
+  if (!STATE.walletConnected) return;
+  STATE.walletConnected = false;
+  STATE.authenticated   = false;
+  toast('Wallet desconectada.', 'warn');
+  render();
+};
+
+// Compatibilidade: qualquer chamada a connectWallet() abre o modal real
+function connectWallet(provider) { openConnectWallet(); }
+function showOtherWallets()      { openConnectWallet(); }
+function copyWCLink()            {}
+function generateQRDataUrl()     { return ''; }
+function demoWalletAddress()     { return '0x0000000000000000000000000000000000000000'; }
 function normalizeHandle(v){
   return (v||'').trim().toLowerCase()
     .replace(/^@/,'')
@@ -2818,7 +2490,7 @@ function openWalletOnboarding(provider){
 
         <div class="rounded-xl bg-ink-100/40 border border-ink-100 p-3 text-xs">
           <div class="text-ink-500 mb-1">Endereço que será vinculado ao perfil</div>
-          <div id="ob-wallet-preview" class="font-mono break-all text-ink-700">${demoWalletAddress(provider)}</div>
+          <div id="ob-wallet-preview" class="font-mono break-all text-ink-700">${(getUser(STATE.currentUserId)||{}).wallet || provider || '—'}</div>
         </div>
       </div>
       <div class="p-5 border-t border-ink-100 flex gap-2">
@@ -2844,7 +2516,7 @@ function finishWalletOnboarding(provider){
   const me = getUser(STATE.currentUserId) || DB.users[0];
   me.name = name;
   me.handle = fullHandle;
-  me.wallet = $('#ob-wallet-preview')?.textContent || demoWalletAddress(provider);
+  me.wallet = $('#ob-wallet-preview')?.textContent || (getUser(STATE.currentUserId)||{}).wallet || '';
   var av = getAvatarSrc(name, '#1a73e8');
   me.avatar = av.src;
   me.avatarType = av.type;
@@ -2906,10 +2578,14 @@ function openWalletMenu(e){
   icons();
 }
 function disconnectWallet(){
-  STATE.walletConnected=false;
-  STATE.authenticated=false;
+  // Desconecta do SDK Reown também
+  if (window._reownModal) {
+    try { window._reownModal.disconnect(); } catch(e) {}
+  }
+  STATE.walletConnected = false;
+  STATE.authenticated   = false;
   closeModal();
-  toast('Wallet desconectada','info');
+  toast('Wallet desconectada', 'info');
   render();
 }
 
@@ -3261,67 +2937,67 @@ function viewHeroPage(){
   ];
 
   return `
-  <!-- ═══ HERO PREMIUM — Web3 Cyber-Professional Design ═══ -->
-  <section id="hero-section" class="hero-premium relative overflow-hidden" style="min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+  <!-- ═══ HERO — Supabase style: preto puro, título centralizado, dois CTAs ═══ -->
+  <section id="hero-section" class="relative overflow-hidden" style="min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
 
-    <div class="hero-content relative w-full max-w-5xl mx-auto px-6 text-center pt-16 pb-12">
+    <!-- Glow sutil atrás do título -->
+    <div class="hero-glow absolute inset-0 pointer-events-none"></div>
 
-      <!-- Badge Premium -->
-      <div class="flex justify-center mb-6">
-        <div class="badge-premium">
-          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-          The Future of Web3 Freelancing
-        </div>
-      </div>
+    <div class="relative w-full max-w-4xl mx-auto px-6 text-center pt-16 pb-12">
 
-      <!-- Título Premium com Gradiente -->
-      <h1 class="section-title-premium leading-[1.05] tracking-tight">
-        <span class="block" style="font-size:clamp(2.8rem,8vw,5.5rem)">Hire Verified Humans</span>
-        <span class="block" style="font-size:clamp(2.8rem,8vw,5.5rem);background:linear-gradient(135deg,#22d3ee 0%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Using ITL</span>
+
+
+      <!-- Título: linha sólida + linha com gradiente colorido -->
+      <h1 class="font-extrabold leading-[1.05] tracking-tight">
+        <span class="hero-title-text block" style="font-size:clamp(2.6rem,7vw,5.25rem)">Hire in minutes.</span>
+        <span class="block" style="font-size:clamp(2.6rem,7vw,5.25rem);background:linear-gradient(90deg,#a78bfa 0%,#60a5fa 50%,#34d399 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Get paid in ITL.</span>
       </h1>
 
-      <!-- Subtítulo Premium -->
-      <p class="mt-8 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-normal" style="color:#cbd5e1;">
-        The decentralized marketplace for the Interlink ecosystem. Secure escrow payments, verified freelancers, and zero intermediaries.
+      <!-- Subtítulo -->
+      <p class="hero-subtitle mt-6 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-normal">
+        The marketplace for the Interlink ecosystem.<br class="hidden md:block"/>
+        Your payment stays protected until you approve it.
       </p>
 
-      <!-- CTAs Premium -->
-      <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+      <!-- CTAs — Primary + Outlined -->
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
         <button onclick="STATE.category='all';STATE.query='';STATE.page=1;renderView()"
-          class="btn-premium flex items-center gap-2">
-          <i data-lucide="search" class="w-4 h-4"></i>Explore Services
+          class="flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-[15px] transition-all hover:opacity-90"
+          style="background:#8b5cf6;color:#ffffff;">
+          <i data-lucide="search" class="w-4 h-4"></i>Browse Services
         </button>
         <button onclick="openConnectWallet()"
-          class="flex items-center gap-2 px-8 py-3.5 rounded-12 font-bold text-[15px] border border-cyan-400/40 text-cyan-300 hover:border-cyan-400/70 hover:bg-cyan-400/5 transition-all">
+          class="hero-outline-btn flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-[15px] border transition-all">
           <i data-lucide="wallet" class="w-4 h-4"></i>Connect Wallet
         </button>
       </div>
 
-      <!-- Search Bar Premium -->
-      <div id="search-wrap" class="mt-12 relative max-w-2xl mx-auto">
-        <form id="home-search" class="glass-effect flex items-center rounded-xl overflow-hidden" style="height:56px;" onsubmit="event.preventDefault()">
-          <i data-lucide="search" class="w-4 h-4 ml-5 shrink-0" style="color:#22d3ee;"></i>
+      <!-- Search bar compacta -->
+      <div id="search-wrap" class="mt-10 relative max-w-lg mx-auto">
+        <form id="home-search" class="hero-search-bar flex items-center rounded-xl overflow-hidden border" style="height:52px;" onsubmit="event.preventDefault()">
+          <i data-lucide="search" class="hero-search-icon w-4 h-4 ml-4 shrink-0"></i>
           <input aria-label="Buscar serviços" id="q" value="${escapeHtml(STATE.query)}" placeholder="Search for any service..."
             autocomplete="off"
-            class="flex-1 outline-none px-4 text-sm bg-transparent h-full" style="color:#e7ecf5;"
+            class="hero-search-input flex-1 outline-none px-3 text-sm bg-transparent h-full"
             oninput="handleSearchInput(this.value)"
             onkeydown="handleSearchKey(event)"
             onfocus="handleSearchInput(this.value)"
           />
           <button type="submit" onclick="commitSearch($('#q').value.trim())" aria-label="Search"
-            class="h-full px-6 text-sm font-semibold transition shrink-0" style="color:#22d3ee;">
+            class="hero-search-submit h-full px-5 text-sm font-semibold transition shrink-0">
             Search
           </button>
         </form>
-        <div id="search-dropdown" class="hidden absolute left-0 right-0 top-full mt-2 glass-effect rounded-2xl shadow-pop z-50 overflow-hidden"></div>
+        <div id="search-dropdown" class="hero-dropdown hidden absolute left-0 right-0 top-full mt-1 border rounded-2xl shadow-pop z-50 overflow-hidden"></div>
       </div>
 
-      <!-- Popular Categories -->
-      <div class="mt-6 flex flex-wrap justify-center gap-2 items-center">
-        <span class="text-xs font-medium opacity-60">Popular:</span>
+      <!-- Popular categories — reais e clicáveis -->
+      <div class="mt-5 flex flex-wrap justify-center gap-2 items-center">
+        <span class="hero-partner-label text-xs font-medium self-center opacity-60">Popular:</span>
         ${trendingCategories.map(cat=>`
           <button onclick="STATE.category='${cat.id}';STATE.query='';STATE.page=1;renderView()"
-            class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition font-medium" style="border-color:${cat.color}44;color:${cat.color}">
+            class="hero-tag inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition font-medium"
+            style="border-color:${cat.color}33;color:${cat.color}">
             <i data-lucide="${cat.icon}" class="w-3 h-3"></i>
             ${cat.label}
           </button>`).join('')}
@@ -9199,58 +8875,6 @@ STATE.sbReady  = false;  // true quando Supabase respondeu
 /* ──────────────────────────────────────────────────────────
  * AUTH HELPERS
  * ────────────────────────────────────────────────────────── */
-async function handleWalletAuth(address) {
-  if (!SB_READY) {
-    // Se Supabase não estiver pronto, usamos o modo demo
-    connectWallet('Reown', address);
-    return;
-  }
-
-  const email = `${address.toLowerCase()}@wallet.interwork`;
-  const password = `${address.toLowerCase()}INTERWORK_SALT`; // Senha determinística baseada na wallet
-
-  try {
-    // Tenta login
-    let { data, error } = await sb.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      // Se não existir, registra
-      console.log('Criando nova conta para wallet:', address);
-      const { data: signUpData, error: signUpError } = await sb.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name: 'Usuário ' + address.slice(0, 6),
-            handle: address.slice(0, 8).toLowerCase(),
-            wallet: address,
-            role: 'client'
-          }
-        }
-      });
-      if (signUpError) throw signUpError;
-      data = signUpData;
-    }
-
-    // Sucesso no Auth
-    STATE.walletConnected = true;
-    STATE.authenticated = true;
-    STATE.sbUser = data.user;
-    
-    // Carrega perfil
-    STATE.sbProfile = await sbLoadProfile(data.user.id);
-    
-    // Inicializar saldo demo se necessário
-    await initializeDemoBalance();
-    
-    toast('Autenticado via Wallet!', 'success');
-    render();
-  } catch (err) {
-    console.error('Erro na auth via wallet:', err);
-    toast('Erro ao autenticar no banco de dados.', 'error');
-  }
-}
-
 async function sbSignIn(email, password){
   if (!sb) return { error: { message: 'Supabase não configurado.' } };
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
@@ -9969,221 +9593,6 @@ async function sbLogoutUser() {
     console.log('✅ Logout bem-sucedido');
   } catch (err) {
     console.error('[Supabase] Erro ao fazer logout:', err);
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-// SISTEMA DE PEDIDOS (ORDERS) E ESCROW
-// ═══════════════════════════════════════════════════════════
-
-// 6A. CRIAR UM NOVO PEDIDO (ORDER) COM ESCROW
-async function sbCreateOrder(freelancerId, serviceId, amount, description = '') {
-  if (!SB_READY || !STATE.sbUser) {
-    toast('Erro: Você não está autenticado.', 'error');
-    return null;
-  }
-
-  try {
-    // 1. Verificar saldo do cliente
-    const { data: clientProfile, error: profileError } = await sb
-      .from('profiles')
-      .select('balance_itl')
-      .eq('id', STATE.sbUser.id)
-      .single();
-
-    if (profileError || !clientProfile) {
-      toast('Erro ao verificar saldo.', 'error');
-      return null;
-    }
-
-    if (clientProfile.balance_itl < amount) {
-      toast(`Saldo insuficiente. Você tem ${clientProfile.balance_itl} ITL, mas precisa de ${amount} ITL.`, 'error');
-      return null;
-    }
-
-    // 2. Criar o pedido no banco de dados
-    const { data: order, error: orderError } = await sb
-      .from('orders')
-      .insert([
-        {
-          client_id: STATE.sbUser.id,
-          freelancer_id: freelancerId,
-          service_id: serviceId,
-          amount: amount,
-          status: 'pending',
-          description: description,
-          due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-        }
-      ])
-      .select()
-      .single();
-
-    if (orderError) {
-      console.error('[Supabase] Erro ao criar pedido:', orderError);
-      toast('Erro ao criar pedido.', 'error');
-      return null;
-    }
-
-    // 3. Debitar o saldo do cliente (Escrow)
-    const newBalance = clientProfile.balance_itl - amount;
-    const { error: updateError } = await sb
-      .from('profiles')
-      .update({ balance_itl: newBalance })
-      .eq('id', STATE.sbUser.id);
-
-    if (updateError) {
-      console.error('[Supabase] Erro ao atualizar saldo:', updateError);
-      toast('Erro ao bloquear fundos no escrow.', 'error');
-      return null;
-    }
-
-    console.log('✅ Pedido criado com sucesso:', order.id);
-    toast(`Pedido criado! ${amount} ITL bloqueado no escrow.`, 'success');
-    addNotification({
-      type: 'tx',
-      title: 'Pedido Criado',
-      body: `Você contratou um serviço por ${amount} ITL. Fundos bloqueados no escrow.`,
-      link: `#/order/${order.id}`
-    });
-    return order;
-  } catch (err) {
-    console.error('[Supabase] Erro ao criar pedido:', err);
-    toast('Erro ao processar pedido.', 'error');
-    return null;
-  }
-}
-
-// 6B. CARREGAR TODOS OS PEDIDOS DO USUÁRIO
-async function sbLoadUserOrders() {
-  if (!SB_READY || !STATE.sbUser) return [];
-
-  try {
-    const { data: orders, error } = await sb
-      .from('orders')
-      .select('*')
-      .or(`client_id.eq.${STATE.sbUser.id},freelancer_id.eq.${STATE.sbUser.id}`)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.warn('[Supabase] Erro ao carregar pedidos:', error.message);
-      return [];
-    }
-
-    console.log(`✅ ${orders.length} pedidos carregados`);
-    return orders || [];
-  } catch (err) {
-    console.error('[Supabase] Erro ao carregar pedidos:', err);
-    return [];
-  }
-}
-
-// 6C. ATUALIZAR STATUS DO PEDIDO
-async function sbUpdateOrderStatus(orderId, newStatus) {
-  if (!SB_READY || !STATE.sbUser) {
-    toast('Erro: Você não está autenticado.', 'error');
-    return null;
-  }
-
-  try {
-    const { data: order, error: fetchError } = await sb
-      .from('orders')
-      .select('*')
-      .eq('id', orderId)
-      .single();
-
-    if (fetchError || !order) {
-      toast('Pedido não encontrado.', 'error');
-      return null;
-    }
-
-    const isClient = order.client_id === STATE.sbUser.id;
-    const isFreelancer = order.freelancer_id === STATE.sbUser.id;
-
-    if (!isClient && !isFreelancer) {
-      toast('Você não tem permissão para atualizar este pedido.', 'error');
-      return null;
-    }
-
-    const { data: updatedOrder, error: updateError } = await sb
-      .from('orders')
-      .update({ status: newStatus })
-      .eq('id', orderId)
-      .select()
-      .single();
-
-    if (updateError) {
-      console.error('[Supabase] Erro ao atualizar pedido:', updateError);
-      toast('Erro ao atualizar pedido.', 'error');
-      return null;
-    }
-
-    // Se o status for 'completed', liberar o pagamento para o freelancer
-    if (newStatus === 'completed' && isClient) {
-      const { data: freelancerProfile, error: profileError } = await sb
-        .from('profiles')
-        .select('balance_itl')
-        .eq('id', order.freelancer_id)
-        .single();
-
-      if (!profileError && freelancerProfile) {
-        const newFreelancerBalance = (freelancerProfile.balance_itl || 0) + order.amount;
-        await sb
-          .from('profiles')
-          .update({ balance_itl: newFreelancerBalance })
-          .eq('id', order.freelancer_id);
-
-        toast(`Pagamento de ${order.amount} ITL liberado para o freelancer!`, 'success');
-      }
-    }
-
-    console.log(`✅ Pedido ${orderId} atualizado para ${newStatus}`);
-    return updatedOrder;
-  } catch (err) {
-    console.error('[Supabase] Erro ao atualizar pedido:', err);
-    toast('Erro ao processar atualização.', 'error');
-    return null;
-  }
-}
-
-// 6D. CARREGAR SALDO ITL DO USUÁRIO
-async function sbGetUserBalance() {
-  if (!SB_READY || !STATE.sbUser) return 0;
-
-  try {
-    const { data: profile, error } = await sb
-      .from('profiles')
-      .select('balance_itl')
-      .eq('id', STATE.sbUser.id)
-      .single();
-
-    if (error || !profile) return 0;
-    return profile.balance_itl || 0;
-  } catch (err) {
-    console.error('[Supabase] Erro ao carregar saldo:', err);
-    return 0;
-  }
-}
-
-// 6E. INICIALIZAR SALDO DEMO (para testes)
-async function initializeDemoBalance() {
-  if (!SB_READY || !STATE.sbUser) return;
-
-  try {
-    const { data: profile, error } = await sb
-      .from('profiles')
-      .select('balance_itl')
-      .eq('id', STATE.sbUser.id)
-      .single();
-
-    if (!error && profile && profile.balance_itl === 0) {
-      await sb
-        .from('profiles')
-        .update({ balance_itl: 1000 })
-        .eq('id', STATE.sbUser.id);
-      console.log('✅ Saldo demo de 1000 ITL inicializado');
-    }
-  } catch (err) {
-    console.error('[Supabase] Erro ao inicializar saldo demo:', err);
   }
 }
 
