@@ -252,7 +252,15 @@ html.dark {
   --hero-dark: linear-gradient(135deg,#0f0f0f 0%,#1c1c1c 45%,#1e1e1e 100%);
   --banner-dark: linear-gradient(135deg,#1c1c1c 0%,#1e1e1e 50%,#2a2a2a 100%);
   --banner-light: linear-gradient(135deg,#eef5ff 0%,#f5f0ff 50%,#dbeafe 100%);
-
+  /* Cor única pra toda a homepage — estilo Obsidian, sem variação entre seções */
+  --home-bg: #ffffff;
+  --home-border: #f1f5f9;
+}
+html.dark {
+  --home-bg: #080808;
+  --home-border: rgba(255,255,255,.08);
+}
+:root {
   /* Ink scale — light mode */
   --ink-50:  #f8fafc;
   --ink-100: #f1f5f9;
@@ -517,13 +525,17 @@ html.dark {
   }
 
 
-  /* ═══ HERO — estilo fixo Fiverr (foto escura, texto branco, sempre, independente do tema do site) ═══ */
-  html.dark #hero-section { background: var(--surf-950); }
-  html:not(.dark) #hero-section { background: #ffffff; }
+  /* ═══ HERO — estilo V1 Obsidian: preto absoluto, badge, busca minimal, stats em vez de partner strip ═══ */
+  html.dark #hero-section { background: var(--home-bg); }
+  html:not(.dark) #hero-section { background: var(--home-bg); }
   html.dark .hero-title-text { color:#ffffff; }
   html:not(.dark) .hero-title-text { color: var(--surf-950); }
-  html.dark .hero-badge { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); }
+  html.dark .hero-badge { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); }
   html:not(.dark) .hero-badge { border-color: rgba(0,0,0,0.1); background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.5); }
+  html.dark .hero-stat-num { color:#ffffff; }
+  html:not(.dark) .hero-stat-num { color: var(--surf-950); }
+  html.dark .hero-stat-label { color: rgba(255,255,255,0.35); }
+  html:not(.dark) .hero-stat-label { color: rgba(0,0,0,0.4); }
   html.dark .hero-subtitle { color: rgba(255,255,255,0.5); }
   html:not(.dark) .hero-subtitle { color: rgba(0,0,0,0.55); }
   html.dark .hero-outline-btn { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); color: #ffffff; }
@@ -571,7 +583,7 @@ html.dark {
   html.dark .banner-cta:hover { background: #eef5ff; color: #1a73e8; }
 
   html:not(.dark) .freelancer-banner { background: var(--banner-light); border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
-  html:not(.dark) .banner-badge { background: rgba(26,115,232,0.08); border: 1px solid rgba(26,115,232,0.20); color: #1a73e8; }
+  html:not(.dark) .banner-badge { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.20); color: #7C3AED; }
   html:not(.dark) .banner-title { color: #0b1220; }
   html:not(.dark) .banner-sub { color: #475569; }
   html:not(.dark) .banner-cta { background: #7C3AED; color: #ffffff; }
@@ -582,8 +594,8 @@ html.dark {
 
 
   /* ═══ WHY INTERWORK ═══ */
-  html:not(.dark) .why-iw-section { background: #f8fafc; }
-  html.dark .why-iw-section { background: var(--surf-950); }
+  html:not(.dark) .why-iw-section { background: var(--home-bg); }
+  html.dark .why-iw-section { background: var(--home-bg); }
   html:not(.dark) .why-iw-title { color: #0b1220; }
   html.dark .why-iw-title { color: #f9fafb; }
   html:not(.dark) .why-iw-card { background: #ffffff; border-color: #e2e8f0; }
@@ -594,20 +606,20 @@ html.dark {
   html.dark .why-iw-sub { color: #9ca3af; }
 
   /* ═══ STRATEGIC PARTNER ═══ */
-  html:not(.dark) .partner-section { background: #ffffff; border-color: #e2e8f0; }
-  html.dark .partner-section { background: var(--surf-950); border-color: rgba(255,255,255,0.07); }
-  html:not(.dark) .partner-badge { background: #eef5ff; color: #1a73e8; }
+  html:not(.dark) .partner-section { background: var(--home-bg); border-color: var(--home-border); }
+  html.dark .partner-section { background: var(--home-bg); border-color: var(--home-border); }
+  html:not(.dark) .partner-badge { background: #f5f0ff; color: #7C3AED; }
   html.dark .partner-badge { background: rgba(99,102,241,0.15); color: #a5b4fc; }
   html:not(.dark) .partner-logo-wrap { background: #f1f5f9; border-color: #e2e8f0; }
   html.dark .partner-logo-wrap { background: var(--surf-800); border-color: rgba(255,255,255,0.08); }
-  html:not(.dark) .partner-logo-icon { color: #1a73e8; }
+  html:not(.dark) .partner-logo-icon { color: #7C3AED; }
   html.dark .partner-logo-icon { color: #a78bfa; }
   html:not(.dark) .partner-title { color: #0b1220; }
   html.dark .partner-title { color: #f9fafb; }
   html:not(.dark) .partner-sub { color: #475569; }
   html.dark .partner-sub { color: #9ca3af; }
   html:not(.dark) .partner-btn { background: #0b1220; color: #ffffff; }
-  html:not(.dark) .partner-btn:hover { background: #1a73e8; }
+  html:not(.dark) .partner-btn:hover { background: #7C3AED; }
   html.dark .partner-btn { background: #a78bfa; color: var(--surf-950); }
   html.dark .partner-btn:hover { background: #c4b5fd; }
 
@@ -618,8 +630,8 @@ html.dark {
   html.dark .powered-text { color: #4b5563; }
 
   /* ═══ OVERVIEW ═══ */
-  html:not(.dark) .ow-section{background:#fafbff}
-  html.dark .ow-section{background:var(--surf-950)}
+  html:not(.dark) .ow-section{background:var(--home-bg)}
+  html.dark .ow-section{background:var(--home-bg)}
   html:not(.dark) .ow-kicker{color:var(--brand-500)}
   html.dark .ow-kicker{color:var(--sonic)}
   html:not(.dark) .ow-line{background:var(--brand-500)}
@@ -640,8 +652,8 @@ html.dark {
   html.dark .ow-stat-sub{color:#6b7280}
 
   /* ═══ HOW IT WORKS ═══ */
-  html:not(.dark) .hw-section{background:#fff}
-  html.dark .hw-section{background:var(--surf-950)}
+  html:not(.dark) .hw-section{background:var(--home-bg)}
+  html.dark .hw-section{background:var(--home-bg)}
   html:not(.dark) .hw-kicker{color:var(--brand-500)}
   html.dark .hw-kicker{color:var(--sonic)}
   html:not(.dark) .hw-line{background:var(--brand-500)}
@@ -662,10 +674,34 @@ html.dark {
   html.dark .hw-arrow-bg{background:rgba(255,255,255,.06)}
   html:not(.dark) .hw-arrow-icon{color:var(--brand-500)}
   html.dark .hw-arrow-icon{color:#9ca3af}
+  html:not(.dark) .hw-tl-line{background:#e5e7eb}
+  html.dark .hw-tl-line{background:rgba(255,255,255,.10)}
+  html:not(.dark) .hw-tl-dot{background:#fafafa;border-color:#e5e7eb;color:#6d28d9}
+  html.dark .hw-tl-dot{background:#0d0d0d;border-color:rgba(255,255,255,.12);color:var(--sonic)}
+  html:not(.dark) .hw-tl-title{color:#111}
+  html.dark .hw-tl-title{color:#f9fafb}
+  html:not(.dark) .hw-tl-sub{color:#9ca3af}
+  html.dark .hw-tl-sub{color:rgba(255,255,255,.4)}
+
+  /* Category tiles — Obsidian: monocromático, vira roxo no hover */
+  html:not(.dark) .cat-tiles-section { background: var(--home-bg); border-color: var(--home-border); }
+  html.dark .cat-tiles-section { background: var(--home-bg); border-color: var(--home-border); }
+  html:not(.dark) .cat-tile { background:#fff; border-color:#f1f5f9; }
+  html.dark .cat-tile { background:rgba(255,255,255,.03); border-color:rgba(255,255,255,.08); }
+  .cat-tile:hover { border-color:#8b5cf6 !important; }
+  html:not(.dark) .cat-tile-icon-wrap { background:#f8fafc; }
+  html.dark .cat-tile-icon-wrap { background:rgba(255,255,255,.05); }
+  .cat-tile:hover .cat-tile-icon-wrap { background:rgba(139,92,246,.12); }
+  html:not(.dark) .cat-tile-icon { color:#57606b; }
+  html.dark .cat-tile-icon { color:rgba(255,255,255,.55); }
+  .cat-tile:hover .cat-tile-icon { color:#8b5cf6; }
+  html:not(.dark) .cat-tile-label { color:#374151; }
+  html.dark .cat-tile-label { color:rgba(255,255,255,.6); }
+  .cat-tile:hover .cat-tile-label { color:#8b5cf6; }
 
   /* ═══ BENEFITS ═══ */
-  html:not(.dark) .bn-section{background:#fafbff}
-  html.dark .bn-section{background:var(--surf-950)}
+  html:not(.dark) .bn-section{background:var(--home-bg)}
+  html.dark .bn-section{background:var(--home-bg)}
   html:not(.dark) .bn-kicker{color:var(--brand-500)}
   html.dark .bn-kicker{color:var(--sonic)}
   html:not(.dark) .bn-line{background:var(--brand-500)}
@@ -2964,17 +3000,20 @@ function viewHeroPage(){
   // Categorias reais do site — clicáveis e filtráveis
   const trendingCategories = CATEGORIES.filter(c => c.id !== 'other').slice(0, 7);
 
-  // Category tiles with SVG icons (Fiverr style — icon + label, no emoji)
+  // Tags do hero — estilo V1 Obsidian: pílulas simples de busca, sem ícone
+  const heroTags = ['Dev & Smart Contracts','Design & UI','Marketing Web3','Whitepaper','Auditoria','Vídeo & Motion'];
+
+  // Category tiles — Obsidian style: ícone neutro, fica roxo só no hover
   const catTiles = [
-    { id:'dev',        icon:'code-2',       label:'Programming\n& Tech',       color:'#1a73e8', bg:'#eff6ff' },
-    { id:'design',     icon:'layout-grid',  label:'Graphics &\nDesign',        color:'#f97316', bg:'#fff7ed' },
-    { id:'marketing',  icon:'smartphone',   label:'Digital\nMarketing',        color:'#10b981', bg:'#f0fdf4' },
-    { id:'writing',    icon:'languages',    label:'Writing &\nTranslation',    color:'#a855f7', bg:'#faf5ff' },
-    { id:'video',      icon:'play-circle',  label:'Video &\nAnimation',        color:'#06b6d4', bg:'#ecfeff' },
-    { id:'ai',         icon:'sparkles',     label:'AI Services',               color:'#8b5cf6', bg:'#f5f3ff' },
-    { id:'music',      icon:'music-2',      label:'Music &\nAudio',            color:'#ec4899', bg:'#fdf2f8' },
-    { id:'business',   icon:'users',        label:'Business',                  color:'#0ea5e9', bg:'#f0f9ff' },
-    { id:'consulting', icon:'badge-check',  label:'Consulting',                color:'#14b8a6', bg:'#f0fdfa' },
+    { id:'dev',        icon:'code-2',       label:'Programming\n& Tech' },
+    { id:'design',     icon:'layout-grid',  label:'Graphics &\nDesign' },
+    { id:'marketing',  icon:'smartphone',   label:'Digital\nMarketing' },
+    { id:'writing',    icon:'languages',    label:'Writing &\nTranslation' },
+    { id:'video',      icon:'play-circle',  label:'Video &\nAnimation' },
+    { id:'ai',         icon:'sparkles',     label:'AI Services' },
+    { id:'music',      icon:'music-2',      label:'Music &\nAudio' },
+    { id:'business',   icon:'users',        label:'Business' },
+    { id:'consulting', icon:'badge-check',  label:'Consulting' },
   ];
 
   // Featured category cards — Fiverr "Popular services" solid color tiles
@@ -2996,18 +3035,22 @@ function viewHeroPage(){
 
     <div class="relative w-full max-w-4xl mx-auto px-6 text-center pt-16 pb-12">
 
-
+      <!-- Badge -->
+      <div class="hero-badge inline-flex items-center gap-2 mb-7 px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-wide uppercase border">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#a78bfa]"></span>
+        Powered by Interlink
+      </div>
 
       <!-- Título: linha sólida + linha com gradiente colorido -->
       <h1 class="font-extrabold leading-[1.05] tracking-tight">
-        <span class="hero-title-text block" style="font-size:clamp(2.6rem,7vw,5.25rem)">Hire in minutes.</span>
-        <span class="block" style="font-size:clamp(2.6rem,7vw,5.25rem);background:linear-gradient(90deg,#a78bfa 0%,#60a5fa 50%,#34d399 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Get paid in ITL.</span>
+        <span class="hero-title-text block" style="font-size:clamp(2.6rem,7vw,5.25rem)">The Web3 freelance</span>
+        <span class="block" style="font-size:clamp(2.6rem,7vw,5.25rem);background:linear-gradient(90deg,#a78bfa 0%,#60a5fa 50%,#34d399 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">marketplace.</span>
       </h1>
 
       <!-- Subtítulo -->
       <p class="hero-subtitle mt-6 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-normal">
-        The marketplace for the Interlink ecosystem.<br class="hidden md:block"/>
-        Your payment stays protected until you approve it.
+        Hire verified professionals. Pay in ITL.<br class="hidden md:block"/>
+        Every transaction protected by an automatic contract — no middlemen.
       </p>
 
       <!-- CTAs — Primary + Outlined -->
@@ -3023,7 +3066,7 @@ function viewHeroPage(){
         </button>
       </div>
 
-      <!-- Search bar compacta -->
+      <!-- Search bar — minimal, com seta em vez de botão -->
       <div id="search-wrap" class="mt-10 relative max-w-lg mx-auto">
         <form id="home-search" class="hero-search-bar flex items-center rounded-xl overflow-hidden border" style="height:52px;" onsubmit="event.preventDefault()">
           <i data-lucide="search" class="hero-search-icon w-4 h-4 ml-4 shrink-0"></i>
@@ -3034,61 +3077,44 @@ function viewHeroPage(){
             onkeydown="handleSearchKey(event)"
             onfocus="handleSearchInput(this.value)"
           />
-          <button type="submit" onclick="commitSearch($('#q').value.trim())" aria-label="Search"
-            class="hero-search-submit h-full px-5 text-sm font-semibold transition shrink-0">
-            Search
+          <button type="submit" onclick="commitSearch($('#q').value.trim())" aria-label="Search" class="h-full px-4 grid place-items-center shrink-0">
+            <i data-lucide="arrow-right" class="w-4 h-4" style="color:#8b5cf6"></i>
           </button>
         </form>
         <div id="search-dropdown" class="hero-dropdown hidden absolute left-0 right-0 top-full mt-1 border rounded-2xl shadow-pop z-50 overflow-hidden"></div>
       </div>
 
-      <!-- Popular categories — reais e clicáveis -->
+      <!-- Tags — pílulas simples, sem ícone -->
       <div class="mt-5 flex flex-wrap justify-center gap-2 items-center">
-        <span class="hero-partner-label text-xs font-medium self-center opacity-60">Popular:</span>
-        ${trendingCategories.map(cat=>`
-          <button onclick="STATE.category='${cat.id}';STATE.query='';STATE.page=1;renderView()"
-            class="hero-tag inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition font-medium"
-            style="border-color:${cat.color}33;color:${cat.color}">
-            <i data-lucide="${cat.icon}" class="w-3 h-3"></i>
-            ${cat.label}
+        ${heroTags.map(tag=>`
+          <button onclick="pickTrendingTag('${escapeHtml(tag).replace(/'/g,"\\'")}' )"
+            class="hero-tag inline-flex items-center text-[11px] px-3 py-1 rounded-full border transition font-medium">
+            ${tag}
           </button>`).join('')}
       </div>
 
-      <!-- Partner strip -->
-      <div class="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-        <span class="hero-partner-label text-[11px] font-semibold uppercase tracking-widest">Strategic Partner</span>
-        <div class="flex items-center gap-6 flex-wrap justify-center">
-          <span class="hero-partner-item flex items-center gap-2 text-xs font-semibold">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            ATV Network
-          </span>
-          <span class="hero-divider w-px h-3"></span>
-          <span class="hero-partner-item flex items-center gap-2 text-xs font-semibold">
-            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500/70"></i>
-            Trusted by ATV
-          </span>
-          <span class="hero-divider w-px h-3"></span>
-          <span class="hero-partner-item flex items-center gap-2 text-xs font-semibold">
-            <i data-lucide="hexagon" class="w-3.5 h-3.5 text-brand-400/60"></i>
-            Interlink Certified
-          </span>
-        </div>
+      <!-- Stats — em vez da faixa de parceiros -->
+      <div class="mt-12 flex items-center justify-center gap-10">
+        <div><div class="hero-stat-num text-[22px] font-bold">500+</div><div class="hero-stat-label text-[11px] mt-0.5">Serviços ativos</div></div>
+        <div class="hero-divider w-px h-8"></div>
+        <div><div class="hero-stat-num text-[22px] font-bold">ITL</div><div class="hero-stat-label text-[11px] mt-0.5">Moeda nativa</div></div>
+        <div class="hero-divider w-px h-8"></div>
+        <div><div class="hero-stat-num text-[22px] font-bold">0</div><div class="hero-stat-label text-[11px] mt-0.5">Intermediários</div></div>
       </div>
     </div>
   </section>
-  <!-- ═══ CATEGORY TILES — icon + label, Fiverr grid style ═══ -->
-  <section class="bg-white border-b border-ink-100 py-8">
+  <!-- ═══ CATEGORY TILES — estilo Obsidian: monocromático, fica roxo no hover ═══ -->
+  <section class="cat-tiles-section border-b py-8">
     <div class="max-w-7xl mx-auto px-5">
       <div class="overflow-x-auto scrollbar-none -mx-5 px-5">
         <div class="flex gap-3 md:grid md:grid-cols-9" style="min-width:max-content;min-width:0">
           ${catTiles.map(c=>`
             <button onclick="STATE.category='${c.id}';renderView()"
-              class="flex flex-col items-center gap-2.5 p-4 rounded-2xl border border-ink-100 hover:border-brand-200 hover:shadow-md bg-white group transition shrink-0 w-[108px] md:w-auto"
-              style="--cat-color:${c.color}">
-              <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:${c.bg}">
-                <i data-lucide="${c.icon}" class="w-5 h-5" style="color:${c.color}"></i>
+              class="cat-tile flex flex-col items-center gap-2.5 p-4 rounded-2xl border group transition shrink-0 w-[108px] md:w-auto">
+              <div class="cat-tile-icon-wrap w-11 h-11 rounded-xl flex items-center justify-center transition">
+                <i data-lucide="${c.icon}" class="cat-tile-icon w-5 h-5 transition"></i>
               </div>
-              <span class="text-[11px] font-semibold text-ink-700 text-center leading-tight group-hover:text-brand-600 whitespace-pre-line">${c.label}</span>
+              <span class="cat-tile-label text-[11px] font-semibold text-center leading-tight transition whitespace-pre-line">${c.label}</span>
             </button>`).join('')}
         </div>
       </div>
@@ -3204,43 +3230,22 @@ function viewHeroPage(){
 
   <!-- ═══ HOW INTERWORK WORKS ═══ -->
   <section class="py-20 hw-section border-b">
-    <div class="max-w-5xl mx-auto px-5">
-      <div class="flex items-center gap-2 mb-4">
-        <span class="hw-kicker text-[11px] font-bold uppercase tracking-widest">Process</span>
-        <span class="w-8 h-px hw-line"></span>
-      </div>
-      <h2 class="atv-title text-3xl md:text-4xl hw-title mb-4">How InterWork Works</h2>
-      <p class="hw-sub text-base max-w-2xl leading-relaxed mb-14">Four simple steps from hiring to payment — fully protected at every stage.</p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div class="atv-card hw-card rounded-2xl p-6 border relative">
-          <div class="atv-num text-5xl hw-num mb-4 leading-none">01</div>
-          <div class="hw-card-title font-bold text-sm mb-2">Browse & Hire</div>
-          <div class="hw-card-sub text-xs leading-relaxed">Find verified freelancers by category or skill. Review portfolios and ratings before committing.</div>
-          <div class="atv-connector hw-arrow hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10" style="background:var(--gold-accent)">
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-white"></i>
-          </div>
-        </div>
-        <div class="atv-card hw-card rounded-2xl p-6 border relative">
-          <div class="atv-num text-5xl hw-num mb-4 leading-none">02</div>
-          <div class="hw-card-title font-bold text-sm mb-2">Lock Payment</div>
-          <div class="hw-card-sub text-xs leading-relaxed">ITL is locked in an automatic contract. The freelancer knows the funds are guaranteed before starting.</div>
-          <div class="atv-connector hw-arrow hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10" style="background:var(--gold-accent)">
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-white"></i>
-          </div>
-        </div>
-        <div class="atv-card hw-card rounded-2xl p-6 border relative">
-          <div class="atv-num text-5xl hw-num mb-4 leading-none">03</div>
-          <div class="hw-card-title font-bold text-sm mb-2">Work & Deliver</div>
-          <div class="hw-card-sub text-xs leading-relaxed">The freelancer completes the job and submits the delivery. You review and request revisions if needed.</div>
-          <div class="atv-connector hw-arrow hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10" style="background:var(--gold-accent)">
-            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-white"></i>
-          </div>
-        </div>
-        <div class="atv-card hw-card rounded-2xl p-6 border">
-          <div class="atv-num text-5xl hw-num mb-4 leading-none">04</div>
-          <div class="hw-card-title font-bold text-sm mb-2">Approve & Release</div>
-          <div class="hw-card-sub text-xs leading-relaxed">You approve the delivery and the contract releases payment instantly to the freelancer in ITL.</div>
-        </div>
+    <div class="max-w-4xl mx-auto px-5 text-center">
+      <h2 class="atv-title text-3xl md:text-4xl hw-title mb-2">How InterWork Works</h2>
+      <p class="hw-sub text-sm mb-16">Four steps. Fully protected from start to finish.</p>
+      <div class="relative flex">
+        <div class="hw-tl-line absolute top-5 left-[12.5%] right-[12.5%] h-px"></div>
+        ${[
+          {n:'1', t:'Browse', d:'Find verified freelancers'},
+          {n:'2', t:'Lock', d:'ITL locked in the contract'},
+          {n:'3', t:'Work', d:'Freelancer delivers the service'},
+          {n:'4', t:'Release', d:'Payment released in ITL'},
+        ].map(s=>`
+        <div class="flex-1 flex flex-col items-center text-center px-2 relative z-10">
+          <div class="hw-tl-dot w-10 h-10 rounded-full border flex items-center justify-center text-[13px] font-bold mb-3.5">${s.n}</div>
+          <div class="hw-tl-title text-xs font-bold mb-1">${s.t}</div>
+          <div class="hw-tl-sub text-[11px] leading-snug">${s.d}</div>
+        </div>`).join('')}
       </div>
     </div>
   </section>
