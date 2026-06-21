@@ -8234,7 +8234,6 @@ function openChatPrep(serviceId){
 /* ---------- CHAT DRAWER ---------- */
 function openChat(orderId, otherUserId){
   if (!requireAuth('usar o chat')) return;
-  // if orderId not given, pick latest order with that freelancer, else create ephemeral
   let order = orderId ? STATE.orders.find(o=>o.id===orderId) : STATE.orders.find(o=>o.freelancerId===otherUserId && o.clientId===STATE.currentUserId);
   let ephemeral = false;
   if (!order){
@@ -8245,8 +8244,23 @@ function openChat(orderId, otherUserId){
   STATE.chatOpenOrderId = order.id;
   markChatAsRead(order.id);
   renderChat(order, ephemeral);
+
+  // ── Supabase: carrega histórico real + abre Realtime ──
+  // Só funciona se houver sbId (UUID real do Supabase) — chats locais continuam mock
+  if (SB_READY && sb && STATE.sbProfile?.id && order.sbId) {
+    sbLoadMessages(order).then(() => {
+      if (STATE.chatOpenOrderId === order.id) renderChat(order, ephemeral);
+    });
+    sbSubscribeChat(order, ephemeral);
+  }
 }
-function closeChat(){ STATE.chatOpenOrderId=null; $('#chat-root').innerHTML=''; window._chatPendingAttachments=[]; }
+
+function closeChat(){
+  STATE.chatOpenOrderId = null;
+  $('#chat-root').innerHTML = '';
+  window._chatPendingAttachments = [];
+  sbUnsubscribeChat(); // cancela canal Realtime se ativo
+}
 
 /* Mark every one of my outgoing messages as "read" once the other side has — in this demo,
    opening/keeping the chat open is what triggers the other party to have "seen" my messages. */
@@ -8383,13 +8397,35 @@ function renderChat(order, ephemeral){
 
     renderChat(order, ephemeral);
 
-    // 1) "Delivered" tick shows up quickly after sending
+    // ── Supabase: persiste mensagem no banco (só se pedido tem UUID real) ──
+    const hasSbOrder = SB_READY && sb && STATE.sbProfile?.id && order.sbId;
+    if (hasSbOrder) {
+      // Monta attachment_url: usa o primeiro arquivo não-imagem como URL,
+      // ou o nome do arquivo de imagem (dataURL fica só local)
+      const firstAttach = msg.attachments?.[0];
+      const attachmentUrl = firstAttach
+        ? (firstAttach.dataURL ? `[imagem:${firstAttach.name}]` : firstAttach.name)
+        : null;
+
+      sbSendMessage(order.sbId, v, attachmentUrl).then(saved => {
+        if (saved) {
+          msg._sbId = saved.id; // guarda o UUID real da mensagem
+          msg.status = 'delivered';
+          if (STATE.chatOpenOrderId === order.id) renderChat(order, ephemeral);
+        }
+      });
+      // Não mostra respostas simuladas — a resposta real chegará via Realtime
+      return;
+    }
+
+    // ── Modo demo (sem sbId): comportamento original com respostas simuladas ──
+    // 1) "Delivered" tick
     setTimeout(() => {
       if (msg.status === 'sent') msg.status = 'delivered';
       if (STATE.chatOpenOrderId === order.id) renderChat(order, ephemeral);
     }, 500);
 
-    // 2) Other person starts "typing…"
+    // 2) Typing indicator
     setTimeout(() => {
       if (STATE.chatOpenOrderId !== order.id) return;
       const stream = document.getElementById('chat-stream');
@@ -8401,7 +8437,7 @@ function renderChat(order, ephemeral){
       if (subtitle) subtitle.textContent = tr('digitando…');
     }, 750);
 
-    // 3) Reply arrives, my message is marked "read", typing indicator clears
+    // 3) Simulated reply
     setTimeout(() => {
       const fileReplies = ['Recebi os arquivos, obrigado!','Ótimo, já estou analisando.','Perfeito, vou usar como referência.'];
       const textReplies = ['Combinado!','Já estou nisso.','Pode me mandar o briefing detalhado?','Vou subir um preview hoje.','Posso adiantar parte da entrega.'];
@@ -9156,6 +9192,173 @@ function sbSubscribeServices(){
       }
     })
     .subscribe();
+}
+
+/* ──────────────────────────────────────────────────────────
+ * CHAT — Supabase (tabela real: public.messages)
+ *
+ * Schema usado:
+ *   id            UUID PRIMARY KEY DEFAULT gen_random_uuid()
+ *   order_id      UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE
+ *   sender_id     UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE
+ *   text          TEXT NOT NULL
+ *   attachment_url TEXT          ← string simples (URL ou nome do arquivo)
+ *   created_at    TIMESTAMPTZ DEFAULT NOW()
+ *
+ * RLS verifica via JOIN com orders (client_id ou freelancer_id = auth.uid())
+ * Não existe receiver_id nem status — read receipts ficam só no frontend.
+ * ────────────────────────────────────────────────────────── */
+
+let _chatRealtimeChannel = null; // Canal Realtime ativo no momento
+
+/**
+ * Envia uma mensagem para a tabela `messages` do Supabase.
+ * Requer que o pedido tenha um UUID real (order.sbId).
+ * @param {string} sbOrderId  - UUID do pedido no Supabase (order.sbId)
+ * @param {string} text       - Texto da mensagem
+ * @param {string|null} attachmentUrl - URL ou nome do arquivo (opcional)
+ * @returns {object|null} Row inserida ou null em caso de erro
+ */
+async function sbSendMessage(sbOrderId, text, attachmentUrl = null) {
+  if (!sb || !STATE.sbProfile?.id || !sbOrderId) return null;
+  const payload = {
+    order_id:       sbOrderId,
+    sender_id:      STATE.sbProfile.id,
+    text:           text || '',
+    attachment_url: attachmentUrl || null,
+  };
+  const { data, error } = await sb
+    .from('messages')
+    .insert(payload)
+    .select()
+    .single();
+  if (error) {
+    console.warn('[Supabase Chat] Erro ao enviar mensagem:', error.message);
+    return null;
+  }
+  return data;
+}
+
+/**
+ * Carrega o histórico de mensagens de um pedido da tabela `messages`.
+ * Mescla com STATE.messages local — mantém mensagens locais com dataURL de imagem.
+ * @param {object} order - Objeto de pedido (usa order.sbId como order_id)
+ */
+async function sbLoadMessages(order) {
+  if (!sb || !STATE.sbProfile?.id || !order.sbId) return;
+  const { data, error } = await sb
+    .from('messages')
+    .select('*')
+    .eq('order_id', order.sbId)
+    .order('created_at', { ascending: true });
+  if (error) {
+    console.warn('[Supabase Chat] Erro ao carregar mensagens:', error.message);
+    return;
+  }
+  if (!data || !data.length) return;
+
+  // Converte formato Supabase → formato local do STATE.messages
+  const remote = data.map(m => ({
+    id:         m.id,
+    _sbId:      m.id,
+    // sender_id é UUID do Supabase — minha própria UUID → STATE.currentUserId
+    from:       m.sender_id === STATE.sbProfile.id ? STATE.currentUserId : m.sender_id,
+    text:       m.text || '',
+    // attachment_url vira um chip no bubble (sem dataURL para preview de imagem)
+    attachments: m.attachment_url ? [{ name: m.attachment_url, size: '', type: '', dataURL: null }] : [],
+    status:     'read', // mensagens antigas já foram lidas
+    ts:         new Date(m.created_at).getTime(),
+  }));
+
+  // Mescla: preserva mensagens locais que têm dataURL (preview de imagem)
+  const existing = STATE.messages[order.id] || [];
+  const remoteIds = new Set(remote.map(r => r._sbId));
+  const localOnly = existing.filter(l =>
+    !l._sbId &&
+    l.attachments?.some(a => a.dataURL)
+  );
+  const merged = [...remote, ...localOnly].sort((a, b) => a.ts - b.ts);
+  STATE.messages[order.id] = merged;
+}
+
+/**
+ * Abre canal Realtime para a tabela `messages` filtrado pelo order_id (sbId).
+ * Mensagens novas do outro usuário chegam sem necessidade de refresh.
+ * @param {object} order    - Objeto do pedido (precisa de order.sbId)
+ * @param {boolean} ephemeral
+ */
+function sbSubscribeChat(order, ephemeral) {
+  if (!sb || !STATE.sbProfile?.id || !order.sbId) return;
+
+  // Cancela canal anterior se houver
+  if (_chatRealtimeChannel) {
+    sb.removeChannel(_chatRealtimeChannel);
+    _chatRealtimeChannel = null;
+  }
+
+  _chatRealtimeChannel = sb
+    .channel('chat-' + order.sbId)
+    .on(
+      'postgres_changes',
+      {
+        event:  'INSERT',
+        schema: 'public',
+        table:  'messages',
+        filter: `order_id=eq.${order.sbId}`,
+      },
+      (payload) => {
+        const m = payload.new;
+        if (!m) return;
+
+        // Ignora próprias mensagens (já inseridas localmente no submit)
+        if (m.sender_id === STATE.sbProfile?.id) return;
+
+        const localMsg = {
+          id:          m.id,
+          _sbId:       m.id,
+          from:        m.sender_id, // UUID Supabase do remetente
+          text:        m.text || '',
+          attachments: m.attachment_url
+            ? [{ name: m.attachment_url, size: '', type: '', dataURL: null }]
+            : [],
+          status:      'delivered',
+          ts:          new Date(m.created_at).getTime(),
+        };
+
+        STATE.messages[order.id] = STATE.messages[order.id] || [];
+        STATE.messages[order.id].push(localMsg);
+
+        if (STATE.chatOpenOrderId === order.id) {
+          // Chat aberto: re-renderiza imediatamente
+          renderChat(order, ephemeral);
+        } else {
+          // Chat fechado: badge de notificação
+          addNotification({
+            type:  'message',
+            title: 'Nova mensagem',
+            body:  m.text ? m.text.slice(0, 80) : '📎 Arquivo recebido',
+            link:  '#/dashboard/client',
+          });
+          renderHeader();
+        }
+      }
+    )
+    .subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('[Supabase Chat] Realtime conectado para pedido', order.sbId);
+      }
+    });
+}
+
+/**
+ * Cancela a assinatura Realtime do chat.
+ * Chamado em closeChat().
+ */
+function sbUnsubscribeChat() {
+  if (_chatRealtimeChannel && sb) {
+    sb.removeChannel(_chatRealtimeChannel);
+    _chatRealtimeChannel = null;
+  }
 }
 
 /* ──────────────────────────────────────────────────────────
