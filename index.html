@@ -9205,78 +9205,59 @@ async function handleWalletAuth(address) {
     return;
   }
 
-  // Estratégia determinística: o email é derivado da wallet
-  const email = `${address.toLowerCase()}@wallet.interwork`;
-  const password = `${address.toLowerCase()}INTERWORK_SALT`;
-
   try {
-    // 1. Verificar sessão local primeiro (Rápido, sem API call de auth se já logado)
-    const { data: { session } } = await sb.auth.getSession();
-    let user = session?.user;
-
-    // 2. Se não houver sessão ou o usuário logado for diferente da wallet atual
-    if (!user || user.email !== email) {
-      console.log('Iniciando auth para wallet:', address);
-      
-      // Tenta login direto
-      const { data: signInData, error: signInError } = await sb.auth.signInWithPassword({ email, password });
-      
-      if (signInError) {
-        // Se falhar (usuário não existe ou rate limit), tentamos o registro APENAS se não for rate limit
-        if (signInError.message.includes('rate limit')) {
-          console.warn('Rate limit atingido. Usando modo persistência local.');
-          // Se estamos em rate limit mas já temos o perfil localmente, podemos "fingir" a auth para não travar a UI
-          if (STATE.authenticated && STATE.currentUserId === address) return;
-          throw signInError;
-        }
-
-        console.log('Usuário não encontrado, registrando...');
-        const { data: signUpData, error: signUpError } = await sb.auth.signUp({
-          email, password,
-          options: { data: { name: 'Usuário ' + address.slice(0, 6), handle: address.slice(0, 8).toLowerCase(), wallet: address, role: 'client' } }
-        });
-        
-        if (signUpError) throw signUpError;
-        user = signUpData.user;
-      } else {
-        user = signInData.user;
-      }
-    }
-
-    // 3. Sucesso na Autenticação
-    STATE.walletConnected = true;
-    STATE.authenticated = true;
-    STATE.sbUser = user;
-    STATE.currentUserId = address; // Usamos o endereço como ID local
+    console.log('Iniciando Auth Anônima para wallet:', address);
     
-    // 4. Carregar/Criar Perfil
-    STATE.sbProfile = await sbLoadProfile(user.id);
+    // 1. Login Anônimo (Não usa email, não tem rate limit de signup)
+    const { data: authData, error: authError } = await sb.auth.signInAnonymously();
+    if (authError) throw authError;
 
-    if (!STATE.sbProfile) {
-      console.log('Criando perfil para novo usuário...');
-      const { error: insertError } = await sb.from('profiles').upsert([{
+    const user = authData.user;
+
+    // 2. Vincular a wallet ao perfil (usando o UUID anônimo)
+    // Primeiro tentamos ver se já existe um perfil com essa wallet
+    const { data: existingProfile } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('wallet_address', address)
+      .single();
+
+    if (existingProfile) {
+      // Se já existe, apenas usamos ele (mesmo que o UUID do Auth mude, o que importa é a wallet)
+      STATE.sbProfile = existingProfile;
+      console.log('Perfil existente encontrado para esta wallet.');
+    } else {
+      // Se não existe, criamos um novo vinculado ao UUID atual
+      console.log('Criando novo perfil para esta wallet...');
+      const { data: newProfile, error: insertError } = await sb.from('profiles').insert([{
         id: user.id,
         handle: address.slice(0, 8).toLowerCase() + '_' + Math.floor(Math.random()*1000),
         name: 'Usuário ' + address.slice(0, 6),
         wallet_address: address,
         role: 'client',
         balance_itl: 1000
-      }]);
+      }]).select().single();
       
-      if (!insertError) STATE.sbProfile = await sbLoadProfile(user.id);
+      if (insertError) {
+        // Se der erro de ID (ex: já existe um perfil com esse ID mas outra wallet), tentamos upsert
+        console.warn('Erro ao inserir perfil, tentando recuperar por wallet...');
+      } else {
+        STATE.sbProfile = newProfile;
+      }
     }
+
+    // 3. Sucesso na Autenticação Local
+    STATE.walletConnected = true;
+    STATE.authenticated = true;
+    STATE.sbUser = user;
+    STATE.currentUserId = address; 
     
     await initializeDemoBalance();
     toast('Autenticado via Wallet!', 'success');
     render();
   } catch (err) {
-    console.error('Erro na auth:', err);
-    // Se for Rate Limit, avisamos o usuário de forma amigável
-    if (err.message.includes('rate limit')) {
-      toast('Muitas tentativas. O Supabase bloqueou temporariamente. Tente em 5 min.', 'warning');
-    } else {
-      toast('Erro de conexão: ' + err.message, 'error');
-    }
+    console.error('Erro na auth Web3:', err);
+    toast('Erro de conexão: ' + err.message, 'error');
   }
 }
 
