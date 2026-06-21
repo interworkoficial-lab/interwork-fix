@@ -8122,7 +8122,7 @@ function confirmHire(serviceId, tierKey){
   </div>`;
   icons();
 
-  setTimeout(()=>{
+  setTimeout(async ()=>{
     me.balanceITL = +(me.balanceITL - total).toFixed(2);
     const order = mkOrder(s, STATE.currentUserId, brief, 'in_progress', 8);
     order.tier = tierKey;
@@ -8133,6 +8133,23 @@ function confirmHire(serviceId, tierKey){
     order.deliveryAt = Date.now()+tier.days*86400000;
     order.escrowTx = hash;
     if (milestonesConfig) order.milestones = milestonesConfig;
+
+    // ADICIONADO — tenta salvar o pedido de verdade no Supabase (tabela "orders").
+    // Se não houver sessão real (wallet) ou o vendedor ainda não tiver freelancer_uuid,
+    // sbCreateOrder retorna { error } e o pedido continua funcionando só localmente,
+    // exatamente como já funcionava antes desta mudança.
+    try {
+      const { data: sbOrder, error: sbOrderError } = await sbCreateOrder(order, s.freelancerUuid);
+      if (sbOrder) {
+        order.sbId = sbOrder.id; // UUID real do Supabase, guardado à parte do id local
+        console.log('✅ Pedido salvo no Supabase:', sbOrder.id);
+      } else if (sbOrderError) {
+        console.warn('[Supabase] Pedido não salvo no banco (seguindo apenas local):', sbOrderError.message);
+      }
+    } catch (e) {
+      console.warn('[Supabase] Falha inesperada ao salvar pedido:', e);
+    }
+
     STATE.orders.unshift(order);
     STATE.txHistory.unshift({ hash, type:'escrow_lock', amount: total, token:'ITL', ts: Date.now(), orderId: order.id });
     STATE.messages[order.id] = [
@@ -8969,15 +8986,23 @@ async function sbLoadServices(){
     .select('*')
     .order('created_at', { ascending: false });
   if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
-  // Se banco tem dados reais, mescla com mocks. Se vazio, preserva todos os mocks.
-  if (data && data.length > 0) {
+
+  // ALTERADO — antes: qualquer linha no banco (mesmo pending/rejected) já mesclava com mocks.
+  // Agora: os mocks só permanecem como fallback até existir pelo menos 1 serviço REAL APROVADO.
+  // Assim que o primeiro serviço real for aprovado, os mocks somem por completo da listagem.
+  const approvedReal = (data || []).filter(s => s.status === 'approved');
+  if (approvedReal.length > 0) {
+    DB.services = data.map(sbSvcToLocal); // só dados reais (todos os status, p/ admin/dono ver os próprios)
+  }
+  // Se ainda não há nenhum serviço real aprovado, DB.services continua com os mocks do initMock,
+  // mas qualquer serviço real (mesmo pending) já fica disponível pra quem precisa vê-lo (admin/dono).
+  else if (data && data.length > 0) {
     const dbIds = new Set(data.map(s => s.id));
     DB.services = [
       ...data.map(sbSvcToLocal),
       ...DB.services.filter(s => s._mock && !dbIds.has(s.id)),
     ];
   }
-  // banco vazio -> mantém DB.services intacto (mocks do initMock)
   renderView();
 }
 
@@ -8991,6 +9016,30 @@ async function sbCreateService(svc){
   // Atualiza o item local com id real do banco
   const idx = DB.services.findIndex(s => s.id === svc.id);
   if (idx >= 0) DB.services[idx] = sbSvcToLocal(data);
+  return { data };
+}
+
+// ADICIONADO — salva o pedido de verdade na tabela "orders" do Supabase.
+// Exige que o comprador tenha sessão real (STATE.sbProfile) — sem isso, retorna erro
+// e o app continua funcionando apenas em modo local (comportamento de hoje).
+async function sbCreateOrder(order, freelancerUuid){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  if (!STATE.sbProfile || !STATE.sbProfile.id) return { error: { message: 'Sem sessão real da wallet — pedido salvo apenas localmente.' } };
+  if (!freelancerUuid) return { error: { message: 'Vendedor ainda não possui cadastro real (freelancer_uuid) — pedido salvo apenas localmente.' } };
+  // Não envia order.id (formato local tipo "o_a1b2c3d", incompatível com a coluna UUID).
+  // O Supabase gera o UUID real via DEFAULT uuid_generate_v4(); guardamos esse valor
+  // de volta em order.sbId, mantendo order.id local intacto (chat/milestones continuam usando ele).
+  const payload = {
+    client_id:      STATE.sbProfile.id,
+    freelancer_id:  freelancerUuid,
+    service_id:     order.serviceId,
+    amount:         order.total,
+    status:         (order.status === 'awaiting_requirements') ? 'pending' : (order.status || 'in_progress'),
+    due_date:       order.deliveryAt ? new Date(order.deliveryAt).toISOString() : null,
+    description:    order.brief || '',
+  };
+  const { data, error } = await sb.from('orders').insert(payload).select().single();
+  if (error){ console.warn('[Supabase] Erro ao criar pedido:', error.message); return { error }; }
   return { data };
 }
 
@@ -9031,6 +9080,7 @@ function sbSvcToLocal(s){
     title:         s.title,
     category:      s.category,
     freelancerId:  s.freelancer_id,
+    freelancerUuid: s.freelancer_uuid || null, // ADICIONADO — usado por sbCreateOrder para gravar pedido real
     price:         s.price,
     deliveryDays:  s.delivery_days,
     country:       s.country || 'br',
