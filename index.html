@@ -9210,26 +9210,31 @@ async function handleWalletAuth(address) {
   const password = `${address.toLowerCase()}INTERWORK_SALT`; // Senha determinística baseada na wallet
 
   try {
-    // Tenta login
-    let { data, error } = await sb.auth.signInWithPassword({ email, password });
+    // 1. Verificar se já existe uma sessão ativa para evitar chamadas desnecessárias
+    const { data: sessionData } = await sb.auth.getSession();
+    let data = { user: sessionData?.session?.user };
 
-    if (error) {
-      // Se não existir, registra
-      console.log('Criando nova conta para wallet:', address);
-      const { data: signUpData, error: signUpError } = await sb.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name: 'Usuário ' + address.slice(0, 6),
-            handle: address.slice(0, 8).toLowerCase(),
-            wallet: address,
-            role: 'client'
-          }
+    if (!data.user) {
+      // 2. Tenta login
+      const { data: signInData, error: signInError } = await sb.auth.signInWithPassword({ email, password });
+      
+      if (signInError) {
+        // Se for erro de credenciais (usuário não existe), tenta registrar
+        if (signInError.status === 400 || signInError.message.includes('Invalid login')) {
+          console.log('Criando nova conta para wallet:', address);
+          const { data: signUpData, error: signUpError } = await sb.auth.signUp({
+            email,
+            password,
+            options: { data: { name: 'Usuário ' + address.slice(0, 6), handle: address.slice(0, 8).toLowerCase(), wallet: address, role: 'client' } }
+          });
+          if (signUpError) throw signUpError;
+          data = signUpData;
+        } else {
+          throw signInError;
         }
-      });
-      if (signUpError) throw signUpError;
-      data = signUpData;
+      } else {
+        data = signInData;
+      }
     }
 
     // Sucesso no Auth
