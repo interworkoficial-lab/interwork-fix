@@ -2062,7 +2062,6 @@ function renderView(){
   icons();
   bindViewEvents();
   applyTranslations(v);
-  updateExploreURL();
 }
 
 /* ---------- HEADER ---------- */
@@ -4808,7 +4807,6 @@ function approveOrder(orderId){
   STATE.messages[o.id] = STATE.messages[o.id] || [];
   STATE.messages[o.id].push({ from:o.clientId, text:`✅ Entrega aprovada. ${fmtITL(o.price)} liberados via ${shortHash(hash)}.`, ts:nowTs() });
   toast('Entrega aprovada. ITL liberado via tx '+shortHash(hash), 'success');
-  STATE._pendingATVOrderId = orderId; // guardado para mostrar após fechar avaliação
   render();
   setTimeout(()=>openRateModal(orderId), 300);
 }
@@ -4882,7 +4880,7 @@ function openRateModal(orderId){
         <textarea id="rate-text" rows="3" class="w-full border border-ink-100 rounded-xl px-3 py-2 text-sm" placeholder="Conte como foi a experiência…"></textarea>
       </div>
       <div class="p-5 border-t border-ink-100 flex items-center gap-2">
-        <button onclick="closeModal();setTimeout(()=>{if(STATE._pendingATVOrderId){const _id=STATE._pendingATVOrderId;STATE._pendingATVOrderId=null;showATVChoice(_id);}},200)" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl">Pular</button>
+        <button onclick="closeModal();maybeOfferATV('${orderId}')" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl">Pular</button>
         <button onclick="submitRate('${orderId}')" class="flex-[2] bg-amber-400 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl">Enviar avaliação</button>
       </div>
     </div>
@@ -4922,12 +4920,18 @@ function submitRate(orderId){
   closeModal();
   toast('Avaliação registrada on-chain • '+shortHash(hash), 'success');
   render();
-  // Dispara banner ATV após avaliação (ou pular avaliação)
-  if (STATE._pendingATVOrderId) {
-    const _atvId = STATE._pendingATVOrderId;
-    STATE._pendingATVOrderId = null;
-    setTimeout(() => showATVChoice(_atvId), 350);
-  }
+  maybeOfferATV(orderId);
+}
+
+function maybeOfferATV(orderId){
+  // Ponto único de decisão: chamado sempre que o cliente termina (ou pula) a avaliação
+  // de um pedido aprovado, independente de qual caminho levou até aqui (aprovação direta,
+  // milestone final liberado, ou avaliação tardia via card do pedido).
+  const o = STATE.orders.find(x=>x.id===orderId);
+  if (!o || o.status !== 'approved') return;
+  if (o._atvOffered) return; // já oferecemos pra esse pedido, não repete
+  o._atvOffered = true;
+  setTimeout(() => showATVChoice(orderId), 350);
 }
 
 function openDeliverModal(orderId){
@@ -7841,8 +7845,8 @@ function showATVChoice(orderId){
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
           <div style="background:rgba(255,255,255,0.25);border-radius:12px;width:42px;height:42px;display:grid;place-items:center;flex-shrink:0;font-size:20px;">🎁</div>
           <div>
-            <div style="color:#fff;font-weight:900;font-size:16px;line-height:1.2;">Quer receber ATV Rewards?</div>
-            <div style="color:rgba(255,255,255,0.85);font-size:11.5px;margin-top:2px;">Ganhe tokens $ITL pela sua transação!</div>
+            <div style="color:#fff;font-weight:900;font-size:16px;line-height:1.2;">Quer registrar isso no ATV Network?</div>
+            <div style="color:rgba(255,255,255,0.85);font-size:11.5px;margin-top:2px;">Sua transação pode contar para os Rewards $ITL</div>
           </div>
         </div>
       </div>
@@ -7852,12 +7856,12 @@ function showATVChoice(orderId){
         <p style="font-size:13px;color:#475569;line-height:1.6;margin:0 0 14px;">
           Sua transação <strong style="color:#1e293b;">${escapeHtml(svc?.title || 'Serviço Interwork')}</strong>
           ${amt ? `no valor de <strong style="color:#f59e0b;">${amt}</strong>` : ''}
-          pode ser submetida ao <strong style="color:#f59e0b;">ATV Network</strong> para gerar pontos que convertem em $ITL todo mês.
+          é elegível para envio ao <strong style="color:#f59e0b;">ATV Network</strong>, o programa de recompensas da Interlink.
         </p>
 
         <!-- Vantagens rápidas -->
         <div style="display:flex;gap:8px;margin-bottom:16px;">
-          ${[['⚡','Rápido','30 seg'],['💰','Recompensa','Pontos $ITL'],['✅','Grátis','Sem custo']].map(([ic,lb,vl])=>`
+          ${[['⚡','Rápido','30 seg'],['📋','Processo','Formulário oficial'],['✅','Grátis','Sem custo']].map(([ic,lb,vl])=>`
           <div style="flex:1;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:8px 6px;text-align:center;">
             <div style="font-size:16px;">${ic}</div>
             <div style="font-weight:700;font-size:11px;color:#92400e;">${lb}</div>
@@ -7875,12 +7879,12 @@ function showATVChoice(orderId){
           <button
             onclick="document.getElementById('atv-choice-overlay').remove(); openATVSubmitModal('${orderId}')"
             style="flex:2;border:none;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-weight:900;font-size:13.5px;padding:11px 8px;border-radius:14px;cursor:pointer;box-shadow:0 4px 16px rgba(245,158,11,0.4);display:flex;align-items:center;justify-content:center;gap:6px;">
-            🚀 Sim! Quero meus Rewards
+            🚀 Sim, registrar no ATV
           </button>
         </div>
 
         <div style="text-align:center;margin-top:10px;font-size:10px;color:#94a3b8;">
-          atvinterlink.com · Average Transaction Value Network
+          Você confirma os dados no site oficial atvinterlink.com
         </div>
       </div>
     </div>
