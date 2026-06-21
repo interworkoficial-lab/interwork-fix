@@ -2246,7 +2246,7 @@ function renderView(){
   icons();
   bindViewEvents();
   applyTranslations(v);
-  updateExploreURL();
+  // updateExploreURL(); // Removido por ser inexistente
 }
 
 /* ---------- HEADER ---------- */
@@ -2446,16 +2446,42 @@ function renderHeader(){
 
         <!-- Wallet / Auth button — always rightmost -->
         ${authed ? `
-          <!-- Avatar chip -->
-          <a href="#/u/${me?.handle||''}" class="flex items-center gap-1.5 ${STATE.darkMode?'text-white/70 hover:text-white':'text-ink-700 hover:text-ink-900'} transition">
-            <div class="w-8 h-8 rounded-full overflow-hidden border-2 ${STATE.darkMode?'border-white/20':'border-ink-200'} flex items-center justify-center bg-brand-100 text-brand-700 font-bold text-sm">
-              ${me?.avatar && me.avatarType!=='initials'
-                ? `<img src="${me.avatar}" class="w-full h-full object-cover" />`
-                : `<span>${(me?.name||'U')[0].toUpperCase()}</span>`}
+          <div class="flex items-center gap-2">
+            <button onclick="go('#/dashboard')" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-brand-50 text-brand-700 border border-brand-100 font-bold text-[12px] hover:bg-brand-100 transition">
+              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+              <span>Dashboard</span>
+            </button>
+            <div class="relative">
+              <button onclick="toggleUserMenu(event)" class="w-9 h-9 rounded-full border-2 border-brand-200 overflow-hidden hover:opacity-90 transition shadow-sm bg-ink-100">
+                <img src="${STATE.sbProfile?.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + STATE.currentUserId}" alt="Avatar" class="w-full h-full object-cover">
+              </button>
+              <div id="user-menu" class="hidden absolute right-0 mt-2 w-64 bg-white border border-ink-200 rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.18)] p-2 z-50">
+                <div class="px-4 py-3 border-b border-ink-50 mb-2">
+                  <p class="font-bold text-ink-900 text-[15px] truncate">${STATE.sbProfile?.name || 'Usuário Web3'}</p>
+                  <p class="text-xs text-ink-500 truncate">@${STATE.sbProfile?.handle || 'web3user'}</p>
+                  <div class="mt-2 flex items-center gap-1.5 px-2 py-1 bg-brand-50 rounded-lg border border-brand-100">
+                    <i data-lucide="wallet" class="w-3 h-3 text-brand-600"></i>
+                    <span class="text-[11px] font-bold text-brand-700 truncate">${STATE.currentUserId?.slice(0,6)}...${STATE.currentUserId?.slice(-4)}</span>
+                  </div>
+                </div>
+                <button onclick="go('#/u/${STATE.sbProfile?.handle}')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-ink-50 transition text-ink-700 font-medium text-[14px]">
+                  <i data-lucide="user" class="w-4 h-4"></i>Meu Perfil
+                </button>
+                <button onclick="go('#/dashboard/services')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-ink-50 transition text-ink-700 font-medium text-[14px]">
+                  <i data-lucide="briefcase" class="w-4 h-4"></i>Meus Serviços
+                </button>
+                <button onclick="go('#/dashboard/orders')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-ink-50 transition text-ink-700 font-medium text-[14px]">
+                  <i data-lucide="shopping-bag" class="w-4 h-4"></i>Minhas Compras
+                </button>
+                <div class="h-px bg-ink-50 my-2"></div>
+                <button onclick="sbLogoutUser()" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-red-50 transition text-red-600 font-bold text-[14px]">
+                  <i data-lucide="log-out" class="w-4 h-4"></i>Sair
+                </button>
+              </div>
             </div>
-          </a>
+          </div>
         ` : `
-          <button onclick="openConnectWallet()" class="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-[13px] transition ${STATE.darkMode?'bg-white text-ink-900 hover:bg-white/90':'bg-ink-900 text-white hover:bg-ink-700'}">
+          <button onclick="openConnectWallet()" class="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-[13px] transition ${STATE.darkMode?'bg-white text-ink-900 hover:bg-white/90':'bg-ink-900 text-white hover:bg-ink-700'} shadow-sm">
             <i data-lucide="wallet" class="w-4 h-4"></i>
             Connect Wallet
           </button>
@@ -9216,7 +9242,7 @@ async function handleWalletAuth(address) {
   try {
     console.log('🔗 Conexão Web3 Direta para:', address);
     
-    // 1. Buscar perfil diretamente pela Wallet (Sem usar auth.users para evitar rate limit)
+    // 1. Buscar perfil diretamente pela Wallet
     const { data: profile, error: profileError } = await sb
       .from('profiles')
       .select('*')
@@ -9230,10 +9256,8 @@ async function handleWalletAuth(address) {
     if (profile) {
       console.log('✅ Perfil existente carregado.');
       STATE.sbProfile = profile;
-      STATE.sbUser = { id: profile.id }; // Simulamos o objeto user para compatibilidade
     } else {
       console.log('✨ Criando novo perfil Web3...');
-      // Usamos o ID que você forneceu como base, ou geramos um novo se necessário
       const targetId = '184aeecc-308b-4e8a-9e39-5e484af328d7'; 
       
       const { data: newProfile, error: insertError } = await sb.from('profiles').insert([{
@@ -9246,7 +9270,6 @@ async function handleWalletAuth(address) {
       }]).select().single();
 
       if (insertError) {
-        // Se o ID já estiver em uso, deixamos o Supabase gerar um UUID automático
         const { data: retryProfile, error: retryError } = await sb.from('profiles').insert([{
           handle: address.slice(0, 8).toLowerCase() + '_' + Math.floor(Math.random()*1000),
           name: 'Usuário ' + address.slice(0, 6),
@@ -9257,23 +9280,30 @@ async function handleWalletAuth(address) {
         
         if (retryError) throw retryError;
         STATE.sbProfile = retryProfile;
-        STATE.sbUser = { id: retryProfile.id };
       } else {
         STATE.sbProfile = newProfile;
-        STATE.sbUser = { id: targetId };
       }
     }
 
-    // 2. Atualizar Estado Global
+    // 2. Atualizar Estado Global de forma robusta
     STATE.walletConnected = true;
     STATE.authenticated = true;
     STATE.currentUserId = address; 
+    STATE.sbUser = { id: STATE.sbProfile?.id || address };
+    STATE.onboardingComplete = true; // Força a liberação das funções
     
-    toast('Wallet Conectada com Sucesso!', 'success');
+    console.log('Estado atualizado. Renderizando UI...');
+    toast('Wallet Conectada!', 'success');
+    
+    // Força a re-renderização completa
     render();
+    
+    // Garante que o cabeçalho e ícones sejam atualizados
+    if (typeof icons === 'function') icons();
+    
   } catch (err) {
     console.error('❌ Erro na Conexão Direta:', err);
-    toast('Erro ao sincronizar perfil: ' + err.message, 'error');
+    toast('Erro ao sincronizar: ' + err.message, 'error');
   }
 }
 
