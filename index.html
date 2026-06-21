@@ -9239,6 +9239,26 @@ async function handleWalletAuth(address) {
     
     // Carrega perfil
     STATE.sbProfile = await sbLoadProfile(data.user.id);
+
+    // Se o perfil não existir, vamos forçar a criação dele agora
+    if (!STATE.sbProfile) {
+      console.log('Forçando criação de perfil para:', data.user.id);
+      const { error: insertError } = await sb.from('profiles').insert([{
+        id: data.user.id,
+        handle: address.slice(0, 8).toLowerCase(),
+        name: 'Usuário ' + address.slice(0, 6),
+        wallet_address: address,
+        role: 'client',
+        balance_itl: 1000
+      }]);
+      
+      if (insertError) {
+        console.error('Erro ao criar perfil manual:', insertError);
+        toast('Erro ao criar perfil no banco: ' + insertError.message, 'error');
+        return;
+      }
+      STATE.sbProfile = await sbLoadProfile(data.user.id);
+    }
     
     // Inicializar saldo demo se necessário
     await initializeDemoBalance();
@@ -9246,8 +9266,11 @@ async function handleWalletAuth(address) {
     toast('Autenticado via Wallet!', 'success');
     render();
   } catch (err) {
-    console.error('Erro na auth via wallet:', err);
-    toast('Erro ao autenticar no banco de dados.', 'error');
+    console.error('Erro detalhado na auth via wallet:', err);
+    const msg = err.message || JSON.stringify(err);
+    toast('Erro ao autenticar: ' + msg, 'error');
+    // Adiciona log na tela para debug
+    console.log('%c [DEBUG INTERWORK] Erro de Conexão: ', 'background: red; color: white', err);
   }
 }
 
