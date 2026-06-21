@@ -500,6 +500,7 @@ html.dark {
   .bg-header { background: #ffffff; }
   html.dark .bg-header { background: var(--surf-900); }
   /* Header search in dark mode */
+  #header-search, form.header-search-form { position: relative; }
   html.dark #header-search,
   html.dark form.header-search-form {
     background: var(--surf-700) !important;
@@ -2163,7 +2164,21 @@ function renderHeader(){
         <span class="font-extrabold text-[18px] tracking-tight ${STATE.darkMode?'text-white':'text-ink-900'}">Interwork<span class="text-brand-400">.</span></span>
       </a>
 
-      <div class="flex-1"></div>
+      <!-- Desktop search bar — hidden on hero, shown everywhere else -->
+      ${(!isHero) ? `
+      <form id="header-search" class="header-search-form hidden md:flex flex-1 mx-4 items-center bg-ink-100/60 border border-ink-200 rounded-full h-10 px-4 gap-2 max-w-sm" onsubmit="event.preventDefault();pickHeaderSuggestion(document.getElementById('header-q')?.value.trim()||'')">
+        <i data-lucide="search" class="w-3.5 h-3.5 text-ink-400 shrink-0"></i>
+        <input id="header-q" value="${escapeHtml(STATE.query)}" placeholder="${t('search_ph')}"
+          autocomplete="off"
+          class="flex-1 outline-none text-sm bg-transparent placeholder:text-ink-400 text-ink-900"
+          oninput="handleHeaderSearch(this.value)"
+          onkeydown="handleHeaderSearchKey(event)"
+          onfocus="handleHeaderSearch(this.value)"
+        />
+        ${STATE.query ? `<button type="button" onclick="clearHeaderSearch()" class="text-ink-400 hover:text-ink-700"><i data-lucide="x" class="w-3 h-3"></i></button>` : ''}
+        <div id="header-search-dropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-ink-100 rounded-2xl shadow-pop z-50 overflow-hidden" style="top:42px;position:absolute;width:100%"></div>
+      </form>
+      ` : '<div class="flex-1"></div>'}
 
       <!-- RIGHT SIDE -->
       <div class="flex items-center gap-2">
@@ -2223,6 +2238,12 @@ function renderHeader(){
           <i data-lucide="${STATE.darkMode?'sun':'moon'}" class="w-[17px] h-[17px]"></i>
         </button>
 
+
+        <!-- Sell service button -->
+        <button onclick="openNewServiceModal()" class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold text-[13px] transition border ${STATE.darkMode?'border-white/15 text-white/80 hover:bg-white/10':'border-ink-200 text-ink-700 hover:bg-ink-100/60 hover:border-ink-300'}">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          ${t('nav_sell')}
+        </button>
         <!-- Wallet / Auth button — always rightmost -->
         ${authed ? `
           <!-- Avatar chip -->
@@ -2246,9 +2267,9 @@ function renderHeader(){
     <!-- Mobile search bar (non-hero) -->
     ${STATE.route!=='home' || STATE.query || STATE.category!=='all' ? `
     <div class="md:hidden px-4 pb-2">
-      <form class="mobile-search-form flex items-center bg-[#f5f5f5] border border-ink-200 rounded-full h-9 px-3 gap-2" onsubmit="event.preventDefault()">
+      <form class="mobile-search-form flex items-center bg-[#f5f5f5] border border-ink-200 rounded-full h-9 px-3 gap-2" onsubmit="event.preventDefault();commitSearch(this.querySelector('input').value.trim())">
         <i data-lucide="search" class="w-3.5 h-3.5 text-ink-400 shrink-0"></i>
-        <input value="${escapeHtml(STATE.query)}" placeholder="${t('search_ph')}"
+        <input id="q-mob" value="${escapeHtml(STATE.query)}" placeholder="${t('search_ph')}"
           autocomplete="off"
           class="flex-1 outline-none text-sm bg-transparent placeholder:text-ink-400"
           oninput="handleSearchInput(this.value)"
@@ -2400,7 +2421,6 @@ window._handleReownConnected = async function(address) {
   STATE.authenticated   = true;
   closeModal();
   toast('Wallet conectada — bem-vindo!', 'success');
-  addNotification({ type:'tx', title:'Wallet conectada', body:`Endereço: ${shortW}`, link:'#/wallet' });
   persistNow();
   render();
 };
@@ -3306,6 +3326,7 @@ function viewHeroPage(){
   </section>
   <!-- POWERED BY INTERLINK -->
   <section class="py-6 powered-section">
+    <div id="explore-section"></div>
     <div class="max-w-7xl mx-auto px-5 flex items-center justify-center gap-2">
       <i data-lucide="hexagon" class="w-4 h-4 text-brand-500"></i>
       <span class="powered-text text-xs font-semibold uppercase tracking-widest">Powered by InterLink</span>
@@ -3323,7 +3344,7 @@ function viewExploreResults(){
   const catObj = STATE.category!=='all' ? getCategory(STATE.category) : null;
 
   return `
-  <div class="max-w-7xl mx-auto px-4 py-6">
+  <div id="explore-section" class="max-w-7xl mx-auto px-4 py-6">
 
     <!-- Breadcrumb — Fiverr style -->
     <div class="flex items-center gap-1.5 text-[12.5px] text-ink-400 mb-3">
@@ -5546,7 +5567,11 @@ function createService(){
       if (error) toast('Aviso: erro ao salvar no banco. '+error.message, 'warn');
       else toast('Serviço enviado para revisão! ✅', 'success');
     });
+  } else {
+    toast('Serviço enviado para revisão! ✅', 'success');
   }
+  addNotification({ type:'tx', title:'Serviço enviado para revisão', body:`"${title}" aguardando aprovação — aparecerá no marketplace em breve.`, link:'#/dashboard/freelancer' });
+  persistNow();
   $('#modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
@@ -7251,7 +7276,7 @@ function handleSearchInput(val){
 function handleSearchKey(e){
   const dd = $('#search-dropdown');
   if (!dd || dd.classList.contains('hidden')) {
-    if (e.key === 'Enter') { e.preventDefault(); commitSearch($('#q').value.trim()); }
+    if (e.key === 'Enter') { e.preventDefault(); commitSearch(($('#q')||$('#q-mob')||e.target)?.value?.trim()||''); }
     return;
   }
   const opts = Array.from(dd.querySelectorAll('.search-opt'));
@@ -7470,6 +7495,13 @@ function closeHeaderDropdown(){
   const dd = document.getElementById('header-search-dropdown');
   if(dd) dd.classList.add('hidden');
   _headerSearchIdx = -1;
+}
+function clearHeaderSearch(){
+  STATE.query = '';
+  const hq = document.getElementById('header-q');
+  if(hq) hq.value = '';
+  closeHeaderDropdown();
+  render();
 }
 
 /* ---------- HIRE MODAL (escrow) ---------- */
