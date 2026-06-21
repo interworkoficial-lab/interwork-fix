@@ -9214,10 +9214,9 @@ async function handleWalletAuth(address) {
   }
 
   try {
-    console.log('Iniciando Auth Web3 para wallet:', address);
+    console.log('🔗 Conexão Web3 Direta para:', address);
     
-    // 1. Forçar sessão usando o ID específico do usuário (se necessário)
-    // Para fins de desenvolvimento e bypass de rate limit, vamos buscar o perfil diretamente pela wallet
+    // 1. Buscar perfil diretamente pela Wallet (Sem usar auth.users para evitar rate limit)
     const { data: profile, error: profileError } = await sb
       .from('profiles')
       .select('*')
@@ -9229,14 +9228,15 @@ async function handleWalletAuth(address) {
     }
 
     if (profile) {
-      console.log('✅ Perfil encontrado para a wallet:', address);
+      console.log('✅ Perfil existente carregado.');
       STATE.sbProfile = profile;
-      STATE.sbUser = { id: profile.id, email: address.toLowerCase() + '@wallet.interwork' };
+      STATE.sbUser = { id: profile.id }; // Simulamos o objeto user para compatibilidade
     } else {
-      console.log('⚠️ Perfil não encontrado. Criando perfil vinculado ao ID mestre...');
-      const targetId = '184aeecc-308b-4e8a-9e39-5e484af328d7'; // ID fornecido pelo usuário
+      console.log('✨ Criando novo perfil Web3...');
+      // Usamos o ID que você forneceu como base, ou geramos um novo se necessário
+      const targetId = '184aeecc-308b-4e8a-9e39-5e484af328d7'; 
       
-      const { data: newProfile, error: insertError } = await sb.from('profiles').upsert([{
+      const { data: newProfile, error: insertError } = await sb.from('profiles').insert([{
         id: targetId,
         handle: address.slice(0, 8).toLowerCase(),
         name: 'Usuário ' + address.slice(0, 6),
@@ -9245,23 +9245,35 @@ async function handleWalletAuth(address) {
         balance_itl: 1000
       }]).select().single();
 
-      if (insertError) throw insertError;
-      STATE.sbProfile = newProfile;
-      STATE.sbUser = { id: targetId, email: address.toLowerCase() + '@wallet.interwork' };
+      if (insertError) {
+        // Se o ID já estiver em uso, deixamos o Supabase gerar um UUID automático
+        const { data: retryProfile, error: retryError } = await sb.from('profiles').insert([{
+          handle: address.slice(0, 8).toLowerCase() + '_' + Math.floor(Math.random()*1000),
+          name: 'Usuário ' + address.slice(0, 6),
+          wallet_address: address,
+          role: 'client',
+          balance_itl: 1000
+        }]).select().single();
+        
+        if (retryError) throw retryError;
+        STATE.sbProfile = retryProfile;
+        STATE.sbUser = { id: retryProfile.id };
+      } else {
+        STATE.sbProfile = newProfile;
+        STATE.sbUser = { id: targetId };
+      }
     }
 
-    // 2. Sucesso na Autenticação Local (Bypass Auth UI)
+    // 2. Atualizar Estado Global
     STATE.walletConnected = true;
     STATE.authenticated = true;
     STATE.currentUserId = address; 
     
-    await initializeDemoBalance();
-    toast('Conectado com Sucesso!', 'success');
+    toast('Wallet Conectada com Sucesso!', 'success');
     render();
   } catch (err) {
-    console.error('Erro na auth Web3:', err);
-    // Se o erro for de RLS ou conexão, tentamos o modo persistente
-    toast('Erro de conexão: ' + err.message, 'error');
+    console.error('❌ Erro na Conexão Direta:', err);
+    toast('Erro ao sincronizar perfil: ' + err.message, 'error');
   }
 }
 
