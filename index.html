@@ -13,7 +13,64 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- REOWN APPKIT (WalletConnect) -->
+  <script type="module">
+    import { createAppKit } from 'https://esm.sh/@reown/appkit'
+    import { mainnet, polygon, arbitrum } from 'https://esm.sh/@reown/appkit/networks'
+
+    // 1. Configuração do Reown
+    const projectId = '2ee67a36114285f54c77e2f785e69462'; // Configurado pelo usuário
+
+    const metadata = {
+      name: 'Interwork',
+      description: 'The Workforce Marketplace for the Interlink Ecosystem',
+      url: window.location.origin,
+      icons: ['https://avatars.githubusercontent.com/u/179229932']
+    }
+
+    // 2. Inicializar AppKit
+    const modal = createAppKit({
+      networks: [mainnet, polygon, arbitrum],
+      metadata,
+      projectId,
+      features: {
+        analytics: true
+      }
+    })
+
+    // Expor para o escopo global para o resto do script usar
+    window.reownModal = modal;
+
+    // 3. Ouvir mudanças de conexão
+    modal.subscribeAccount(async (state) => {
+      if (state.isConnected && state.address) {
+        console.log('Wallet conectada:', state.address);
+        // Se já estivermos autenticados com o mesmo endereço, não fazemos nada
+        if (STATE.authenticated && STATE.currentUserId === state.address) return;
+        
+        await handleWalletAuth(state.address);
+      } else {
+        if (STATE.authenticated && !state.isConnected) {
+          await sbLogoutUser();
+          STATE.walletConnected = false;
+          STATE.authenticated = false;
+          render();
+        }
+      }
+    });
+
+    // 4. Persistência: Verificar conexão ao carregar
+    window.addEventListener('load', async () => {
+      // Pequeno delay para garantir que o AppKit inicializou
+      setTimeout(async () => {
+        const state = modal.getAccount();
+        if (state.isConnected && state.address) {
+          await handleWalletAuth(state.address);
+        }
+      }, 1000);
+    });
+  </script>
 <script>
   tailwind.config = {
     darkMode: 'class',
@@ -38,6 +95,7 @@
 </script>
 <style>
   html,body{font-family:'Inter',ui-sans-serif,system-ui}
+  body.modal-open-lock{overflow:hidden;height:100vh}
   .scrollbar-thin::-webkit-scrollbar{width:6px;height:6px}
   .scrollbar-thin::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
   .grad-hero{background:radial-gradient(1200px 500px at 20% 0%, #d9e8ff 0%, transparent 60%),radial-gradient(800px 400px at 90% 10%, #efe7ff 0%, transparent 60%),linear-gradient(180deg,#fafbff 0%,#ffffff 100%)}
@@ -74,7 +132,7 @@
     background:#ffffff;border-bottom:1px solid #e2e8f0;
     box-shadow:0 2px 8px rgba(15,23,42,.04);
   }
-  html.dark .filters-sticky{background:#0a0f1e;border-bottom-color:rgba(255,255,255,.07);box-shadow:0 2px 12px rgba(0,0,0,.4)}
+  html.dark .filters-sticky{background:var(--surf-900);border-bottom-color:rgba(255,255,255,.07);box-shadow:0 2px 12px rgba(0,0,0,.4)}
   /* Pin fallback disabled: keep bar in its natural position even if JS adds the class */
   .filters-sticky.is-pinned{
     position:static !important;top:auto;left:auto;right:auto;margin:0 -1.25rem 1.5rem;padding:.75rem 1.25rem;
@@ -94,7 +152,7 @@
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
     overflow:hidden;text-overflow:ellipsis;min-height:40px;word-break:break-word;
   }
-  html.dark .gig-thumb{background:#172033}
+  html.dark .gig-thumb{background:var(--surf-800)}
 
   /* ============ GALLERY DRAG-DROP (owner only) ============ */
   .gig-thumb-drag{cursor:grab;transition:transform .15s, box-shadow .15s, opacity .15s}
@@ -104,7 +162,23 @@
 
   /* ============ DARK MODE — Interlink dApp vibe ============ */
   html.dark{color-scheme:dark}
-  html.dark body{background:#06080f;color:#e2e8f0}
+  html.dark body{background:var(--surf-950);color:#e2e8f0}
+html.dark {
+  --ink-50:  #1e293b;
+  --ink-100: #1e293b;
+  --ink-200: #334155;
+  --ink-300: #475569;
+  --ink-400: #64748b;
+  --ink-500: #94a3b8;
+  --ink-600: #cbd5e1;
+  --ink-700: #e2e8f0;
+  --ink-800: #f1f5f9;
+  --ink-900: #f8fafc;
+  --ink-text: #e7ecf5;
+  --ink-muted: #94a3b8;
+  --surface: #131c2e;
+  --surface-alt: #1e293b;
+}
   html.dark .scrollbar-thin::-webkit-scrollbar-thumb{background:var(--surf-600)}
   html.dark .grad-hero{
     background:
@@ -112,7 +186,7 @@
       radial-gradient(700px 360px at 88% 10%, rgba(167,139,250,.14) 0%, transparent 60%),
       linear-gradient(180deg,#06080f 0%, #0a0f1e 100%);
   }
-  html.dark .progress{background:#172033}
+  html.dark .progress{background:var(--surf-700)}
   html.dark .progress>span{background:linear-gradient(90deg,var(--neon-cyan),var(--neon-violet))}
 
   /* Map common Tailwind utilities to dark surfaces */
@@ -147,6 +221,25 @@
   html.dark .bg-gradient-to-b.from-white,html.dark .from-white{--tw-gradient-from:var(--surf-900) !important}
   html.dark .from-brand-50,html.dark .via-white{--tw-gradient-from:var(--surf-900) !important;--tw-gradient-via:var(--surf-900) !important}
   html.dark .to-violet-50\/40,html.dark .to-violet-50{--tw-gradient-to:var(--neon-violet)0D !important}
+
+  /* Premium Dark Mode Enhancements */
+  html.dark .btn-premium {
+    color: #0f0f0f;
+  }
+
+  html.dark .section-title-premium {
+    background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  html.dark .stat-number {
+    background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
   html.dark input,html.dark select,html.dark textarea{background-color:var(--surf-900);color:#e2e8f0;border-color:rgba(255,255,255,.08)}
   html.dark .shadow-card{box-shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
   html.dark .shadow-pop{box-shadow:0 14px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04)}
@@ -155,67 +248,217 @@
   .cta-glow{box-shadow:0 0 0 1px rgba(34,211,238,.45), 0 8px 28px rgba(34,211,238,.28);transition:box-shadow .25s}
   .cta-glow:hover{box-shadow:0 0 0 1px rgba(34,211,238,.7), 0 12px 38px rgba(34,211,238,.45)}
 
+  /* ══════════════════════════════════════════════════════════
+     REDESIGN GOLD — Premium Web3 Styling
+     ══════════════════════════════════════════════════════════ */
+
+  /* Hero Section Enhancements */
+  .hero-premium {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-premium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(34, 211, 238, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-premium .hero-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Premium Button Styles */
+  .btn-premium {
+    background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
+    color: #0f0f0f;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 32px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.3), 0 12px 32px rgba(34, 211, 238, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-premium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+
+  .btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.6), 0 20px 48px rgba(34, 211, 238, 0.35);
+  }
+
+  .btn-premium:hover::before {
+    transform: translateX(100%);
+  }
+
+  /* Card Premium Styles */
+  .card-premium {
+    background: linear-gradient(135deg, rgba(28, 28, 28, 0.8) 0%, rgba(30, 30, 30, 0.6) 100%);
+    border: 1px solid rgba(34, 211, 238, 0.15);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-premium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 0% 0%, rgba(34, 211, 238, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .card-premium:hover {
+    border-color: rgba(34, 211, 238, 0.4);
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.2), 0 20px 40px rgba(34, 211, 238, 0.1);
+    transform: translateY(-4px);
+  }
+
+  /* Stat Card */
+  .stat-card {
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%);
+    border: 1px solid rgba(34, 211, 238, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    border-color: rgba(34, 211, 238, 0.5);
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+  }
+
+  .stat-number {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: 'Playfair Display', serif;
+  }
+
+  /* Feature Icon Box */
+  .feature-icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(167, 139, 250, 0.15) 100%);
+    border: 1px solid rgba(34, 211, 238, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #22d3ee;
+    transition: all 0.3s ease;
+  }
+
+  .card-premium:hover .feature-icon-box {
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.3) 0%, rgba(167, 139, 250, 0.3) 100%);
+    border-color: rgba(34, 211, 238, 0.5);
+    transform: scale(1.1);
+  }
+
+  /* Section Title Premium */
+  .section-title-premium {
+    font-size: 40px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #e7ecf5 0%, #22d3ee 50%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+    font-family: 'Playfair Display', serif;
+  }
+
+  /* Divider with Glow */
+  .divider-glow {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0.3) 50%, transparent 100%);
+    margin: 32px 0;
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
+  }
+
+  /* Badge Premium */
+  .badge-premium {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    font-size: 13px;
+    font-weight: 600;
+    color: #22d3ee;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Pulse Animation */
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(34, 211, 238, 0);
+    }
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s infinite;
+  }
+
+  /* Floating Animation */
+  @keyframes float-up {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .float-up {
+    animation: float-up 3s ease-in-out infinite;
+  }
+
+  /* Glass Effect */
+  .glass-effect {
+    background: rgba(28, 28, 28, 0.5);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(34, 211, 238, 0.1);
+    border-radius: 12px;
+  }
+
+  html.dark .glass-effect {
+    background: rgba(15, 15, 15, 0.6);
+  }
+
   
 /* ══════════════════════════════════════════════════════════
    THEME SYSTEM — CSS Custom Properties
    ══════════════════════════════════════════════════════════ */
 :root {
-  --brand-50: #eef5ff;
-  --brand-100: #d9e8ff;
-  --brand-200: #b7d2ff;
-  --brand-300: #8ab4ff;
-  --brand-400: #5c91ff;
-  --brand-500: #1a73e8;
-  --brand-600: #155fc4;
-  --brand-700: #114c9c;
-  --brand-800: #0f3e7d;
-  --brand-900: #0c3163;
-  --sonic: #7C3AED;
-  --gold-accent: #c9962e;
-  --neon-cyan: #22d3ee;
-  --neon-lime: #a3e635;
-  --neon-violet: #a78bfa;
-  --surf-950: #06080f;
-  --surf-900: #0a0f1e;
-  --surf-800: #0f1626;
-  --surf-700: #172033;
-  --surf-600: #1f2a44;
-  --hero-light: radial-gradient(1200px 500px at 20% 0%, #d9e8ff 0%, transparent 60%),radial-gradient(800px 400px at 90% 10%, #efe7ff 0%, transparent 60%),linear-gradient(180deg,#fafbff 0%,#ffffff 100%);
-  --hero-dark: linear-gradient(135deg,#0a0a0f 0%,#0d1117 45%,#111827 100%);
-  --banner-dark: linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
-  --banner-light: linear-gradient(135deg,#eef5ff 0%,#f5f0ff 50%,#dbeafe 100%);
-}
-
-/* Theme: Slate Gray */
-[data-theme="slate"] {
-  --brand-50: #f8fafc;
-  --brand-100: #f1f5f9;
-  --brand-200: #e2e8f0;
-  --brand-300: #cbd5e1;
-  --brand-400: #94a3b8;
-  --brand-500: #475569;
-  --brand-600: #334155;
-  --brand-700: #1e293b;
-  --brand-800: #0f172a;
-  --brand-900: #020617;
-  --sonic: #64748b;
-  --gold-accent: #c9962e;
-  --neon-cyan: #38bdf8;
-  --neon-lime: #a3e635;
-  --neon-violet: #94a3b8;
-  --surf-950: #020617;
-  --surf-900: #0f172a;
-  --surf-800: #1e293b;
-  --surf-700: #334155;
-  --surf-600: #475569;
-  --hero-light: radial-gradient(1200px 500px at 20% 0%, #e2e8f0 0%, transparent 60%),radial-gradient(800px 400px at 90% 10%, #f1f5f9 0%, transparent 60%),linear-gradient(180deg,#f8fafc 0%,#ffffff 100%);
-  --hero-dark: linear-gradient(135deg,#020617 0%,#0f172a 45%,#1e293b 100%);
-  --banner-dark: linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#334155 100%);
-  --banner-light: linear-gradient(135deg,#e2e8f0 0%,#f8fafc 50%,#f1f5f9 100%);
-}
-
-/* Theme: Violet Frost */
-[data-theme="violet_white"] {
   --brand-50: #f5f3ff;
   --brand-100: #ede9fe;
   --brand-200: #ddd6fe;
@@ -226,49 +469,41 @@
   --brand-700: #6d28d9;
   --brand-800: #5b21b6;
   --brand-900: #4c1d95;
-  --sonic: #7c3aed;
+  --sonic: #7C3AED;
   --gold-accent: #c9962e;
   --neon-cyan: #22d3ee;
   --neon-lime: #a3e635;
   --neon-violet: #a78bfa;
-  --surf-950: #0c0a1a;
-  --surf-900: #13102b;
-  --surf-800: #1c1838;
-  --surf-700: #272145;
-  --surf-600: #332b55;
-  --hero-light: radial-gradient(1200px 500px at 20% 0%, #ede9fe 0%, transparent 60%),radial-gradient(800px 400px at 90% 10%, #e0e7ff 0%, transparent 60%),linear-gradient(180deg,#f5f3ff 0%,#ffffff 100%);
-  --hero-dark: linear-gradient(135deg,#0c0a1a 0%,#13102b 45%,#1e1b4b 100%);
-  --banner-dark: linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%);
-  --banner-light: linear-gradient(135deg,#ede9fe 0%,#f5f3ff 50%,#e0e7ff 100%);
+  --surf-950: #0f0f0f;
+  --surf-900: #1c1c1c;
+  --surf-800: #1e1e1e;
+  --surf-700: #2a2a2a;
+  --surf-600: #3a3a3a;
+  --hero-light: radial-gradient(1200px 500px at 20% 0%, #d9e8ff 0%, transparent 60%),radial-gradient(800px 400px at 90% 10%, #efe7ff 0%, transparent 60%),linear-gradient(180deg,#fafbff 0%,#ffffff 100%);
+  --hero-dark: linear-gradient(135deg,#0f0f0f 0%,#1c1c1c 45%,#1e1e1e 100%);
+  --banner-dark: linear-gradient(135deg,#1c1c1c 0%,#1e1e1e 50%,#2a2a2a 100%);
+  --banner-light: linear-gradient(135deg,#eef5ff 0%,#f5f0ff 50%,#dbeafe 100%);
+
+  /* Ink scale — light mode */
+  --ink-50:  #f8fafc;
+  --ink-100: #f1f5f9;
+  --ink-200: #e2e8f0;
+  --ink-300: #cbd5e1;
+  --ink-400: #94a3b8;
+  --ink-500: #64748b;
+  --ink-600: #475569;
+  --ink-700: #334155;
+  --ink-800: #1e293b;
+  --ink-900: #0f172a;
+  --surface:     #ffffff;
+  --surface-alt: #f8fafc;
 }
 
-/* Theme: Deep Emerald */
-[data-theme="emerald"] {
-  --brand-50: #ecfdf5;
-  --brand-100: #d1fae5;
-  --brand-200: #a7f3d0;
-  --brand-300: #6ee7b7;
-  --brand-400: #34d399;
-  --brand-500: #10b981;
-  --brand-600: #059669;
-  --brand-700: #047857;
-  --brand-800: #065f46;
-  --brand-900: #064e3b;
-  --sonic: #0d9488;
-  --gold-accent: #c9962e;
-  --neon-cyan: #2dd4bf;
-  --neon-lime: #a3e635;
-  --neon-violet: #8b5cf6;
-  --surf-950: #020617;
-  --surf-900: #0a0f1e;
-  --surf-800: #0f1626;
-  --surf-700: #172033;
-  --surf-600: #1f2a44;
-  --hero-light: radial-gradient(1200px 500px at 20% 0%, #d1fae5 0%, transparent 60%),radial-gradient(800px 400px at 90% 10%, #ccfbf1 0%, transparent 60%),linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%);
-  --hero-dark: linear-gradient(135deg,#020617 0%,#0f172a 45%,#134e4a 100%);
-  --banner-dark: linear-gradient(135deg,#134e4a 0%,#115e59 50%,#0f766e 100%);
-  --banner-light: linear-gradient(135deg,#d1fae5 0%,#ccfbf1 50%,#e0f2fe 100%);
-}
+
+
+
+
+
 
 /* Glass header */
   .glass{backdrop-filter: blur(14px) saturate(160%);}
@@ -338,12 +573,13 @@
     align-items: center;
     max-width: 1280px;
     margin: 0 auto;
-    padding: 0 2.5rem;          /* space for arrows */
+    padding: 0 2.5rem;
     overflow-x: auto;
-    scrollbar-width: none;      /* Firefox */
-    scroll-behavior: smooth;
+    scrollbar-width: none;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
+    /* Sem scroll-behavior:smooth aqui — evita pulos indesejados no re-render */
+    overscroll-behavior-x: contain;
   }
   .cat-strip-inner::-webkit-scrollbar { display: none; }
 
@@ -399,8 +635,8 @@
   html.dark .cat-strip-btn--active { color: #f9fafb !important; border-bottom-color: #f9fafb !important; }
   html.dark .cat-strip-arrow { color: #9ca3af; }
   html.dark .cat-strip-arrow:hover { color: #f9fafb; }
-  html.dark .cat-strip-arrow-l { background: linear-gradient(to right, #0a0f1e 60%, transparent); }
-  html.dark .cat-strip-arrow-r { background: linear-gradient(to left, #0a0f1e 60%, transparent); }
+  html.dark .cat-strip-arrow-l { background: linear-gradient(to right, var(--surf-950) 60%, transparent); }
+  html.dark .cat-strip-arrow-r { background: linear-gradient(to left, var(--surf-950) 60%, transparent); }
   html.dark #cat-strip-wrap { border-top-color: rgba(255,255,255,.07); }
 
   /* ══════════════════════════════════════════════════════════
@@ -512,8 +748,42 @@
 
 
   /* ═══ HERO — estilo fixo Fiverr (foto escura, texto branco, sempre, independente do tema do site) ═══ */
-  #hero-section { background:#0b0e14; }
-  .hero-title-text { color:#ffffff; }
+  html.dark #hero-section { background: var(--surf-950); }
+  html:not(.dark) #hero-section { background: #ffffff; }
+  html.dark .hero-title-text { color:#ffffff; }
+  html:not(.dark) .hero-title-text { color: var(--surf-950); }
+  html.dark .hero-badge { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); }
+  html:not(.dark) .hero-badge { border-color: rgba(0,0,0,0.1); background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.5); }
+  html.dark .hero-subtitle { color: rgba(255,255,255,0.5); }
+  html:not(.dark) .hero-subtitle { color: rgba(0,0,0,0.55); }
+  html.dark .hero-outline-btn { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); color: #ffffff; }
+  html.dark .hero-outline-btn:hover { background: rgba(255,255,255,0.08); }
+  html:not(.dark) .hero-outline-btn { border-color: rgba(0,0,0,0.15); background: rgba(0,0,0,0.03); color: var(--surf-950); }
+  html:not(.dark) .hero-outline-btn:hover { background: rgba(0,0,0,0.06); }
+  html.dark .hero-glow { background: radial-gradient(ellipse 80% 50% at 50% -10%,rgba(124,58,237,0.18) 0%,transparent 70%); }
+  html:not(.dark) .hero-glow { background: radial-gradient(ellipse 80% 50% at 50% -10%,rgba(124,58,237,0.10) 0%,transparent 70%); }
+  html.dark .hero-search-bar { border-color: rgba(255,255,255,0.10); background: rgba(255,255,255,0.05); }
+  html:not(.dark) .hero-search-bar { border-color: rgba(0,0,0,0.12); background: rgba(0,0,0,0.02); }
+  html.dark .hero-search-icon { color: rgba(255,255,255,0.3); }
+  html:not(.dark) .hero-search-icon { color: rgba(0,0,0,0.35); }
+  html.dark .hero-search-input { color:#fff; }
+  html.dark .hero-search-input::placeholder { color: rgba(255,255,255,0.3); }
+  html:not(.dark) .hero-search-input { color: var(--surf-950); }
+  html:not(.dark) .hero-search-input::placeholder { color: rgba(0,0,0,0.35); }
+  html.dark .hero-search-submit { color: rgba(255,255,255,0.4); border-left:1px solid rgba(255,255,255,0.10); }
+  html.dark .hero-search-submit:hover { color:#fff; }
+  html:not(.dark) .hero-search-submit { color: rgba(0,0,0,0.45); border-left:1px solid rgba(0,0,0,0.12); }
+  html:not(.dark) .hero-search-submit:hover { color: var(--surf-950); }
+  html.dark .hero-dropdown { background:#1c1c1c; border-color: rgba(255,255,255,0.1); }
+  html:not(.dark) .hero-dropdown { background:#fff; border-color: rgba(0,0,0,0.1); }
+  html.dark .hero-tag { color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+  html.dark .hero-tag:hover { color: rgba(255,255,255,0.7); }
+  html:not(.dark) .hero-tag { color: rgba(0,0,0,0.5); border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); }
+  html:not(.dark) .hero-tag:hover { color: var(--surf-950); }
+  html.dark .hero-partner-label,html.dark .hero-partner-item { color: rgba(255,255,255,0.3); }
+  html:not(.dark) .hero-partner-label,html:not(.dark) .hero-partner-item { color: rgba(0,0,0,0.4); }
+  html.dark .hero-divider { background: rgba(255,255,255,0.10); }
+  html:not(.dark) .hero-divider { background: rgba(0,0,0,0.12); }
   .hero-search-btn { background:#0b1220; }
   .hero-search-btn:hover { background:#1f2937; }
   .hero-tag { color:#ffffff; border:1.5px solid rgba(255,255,255,0.55); background:transparent; }
@@ -527,7 +797,7 @@
   html.dark .banner-badge { background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.20); color: rgba(255,255,255,0.70); }
   html.dark .banner-title { color: #ffffff; }
   html.dark .banner-sub { color: rgba(255,255,255,0.60); }
-  html.dark .banner-cta { background: #ffffff; color: #0b1220; }
+  html.dark .banner-cta { background: #ffffff; color: var(--surf-950); }
   html.dark .banner-cta:hover { background: #eef5ff; color: #1a73e8; }
 
   html:not(.dark) .freelancer-banner { background: var(--banner-light); border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
@@ -568,7 +838,7 @@
   html.dark .partner-sub { color: #9ca3af; }
   html:not(.dark) .partner-btn { background: #0b1220; color: #ffffff; }
   html:not(.dark) .partner-btn:hover { background: #1a73e8; }
-  html.dark .partner-btn { background: #a78bfa; color: #0b1220; }
+  html.dark .partner-btn { background: #a78bfa; color: var(--surf-950); }
   html.dark .partner-btn:hover { background: #c4b5fd; }
 
   /* ═══ POWERED BY INTERLINK ═══ */
@@ -744,7 +1014,7 @@
 const STATE = {
   route: 'home',
   currentUserId: 'u_me',
-  query: '', category: 'all', country: 'all', sort: 'relevance',
+  query: '', category: 'all', country: 'all', sort: 'relevance', trendingActive: false,
   page: 1,                          // página atual da listagem de serviços
   ratingMin: 0,              // 0 | 4 | 4.5
   priceMax: 0,               // 0 = any
@@ -762,8 +1032,9 @@ const STATE = {
   dashboardTab: 'client',
   clientOrdersTab: 'active',
   toastSeq: 0,
-  walletConnected: false,           // primeira visita começa desconectada
-  authenticated: false,             // login ativo após assinatura/onboarding da wallet
+  walletConnected: false,           
+  authenticated: false,             
+  isRealWallet: true,               // Agora usamos wallets reais via Reown
   onboardingComplete: false,        // true depois de criar handle e escolher perfil
   userRole: 'client',               // client | freelancer
   walletProvider: 'ITLX',           // ITLX | MetaMask | Rabby | WalletConnect
@@ -782,7 +1053,7 @@ const STATE = {
   selectedToken: 'ITL',
   showQR: false,
   darkMode: false,
-  theme: 'violet_white',  // blue | purple | violet_white | emerald
+  theme: 'blue',
   newServiceLogo: null,            // dataURL da logo carregada no modal de novo serviço
   newServiceGallery: [],           // Array de dataURLs — fotos extras de exemplo (estilo Fiverr)
   newServiceRequirements: [],      // Builder de campos de briefing (Fiverr-style requirements)
@@ -1070,8 +1341,8 @@ const TR = {
   'Entregar trabalho':{en:'Deliver work',es:'Entregar trabajo',de:'Arbeit abliefern',ja:'作業を納品',hi:'काम डिलीवर करें'},
   'Enviar entrega':{en:'Send delivery',es:'Enviar entrega',de:'Lieferung senden',ja:'納品物を送る',hi:'डिलीवरी भेजें'},
   'Pedir ajuste':{en:'Request changes',es:'Pedir ajustes',de:'Änderungen anfordern',ja:'修正を依頼',hi:'बदलाव माँगें'},
-  'Preencher briefing':{en:'Fill briefing',es:'Rellenar briefing',de:'Briefing ausfüllen',ja:'要件を入力',hi:'ब्रीफिंग भरें'},
-  'Preencher briefing agora':{en:'Fill briefing now',es:'Rellenar briefing ahora',de:'Briefing jetzt ausfüllen',ja:'今すぐ要件を入力',hi:'अभी ब्रीफिंग भरें'},
+  'Preencher formulário':{en:'Fill briefing',es:'Rellenar briefing',de:'Briefing ausfüllen',ja:'要件を入力',hi:'ब्रीफिंग भरें'},
+  'Preencher formulário agora':{en:'Fill briefing now',es:'Rellenar briefing ahora',de:'Briefing jetzt ausfüllen',ja:'今すぐ要件を入力',hi:'अभी ब्रीफिंग भरें'},
   'Baixar todos os arquivos':{en:'Download all files',es:'Descargar todos los archivos',de:'Alle Dateien herunterladen',ja:'すべてのファイルをダウンロード',hi:'सभी फ़ाइलें डाउनलोड करें'},
   'Sacar':{en:'Withdraw',es:'Retirar',de:'Auszahlen',ja:'引き出し',hi:'निकालें'},
   'Contratar com escrow':{en:'Hire with escrow',es:'Contratar con escrow',de:'Mit Escrow beauftragen',ja:'エスクローで依頼',hi:'एस्क्रो से हायर करें'},
@@ -1087,7 +1358,7 @@ const TR = {
   'Aprovados & pagos':{en:'Approved & paid',es:'Aprobados y pagados',de:'Genehmigt & bezahlt',ja:'承認済み・支払い済み',hi:'स्वीकृत और भुगतान किया'},
   'Aguardando':{en:'Waiting',es:'Esperando',de:'Wartend',ja:'待機中',hi:'प्रतीक्षारत'},
   'Aguardando aprovação':{en:'Awaiting approval',es:'Esperando aprobación',de:'Wartet auf Genehmigung',ja:'承認待ち',hi:'मंज़ूरी का इंतज़ार'},
-  'Aguardando briefing':{en:'Awaiting briefing',es:'Esperando briefing',de:'Wartet auf Briefing',ja:'要件待ち',hi:'ब्रीफिंग का इंतज़ार'},
+  'Aguardando formulário':{en:'Awaiting briefing',es:'Esperando briefing',de:'Wartet auf Briefing',ja:'要件待ち',hi:'ब्रीफिंग का इंतज़ार'},
   'Aguardando confirmação':{en:'Awaiting confirmation',es:'Esperando confirmación',de:'Wartet auf Bestätigung',ja:'確認待ち',hi:'पुष्टि का इंतज़ार'},
   'Recebido':{en:'Received',es:'Recibido',de:'Erhalten',ja:'受領済み',hi:'प्राप्त'},
   'Finalizado':{en:'Finished',es:'Finalizado',de:'Abgeschlossen',ja:'完了',hi:'समाप्त'},
@@ -1159,7 +1430,7 @@ const TR = {
   'Mensagem para o cliente':{en:'Message to the client',es:'Mensaje para el cliente',de:'Nachricht an den Kunden',ja:'クライアントへのメッセージ',hi:'क्लाइंट के लिए संदेश'},
   'Clique para enviar arquivos':{en:'Click to upload files',es:'Haz clic para subir archivos',de:'Klicken, um Dateien hochzuladen',ja:'クリックしてファイルをアップロード',hi:'फ़ाइलें अपलोड करने हेतु क्लिक करें'},
   'Descreva seu projeto':{en:'Describe your project',es:'Describe tu proyecto',de:'Beschreibe dein Projekt',ja:'プロジェクトを説明',hi:'अपना प्रोजेक्ट बताइए'},
-  'Briefing que você vai preencher':{en:'Briefing you will fill out',es:'Briefing a completar',de:'Briefing zum Ausfüllen',ja:'入力する要件',hi:'आप जो ब्रीफिंग भरेंगे'},
+  'Formulário que você vai preencher':{en:'Briefing you will fill out',es:'Briefing a completar',de:'Briefing zum Ausfüllen',ja:'入力する要件',hi:'आप जो ब्रीफिंग भरेंगे'},
   'Handle e wallet não são editáveis.':{en:'Handle and wallet are not editable.',es:'Handle y wallet no se pueden editar.',de:'Handle und Wallet können nicht bearbeitet werden.',ja:'ハンドルとウォレットは編集できません。',hi:'हैंडल और वॉलेट संपादन योग्य नहीं हैं।'},
   'Motivo':{en:'Reason',es:'Motivo',de:'Grund',ja:'理由',hi:'कारण'},
   'Outro':{en:'Other',es:'Otro',de:'Sonstiges',ja:'その他',hi:'अन्य'},
@@ -1203,7 +1474,7 @@ const TR = {
   'Aguarde a entrega antes de aprovar.':{en:'Wait for the delivery before approving.',es:'Espera la entrega antes de aprobar.',de:'Warte auf die Lieferung, bevor du genehmigst.',ja:'承認前に納品をお待ちください。',hi:'मंज़ूरी देने से पहले डिलीवरी का इंतज़ार करें।'},
   'Entrega enviada ao cliente!':{en:'Delivery sent to client!',es:'¡Entrega enviada al cliente!',de:'Lieferung an den Kunden gesendet!',ja:'クライアントに納品しました！',hi:'क्लाइंट को डिलीवरी भेजी गई!'},
   'Pedido criado e tx confirmada!':{en:'Order created and tx confirmed!',es:'¡Pedido creado y tx confirmada!',de:'Auftrag erstellt und Tx bestätigt!',ja:'注文作成、トランザクション確認済み！',hi:'ऑर्डर बना और tx पुष्टि हुई!'},
-  'Briefing enviado on-chain. Prazo iniciado.':{en:'Briefing sent on-chain. Timer started.',es:'Briefing enviado on-chain. Plazo iniciado.',de:'Briefing on-chain gesendet. Frist gestartet.',ja:'要件をオンチェーン送信。納期開始。',hi:'ब्रीफिंग ऑन-चेन भेजी गई। समय शुरू।'},
+  'Formulário enviado on-chain. Prazo iniciado.':{en:'Briefing sent on-chain. Timer started.',es:'Briefing enviado on-chain. Plazo iniciado.',de:'Briefing on-chain gesendet. Frist gestartet.',ja:'要件をオンチェーン送信。納期開始。',hi:'ब्रीफिंग ऑन-चेन भेजी गई। समय शुरू।'},
   'Serviço publicado!':{en:'Service published!',es:'¡Servicio publicado!',de:'Service veröffentlicht!',ja:'サービスを公開しました！',hi:'सेवा प्रकाशित!'},
   'Serviço atualizado!':{en:'Service updated!',es:'¡Servicio actualizado!',de:'Service aktualisiert!',ja:'サービスを更新しました！',hi:'सेवा अपडेट हुई!'},
   'Serviço excluído.':{en:'Service deleted.',es:'Servicio eliminado.',de:'Service gelöscht.',ja:'サービスを削除しました。',hi:'सेवा हटाई गई।'},
@@ -1258,7 +1529,7 @@ const TR = {
   'Lida':{en:'Read',es:'Leído',de:'Gelesen',ja:'既読',hi:'पढ़ा गया'},
 
   // Order status chip — was hardcoded in PT regardless of language
-  'Briefing pendente':{en:'Awaiting info',es:'Info pendiente',de:'Info ausstehend',ja:'情報待ち',hi:'जानकारी की प्रतीक्षा'},
+  'Formulário pendente':{en:'Awaiting info',es:'Info pendiente',de:'Info ausstehend',ja:'情報待ち',hi:'जानकारी की प्रतीक्षा'},
   'Cancelado':{en:'Cancelled',es:'Cancelado',de:'Abgebrochen',ja:'キャンセル済み',hi:'रद्द किया गया'},
 
   // Related services — was a fixed PT sentence regardless of language
@@ -1379,6 +1650,7 @@ const CATEGORIES = [
   { id:'music',      label:'Música & Áudio', icon:'music-2',     color:'#ec4899' },
   { id:'business',   label:'Business',       icon:'users',       color:'#0ea5e9' },
   { id:'consulting', label:'Consultoria',    icon:'badge-check', color:'#14b8a6' },
+  { id:'other',      label:'Outros',         icon:'more-horizontal', color:'#6b7280' },
 ];
 
 const COUNTRIES = [
@@ -1675,45 +1947,42 @@ function pickTags(cat){
 }
 
 function requirementsByCategory(cat){
-  // Templates de briefing por categoria — vendedor pode editar depois.
+  // Templates de briefing por categoria — simples, sem jargão técnico, qualquer cliente entende de cara.
   const common = { id: uid('req'), type:'textarea', label:'Descreva seu projeto em detalhe — objetivo, escopo, prazo desejado.', required:true, placeholder:'' };
-  const refs = { id: uid('req'), type:'url', label:'Link de referência (Figma, repositório, deck, etc.)', required:false, placeholder:'https://...' };
+  const refs = { id: uid('req'), type:'url', label:'Algum link de referência ou inspiração?', required:false, placeholder:'https://...' };
   const map = {
     design: [
       common,
-      { id: uid('req'), type:'text',   label:'Paleta de cores ou guia de marca já existente?', required:false, placeholder:'Ex: #1A73E8, escuro' },
+      { id: uid('req'), type:'text',   label:'Já tem cores ou uma marca pra seguir?', required:false, placeholder:'Ex: tons de azul, igual ao nosso site' },
       refs,
-      { id: uid('req'), type:'select', label:'Estilo desejado', required:true, options:['Minimalista','Glassmorphism','Brutalist','Neon/cyberpunk','Outro'] },
+      { id: uid('req'), type:'select', label:'Que estilo você imagina?', required:true, options:['Moderno e clean','Colorido e divertido','Sério e profissional','Deixo a seu critério'] },
     ],
     dev: [
       common,
-      { id: uid('req'), type:'url',  label:'Link do repositório (privado é OK — depois libera acesso)', required:true, placeholder:'https://github.com/...' },
-      { id: uid('req'), type:'text', label:'Network alvo (ex: Interlink Mainnet, Sepolia)', required:true, placeholder:'Interlink Mainnet' },
-      { id: uid('req'), type:'textarea', label:'Funcionalidades obrigatórias e critérios de aceite', required:true, placeholder:'' },
+      { id: uid('req'), type:'url',  label:'Link do repositório (se já existir um — se não, deixe em branco)', required:false, placeholder:'https://github.com/...' },
+      { id: uid('req'), type:'text', label:'Em qual rede deve funcionar? (ex: Interlink — se não souber, combinamos no chat)', required:false, placeholder:'Interlink' },
+      { id: uid('req'), type:'textarea', label:'O que precisa estar funcionando pra você aceitar a entrega?', required:true, placeholder:'' },
     ],
     audit: [
       common,
       { id: uid('req'), type:'url',  label:'Link do repositório do contrato', required:true, placeholder:'https://github.com/...' },
-      { id: uid('req'), type:'text', label:'Commit hash ou tag de versão a auditar', required:true, placeholder:'v1.2.0 ou abc123' },
-      { id: uid('req'), type:'select', label:'Profundidade desejada', required:true, options:['Express (72h)','Manual padrão','Manual + fuzz Foundry'] },
+      { id: uid('req'), type:'text', label:'Versão ou trecho específico a revisar (opcional)', required:false, placeholder:'Ex: v1.2.0 — se não souber, tudo bem' },
+      { id: uid('req'), type:'select', label:'Quão a fundo você quer essa revisão?', required:true, options:['Rápida (até 3 dias)','Padrão','Completa e aprofundada'] },
     ],
     marketing: [
       common,
-      { id: uid('req'), type:'url',  label:'Link do site/dApp/whitepaper', required:true, placeholder:'https://...' },
-      { id: uid('req'), type:'text', label:'KPIs principais (ex: 10k seguidores, 2k membros Discord)', required:false, placeholder:'' },
-      { id: uid('req'), type:'select', label:'Canal prioritário', required:true, options:['X/Twitter','Discord','Telegram','Multi-canal'] },
+      { id: uid('req'), type:'url',  label:'Link do site ou projeto', required:true, placeholder:'https://...' },
+      { id: uid('req'), type:'text', label:'Já tem comunidade hoje? (ex: Discord, Twitter — e o tamanho aproximado)', required:false, placeholder:'Ex: 500 no Discord, ainda sem Twitter' },
     ],
     writing: [
       common,
       refs,
-      { id: uid('req'), type:'select', label:'Tom de voz', required:true, options:['Técnico/Acadêmico','Direto/Executivo','Casual/Comunidade'] },
-      { id: uid('req'), type:'text', label:'Idioma de saída', required:true, placeholder:'PT-BR, EN, etc.' },
     ],
     video: [
       common,
       refs,
-      { id: uid('req'), type:'select', label:'Formato', required:true, options:['Vertical 9:16','Horizontal 16:9','Quadrado 1:1'] },
-      { id: uid('req'), type:'text', label:'Duração desejada (segundos)', required:false, placeholder:'15s, 30s, 60s' },
+      { id: uid('req'), type:'select', label:'Formato', required:true, options:['Vertical (celular)','Horizontal (YouTube)','Quadrado (feed)'] },
+      { id: uid('req'), type:'text', label:'Duração desejada', required:false, placeholder:'Ex: 15 a 30 segundos' },
     ],
   };
   return map[cat] || [common, refs];
@@ -1773,6 +2042,7 @@ function diffCountdown(ms){
 }
 function addNotification(n){
   STATE.notifications.unshift({ id:uid('n'), read:false, ts:Date.now(), ...n });
+  if (STATE.notifications.length > 200) STATE.notifications = STATE.notifications.slice(0, 200);
 }
 function unreadCount(){ return STATE.notifications.filter(n=>!n.read).length; }
 
@@ -1953,7 +2223,7 @@ function renderView(){
   const viewSig = [STATE.route, STATE.category, STATE.query, STATE.country].join('|');
   if (STATE._viewSig !== viewSig) {
     STATE._viewSig = viewSig;
-    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    requestAnimationFrame(()=>{ window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' }); });
   }
 
   switch(STATE.route){
@@ -1982,6 +2252,57 @@ function renderView(){
 /* ---------- HEADER ---------- */
 
 /* ---------- CATEGORY STRIP — arrow navigation ---------- */
+function pickCategory(catId){
+  closeSearchDropdown();
+  STATE.category = catId;
+  STATE.trendingActive = false;
+  if(catId === 'all') STATE.query = '';
+  // Se não estiver na home, navegar para lá primeiro
+  if(STATE.route !== 'home'){
+    STATE.route = 'home';
+    window.location.hash = '#/home';
+  }
+  render();
+  // Scroll suave até o marketplace após um tick
+  setTimeout(()=>{
+    const el = document.getElementById('explore-section') || document.querySelector('[data-section="marketplace"]');
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 80);
+}
+
+function pickTrendingTag(tag){
+  closeSearchDropdown();
+  STATE.query = tag;
+  STATE.category = 'all';
+  STATE.trendingActive = false;
+  if(STATE.route !== 'home'){
+    STATE.route = 'home';
+    window.location.hash = '#/home';
+  }
+  render();
+  setTimeout(()=>{
+    const el = document.getElementById('explore-section') || document.querySelector('[data-section="marketplace"]');
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 80);
+}
+
+function pickTrending(){
+  closeSearchDropdown();
+  STATE.category = 'all';
+  STATE.query = '';
+  STATE.sort = 'relevance';
+  STATE.trendingActive = true;
+  if(STATE.route !== 'home'){
+    STATE.route = 'home';
+    window.location.hash = '#/home';
+  }
+  render();
+  setTimeout(()=>{
+    const el = document.getElementById('explore-section') || document.querySelector('[data-section="marketplace"]');
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 80);
+}
+
 function initCatStrip(){
   const strip = document.getElementById('cat-strip');
   const btnL  = document.getElementById('cat-arrow-l');
@@ -1999,9 +2320,20 @@ function initCatStrip(){
     new ResizeObserver(updateArrows).observe(strip);
   }
   updateArrows();
-  // Scroll active button into view
+  // Scroll active button into view APENAS se estiver fora da área visível
   const active = strip.querySelector('.cat-strip-btn--active');
-  if(active) setTimeout(()=>active.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}), 60);
+  if(active){
+    const r = active.getBoundingClientRect();
+    const sr = strip.getBoundingClientRect();
+    const outLeft  = r.left < sr.left + 32;
+    const outRight = r.right > sr.right - 32;
+    if(outLeft || outRight){
+      setTimeout(()=>{
+        const offset = active.offsetLeft - (strip.clientWidth/2) + (active.clientWidth/2);
+        strip.scrollTo({left: Math.max(0, offset), behavior:'smooth'});
+      }, 60);
+    }
+  }
 }
 function catStripScroll(dir){
   const strip = document.getElementById('cat-strip');
@@ -2017,6 +2349,8 @@ function catStripScroll(dir){
 }
 
 function renderHeader(){
+  // Salvar posição do scroll do cat-strip antes de re-renderizar
+  const _prevStripScroll = document.getElementById('cat-strip')?.scrollLeft || 0;
   const me = getUser(STATE.currentUserId);
   const langObj = LANGUAGES_LIST.find(l=>l.id===STATE.language);
   const authed = isAuthed();
@@ -2054,25 +2388,6 @@ function renderHeader(){
 
       <!-- RIGHT SIDE -->
       <div class="flex items-center gap-2">
-
-        <!-- Admin panel (invisível ao público — só aparece após login admin via #/admin) -->
-        ${STATE.isAdmin ? `
-        <a href="#/admin" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[12px] font-extrabold transition
-          ${STATE.route==='admin'
-            ? 'bg-violet-500 text-white'
-            : (STATE.darkMode ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-800/50' : 'bg-violet-50 text-violet-700 hover:bg-violet-100 border border-violet-200')}">
-          <i data-lucide="shield" class="w-3.5 h-3.5"></i>
-          <span class="hidden sm:inline">Admin</span>
-          ${DB.services.filter(s=>s.status==='pending'&&s._sb).length > 0
-            ? `<span class="w-4 h-4 bg-amber-500 text-white text-[9px] font-extrabold rounded-full grid place-items-center">${DB.services.filter(s=>s.status==='pending'&&s._sb).length}</span>`
-            : ''}
-        </a>
-        <button onclick="sbSignOut()"
-          class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[12px] font-semibold border transition
-            ${STATE.darkMode ? 'border-white/10 text-white/70 hover:bg-white/08' : 'border-ink-200 text-ink-500 hover:bg-ink-100/50'}">
-          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-          <span class="hidden sm:inline">Sair</span>
-        </button>` : ''}
 
         <!-- Language selector -->
         <div class="relative">
@@ -2122,31 +2437,7 @@ function renderHeader(){
         </div>
         ` : ''}
 
-        <!-- Theme selector -->
-        <div class="relative">
-          <button onclick="toggleThemeMenu(event)" aria-label="Trocar tema" class="darkmode-toggle ${STATE.darkMode?'text-white/70':'text-ink-500'}">
-            <i data-lucide="palette" class="w-[17px] h-[17px]"></i>
-          </button>
-          <div id="theme-menu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-ink-200 rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.18)] p-2 z-50">
-            <div class="text-[10px] uppercase font-bold tracking-wider text-ink-400 px-2 pt-1 pb-2">Tema</div>
-            <button onclick="setTheme('blue')" class="w-full text-left px-3 py-2 rounded-xl text-sm flex items-center gap-2 ${STATE.theme==='blue'?'bg-brand-50 text-brand-700 font-semibold':'hover:bg-ink-100/50 text-ink-700'}">
-              <span class="w-3 h-3 rounded-full" style="background:#1a73e8"></span>Ocean Blue
-              ${STATE.theme==='blue'?'<i data-lucide="check" class="w-4 h-4 ml-auto"></i>':''}
-            </button>
-            <button onclick="setTheme('slate')" class="w-full text-left px-3 py-2 rounded-xl text-sm flex items-center gap-2 ${STATE.theme==='slate'?'bg-brand-50 text-brand-700 font-semibold':'hover:bg-ink-100/50 text-ink-700'}">
-              <span class="w-3 h-3 rounded-full" style="background:#64748b"></span>Slate Gray
-              ${STATE.theme==='slate'?'<i data-lucide="check" class="w-4 h-4 ml-auto"></i>':''}
-            </button>
-            <button onclick="setTheme('violet_white')" class="w-full text-left px-3 py-2 rounded-xl text-sm flex items-center gap-2 ${STATE.theme==='violet_white'?'bg-brand-50 text-brand-700 font-semibold':'hover:bg-ink-100/50 text-ink-700'}">
-              <span class="w-3 h-3 rounded-full" style="background:#8b5cf6"></span>Violet Frost
-              ${STATE.theme==='violet_white'?'<i data-lucide="check" class="w-4 h-4 ml-auto"></i>':''}
-            </button>
-            <button onclick="setTheme('emerald')" class="w-full text-left px-3 py-2 rounded-xl text-sm flex items-center gap-2 ${STATE.theme==='emerald'?'bg-brand-50 text-brand-700 font-semibold':'hover:bg-ink-100/50 text-ink-700'}">
-              <span class="w-3 h-3 rounded-full" style="background:#10b981"></span>Deep Emerald
-              ${STATE.theme==='emerald'?'<i data-lucide="check" class="w-4 h-4 ml-auto"></i>':''}
-            </button>
-          </div>
-        </div>
+
 
         <!-- Dark mode toggle -->
         <button onclick="toggleDarkMode()" aria-label="Alternar modo escuro" class="darkmode-toggle ${STATE.darkMode?'text-white/70':'text-ink-500'}">
@@ -2155,10 +2446,6 @@ function renderHeader(){
 
         <!-- Wallet / Auth button — always rightmost -->
         ${authed ? `
-          <button onclick="openWalletMenu(event)" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl ${STATE.darkMode?'bg-white/10 border border-white/15 text-white hover:bg-white/20':'bg-brand-50 border border-brand-100 text-brand-700 hover:bg-brand-100'} text-[13px] font-bold transition">
-            <i data-lucide="coins" class="w-3.5 h-3.5"></i>
-            <span>${fmtITL(me?.balanceITL||0)}</span>
-          </button>
           <!-- Avatar chip -->
           <a href="#/u/${me?.handle||''}" class="flex items-center gap-1.5 ${STATE.darkMode?'text-white/70 hover:text-white':'text-ink-700 hover:text-ink-900'} transition">
             <div class="w-8 h-8 rounded-full overflow-hidden border-2 ${STATE.darkMode?'border-white/20':'border-ink-200'} flex items-center justify-center bg-brand-100 text-brand-700 font-bold text-sm">
@@ -2199,13 +2486,13 @@ function renderHeader(){
         <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
       </button>
       <div id="cat-strip" class="cat-strip-inner">
-        <button onclick="STATE.category='all';STATE.query='';renderView()"
-          class="cat-strip-btn ${STATE.category==='all'&&!STATE.query?'cat-strip-btn--active':''}">
+        <button onclick="pickTrending()"
+          class="cat-strip-btn ${STATE.trendingActive?'cat-strip-btn--active':''}">
           <i data-lucide="flame" class="w-3.5 h-3.5 inline-block mr-1 text-orange-500" style="vertical-align:-2px"></i>Em alta
         </button>
         ${CATEGORIES.map(c=>`
-          <button onclick="STATE.category='${c.id}';renderView()"
-            class="cat-strip-btn ${STATE.category===c.id?'cat-strip-btn--active':''}">
+          <button onclick="pickCategory('${c.id}')"
+            class="cat-strip-btn ${STATE.category===c.id&&!STATE.query?'cat-strip-btn--active':''}">
             ${escapeHtml(c.label)}
           </button>`).join('')}
       </div>
@@ -2216,7 +2503,14 @@ function renderHeader(){
   </div>`;
 
   icons();
-  setTimeout(initCatStrip, 0);
+  setTimeout(()=>{
+    initCatStrip();
+    // Restaurar posição do scroll do strip (evita pulo para o início)
+    const strip = document.getElementById('cat-strip');
+    if(strip && _prevStripScroll > 0){
+      strip.scrollLeft = _prevStripScroll;
+    }
+  }, 0);
   document.addEventListener('click', closeMenusOnOutside, { once:true });
 }
 
@@ -2242,11 +2536,11 @@ function applyTheme(){
   document.documentElement.setAttribute('data-theme', t);
 }
 function setTheme(name){
-  if (!['blue','slate','violet_white','emerald'].includes(name)) return;
+  if (!['blue'].includes(name)) return;
   STATE.theme = name;
   applyTheme();
   render();
-  toast('Tema: '+{blue:'Ocean Blue',slate:'Slate Gray',violet_white:'Violet Frost',emerald:'Deep Emerald'}[name],'info');
+  
 }
 
 function markRead(id){ const n=STATE.notifications.find(x=>x.id===id); if(n) n.read=true; renderHeader(); }
@@ -2254,16 +2548,13 @@ function markAllRead(){ STATE.notifications.forEach(n=>n.read=true); renderHeade
 
 /* ---------- WALLET CONNECT ---------- */
 function openConnectWallet(reason=''){
-  // Generate a fake WalletConnect URI for QR demo
-  const demoUri = 'wc:00e46b69-d0cc-4b3e-b6a2-cee442f97188@1?bridge=https%3A%2F%2Fbridge.walletconnect.org&key=91303dedf64285cfbaee5d4b03d4f46a&relay-protocol=irn';
-  const qrDataUrl = generateQRDataUrl(demoUri);
-
-  const otherWallets = [
-    { id:'MetaMask',   name:'MetaMask',      desc:'Browser extension',   color:'#f6851b', logo:'🦊' },
-    { id:'Rabby',      name:'Rabby',          desc:'Multi-chain wallet',  color:'#7C3AED', logo:'🐇' },
-    { id:'Coinbase',   name:'Coinbase Wallet',desc:'Mobile & extension',  color:'#0052ff', logo:'🔵' },
-    { id:'Trust',      name:'Trust Wallet',   desc:'Mobile wallet',       color:'#3375bb', logo:'🛡️' },
-  ];
+  if (window.reownModal) {
+    window.reownModal.open();
+  } else {
+    toast('Erro: Reown não inicializado.', 'error');
+  }
+}
+function legacy_openConnectWallet(reason=''){
 
   $('#modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
@@ -2387,29 +2678,34 @@ function generateQRDataUrl(text){
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${total}" height="${total}" viewBox="0 0 ${total} ${total}"><rect width="${total}" height="${total}" fill="#fff"/>${rects}</svg>`;
   return 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
 }
-function connectWallet(provider){
+function connectWallet(provider, realAddress = null){
   STATE.walletProvider = provider;
-  // Always auto-connect: no onboarding, no questions
-  const walletAddr = demoWalletAddress(provider);
+  const walletAddr = realAddress || demoWalletAddress(provider);
   const shortW = walletAddr.slice(0,6)+'...'+walletAddr.slice(-5);
-  const me = getUser(STATE.currentUserId) || DB.users[0];
-  // Only overwrite if not already onboarded
-  if (!STATE.onboardingComplete) {
-    me.name = 'Usuário';
-    me.handle = shortW + '.interlink';
-    me.wallet = walletAddr;
-    var av = getAvatarSrc('U', '#1a73e8');
-    me.avatar = av.src;
-    me.avatarType = av.type;
-    me.bio = 'Cliente Web3 explorando serviços na Interwork.';
-    me.verified = true;
-    me.online = true;
-    STATE.userRole = 'client';
-    STATE.onboardingComplete = true;
-    STATE.dashboardTab = 'client';
+  
+  // No Interwork, o endereço da wallet é o identificador único
+  STATE.currentUserId = walletAddr; 
+
+  let me = DB.users.find(u => u.id === walletAddr);
+  if (!me) {
+    me = {
+      id: walletAddr,
+      name: 'Usuário ' + walletAddr.slice(0,6),
+      handle: walletAddr.slice(0,8).toLowerCase() + '.interlink',
+      wallet: walletAddr,
+      balanceITL: 1000, // Demo balance
+      joinedTs: Date.now(),
+      verified: true,
+      online: true,
+      avatar: getAvatarSrc('U', '#1a73e8').src
+    };
+    DB.users.push(me);
   }
+
   STATE.walletConnected = true;
   STATE.authenticated = true;
+  STATE.onboardingComplete = true;
+  
   closeModal();
   toast(`Wallet conectada — bem-vindo!`, 'success');
   addNotification({ type:'tx', title:'Wallet conectada', body:`${provider} na rede Interlink`, link:'#/wallet' });
@@ -2466,13 +2762,13 @@ function openWalletOnboarding(provider){
           <div class="flex-1 space-y-3">
             <div>
               <label class="text-sm font-bold">Nome público</label>
-              <input id="ob-name" value="${escapeHtml(me.name && me.name !== 'Você' ? me.name : '')}" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm" placeholder="Ex: Bruno Silva" oninput="updateAvatarLetter(this.value)"/>
+              <input aria-label="Seu nome" id="ob-name" value="${escapeHtml(me.name && me.name !== 'Você' ? me.name : '')}" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm" placeholder="Ex: Bruno Silva" oninput="updateAvatarLetter(this.value)"/>
             </div>
             <div>
               <label class="text-sm font-bold">Handle</label>
               <div class="mt-1 flex items-center border border-ink-100 rounded-xl overflow-hidden focus-within:ring-brand">
                 <span class="pl-3 text-ink-500 text-sm">@</span>
-                <input id="ob-handle" value="${escapeHtml(suggested)}" class="flex-1 px-1 py-2 text-sm outline-none border-0" placeholder="seunome"/>
+                <input aria-label="Seu nome de usuário" id="ob-handle" value="${escapeHtml(suggested)}" class="flex-1 px-1 py-2 text-sm outline-none border-0" placeholder="seunome"/>
                 <span class="pr-3 text-ink-500 text-xs">.interlink</span>
               </div>
               <div class="text-[10px] text-ink-500 mt-1">3–24 caracteres: letras, números, ponto, hífen ou underline.</div>
@@ -2647,14 +2943,14 @@ function openWithdrawModal(){
 
         <div>
           <label class="text-sm font-bold">Wallet de destino</label>
-          <input id="wd-dest" value="${escapeHtml(me.wallet)}" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm font-mono" placeholder="0x..."/>
+          <input aria-label="Endereço de destino" id="wd-dest" value="${escapeHtml(me.wallet)}" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm font-mono" placeholder="0x..."/>
           <div class="text-[10px] text-ink-500 mt-1">Use um endereço compatível com Interlink/EVM. Confira antes de confirmar.</div>
         </div>
 
         <div class="grid grid-cols-[1fr_auto] gap-2 items-end">
           <div>
             <label class="text-sm font-bold">Valor a sacar</label>
-            <input id="wd-amount" type="number" min="0" step="0.01" value="${suggested || ''}" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm" oninput="updateWithdrawQuote()"/>
+            <input aria-label="Valor em ITL" id="wd-amount" type="number" min="0" step="0.01" value="${suggested || ''}" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm" oninput="updateWithdrawQuote()"/>
           </div>
           <button onclick="setWithdrawMax()" class="border border-ink-100 hover:bg-ink-100/50 font-semibold px-3 py-2 rounded-xl text-sm">Máx</button>
         </div>
@@ -2931,14 +3227,15 @@ function workVaultBadge(o){
 
 /* ---------- VIEW: HOME ---------- */
 function viewHome(){
-  const hasSearch = !!(STATE.query || STATE.category !== 'all');
+  const hasSearch = !!(STATE.query || STATE.category !== 'all' || STATE.trendingActive);
   if (hasSearch) return viewExploreResults();
   return viewHeroPage();
 }
 
 /* ── HERO — shown when no search active (Fiverr page 1 style) ── */
 function viewHeroPage(){
-  const trendingTags = ['Auditoria de Smart Contract','Landing Page Web3','Marketing de Token','Redação de Whitepaper','Vídeo & Motion'];
+  // Categorias reais do site — clicáveis e filtráveis
+  const trendingCategories = CATEGORIES.filter(c => c.id !== 'other').slice(0, 7);
 
   // Category tiles with SVG icons (Fiverr style — icon + label, no emoji)
   const catTiles = [
@@ -2964,68 +3261,94 @@ function viewHeroPage(){
   ];
 
   return `
-  <!-- ═══ HERO — estilo Fiverr: foto de fundo, texto à esquerda, fonte grande ═══ -->
-  <section id="hero-section" class="relative overflow-hidden">
-    <div class="absolute inset-0">
-      <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=1800&q=80" alt="" class="absolute inset-0 w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-black/55"></div>
-    </div>
+  <!-- ═══ HERO PREMIUM — Web3 Cyber-Professional Design ═══ -->
+  <section id="hero-section" class="hero-premium relative overflow-hidden" style="min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
 
-    <div class="relative max-w-[1180px] mx-auto px-6 md:px-10 pt-28 pb-16 md:pt-36 md:pb-20">
+    <div class="hero-content relative w-full max-w-5xl mx-auto px-6 text-center pt-16 pb-12">
 
-      <h1 class="hero-title-text text-[2.75rem] md:text-[4.25rem] font-medium leading-[1.05] tracking-tight max-w-2xl">
-        ${t('hero_title')}
+      <!-- Badge Premium -->
+      <div class="flex justify-center mb-6">
+        <div class="badge-premium">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          The Future of Web3 Freelancing
+        </div>
+      </div>
+
+      <!-- Título Premium com Gradiente -->
+      <h1 class="section-title-premium leading-[1.05] tracking-tight">
+        <span class="block" style="font-size:clamp(2.8rem,8vw,5.5rem)">Hire Verified Humans</span>
+        <span class="block" style="font-size:clamp(2.8rem,8vw,5.5rem);background:linear-gradient(135deg,#22d3ee 0%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Using ITL</span>
       </h1>
 
-      <!-- BIG SEARCH — pill branca, botão preto quadrado só com ícone -->
-      <div id="search-wrap" class="mt-8 relative max-w-xl">
-        <form id="home-search" class="flex items-center bg-white rounded-2xl shadow-2xl overflow-hidden p-1.5" style="height:60px" onsubmit="event.preventDefault()">
-          <i data-lucide="search" class="w-4 h-4 text-ink-400 ml-3.5 shrink-0"></i>
-          <input id="q" value="${escapeHtml(STATE.query)}" placeholder="Search for any service..."
+      <!-- Subtítulo Premium -->
+      <p class="mt-8 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-normal" style="color:#cbd5e1;">
+        The decentralized marketplace for the Interlink ecosystem. Secure escrow payments, verified freelancers, and zero intermediaries.
+      </p>
+
+      <!-- CTAs Premium -->
+      <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <button onclick="STATE.category='all';STATE.query='';STATE.page=1;renderView()"
+          class="btn-premium flex items-center gap-2">
+          <i data-lucide="search" class="w-4 h-4"></i>Explore Services
+        </button>
+        <button onclick="openConnectWallet()"
+          class="flex items-center gap-2 px-8 py-3.5 rounded-12 font-bold text-[15px] border border-cyan-400/40 text-cyan-300 hover:border-cyan-400/70 hover:bg-cyan-400/5 transition-all">
+          <i data-lucide="wallet" class="w-4 h-4"></i>Connect Wallet
+        </button>
+      </div>
+
+      <!-- Search Bar Premium -->
+      <div id="search-wrap" class="mt-12 relative max-w-2xl mx-auto">
+        <form id="home-search" class="glass-effect flex items-center rounded-xl overflow-hidden" style="height:56px;" onsubmit="event.preventDefault()">
+          <i data-lucide="search" class="w-4 h-4 ml-5 shrink-0" style="color:#22d3ee;"></i>
+          <input aria-label="Buscar serviços" id="q" value="${escapeHtml(STATE.query)}" placeholder="Search for any service..."
             autocomplete="off"
-            class="flex-1 outline-none px-3 text-sm md:text-base bg-transparent text-ink-900 placeholder:text-ink-400 h-full"
+            class="flex-1 outline-none px-4 text-sm bg-transparent h-full" style="color:#e7ecf5;"
             oninput="handleSearchInput(this.value)"
             onkeydown="handleSearchKey(event)"
             onfocus="handleSearchInput(this.value)"
           />
-          <button type="submit" onclick="if(STATE.query||STATE.category!=='all')renderView()" aria-label="Buscar"
-            class="h-full w-12 md:w-14 hero-search-btn text-white rounded-xl grid place-items-center shrink-0 transition">
-            <i data-lucide="search" class="w-[18px] h-[18px]"></i>
+          <button type="submit" onclick="commitSearch($('#q').value.trim())" aria-label="Search"
+            class="h-full px-6 text-sm font-semibold transition shrink-0" style="color:#22d3ee;">
+            Search
           </button>
         </form>
-        <div id="search-dropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-ink-100 rounded-2xl shadow-pop z-50 overflow-hidden"></div>
+        <div id="search-dropdown" class="hidden absolute left-0 right-0 top-full mt-2 glass-effect rounded-2xl shadow-pop z-50 overflow-hidden"></div>
       </div>
 
-      <!-- Suggestion pills — Fiverr style -->
-      <div class="mt-5 flex flex-wrap gap-2.5 max-w-xl">
-        ${trendingTags.map(tag=>`
-          <button onclick="STATE.query='${tag.toLowerCase()}';renderView()"
-            class="hero-tag flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full transition">
-            ${tag}<i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+      <!-- Popular Categories -->
+      <div class="mt-6 flex flex-wrap justify-center gap-2 items-center">
+        <span class="text-xs font-medium opacity-60">Popular:</span>
+        ${trendingCategories.map(cat=>`
+          <button onclick="STATE.category='${cat.id}';STATE.query='';STATE.page=1;renderView()"
+            class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition font-medium" style="border-color:${cat.color}44;color:${cat.color}">
+            <i data-lucide="${cat.icon}" class="w-3 h-3"></i>
+            ${cat.label}
           </button>`).join('')}
       </div>
 
-      <!-- Strategic Partner strip -->
-      <div class="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2">
-        <span class="hero-partner-label text-[11px] font-semibold uppercase tracking-wider">Strategic Partner</span>
-        <span class="flex items-center gap-1.5 hero-partner-item text-xs font-bold">
-          <svg class="w-4 h-4 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          ATV Network
-        </span>
-        <span class="w-px h-4 hero-divider hidden sm:block"></span>
-        <span class="flex items-center gap-1.5 hero-partner-item text-xs font-bold">
-          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
-          Trusted by ATV
-        </span>
-        <span class="w-px h-4 hero-divider hidden sm:block"></span>
-        <span class="flex items-center gap-1.5 hero-partner-item text-xs font-bold">
-          <i data-lucide="hexagon" class="w-3.5 h-3.5 text-brand-400"></i>
-          Interlink Certified
-        </span>
+      <!-- Partner strip -->
+      <div class="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+        <span class="hero-partner-label text-[11px] font-semibold uppercase tracking-widest">Strategic Partner</span>
+        <div class="flex items-center gap-6 flex-wrap justify-center">
+          <span class="hero-partner-item flex items-center gap-2 text-xs font-semibold">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            ATV Network
+          </span>
+          <span class="hero-divider w-px h-3"></span>
+          <span class="hero-partner-item flex items-center gap-2 text-xs font-semibold">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500/70"></i>
+            Trusted by ATV
+          </span>
+          <span class="hero-divider w-px h-3"></span>
+          <span class="hero-partner-item flex items-center gap-2 text-xs font-semibold">
+            <i data-lucide="hexagon" class="w-3.5 h-3.5 text-brand-400/60"></i>
+            Interlink Certified
+          </span>
+        </div>
       </div>
     </div>
   </section>
-
   <!-- ═══ CATEGORY TILES — icon + label, Fiverr grid style ═══ -->
   <section class="bg-white border-b border-ink-100 py-8">
     <div class="max-w-7xl mx-auto px-5">
@@ -3300,6 +3623,7 @@ function viewExploreResults(){
       <a href="#/home" onclick="clearAllFilters()" class="hover:text-ink-700">
         <i data-lucide="home" class="w-3.5 h-3.5"></i>
       </a>
+      ${STATE.trendingActive ? `<i data-lucide="chevron-right" class="w-3 h-3"></i><span class="text-ink-600 font-medium">Em alta</span>` : ''}
       ${catObj ? `<i data-lucide="chevron-right" class="w-3 h-3"></i><span class="text-ink-600 font-medium">${catObj.label}</span>` : ''}
       ${STATE.query ? `<i data-lucide="chevron-right" class="w-3 h-3"></i><span class="text-ink-600 font-medium">"${escapeHtml(STATE.query)}"</span>` : ''}
     </div>
@@ -3307,12 +3631,12 @@ function viewExploreResults(){
     <!-- Results header -->
     <div class="flex items-end justify-between mb-5 flex-wrap gap-3">
       <h1 class="text-[26px] font-extrabold text-ink-900 leading-tight">
-        ${STATE.query ? `${escapeHtml(STATE.query)}` : (catObj ? catObj.label : 'Todos os serviços')}
+        ${STATE.query ? `${escapeHtml(STATE.query)}` : (catObj ? catObj.label : (STATE.trendingActive ? 'Em alta agora' : 'Todos os serviços'))}
       </h1>
       <!-- Sort -->
       <div class="flex items-center gap-2">
         <label class="text-[13px] text-ink-500 font-medium">Ordenar por:</label>
-        <select onchange="STATE.sort=this.value;renderView()" class="text-[13px] border-0 font-bold text-ink-900 bg-transparent outline-none cursor-pointer">
+        <select aria-label="Ordenar resultados" onchange="STATE.sort=this.value;renderView()" class="text-[13px] border-0 font-bold text-ink-900 bg-transparent outline-none cursor-pointer">
           <option value="relevance" ${STATE.sort==='relevance'?'selected':''}>Relevância</option>
           <option value="rating" ${STATE.sort==='rating'?'selected':''}>Melhor avaliado</option>
           <option value="price_asc" ${STATE.sort==='price_asc'?'selected':''}>Menor preço</option>
@@ -3339,7 +3663,7 @@ function viewExploreResults(){
           <div class="flex items-center gap-2">
             <div class="flex-1">
               <label class="text-[10px] text-ink-400 font-semibold">Mínimo</label>
-              <input id="budget-min-input" type="number" min="0" placeholder="0"
+              <input aria-label="Preço mínimo" id="budget-min-input" type="number" min="0" placeholder="0"
                 value="${STATE.priceMin>0?STATE.priceMin:''}"
                 class="w-full mt-1 border border-ink-200 rounded-lg px-2.5 py-1.5 text-sm outline-none focus:border-brand-400"
                 onkeydown="if(event.key==='Enter')applyBudgetInputs()"/>
@@ -3347,7 +3671,7 @@ function viewExploreResults(){
             <span class="text-ink-300 mt-4">—</span>
             <div class="flex-1">
               <label class="text-[10px] text-ink-400 font-semibold">Máximo</label>
-              <input id="budget-max-input" type="number" min="0" placeholder="Qualquer"
+              <input aria-label="Preço máximo" id="budget-max-input" type="number" min="0" placeholder="Qualquer"
                 value="${STATE.priceMax>0?STATE.priceMax:''}"
                 class="w-full mt-1 border border-ink-200 rounded-lg px-2.5 py-1.5 text-sm outline-none focus:border-brand-400"
                 onkeydown="if(event.key==='Enter')applyBudgetInputs()"/>
@@ -3417,7 +3741,7 @@ function viewExploreResults(){
 }
 function filterServices(){
   // reseta a página pra 1 sempre que algum filtro/busca/ordenação mudar
-  const sig = [STATE.category,STATE.country,STATE.ratingMin,STATE.priceMax,STATE.priceMin,STATE.verifiedOnly,STATE.availableOnly,STATE.sort,STATE.query].join('|');
+  const sig = [STATE.category,STATE.country,STATE.ratingMin,STATE.priceMax,STATE.priceMin,STATE.verifiedOnly,STATE.availableOnly,STATE.sort,STATE.query,STATE.trendingActive].join('|');
   if (STATE._filterSig !== sig){ STATE._filterSig = sig; STATE.page = 1; }
   let arr = DB.services.filter(sv=>!sv.status||sv.status==='approved');
   if (STATE.category!=='all') arr = arr.filter(s=>s.category===STATE.category);
@@ -3436,7 +3760,7 @@ function filterServices(){
       (s.tags || []).some(tag => tag.toLowerCase().includes(q))
     );
   }
-  switch(STATE.sort){
+  switch(STATE.trendingActive ? 'trending' : STATE.sort){
     case 'rating':     arr.sort((a,b)=>b.rating-a.rating); break;
     case 'price_asc':  arr.sort((a,b)=>a.price-b.price); break;
     case 'price_desc': arr.sort((a,b)=>b.price-a.price); break;
@@ -3483,7 +3807,12 @@ function paginationBar(totalItems, opts={}){
 function goToPage(p){
   STATE.page = Math.max(1, p);
   renderView();
-  window.scrollTo({top:0, behavior:'smooth'});
+  // Duplo rAF garante que o DOM foi pintado antes do scroll
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
 }
 
 function activeFilterCount(){
@@ -3501,6 +3830,7 @@ function activeFilterCount(){
 function clearAllFilters(){
   STATE.category='all'; STATE.country='all'; STATE.ratingMin=0; STATE.priceMax=0; STATE.priceMin=0;
   STATE.verifiedOnly=false; STATE.availableOnly=false; STATE.sort='relevance'; STATE.query='';
+  STATE.trendingActive=false;
   renderView();
 }
 function applyBudgetInputs(){
@@ -3783,7 +4113,7 @@ function viewService(id){
     <div class="flex items-center gap-1 text-xs text-ink-500 mb-4 flex-wrap">
       <a href="#/home" class="hover:text-brand-500">Explore</a>
       <i data-lucide="chevron-right" class="w-3 h-3"></i>
-      <a href="#/home" onclick="STATE.category='${cat.id}'" class="hover:text-brand-500">${cat.label}</a>
+      <a href="#/home" onclick="STATE.category='${cat.id}';renderView()" class="hover:text-brand-500">${cat.label}</a>
       <i data-lucide="chevron-right" class="w-3 h-3"></i>
       <span class="text-ink-700 truncate max-w-xs">${escapeHtml(s.title)}</span>
     </div>
@@ -4072,7 +4402,7 @@ function viewService(id){
             </div>
             <label class="flex items-center gap-2 text-sm text-ink-600">
               <span class="text-ink-500">Sort By</span>
-              <select onchange="setReviewSort(this.value)" class="border border-ink-200 rounded-lg px-2 py-1.5 text-sm font-semibold">
+              <select aria-label="Ordenar avaliações" onchange="setReviewSort(this.value)" class="border border-ink-200 rounded-lg px-2 py-1.5 text-sm font-semibold">
                 <option value="relevant" ${STATE.reviewSort==='relevant'?'selected':''}>Most relevant</option>
                 <option value="recent" ${STATE.reviewSort==='recent'?'selected':''}>Most recent</option>
                 <option value="rating_high" ${STATE.reviewSort==='rating_high'?'selected':''}>Highest rating</option>
@@ -4312,16 +4642,20 @@ function viewWallet(){
 function viewDashboard(){
   const tab = STATE.dashboardTab==='freelancer' ? 'freelancer' : 'client';
   return `
-  <div class="max-w-7xl mx-auto px-5 py-10">
-    <div class="flex items-end justify-between mb-6 flex-wrap gap-3">
-      <div>
-        <h1 class="text-3xl font-extrabold tracking-tight">Meu painel</h1>
-        <p class="text-ink-500 text-sm">Acompanhe seus pedidos, entregas e conversas — tudo em ITL.</p>
-      </div>
-      <div class="inline-flex bg-ink-100/60 p-1 rounded-xl">
-        <a href="#/dashboard/client"     class="px-4 py-2 text-sm font-semibold rounded-lg ${tab==='client'?'bg-white shadow-sm text-brand-700':''}">Como cliente</a>
-        <a href="#/dashboard/freelancer" class="px-4 py-2 text-sm font-semibold rounded-lg ${tab==='freelancer'?'bg-white shadow-sm text-brand-700':''}">Como freelancer</a>
-      </div>
+  <div class="max-w-3xl mx-auto px-4 pt-6 pb-16">
+
+    <!-- Tab switch — compacto, mobile-first -->
+    <div class="inline-flex bg-ink-100/60 p-1 rounded-xl mb-5 w-full">
+      <a href="#/dashboard/client"
+        class="flex-1 text-center px-4 py-2 text-sm font-bold rounded-lg transition
+          ${tab==='client'?'bg-white shadow-sm text-ink-900':'text-ink-500'}">
+        Meus pedidos
+      </a>
+      <a href="#/dashboard/freelancer"
+        class="flex-1 text-center px-4 py-2 text-sm font-bold rounded-lg transition
+          ${tab==='freelancer'?'bg-white shadow-sm text-ink-900':'text-ink-500'}">
+        Meus serviços
+      </a>
     </div>
 
     ${tab==='client' ? dashClient() : dashFreelancer()}
@@ -4329,66 +4663,47 @@ function viewDashboard(){
 }
 
 function dashClient(){
-  const orders = STATE.orders.filter(o=>o.clientId===STATE.currentUserId);
-  const me = getUser(STATE.currentUserId);
-  const completed = orders.filter(o=>o.status==='approved');
-  const active    = orders.filter(o=>!['approved','cancelled'].includes(o.status));
-  const ordersTab = STATE.clientOrdersTab === 'completed' ? 'completed' : 'active';
-  const listed    = ordersTab === 'completed' ? completed : active;
-  const totalPaid = completed.reduce((a,o)=>a+(o.total||o.price||0), 0);
-  const stats = [
-    ['Pedidos ativos', active.length,'briefcase','brand'],
-    ['Protegido', fmtITL(active.reduce((a,o)=>a+o.total,0)),'shield-check','emerald'],
-    ['Saldo wallet', fmtITL(me.balanceITL),'wallet','emerald'],
-    ['Concluídos', completed.length,'check-circle-2','amber'],
-  ];
+  const orders   = STATE.orders.filter(o=>o.clientId===STATE.currentUserId);
+  const me       = getUser(STATE.currentUserId);
+  const active   = orders.filter(o=>!['approved','cancelled'].includes(o.status));
+  const done     = orders.filter(o=>o.status==='approved');
+  const tab      = STATE.clientOrdersTab==='done' ? 'done' : 'active';
+  const listed   = tab==='done' ? done : active;
   return `
-  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    ${stats.map(([k,v,i,c])=>`
-      <div class="bg-white border border-ink-100 rounded-2xl p-4">
-        <div class="w-9 h-9 rounded-xl bg-${c}-50 grid place-items-center mb-2"><i data-lucide="${i}" class="w-4 h-4 text-${c}-600"></i></div>
-        <div class="text-xs text-ink-500 font-semibold">${k}</div>
-        <div class="text-xl font-extrabold mt-0.5">${v}</div>
-      </div>`).join('')}
+  <!-- 2 stats apenas — o que importa no celular -->
+  <div class="grid grid-cols-2 gap-3 mb-5">
+    <div class="bg-white border border-ink-100 rounded-2xl p-4">
+      <div class="text-xs text-ink-500 font-semibold mb-1">Em andamento</div>
+      <div class="text-2xl font-extrabold">${active.length}</div>
+    </div>
+    <div class="bg-white border border-ink-100 rounded-2xl p-4">
+      <div class="text-xs text-ink-500 font-semibold mb-1">Concluídos</div>
+      <div class="text-2xl font-extrabold">${done.length}</div>
+    </div>
   </div>
 
-  <div class="bg-white border border-ink-100 rounded-2xl">
-    <div class="p-5 border-b border-ink-100 flex flex-wrap items-center justify-between gap-3">
-      <div class="font-extrabold flex items-center gap-2"><i data-lucide="package" class="w-5 h-5 text-brand-500"></i>Meus pedidos</div>
-      <div class="flex items-center gap-2">
-        <div class="inline-flex p-1 bg-ink-100/60 rounded-xl text-xs">
-          <button onclick="setClientOrdersTab('active')" class="px-3 py-1.5 rounded-lg font-semibold ${ordersTab==='active'?'bg-white shadow-sm text-brand-700':'text-ink-500'}">
-            Em andamento <span class="ml-1 px-1.5 rounded-full ${ordersTab==='active'?'bg-brand-50 text-brand-700':'bg-ink-100 text-ink-500'}">${active.length}</span>
-          </button>
-          <button onclick="setClientOrdersTab('completed')" class="px-3 py-1.5 rounded-lg font-semibold ${ordersTab==='completed'?'bg-white shadow-sm text-emerald-700':'text-ink-500'}">
-            Aprovados & pagos <span class="ml-1 px-1.5 rounded-full ${ordersTab==='completed'?'bg-emerald-50 text-emerald-700':'bg-ink-100 text-ink-500'}">${completed.length}</span>
-          </button>
-        </div>
-        <a href="#/home" class="text-sm font-semibold text-brand-500 hover:text-brand-600">+ Novo pedido</a>
-      </div>
+  <!-- Tabs + lista de pedidos -->
+  <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden">
+    <div class="flex border-b border-ink-100">
+      <button onclick="STATE.clientOrdersTab='active';render()"
+        class="flex-1 py-3 text-sm font-bold border-b-2 transition
+          ${tab==='active'?'border-ink-900 text-ink-900':'border-transparent text-ink-400'}">
+        Em andamento${active.length?` (${active.length})`:''}
+      </button>
+      <button onclick="STATE.clientOrdersTab='done';render()"
+        class="flex-1 py-3 text-sm font-bold border-b-2 transition
+          ${tab==='done'?'border-ink-900 text-ink-900':'border-transparent text-ink-400'}">
+        Concluídos${done.length?` (${done.length})`:''}
+      </button>
     </div>
 
-    ${ordersTab==='completed' ? `
-      <div class="px-5 py-3 bg-emerald-50/40 border-b border-emerald-100 flex flex-wrap items-center justify-between gap-3">
-        <div class="text-xs text-emerald-700 flex items-center gap-2">
-          <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-          <span><b>${completed.length}</b> entrega(s) aprovada(s) • Total pago <b>${fmtITL(totalPaid)}</b></span>
-        </div>
-        ${completed.length ? `
-          <button onclick="downloadAllApproved()" class="chip bg-emerald-500 hover:bg-emerald-600 text-white">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i>Baixar todos os arquivos
-          </button>` : ''}
-      </div>` : ''}
-
     ${listed.length===0 ? `
-      <div class="p-10 text-center text-ink-500">
-        <i data-lucide="${ordersTab==='completed'?'archive':'inbox'}" class="w-10 h-10 mx-auto text-ink-300"></i>
-        <div class="font-bold mt-3 text-ink-700">${ordersTab==='completed'?'Nenhum pedido aprovado ainda':'Nenhum pedido em andamento'}</div>
-        <div class="text-xs mt-1">${ordersTab==='completed'?'Quando você aprovar uma entrega, ela aparece aqui com os arquivos disponíveis para download a qualquer momento.':'Comece um novo pedido no marketplace.'}</div>
-        <a href="#/home" class="inline-block mt-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold px-4 py-2 rounded-xl text-sm">Explorar serviços</a>
+      <div class="py-14 text-center text-ink-400">
+        <div class="text-4xl mb-3">${tab==='done'?'✅':'📦'}</div>
+        <div class="font-semibold text-ink-600 mb-1">${tab==='done'?'Nenhum pedido concluído':'Nenhum pedido em andamento'}</div>
+        <a href="#/home" class="mt-3 inline-block text-sm font-bold text-brand-500">Explorar serviços →</a>
       </div>` : `
-      <div class="divide-y divide-ink-100">${listed.map(o=>orderRow(o,'client')).join('')}</div>
-    `}
+      <div class="divide-y divide-ink-100">${listed.map(o=>orderRow(o,'client')).join('')}</div>`}
   </div>`;
 }
 
@@ -4406,79 +4721,101 @@ function downloadAllApproved(){
 }
 
 function dashFreelancer(){
-  // pretend you are u_ana so you can see freelancer side
   const freelancerId = 'u_ana';
-  const u = getUser(freelancerId);
+  const u  = getUser(freelancerId);
   const me = getUser(STATE.currentUserId);
-  const mySvc = DB.services.filter(s=>s.freelancerId===freelancerId);
+  const mySvc    = DB.services.filter(sv=>sv.freelancerId===freelancerId);
   const myOrders = STATE.orders.filter(o=>o.freelancerId===freelancerId);
+  const pending  = myOrders.filter(o=>!['approved','cancelled'].includes(o.status));
+  const frTab    = STATE._frTab || 'orders';
   return `
-  <div class="bg-white border border-ink-100 rounded-2xl p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
+  <!-- Saldo + Sacar — destaque principal -->
+  <div class="bg-white border border-ink-100 rounded-2xl p-5 mb-4 flex items-center justify-between gap-4">
     <div>
-      <div class="text-xs text-ink-500 font-bold uppercase tracking-wider">Saldo disponível para saque</div>
-      <div class="text-3xl font-extrabold mt-1 text-sonic">${fmtITL(me.balanceITL || 0)}</div>
-      <div class="text-xs text-ink-500 mt-1">Destino padrão: ${shortAddr(me.wallet)} • taxa calculada antes da confirmação.</div>
+      <div class="text-xs text-ink-400 font-semibold mb-0.5">Saldo disponível</div>
+      <div class="text-2xl font-extrabold text-brand-600">${fmtITL(me.balanceITL||0)}</div>
     </div>
-    <button onclick="openWithdrawModal()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-5 py-3 rounded-xl flex items-center gap-2 shadow-pop">
+    <button onclick="openWithdrawModal()"
+      class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2">
       <i data-lucide="banknote" class="w-4 h-4"></i>Sacar
     </button>
   </div>
 
-  <div class="grid sm:grid-cols-4 gap-4 mb-6">
-    ${[
-      ['Ganhos', fmtITL(myOrders.reduce((a,o)=>a+o.price,0)),'coins','brand'],
-      ['Pedidos abertos', myOrders.filter(o=>!['approved','cancelled'].includes(o.status)).length,'briefcase','sonic'],
-      ['Rating', u.rating.toFixed(1)+' ★','star','amber'],
-      ['Serviços ativos', 1,'layers','emerald'],
-    ].map(([k,v,i,c])=>`
-      <div class="bg-white border border-ink-100 rounded-2xl p-4">
-        <div class="w-9 h-9 rounded-xl bg-${c}-50 grid place-items-center mb-2"><i data-lucide="${i}" class="w-4 h-4 text-${c}-600"></i></div>
-        <div class="text-xs text-ink-500 font-semibold">${k}</div>
-        <div class="text-xl font-extrabold mt-0.5">${v}</div>
-      </div>`).join('')}
+  <!-- 2 stats principais -->
+  <div class="grid grid-cols-2 gap-3 mb-4">
+    <div class="bg-white border border-ink-100 rounded-2xl p-4">
+      <div class="text-xs text-ink-500 font-semibold mb-1">Pedidos em aberto</div>
+      <div class="text-2xl font-extrabold">${pending.length}</div>
+    </div>
+    <div class="bg-white border border-ink-100 rounded-2xl p-4">
+      <div class="text-xs text-ink-500 font-semibold mb-1">Avaliação</div>
+      <div class="text-2xl font-extrabold">${u.rating.toFixed(1)} ★</div>
+    </div>
   </div>
 
-  <div class="grid lg:grid-cols-3 gap-6">
-    <div class="lg:col-span-2 bg-white border border-ink-100 rounded-2xl">
-      <div class="p-5 border-b border-ink-100 flex items-center justify-between">
-        <div class="font-extrabold flex items-center gap-2"><i data-lucide="package" class="w-5 h-5 text-brand-500"></i>Pedidos recebidos</div>
-      </div>
-      ${myOrders.length===0 ? `<div class="p-10 text-center text-ink-500">Nenhum pedido ainda.</div>` :
-        `<div class="divide-y divide-ink-100">${myOrders.map(o=>orderRow(o,'freelancer')).join('')}</div>`}
+  <!-- Tabs: Pedidos / Serviços -->
+  <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden">
+    <div class="flex border-b border-ink-100">
+      <button onclick="STATE._frTab='orders';render()"
+        class="flex-1 py-3 text-sm font-bold border-b-2 transition
+          ${frTab==='orders'?'border-ink-900 text-ink-900':'border-transparent text-ink-400'}">
+        Pedidos${pending.length?` (${pending.length})`:''}
+      </button>
+      <button onclick="STATE._frTab='services';render()"
+        class="flex-1 py-3 text-sm font-bold border-b-2 transition
+          ${frTab==='services'?'border-ink-900 text-ink-900':'border-transparent text-ink-400'}">
+        Serviços${mySvc.length?` (${mySvc.length})`:''}
+      </button>
     </div>
 
-    <div class="bg-white border border-ink-100 rounded-2xl p-5">
-      <div class="flex items-center justify-between mb-3">
-        <div class="font-extrabold flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-brand-500"></i>Meus serviços</div>
-        <button onclick="openNewServiceModal()" class="text-xs font-bold bg-brand-500 hover:bg-brand-600 text-white px-3 py-1.5 rounded-lg">+ Novo</button>
+    <!-- PEDIDOS recebidos -->
+    ${frTab==='orders' ? (myOrders.length===0 ? `
+      <div class="py-14 text-center text-ink-400">
+        <div class="text-4xl mb-3">📦</div>
+        <div class="font-semibold text-ink-600 mb-1">Nenhum pedido ainda</div>
+        <p class="text-sm text-ink-400">Quando um cliente contratar você, aparece aqui.</p>
+      </div>` :
+      `<div class="divide-y divide-ink-100">${myOrders.map(o=>orderRow(o,'freelancer')).join('')}</div>`
+    ) : ''}
+
+    <!-- SERVIÇOS -->
+    ${frTab==='services' ? `
+      <div class="p-4 flex items-center justify-between border-b border-ink-100">
+        <span class="text-sm font-semibold text-ink-600">${mySvc.length} serviço${mySvc.length!==1?'s':''}</span>
+        <button onclick="openNewServiceModal()"
+          class="text-sm font-bold bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-xl">
+          + Novo serviço
+        </button>
       </div>
-      <div class="space-y-2">
-        ${mySvc.map(s=>`
-          <div class="group flex items-center gap-2 p-2 rounded-xl hover:bg-ink-100/40 transition">
-            <a href="#/service/${s.id}" class="flex items-center gap-3 flex-1 min-w-0">
-              <img src="${s.thumb}" class="w-12 h-12 rounded-lg object-cover"/>
-              <div class="flex-1 min-w-0">
-                <div class="text-sm font-semibold truncate">${escapeHtml(s.title)}</div>
-                <div class="text-xs text-ink-500 flex items-center gap-2">${stars(s.rating,'w-3 h-3')} <span>${s.rating.toFixed(1)} • ${fmtITL(s.price)}</span></div>
-                ${s.status === 'pending' ? `<span class="chip bg-amber-50 text-amber-700 text-[10px] mt-0.5"><i data-lucide="clock" class="w-2.5 h-2.5"></i>Aguardando aprovação</span>` : ''}
-                ${s.status === 'rejected' ? `<span class="chip bg-rose-50 text-rose-700 text-[10px] mt-0.5" title="${escapeHtml(s.rejectedReason||'')}"><i data-lucide="x-circle" class="w-2.5 h-2.5"></i>Rejeitado${s.rejectedReason ? ' — '+escapeHtml(s.rejectedReason.slice(0,30)) : ''}</span>` : ''}
+      <div class="divide-y divide-ink-100">
+        ${mySvc.length===0 ? `
+          <div class="py-12 text-center text-ink-400">
+            <div class="text-4xl mb-3">🛠</div>
+            <div class="font-semibold text-ink-600 mb-1">Nenhum serviço publicado</div>
+            <button onclick="openNewServiceModal()" class="mt-2 text-sm font-bold text-brand-500">+ Criar o primeiro</button>
+          </div>` :
+          mySvc.map(sv=>`
+          <div class="flex items-center gap-3 p-4">
+            <img src="${sv.thumb}" class="w-14 h-14 rounded-xl object-cover shrink-0"/>
+            <div class="flex-1 min-w-0">
+              <a href="#/service/${sv.id}" class="text-sm font-bold text-ink-900 line-clamp-2 hover:text-brand-600">${escapeHtml(sv.title)}</a>
+              <div class="flex items-center gap-2 mt-1">
+                ${stars(sv.rating,'w-3 h-3')}
+                <span class="text-xs text-ink-500">${sv.rating.toFixed(1)} · ${fmtITL(sv.price)}</span>
               </div>
-            </a>
-            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition shrink-0">
-              <button onclick="openEditServiceModal('${s.id}')" title="Editar"
-                class="w-8 h-8 grid place-items-center rounded-lg hover:bg-brand-100 text-ink-500 hover:text-brand-600">
+              ${sv.status==='pending'?`<span class="inline-flex items-center gap-1 mt-1 text-[11px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full"><i data-lucide="clock" class="w-3 h-3"></i>Em análise</span>`:''}
+              ${sv.status==='rejected'?`<span class="inline-flex items-center gap-1 mt-1 text-[11px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full"><i data-lucide="x-circle" class="w-3 h-3"></i>Rejeitado</span>`:''}
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button onclick="openEditServiceModal('${sv.id}')" class="w-9 h-9 grid place-items-center rounded-xl hover:bg-ink-100 text-ink-400">
                 <i data-lucide="pencil" class="w-4 h-4"></i>
               </button>
-              <button onclick="deleteService('${s.id}')" title="Excluir"
-                class="w-8 h-8 grid place-items-center rounded-lg hover:bg-rose-100 text-ink-500 hover:text-rose-600">
+              <button onclick="deleteService('${sv.id}')" class="w-9 h-9 grid place-items-center rounded-xl hover:bg-rose-50 text-ink-300 hover:text-rose-500">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
             </div>
-          </div>
-        `).join('')}
-        ${mySvc.length === 0 ? `<div class="p-6 text-center text-ink-500 text-sm">Você ainda não publicou serviços.<br/><button onclick="openNewServiceModal()" class="mt-2 text-brand-500 font-semibold hover:text-brand-600">+ Criar o primeiro</button></div>` : ''}
-      </div>
-    </div>
+          </div>`).join('')}
+      </div>` : ''}
   </div>`;
 }
 
@@ -4487,8 +4824,8 @@ function orderRow(o, perspective){
   const other = perspective==='client' ? getUser(o.freelancerId) : getUser(o.clientId);
   return `
   <div class="p-5">
-    <div class="grid md:grid-cols-12 gap-4 items-center">
-    <div class="md:col-span-5 flex items-center gap-3 min-w-0">
+    <div class="flex flex-wrap gap-3 items-center">
+    <div class="flex items-center gap-3 min-w-0 flex-1">
       <img src="${s.thumb}" class="w-14 h-14 rounded-lg object-cover" />
       <div class="min-w-0">
         <a href="#/service/${s.id}" class="font-bold text-sm hover:text-brand-500 line-clamp-1">${escapeHtml(s.title)}</a>
@@ -4606,7 +4943,7 @@ function clientActions(o){
     return `<span class="chip bg-orange-50 text-orange-700"><i data-lucide="hourglass" class="w-3.5 h-3.5"></i>Cancelamento solicitado</span>`;
   }
   if (o.status==='awaiting_requirements'){
-    return `<button onclick="openRequirementsModal('${o.id}')" class="chip bg-amber-500 hover:bg-amber-600 text-white"><i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i>Preencher briefing</button>
+    return `<button onclick="openRequirementsModal('${o.id}')" class="chip bg-amber-500 hover:bg-amber-600 text-white"><i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i>Preencher formulário</button>
       <button onclick="cancelOrder('${o.id}','client')" class="chip bg-slate-100 hover:bg-slate-200 text-slate-700"><i data-lucide="x" class="w-3.5 h-3.5"></i>Cancelar</button>`;
   }
   if (o.status==='delivered' && !o.rated){
@@ -4637,7 +4974,7 @@ function freelancerActions(o){
     return `<span class="chip bg-orange-50 text-orange-700"><i data-lucide="hourglass" class="w-3.5 h-3.5"></i>Cancelamento solicitado</span>`;
   }
   if (o.status==='awaiting_requirements'){
-    return `<span class="chip bg-amber-50 text-amber-700"><i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i>Aguardando briefing</span>`;
+    return `<span class="chip bg-amber-50 text-amber-700"><i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i>Aguardando formulário</span>`;
   }
   if (o.status==='in_progress' || o.status==='awaiting_delivery'){
     return `<button onclick="openDeliverModal('${o.id}')" class="chip bg-brand-500 hover:bg-brand-600 text-white"><i data-lucide="upload" class="w-3.5 h-3.5"></i>Entregar</button>
@@ -4666,7 +5003,7 @@ function cancelOrder(orderId, perspective='client'){
   const actor = getUser(actorId);
 
   if (o.status === 'awaiting_requirements'){
-    if (!confirm('Cancelar antes do briefing? O reembolso integral será liberado automaticamente.')) return;
+    if (!confirm('Cancelar antes do formulário? O reembolso integral será liberado automaticamente.')) return;
     finalizeCancellation(o, 'briefing_not_sent', o.total || 0, actorId);
     toast('Pedido cancelado. Reembolso integral liberado.', 'success');
     render();
@@ -4738,8 +5075,9 @@ function approveOrder(orderId){
   STATE.messages[o.id] = STATE.messages[o.id] || [];
   STATE.messages[o.id].push({ from:o.clientId, text:`✅ Entrega aprovada. ${fmtITL(o.price)} liberados via ${shortHash(hash)}.`, ts:nowTs() });
   toast('Entrega aprovada. ITL liberado via tx '+shortHash(hash), 'success');
+  STATE._pendingATVOrderId = orderId; // guardado para mostrar após fechar avaliação
   render();
-  setTimeout(()=>openRateModal(orderId), 400);
+  setTimeout(()=>openRateModal(orderId), 300);
 }
 
 function releaseMilestone(orderId, milestoneId){
@@ -4811,7 +5149,7 @@ function openRateModal(orderId){
         <textarea id="rate-text" rows="3" class="w-full border border-ink-100 rounded-xl px-3 py-2 text-sm" placeholder="Conte como foi a experiência…"></textarea>
       </div>
       <div class="p-5 border-t border-ink-100 flex items-center gap-2">
-        <button onclick="closeModal()" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl">Pular</button>
+        <button onclick="closeModal();setTimeout(()=>{if(STATE._pendingATVOrderId){const _id=STATE._pendingATVOrderId;STATE._pendingATVOrderId=null;showATVChoice(_id);}},200)" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl">Pular</button>
         <button onclick="submitRate('${orderId}')" class="flex-[2] bg-amber-400 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl">Enviar avaliação</button>
       </div>
     </div>
@@ -4851,6 +5189,12 @@ function submitRate(orderId){
   closeModal();
   toast('Avaliação registrada on-chain • '+shortHash(hash), 'success');
   render();
+  // Dispara banner ATV após avaliação (ou pular avaliação)
+  if (STATE._pendingATVOrderId) {
+    const _atvId = STATE._pendingATVOrderId;
+    STATE._pendingATVOrderId = null;
+    setTimeout(() => showATVChoice(_atvId), 350);
+  }
 }
 
 function openDeliverModal(orderId){
@@ -4986,14 +5330,14 @@ function renderNewServiceWizard(){
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Categoria *</label>
-          <select id="ns-cat" class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm focus:border-brand-400 outline-none">
+          <select aria-label="Categoria do serviço" id="ns-cat" class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm focus:border-brand-400 outline-none">
             ${CATEGORIES.map(c=>`<option value="${c.id}" ${(v.cat||'')==c.id?'selected':''}>${c.label}</option>`).join('')}
           </select>
           ${editing ? `<div class="text-[10px] text-ink-400 mt-1">Alterar a categoria pode afetar como seu serviço é encontrado.</div>` : `<div class="text-[10px] text-ink-400 mt-1">Escolha com atenção — clientes filtram a busca por categoria.</div>`}
         </div>
         <div>
           <label class="text-xs font-bold uppercase tracking-wider text-ink-500">País *</label>
-          <select id="ns-co" class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm focus:border-brand-400 outline-none">
+          <select aria-label="País" id="ns-co" class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm focus:border-brand-400 outline-none">
             ${COUNTRIES.map(c=>`<option value="${c.id}" ${(v.co||'')==c.id?'selected':''}>${c.flag} ${c.name}</option>`).join('')}
           </select>
         </div>
@@ -5035,19 +5379,19 @@ function renderNewServiceWizard(){
 
       <div class="border-t border-ink-100 pt-4">
         <div class="flex items-center justify-between mb-1.5">
-          <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Briefing do Cliente *</label>
+          <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Formulário do Cliente *</label>
         </div>
         <div class="text-[10px] text-ink-400 mb-2">O que você precisa saber do cliente antes de começar o trabalho — ele preenche isso após o pagamento.</div>
         <div id="ns-req-list" class="space-y-2"></div>
         <button type="button" onclick="addRequirement()" class="mt-2 w-full border-2 border-dashed border-ink-200 hover:border-brand-300 hover:bg-brand-50/30 text-xs font-semibold py-2 rounded-xl flex items-center justify-center gap-2 text-ink-600 transition">
-          <i data-lucide="plus" class="w-3.5 h-3.5"></i>Adicionar pergunta ao briefing
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>Adicionar pergunta ao formulário
         </button>
       </div>
     </div>`;
 
   // ── STEP 3: Preço, Prazo & Mídia ──
   const galleryPreviews = STATE.newServiceGallery.map((src,i)=>`
-    <div class="relative group aspect-square rounded-xl overflow-hidden border border-ink-100 bg-ink-100/30 gig-thumb-drag" data-gi="${i}">
+    <div class="relative group aspect-square rounded-xl overflow-hidden border border-ink-100 bg-ink-100/30 gig-thumb-drag">
       <img src="${src}" class="w-full h-full object-cover pointer-events-none"/>
       <button onclick="removeGalleryImg(${i})" class="absolute top-1 right-1 w-6 h-6 bg-black/60 text-white rounded-full grid place-items-center opacity-0 group-hover:opacity-100 transition">
         <i data-lucide="x" class="w-3 h-3"></i>
@@ -5165,7 +5509,7 @@ function renderNewServiceWizard(){
 
       ${reqPreview.length ? `
       <div class="rounded-2xl border border-ink-100 p-4">
-        <div class="font-bold text-sm mb-2 flex items-center gap-1.5"><i data-lucide="clipboard-list" class="w-3.5 h-3.5 text-brand-500"></i>Briefing do cliente (${reqPreview.length})</div>
+        <div class="font-bold text-sm mb-2 flex items-center gap-1.5"><i data-lucide="clipboard-list" class="w-3.5 h-3.5 text-brand-500"></i>Formulário do cliente (${reqPreview.length})</div>
         <div class="space-y-1.5">
           ${reqPreview.slice(0,3).map(r=>`<div class="text-xs text-ink-600">${escapeHtml(r.label)}${r.required?` <span class="text-amber-500 font-bold">*</span>`:''}</div>`).join('')}
           ${reqPreview.length>3?`<div class="text-[11px] text-ink-400">+${reqPreview.length-3} pergunta(s)</div>`:''}
@@ -5236,7 +5580,7 @@ function renderNewServiceWizard(){
 }
 
 function nsWizardNav(dir){
-  // Save current step values before advancing
+  // Save current step values before navigating (both forward AND back)
   const step = STATE._nsStep || 1;
   if(dir===1){
     // Validate current step
@@ -5255,7 +5599,7 @@ function nsWizardNav(dir){
       collectFaqsFromBuilder();
       collectRequirementsFromBuilder();
       const validReqs = STATE.newServiceRequirements.filter(r=>r.label && r.label.trim());
-      if(!validReqs.length){ toast('Adicione pelo menos uma pergunta de briefing para o cliente.','warn'); return; }
+      if(!validReqs.length){ toast('Adicione pelo menos uma pergunta no formulário para o cliente.','warn'); return; }
     }
     if(step===3){
       const price = parseFloat($('#ns-price')?.value||'0');
@@ -5265,6 +5609,26 @@ function nsWizardNav(dir){
       STATE._nsV.price = price;
       STATE._nsV.days  = days;
       STATE._nsV.inc   = ($('#ns-inc')?.value||'').trim();
+    }
+  } else {
+    // Navigating back: save whatever is on screen too, without blocking validation
+    if(step===1){
+      STATE._nsV.title = ($('#ns-title')?.value||'').trim();
+      STATE._nsV.cat   = $('#ns-cat')?.value || STATE._nsV.cat || '';
+      STATE._nsV.co    = $('#ns-co')?.value  || STATE._nsV.co  || '';
+      STATE._nsV.tags  = ($('#ns-tags')?.value||'').trim();
+    }
+    if(step===2){
+      STATE._nsV.desc = ($('#ns-desc')?.value||'').trim();
+      collectFaqsFromBuilder();
+      collectRequirementsFromBuilder();
+    }
+    if(step===3){
+      const price = parseFloat($('#ns-price')?.value||'0');
+      const days  = parseInt($('#ns-days')?.value||'0',10);
+      if(price)  STATE._nsV.price = price;
+      if(days)   STATE._nsV.days  = days;
+      STATE._nsV.inc = ($('#ns-inc')?.value||'').trim();
     }
   }
   STATE._nsStep = Math.max(1, Math.min(4, step + dir));
@@ -5476,19 +5840,26 @@ function createService(){
       else toast('Serviço enviado para revisão! ✅', 'success');
     });
   }
-  openModal('Serviço enviado para revisão ✅', `
-    <div class="px-6 pb-6 text-center space-y-4">
-      <div class="w-16 h-16 rounded-full bg-amber-50 border-2 border-amber-200 flex items-center justify-center mx-auto">
-        <i data-lucide="clock" class="w-8 h-8 text-amber-500"></i>
+  $('#modal-root').innerHTML = `
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
+      <div class="px-5 pt-4 pb-3 border-b border-ink-100 flex items-center gap-2">
+        <div class="font-extrabold text-sm flex items-center gap-2 flex-1">Serviço enviado para revisão ✅</div>
+        <button onclick="closeModal()" aria-label="Fechar" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4 text-ink-500"></i></button>
       </div>
-      <p class="text-sm text-ink-600 leading-relaxed">
-        Seu serviço <strong class="text-ink-900">${escapeHtml(title)}</strong> foi enviado e está
-        <strong class="text-amber-600">aguardando revisão</strong> da equipe Interwork.<br><br>
-        Assim que aprovado, ele aparecerá automaticamente no marketplace.
-      </p>
-      <button onclick="closeModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm">Entendido</button>
+      <div class="px-6 pb-6 pt-4 text-center space-y-4">
+        <div class="w-16 h-16 rounded-full bg-amber-50 border-2 border-amber-200 flex items-center justify-center mx-auto">
+          <i data-lucide="clock" class="w-8 h-8 text-amber-500"></i>
+        </div>
+        <p class="text-sm text-ink-600 leading-relaxed">
+          Seu serviço <strong class="text-ink-900">${escapeHtml(title)}</strong> foi enviado e está
+          <strong class="text-amber-600">aguardando revisão</strong> da equipe Interwork.<br><br>
+          Assim que aprovado, ele aparecerá automaticamente no marketplace.
+        </p>
+        <button onclick="closeModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm">Entendido</button>
+      </div>
     </div>
-  `);
+  </div>`;
   icons();
 }
 
@@ -5704,7 +6075,7 @@ function renderRequirementsBuilder(){
 function openRequirementsModal(orderId){
   const o = STATE.orders.find(x=>x.id===orderId);
   if (!o){ toast('Pedido não encontrado.','warn'); return; }
-  if (o.clientId !== STATE.currentUserId){ toast('Apenas o cliente preenche o briefing.','warn'); return; }
+  if (o.clientId !== STATE.currentUserId){ toast('Apenas o cliente preenche o formulário.','warn'); return; }
   const s = getService(o.serviceId);
   if (!s){ return; }
   const reqs = s.requirements || [];
@@ -5715,7 +6086,7 @@ function openRequirementsModal(orderId){
       <div class="p-5 border-b border-ink-100 flex items-center justify-between">
         <div class="flex items-center gap-2 font-extrabold">
           <i data-lucide="clipboard-list" class="w-5 h-5 text-amber-600"></i>
-          Preencher briefing
+          Formulário do pedido
         </div>
         <button onclick="closeModal()" aria-label="Fechar" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4" aria-hidden="true"></i></button>
       </div>
@@ -5734,15 +6105,15 @@ function openRequirementsModal(orderId){
           </div>
         </div>
 
-        <form id="req-form" class="space-y-3">
+        <form id="req-form" class="space-y-3" onsubmit="event.preventDefault();submitRequirements('${o.id}')">
           ${reqs.map((r, i)=> renderRequirementInput(r, i)).join('')}
         </form>
       </div>
 
       <div class="p-5 border-t border-ink-100 flex items-center gap-2">
-        <button onclick="closeModal()" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl text-sm">Mais tarde</button>
+        <button onclick="closeModal();go('#/dashboard/client')" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl text-sm">Mais tarde</button>
         <button onclick="submitRequirements('${o.id}')" class="flex-[2] bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
-          <i data-lucide="send" class="w-4 h-4"></i>Enviar briefing e iniciar prazo
+          <i data-lucide="send" class="w-4 h-4"></i>Enviar formulário e iniciar prazo
         </button>
       </div>
     </div>
@@ -5759,21 +6130,21 @@ function renderRequirementInput(r, i){
   </label>`;
   const ph = escapeHtml(r.placeholder || '');
   if (r.type==='textarea'){
-    return `<div>${labelHtml}<textarea id="${id}" rows="4" data-req="${r.id}" data-required="${r.required?1:0}" class="w-full border border-ink-100 rounded-xl px-3 py-2 mt-1 text-sm" placeholder="${ph}"></textarea></div>`;
+    return `<div>${labelHtml}<textarea id="${id}" rows="4" class="w-full border border-ink-100 rounded-xl px-3 py-2 mt-1 text-sm" placeholder="${ph}"></textarea></div>`;
   }
   if (r.type==='url'){
-    return `<div>${labelHtml}<input id="${id}" type="url" data-req="${r.id}" data-required="${r.required?1:0}" class="w-full border border-ink-100 rounded-xl px-3 py-2 mt-1 text-sm" placeholder="${ph||'https://...'}"/></div>`;
+    return `<div>${labelHtml}<input id="${id}" type="url" class="w-full border border-ink-100 rounded-xl px-3 py-2 mt-1 text-sm" placeholder="${ph||'https://...'}"/></div>`;
   }
   if (r.type==='select'){
-    return `<div>${labelHtml}<select id="${id}" data-req="${r.id}" data-required="${r.required?1:0}" class="w-full border border-ink-100 rounded-xl px-3 py-2 mt-1 text-sm">
+    return `<div>${labelHtml}<select id="${id}" class="w-full border border-ink-100 rounded-xl px-3 py-2 mt-1 text-sm">
       <option value="">— Selecione —</option>
       ${(r.options||[]).map(o=>`<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('')}
     </select></div>`;
   }
   if (r.type==='file'){
-    return `<div>${labelHtml}<input id="${id}" type="file" data-req="${r.id}" data-required="${r.required?1:0}" class="w-full text-xs mt-1"/></div>`;
+    return `<div>${labelHtml}<input id="${id}" type="file" class="w-full text-xs mt-1"/></div>`;
   }
-  return `<div>${labelHtml}<input id="${id}" type="text" data-req="${r.id}" data-required="${r.required?1:0}" class="w-full border border-ink-100 rounded-xl px-3 py-2 mt-1 text-sm" placeholder="${ph}"/></div>`;
+  return `<div>${labelHtml}<input id="${id}" type="text" class="w-full border border-ink-100 rounded-xl px-3 py-2 mt-1 text-sm" placeholder="${ph}"/></div>`;
 }
 
 function submitRequirements(orderId){
@@ -5814,18 +6185,150 @@ function submitRequirements(orderId){
   STATE.messages[o.id] = STATE.messages[o.id] || [];
   STATE.messages[o.id].push({
     from: o.clientId,
-    text: '📋 Briefing enviado:\n'+summary+(Object.keys(answers).length>3?'\n…':''),
+    text: '📋 Formulário enviado:\n'+summary+(Object.keys(answers).length>3?'\n…':''),
     ts: nowTs()
   });
   addNotification({
     type:'message',
-    title:'Briefing recebido',
-    body:`Cliente enviou o briefing do pedido #${o.id.slice(-5)} — prazo iniciado.`,
+    title:'Formulário recebido',
+    body:`Cliente enviou o formulário do pedido #${o.id.slice(-5)} — prazo iniciado.`,
     link:'#/dashboard/freelancer'
   });
   closeModal();
-  toast('Briefing enviado on-chain. Prazo iniciado.', 'success');
+  toast('Formulário enviado on-chain. Prazo iniciado.', 'success');
   render();
+  // ATV modal: espera render() terminar, então exibe após 800ms
+  setTimeout(showAtvRewardsOffer, 800);
+}
+
+function showAtvRewardsOffer(){
+  const style = document.getElementById('atv-style');
+  if (!style){
+    const s = document.createElement('style');
+    s.id = 'atv-style';
+    s.textContent = `
+      @keyframes atv-float   { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-8px)} }
+      @keyframes atv-shine   { 0%{left:-80px} 100%{left:110%} }
+      @keyframes atv-pulse   { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.85;transform:scale(1.04)} }
+      @keyframes atv-sparkle { 0%,100%{opacity:0;transform:scale(.5)} 50%{opacity:1;transform:scale(1)} }
+      @keyframes atv-coin    { 0%{transform:rotateY(0deg)} 100%{transform:rotateY(360deg)} }
+      .atv-gift    { animation: atv-float 2.6s ease-in-out infinite; }
+      .atv-shine-b { position:absolute;top:0;left:-80px;width:60px;height:100%;
+                     background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+                     animation:atv-shine 2.2s ease-in-out infinite;pointer-events:none; }
+      .atv-btn-yes { animation: atv-pulse 2s ease-in-out infinite; }
+      .atv-sp1 { animation: atv-sparkle 1.4s ease-in-out infinite; }
+      .atv-sp2 { animation: atv-sparkle 1.4s ease-in-out infinite .45s; }
+      .atv-sp3 { animation: atv-sparkle 1.4s ease-in-out infinite .9s; }
+      .atv-coin-i { display:inline-block; animation: atv-coin 3s linear infinite; transform-style:preserve-3d; }
+    `;
+    document.head.appendChild(s);
+  }
+
+  $('#modal-root').innerHTML = `
+  <div class="fixed inset-0 z-50 backdrop-blur-sm grid place-items-center p-4 fade-in"
+       style="background:rgba(8,5,18,.78)"
+       onclick="if(event.target===this)closeModal()">
+
+    <div class="w-full max-w-sm rounded-3xl overflow-hidden"
+         style="background:linear-gradient(160deg,#1a1030 0%,#0f0a22 60%,#18100e 100%);
+                border:1px solid rgba(255,200,80,.18);
+                box-shadow:0 32px 80px rgba(0,0,0,.55)">
+
+      <!-- Topo com gradiente dourado -->
+      <div class="relative overflow-hidden px-6 pt-7 pb-5 text-center"
+           style="background:linear-gradient(180deg,rgba(255,185,30,.13) 0%,transparent 100%)">
+
+        <!-- Fechar -->
+        <button onclick="closeModal()"
+          class="absolute top-3 right-3 w-7 h-7 grid place-items-center rounded-full"
+          style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.45)">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Sparkles -->
+        <span class="atv-sp1 absolute" style="top:14px;left:28px;font-size:18px;color:#f5c518">✦</span>
+        <span class="atv-sp2 absolute" style="top:22px;right:48px;font-size:14px;color:#f5c518">✦</span>
+        <span class="atv-sp3 absolute" style="top:8px;left:50%;font-size:10px;color:rgba(245,197,24,.5)">✦</span>
+
+        <!-- Caixa de presente animada -->
+        <div class="atv-gift inline-flex items-center justify-center w-24 h-24 rounded-2xl mb-4 relative"
+             style="background:linear-gradient(145deg,#f5c518,#e8960a);
+                    box-shadow:0 8px 32px rgba(245,197,24,.4)">
+          <div class="atv-shine-b rounded-2xl"></div>
+          <!-- Laço vertical -->
+          <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:6px;height:100%;background:rgba(255,255,255,.28);border-radius:3px;pointer-events:none"></div>
+          <!-- Laço horizontal -->
+          <div style="position:absolute;top:50%;left:0;transform:translateY(-50%);width:100%;height:6px;background:rgba(255,255,255,.28);border-radius:3px;pointer-events:none"></div>
+          <!-- Nó do laço -->
+          <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:26px;height:16px;border:5px solid rgba(255,255,255,.45);border-radius:50%;pointer-events:none"></div>
+          <!-- Ícone presente -->
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style="position:relative;z-index:1">
+            <path d="M20 12V22H4V12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 7H2v5h20V7z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(255,255,255,.18)"/>
+            <path d="M12 22V7" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(255,255,255,.12)"/>
+            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(255,255,255,.12)"/>
+          </svg>
+        </div>
+
+        <!-- Título -->
+        <div class="font-extrabold text-xl mb-1" style="color:#f5c518;letter-spacing:-.3px">
+          Quer ATV Tokens?
+        </div>
+        <div class="text-xs font-semibold mb-4" style="color:rgba(245,197,24,.5);letter-spacing:.07em;text-transform:uppercase">
+          ATV Rewards · Powered by Interlink
+        </div>
+
+        <!-- Moedas animadas -->
+        <div class="flex items-center justify-center gap-3 mb-1">
+          <span class="atv-coin-i text-2xl" style="animation-delay:0s">🪙</span>
+          <span class="atv-coin-i text-3xl" style="animation-delay:.4s">🥇</span>
+          <span class="atv-coin-i text-2xl" style="animation-delay:.8s">🪙</span>
+        </div>
+      </div>
+
+      <!-- Corpo -->
+      <div class="px-6 pb-6 pt-4 space-y-4">
+
+        <!-- Descrição -->
+        <p class="text-sm text-center leading-relaxed" style="color:rgba(255,255,255,.7)">
+          Submita esta transação para o site
+          <strong style="color:#f5c518">ATV Interlink</strong>
+          e receba <strong style="color:#fff">tokens, ouro digital e recompensas exclusivas</strong>
+          por contratar na rede.
+        </p>
+
+        <!-- Card benefícios -->
+        <div class="rounded-2xl px-4 py-3 space-y-2" style="background:rgba(245,185,30,.07);border:1px solid rgba(245,185,30,.14)">
+          <div class="flex items-center gap-2 text-xs" style="color:rgba(255,255,255,.8)">🥇 Ouro digital por transações on-chain</div>
+          <div class="flex items-center gap-2 text-xs" style="color:rgba(255,255,255,.8)">⬡ Tokens ATV como recompensa</div>
+          <div class="flex items-center gap-2 text-xs" style="color:rgba(255,255,255,.8)">🎁 Benefícios exclusivos no ecossistema</div>
+        </div>
+
+        <!-- Botões -->
+        <div class="flex gap-2.5 pt-1">
+          <button onclick="closeModal()"
+            class="flex-1 font-bold text-sm py-3 rounded-2xl transition"
+            style="border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.45);background:rgba(255,255,255,.04)">
+            Agora não
+          </button>
+          <a href="https://atvinterlink.com" target="_blank" rel="noopener"
+             onclick="closeModal()"
+             class="atv-btn-yes flex-[2] font-extrabold text-sm py-3 rounded-2xl flex items-center justify-center gap-2 relative overflow-hidden"
+             style="background:linear-gradient(135deg,#f5c518,#e8830a);color:#1a0e00;
+                    box-shadow:0 4px 24px rgba(245,197,24,.35);text-decoration:none">
+            <div class="atv-shine-b"></div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="position:relative;z-index:1;flex-shrink:0">
+              <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span style="position:relative;z-index:1">Sim, quero rewards!</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  icons();
 }
 
 /* ============ ONBOARDING CHECKLIST (Upwork-style, mas funcional) ============ */
@@ -6104,7 +6607,7 @@ function openDisputeModal(orderId, perspective){
 
         <div>
           <label class="text-sm font-bold">Motivo</label>
-          <select id="disp-reason" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm">
+          <select aria-label="Motivo da disputa" id="disp-reason" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm">
             <option value="not_delivered">Não entregue no prazo</option>
             <option value="bad_quality">Qualidade abaixo do contratado</option>
             <option value="scope_change">Escopo alterado sem acordo</option>
@@ -6331,7 +6834,7 @@ function openEditProfileModal(){
 
         <div>
           <label class="text-sm font-bold">Idiomas <span class="font-normal text-ink-500">(Ctrl/⌘ + clique p/ múltiplos)</span></label>
-          <select id="ep-langs" multiple size="4" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm">${langOpts}</select>
+          <select aria-label="Idiomas" id="ep-langs" multiple size="4" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm">${langOpts}</select>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -6341,7 +6844,7 @@ function openEditProfileModal(){
           </div>
           <div>
             <label class="text-sm font-bold">País</label>
-            <select id="ep-country" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm">
+            <select aria-label="País de operação" id="ep-country" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm">
               ${COUNTRIES.map(c=>`<option value="${c.id}" ${u.country===c.id?'selected':''}>${c.flag} ${c.name}</option>`).join('')}
             </select>
           </div>
@@ -6896,9 +7399,11 @@ function viewRewards(){
 function bindViewEvents(){
   const f = $('#home-search');
   if (f) f.addEventListener('submit', e => { e.preventDefault(); commitSearch($('#q').value.trim()); });
-  document.addEventListener('click', e => {
+  if (window._docClickHandler) document.removeEventListener('click', window._docClickHandler, { capture: true });
+  window._docClickHandler = (e) => {
     if (!e.target.closest('#search-wrap')) closeSearchDropdown();
-  }, { capture: true });
+  };
+  document.addEventListener('click', window._docClickHandler, { capture: true });
 }
 
 /* ---- SEARCH AUTOCOMPLETE ---- */
@@ -6907,72 +7412,133 @@ let _searchIdx = -1;
 function getSearchSuggestions(val){
   const q = val.trim().toLowerCase();
   if (!q) {
-    // show popular when empty/focused
+    // vazio/focado: mostra buscas recentes (se houver) + populares
     const popular = ['discord','design','solidity','audit','marketing','whitepaper','landing','motion reels','community','tokenomics'];
-    return { type:'popular', items: popular };
+    const recent = (STATE.recentSearches || []).slice(0, 5);
+    return { type:'popular', items: popular, recent };
   }
   // Match service titles
   const matches = DB.services
-    .filter(s => s.title.toLowerCase().includes(q))
-    .slice(0, 6)
-    .map(s => ({ label: s.title, id: s.id }));
+    .filter(s => (!s.status||s.status==='approved') && s.title.toLowerCase().includes(q))
+    .slice(0, 5)
+    .map(s => ({ label: s.title, id: s.id, price: s.price, thumb: s.thumb }));
   // Also match category names
   const catMatches = CATEGORIES
     .filter(c => c.label.toLowerCase().includes(q) || c.id.toLowerCase().includes(q))
     .slice(0, 3)
     .map(c => ({ label: c.label, catId: c.id }));
-  return { type:'results', matches, catMatches };
+  // Also match freelancers by name or handle
+  const sellerMatches = DB.users
+    .filter(u => u.id !== STATE.currentUserId &&
+      ((u.name||'').toLowerCase().includes(q) || (u.handle||'').toLowerCase().includes(q)))
+    .slice(0, 3)
+    .map(u => ({ label: u.name, handle: u.handle, avatar: u.avatar }));
+  return { type:'results', matches, catMatches, sellerMatches };
+}
+
+function saveRecentSearch(val){
+  const v = (val||'').trim();
+  if (!v) return;
+  STATE.recentSearches = STATE.recentSearches || [];
+  STATE.recentSearches = [v, ...STATE.recentSearches.filter(s => s.toLowerCase() !== v.toLowerCase())].slice(0, 6);
+  schedulePersist();
+}
+
+function clearRecentSearches(){
+  STATE.recentSearches = [];
+  handleSearchInput($('#q')?.value || '');
+  schedulePersist();
 }
 
 function handleSearchInput(val){
   const dd = $('#search-dropdown');
   if (!dd) return;
-  const { type, items, matches, catMatches } = getSearchSuggestions(val);
+  const { type, items, recent, matches, catMatches, sellerMatches } = getSearchSuggestions(val);
   _searchIdx = -1;
 
   if (type === 'popular') {
-    dd.innerHTML = items.map((s,i) => `
-        <button type="button" data-sidx="${i}" onmousedown="pickSuggestion('${escapeHtml(s)}')"
-          class="search-opt w-full text-left px-5 py-3 hover:bg-ink-100/60 transition text-[15px] text-ink-800">
-          ${escapeHtml(s)}
+    let html = '';
+    if (recent && recent.length) {
+      html += `<div class="flex items-center justify-between px-5 pt-3 pb-1">
+        <span class="text-[10px] uppercase tracking-widest font-bold text-ink-400">Buscas recentes</span>
+        <button type="button" onmousedown="clearRecentSearches()" class="text-[10px] text-ink-400 hover:text-ink-700 underline">limpar</button>
+      </div>`;
+      html += recent.map((s,i) => `
+        <button type="button" data-sidx="${i}" onmousedown="pickSuggestion('${escapeHtml(s).replace(/'/g,"\\'")}')"
+          class="search-opt w-full text-left px-5 py-2.5 hover:bg-ink-100/60 transition text-sm text-ink-700 flex items-center gap-2.5">
+          <i data-lucide="history" class="w-3.5 h-3.5 text-ink-400 shrink-0"></i>${escapeHtml(s)}
         </button>`).join('');
+    }
+    const offset = recent ? recent.length : 0;
+    html += `<div class="px-5 pt-2 pb-1 text-[10px] uppercase tracking-widest font-bold text-ink-400">Buscas populares</div>`;
+    html += items.map((s,i) => `
+        <button type="button" data-sidx="${offset+i}" onmousedown="pickSuggestion('${escapeHtml(s)}')"
+          class="search-opt w-full text-left px-5 py-2.5 hover:bg-ink-100/60 transition text-sm text-ink-700 flex items-center gap-2.5">
+          <i data-lucide="trending-up" class="w-3.5 h-3.5 text-ink-400 shrink-0"></i>${escapeHtml(s)}
+        </button>`).join('');
+    dd.innerHTML = html;
   } else {
-    if (!matches.length && !catMatches.length) { dd.classList.add('hidden'); return; }
+    if (!matches.length && !catMatches.length && !(sellerMatches&&sellerMatches.length)) { dd.classList.add('hidden'); return; }
     const q = val.trim().toLowerCase();
     let html = '';
+    let idx = 0;
     if (matches.length) {
-      html += matches.map((m,i) => {
+      html += `<div class="px-5 pt-3 pb-1 text-[10px] uppercase tracking-widest font-bold text-ink-400">Serviços</div>`;
+      html += matches.map((m) => {
         const title = m.label;
         const lower = title.toLowerCase();
         const qi = lower.indexOf(q);
         const before = qi>=0 ? escapeHtml(title.slice(0, qi)) : escapeHtml(title);
         const bold   = qi>=0 ? escapeHtml(title.slice(qi, qi + q.length)) : '';
         const after  = qi>=0 ? escapeHtml(title.slice(qi + q.length)) : '';
-        return `
-        <button type="button" data-sidx="${i}" onmousedown="pickSuggestion('${escapeHtml(title).replace(/'/g,"\\'")}')"
-          class="search-opt w-full text-left px-5 py-3 hover:bg-ink-100/60 transition text-[15px] text-ink-800">
-          ${before}<strong>${bold}</strong>${after}
+        const html2 = `
+        <button type="button" data-sidx="${idx}" onmousedown="pickSuggestion('${escapeHtml(title).replace(/'/g,"\\'")}')"
+          class="search-opt w-full text-left px-5 py-2.5 hover:bg-ink-100/60 transition text-sm text-ink-800 flex items-center gap-3">
+          <img src="${m.thumb}" class="w-8 h-8 rounded-lg object-cover shrink-0"/>
+          <span class="flex-1 min-w-0 truncate">${before}<strong>${bold}</strong>${after}</span>
+          <span class="text-xs text-ink-400 font-semibold shrink-0">${fmtITL(m.price)} ITL</span>
         </button>`;
+        idx++;
+        return html2;
       }).join('');
     }
     if (catMatches.length) {
-      html += catMatches.map((c,i) => {
+      html += `<div class="px-5 pt-2 pb-1 text-[10px] uppercase tracking-widest font-bold text-ink-400 border-t border-ink-100 mt-1">Categorias</div>`;
+      html += catMatches.map((c) => {
         const title = c.label;
         const lower = title.toLowerCase();
         const qi = lower.indexOf(q);
         const before = qi>=0 ? escapeHtml(title.slice(0, qi)) : escapeHtml(title);
         const bold   = qi>=0 ? escapeHtml(title.slice(qi, qi + q.length)) : '';
         const after  = qi>=0 ? escapeHtml(title.slice(qi + q.length)) : '';
-        return `
-        <button type="button" onmousedown="pickCategory('${c.catId}')"
-          class="search-opt w-full text-left px-5 py-3 hover:bg-ink-100/60 transition text-[15px] text-ink-800">
-          ${before}<strong>${bold}</strong>${after}
+        const html2 = `
+        <button type="button" data-sidx="${idx}" onmousedown="pickCategory('${c.catId}')"
+          class="search-opt w-full text-left px-5 py-2.5 hover:bg-ink-100/60 transition text-sm text-ink-800 flex items-center gap-3">
+          <i data-lucide="tag" class="w-3.5 h-3.5 text-ink-400 shrink-0"></i>
+          <span class="flex-1 min-w-0 truncate">${before}<strong>${bold}</strong>${after}</span>
         </button>`;
+        idx++;
+        return html2;
+      }).join('');
+    }
+    if (sellerMatches && sellerMatches.length) {
+      html += `<div class="px-5 pt-2 pb-1 text-[10px] uppercase tracking-widest font-bold text-ink-400 border-t border-ink-100 mt-1">Freelancers</div>`;
+      html += sellerMatches.map((s) => {
+        const html2 = `
+        <button type="button" data-sidx="${idx}" onmousedown="pickSearchSeller('${s.handle}')"
+          class="search-opt w-full text-left px-5 py-2.5 hover:bg-ink-100/60 transition text-sm text-ink-800 flex items-center gap-3">
+          <img src="${s.avatar}" class="w-7 h-7 rounded-full object-cover shrink-0"/>
+          <span class="flex-1 min-w-0 truncate">${escapeHtml(s.label)}</span>
+          <span class="text-[10px] text-ink-400">@${escapeHtml(s.handle)}</span>
+        </button>`;
+        idx++;
+        return html2;
       }).join('');
     }
     dd.innerHTML = html;
   }
   dd.classList.remove('hidden');
+  icons();
 }
 
 function handleSearchKey(e){
@@ -7005,19 +7571,23 @@ function pickSuggestion(val){
   commitSearch(val);
 }
 
-function pickCategory(catId){
+function commitSearch(val){
+  if (!val) return;
+  STATE.query = val;
+  STATE.trendingActive = false;
+  saveRecentSearch(val);
   closeSearchDropdown();
-  STATE.category = catId;
-  STATE.query = '';
+  if(STATE.route !== 'home'){
+    STATE.route = 'home';
+    window.location.hash = '#/home';
+  }
   render();
   setTimeout(()=>{ const el = document.getElementById('explore-section'); if(el) el.scrollIntoView({behavior:'smooth'}); }, 100);
 }
 
-function commitSearch(val){
-  STATE.query = val;
+function pickSearchSeller(handle){
   closeSearchDropdown();
-  render();
-  setTimeout(()=>{ const el = document.getElementById('explore-section'); if(el) el.scrollIntoView({behavior:'smooth'}); }, 100);
+  go('#/u/'+handle);
 }
 
 function closeSearchDropdown(){
@@ -7038,48 +7608,95 @@ function handleHeaderSearch(val){
   const hoverCls = isDark ? 'hover:bg-white/08' : 'hover:bg-ink-100/60';
   const txtCls   = isDark ? 'text-white/80' : 'text-ink-700';
   const subCls   = isDark ? 'text-white/40' : 'text-ink-400';
+  const borderCls = isDark ? 'border-white/08' : 'border-ink-100';
 
-  const { type, items, matches, catMatches } = getSearchSuggestions(val);
+  const { type, items, recent, matches, catMatches, sellerMatches } = getSearchSuggestions(val);
   _headerSearchIdx = -1;
 
   if (type === 'popular') {
-    dd.innerHTML = `
-      <div class="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest font-bold ${subCls}">Popular</div>
-      ${items.map((t,i) => `
-        <button type="button" data-hidx="${i}" onmousedown="pickHeaderSuggestion('${escapeHtml(t).replace(/'/g,"\\'")}')"
+    let html = '';
+    let idx = 0;
+    if (recent && recent.length) {
+      html += `<div class="flex items-center justify-between px-4 pt-3 pb-1">
+        <span class="text-[10px] uppercase tracking-widest font-bold ${subCls}">Recentes</span>
+        <button type="button" onmousedown="clearRecentSearches();handleHeaderSearch('')" class="text-[10px] ${subCls} hover:underline">limpar</button>
+      </div>`;
+      html += recent.map((t) => {
+        const h = `
+        <button type="button" data-hidx="${idx}" onmousedown="pickHeaderSuggestion('${escapeHtml(t).replace(/'/g,"\\'")}')"
+          class="header-sopt w-full text-left flex items-center gap-3 px-4 py-2.5 ${hoverCls} transition text-sm ${txtCls}">
+          <i data-lucide="history" class="w-3.5 h-3.5 ${subCls} shrink-0"></i>
+          <span>${escapeHtml(t)}</span>
+        </button>`;
+        idx++;
+        return h;
+      }).join('');
+    }
+    html += `<div class="px-4 pt-2 pb-1 text-[10px] uppercase tracking-widest font-bold ${subCls}">Popular</div>`;
+    html += items.map((t) => {
+      const h = `
+        <button type="button" data-hidx="${idx}" onmousedown="pickHeaderSuggestion('${escapeHtml(t).replace(/'/g,"\\'")}')"
           class="header-sopt w-full text-left flex items-center gap-3 px-4 py-2.5 ${hoverCls} transition text-sm ${txtCls}">
           <i data-lucide="trending-up" class="w-3.5 h-3.5 ${subCls} shrink-0"></i>
           <span>${escapeHtml(t)}</span>
-        </button>`).join('')}
-      <div class="h-1"></div>`;
+        </button>`;
+      idx++;
+      return h;
+    }).join('');
+    html += `<div class="h-1"></div>`;
+    dd.innerHTML = html;
   } else {
-    if (!matches.length && !catMatches.length) { dd.classList.add('hidden'); return; }
+    if (!matches.length && !catMatches.length && !(sellerMatches&&sellerMatches.length)) { dd.classList.add('hidden'); return; }
     let html = '';
+    let idx = 0;
     if (matches.length) {
-      html += matches.map((m,i) => {
+      html += `<div class="px-4 pt-3 pb-1 text-[10px] uppercase tracking-widest font-bold ${subCls}">Serviços</div>`;
+      html += matches.map((m) => {
         const title = m.label;
         const lower = title.toLowerCase();
         const qi = lower.indexOf(val.trim().toLowerCase());
         const b = qi>=0 ? escapeHtml(title.slice(0,qi)) : '';
         const bold = qi>=0 ? `<strong>${escapeHtml(title.slice(qi,qi+val.trim().length))}</strong>` : '';
         const a = qi>=0 ? escapeHtml(title.slice(qi+val.trim().length)) : escapeHtml(title);
-        return `
-        <button type="button" data-hidx="${i}" onmousedown="pickHeaderSuggestion('${escapeHtml(title).replace(/'/g,"\\'")}')"
+        const h = `
+        <button type="button" data-hidx="${idx}" onmousedown="pickHeaderSuggestion('${escapeHtml(title).replace(/'/g,"\\'")}')"
           class="header-sopt w-full text-left flex items-center gap-3 px-4 py-2.5 ${hoverCls} transition text-sm ${txtCls}">
-          <i data-lucide="search" class="w-3.5 h-3.5 ${subCls} shrink-0"></i>
-          <span>${b}${bold}${a}</span>
+          <img src="${m.thumb}" class="w-7 h-7 rounded-lg object-cover shrink-0"/>
+          <span class="flex-1 min-w-0 truncate">${b}${bold}${a}</span>
+          <span class="text-[11px] ${subCls} font-semibold shrink-0">${fmtITL(m.price)} ITL</span>
         </button>`;
+        idx++;
+        return h;
       }).join('');
     }
     if (catMatches.length) {
-      html += `<div class="px-4 pt-2 pb-1 text-[10px] uppercase tracking-widest font-bold ${subCls} border-t ${isDark?'border-white/08':'border-ink-100'} mt-1">Categoria</div>`;
-      html += catMatches.map(c => `
-        <button type="button" onmousedown="pickHeaderCategory('${c.catId}')"
+      html += `<div class="px-4 pt-2 pb-1 text-[10px] uppercase tracking-widest font-bold ${subCls} border-t ${borderCls} mt-1">Categoria</div>`;
+      html += catMatches.map(c => {
+        const h = `
+        <button type="button" data-hidx="${idx}" onmousedown="pickHeaderCategory('${c.catId}')"
           class="header-sopt w-full text-left flex items-center gap-3 px-4 py-2.5 ${hoverCls} transition text-sm ${txtCls}">
           <i data-lucide="tag" class="w-3.5 h-3.5 ${subCls} shrink-0"></i>
           <span>${escapeHtml(c.label)}</span>
           <span class="ml-auto text-[10px] ${subCls} bg-ink-100/40 px-2 py-0.5 rounded-full">categoria</span>
-        </button>`).join('');
+        </button>`;
+        idx++;
+        return h;
+      }).join('');
+      html += '<div class="h-1"></div>';
+    }
+    if (sellerMatches && sellerMatches.length) {
+      html += `<div class="px-4 pt-2 pb-1 text-[10px] uppercase tracking-widest font-bold ${subCls} border-t ${borderCls} mt-1">Freelancers</div>`;
+      html += sellerMatches.map(s => {
+        const h = `
+        <button type="button" data-hidx="${idx}" onmousedown="pickHeaderSeller('${s.handle}')"
+          class="header-sopt w-full text-left flex items-center gap-3 px-4 py-2.5 ${hoverCls} transition text-sm ${txtCls}">
+          <img src="${s.avatar}" class="w-6 h-6 rounded-full object-cover shrink-0"/>
+          <span class="flex-1 min-w-0 truncate">${escapeHtml(s.label)}</span>
+          <span class="text-[10px] ${subCls}">@${escapeHtml(s.handle)}</span>
+        </button>`;
+        idx++;
+        return h;
+      }).join('');
       html += '<div class="h-1"></div>';
     }
     dd.innerHTML = html;
@@ -7114,18 +7731,33 @@ function highlightHeaderOpt(opts){
   });
 }
 function pickHeaderSuggestion(val){
+  if (!val) return;
   const hq = document.getElementById('header-q'); if(hq) hq.value = val;
   closeHeaderDropdown();
   STATE.query = val;
+  STATE.trendingActive = false;
+  saveRecentSearch(val);
+  if(STATE.route !== 'home'){
+    STATE.route = 'home';
+    window.location.hash = '#/home';
+  }
   render();
   setTimeout(()=>{ const el=document.getElementById('explore-section'); if(el) el.scrollIntoView({behavior:'smooth'}); },100);
 }
 function pickHeaderCategory(catId){
   closeHeaderDropdown();
-  STATE.category = catId; STATE.query = '';
+  STATE.category = catId; STATE.query = ''; STATE.trendingActive = false;
   const hq = document.getElementById('header-q'); if(hq) hq.value='';
+  if(STATE.route !== 'home'){
+    STATE.route = 'home';
+    window.location.hash = '#/home';
+  }
   render();
   setTimeout(()=>{ const el=document.getElementById('explore-section'); if(el) el.scrollIntoView({behavior:'smooth'}); },100);
+}
+function pickHeaderSeller(handle){
+  closeHeaderDropdown();
+  go('#/u/'+handle);
 }
 function closeHeaderDropdown(){
   const dd = document.getElementById('header-search-dropdown');
@@ -7136,13 +7768,13 @@ function closeHeaderDropdown(){
 /* ---------- HIRE MODAL (escrow) ---------- */
 /* ── DEFAULT MILESTONE PRESETS ── */
 const MILESTONE_PRESETS = [
-  { label:'30 / 40 / 30%', pcts:[30,40,30], names:['Briefing aprovado','Entrega parcial','Aprovação final'] },
+  { label:'30 / 40 / 30%', pcts:[30,40,30], names:['Formulário aprovado','Entrega parcial','Aprovação final'] },
   { label:'50 / 50%',       pcts:[50,50],   names:['Meia entrada','Conclusão'] },
   { label:'25 / 50 / 25%', pcts:[25,50,25], names:['Início','Desenvolvimento','Entrega final'] },
 ];
 
 function openHireModal(serviceId, tierKey){
-  if (!requireAuth('contratar com escrow')) return;
+  if (!requireAuth('contratar')) return;
   const s = getService(serviceId);
   const u = getUser(s.freelancerId);
   const me = getUser(STATE.currentUserId);
@@ -7150,21 +7782,13 @@ function openHireModal(serviceId, tierKey){
   const fee = +(tier.priceITL*0.02).toFixed(2);
   const total = +(tier.priceITL+fee).toFixed(2);
   const insufficient = me.balanceITL < total;
-
-  const presetOptions = MILESTONE_PRESETS.map((p,i)=>`
-    <button type="button" onclick="selectMilestonePreset(${i},'${s.id}',${tier.priceITL})"
-      id="ms-preset-${i}"
-      class="ms-preset-btn text-left px-3 py-2 rounded-xl border border-ink-100 hover:border-brand-300 text-xs transition ${i===0?'border-brand-500 bg-brand-50/60 text-brand-700':''}">
-      <div class="font-bold">${p.label}</div>
-      <div class="text-ink-500 mt-0.5">${p.names.join(' → ')}</div>
-    </button>
-  `).join('');
+  const isBigProject = tier.priceITL >= 150; // só projetos grandes ganham a sugestão de negociar etapas no chat
 
   $('#modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-pop overflow-hidden">
       <div class="p-5 border-b border-ink-100 flex items-center justify-between">
-        <div class="flex items-center gap-2 font-extrabold"><i data-lucide="shield-check" class="w-5 h-5 text-brand-500"></i>Contratar com escrow</div>
+        <div class="flex items-center gap-2 font-extrabold"><i data-lucide="shield-check" class="w-5 h-5 text-brand-500"></i>Contratar serviço</div>
         <button onclick="closeModal()" aria-label="Fechar" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4" aria-hidden="true"></i></button>
       </div>
 
@@ -7185,28 +7809,6 @@ function openHireModal(serviceId, tierKey){
           <textarea id="hire-brief" rows="4" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm outline-none focus:ring-brand focus:border-brand-300" placeholder="Ex: Quero uma landing escura para nosso protocolo de yield, com hero animado e seção de FAQ…"></textarea>
         </div>
 
-        <!-- MILESTONE TOGGLE -->
-        <div class="rounded-2xl border border-ink-100 bg-ink-100/30 p-4">
-          <label class="flex items-center justify-between cursor-pointer">
-            <div>
-              <div class="font-bold text-sm flex items-center gap-2"><i data-lucide="milestone" class="w-4 h-4 text-brand-500"></i>Pagamento parcelado (milestones)</div>
-              <div class="text-xs text-ink-500 mt-0.5">Libere o ITL em etapas conforme o progresso.</div>
-            </div>
-            <input type="checkbox" id="hire-milestones-toggle" class="sr-only peer" onchange="toggleMilestonesUI('${s.id}',${tier.priceITL})"/>
-            <div class="relative w-10 h-5 bg-ink-200 peer-checked:bg-brand-500 rounded-full transition after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition after:duration-200 peer-checked:after:translate-x-5"></div>
-          </label>
-
-          <div id="milestones-ui" class="hidden mt-4 space-y-3">
-            <div class="text-xs font-bold text-ink-500 uppercase tracking-wider">Escolha um modelo</div>
-            <div class="grid gap-2">${presetOptions}</div>
-            <div id="milestones-breakdown" class="space-y-2 mt-2"></div>
-            <div class="text-[11px] text-ink-500 flex items-start gap-1.5 mt-1">
-              <i data-lucide="info" class="w-3 h-3 mt-0.5 shrink-0"></i>
-              O valor total continua travado em escrow. Cada etapa só é liberada quando você clicar em "Liberar etapa". Em caso de disputa, o saldo restante é decidido on-chain.
-            </div>
-          </div>
-        </div>
-
         <div class="grid grid-cols-2 gap-3 text-sm">
           <div>
             <label class="text-xs font-bold text-ink-500 uppercase tracking-wider">Prazo</label>
@@ -7218,13 +7820,30 @@ function openHireModal(serviceId, tierKey){
           </div>
         </div>
 
+        <!-- Total — só 1 número em destaque; o detalhe (taxa) fica escondido por padrão -->
         <div class="rounded-2xl border border-ink-100 bg-ink-50/50 p-4">
-          <div class="space-y-1.5 text-sm">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm">Total a pagar</span>
+            <span class="font-extrabold text-brand-700 text-xl">${fmtITL(total)}</span>
+          </div>
+          <button type="button" onclick="document.getElementById('hire-fee-detail').classList.toggle('hidden')" class="text-xs text-ink-500 underline mt-1">Ver detalhes</button>
+          <div id="hire-fee-detail" class="hidden mt-2 pt-2 border-t border-ink-100 space-y-1 text-xs">
             <div class="flex justify-between"><span class="text-ink-500">Preço do serviço</span><span class="font-semibold">${fmtITL(tier.priceITL)}</span></div>
             <div class="flex justify-between"><span class="text-ink-500">Taxa Interwork (2%)</span><span class="font-semibold">${fmtITL(fee)}</span></div>
-            <div class="flex justify-between pt-2 mt-1 border-t border-ink-200 text-base"><span class="font-bold">Total a pagar</span><span class="font-extrabold text-brand-700">${fmtITL(total)}</span></div>
           </div>
         </div>
+
+        <!-- Confiança — o "escrow" inteiro explicado em 1 frase, sem jargão -->
+        <div class="flex items-start gap-2 text-xs bg-brand-50/60 border border-brand-100 rounded-xl p-3">
+          <i data-lucide="lock" class="w-4 h-4 text-brand-500 mt-0.5 shrink-0" aria-hidden="true"></i>
+          <span class="text-ink-700">Seu pagamento fica protegido até você aprovar a entrega. O freelancer só recebe depois disso.</span>
+        </div>
+
+        ${isBigProject ? `
+        <button type="button" onclick="closeModal();openChatPrep('${s.id}')" class="w-full text-left flex items-center gap-2 text-xs text-ink-500 hover:text-brand-600 transition">
+          <i data-lucide="message-circle" class="w-3.5 h-3.5 shrink-0"></i>
+          Projeto grande? Você pode negociar pagamento em etapas direto no chat com o freelancer antes de contratar.
+        </button>` : ''}
 
         <div class="flex items-center justify-between text-xs text-ink-500">
           <span>Saldo: <b class="text-ink-700">${fmtITL(me.balanceITL)}</b> via ${STATE.walletProvider}</span>
@@ -7241,47 +7860,6 @@ function openHireModal(serviceId, tierKey){
       </div>
     </div>
   </div>`;
-  icons();
-  // init with preset 0 selected but hidden
-  window._hireMilestonePreset = 0;
-  renderMilestonesBreakdown(tier.priceITL);
-}
-
-function toggleMilestonesUI(sid, priceITL){
-  const ui = document.getElementById('milestones-ui');
-  if (!ui) return;
-  ui.classList.toggle('hidden');
-  icons();
-}
-
-function selectMilestonePreset(idx, sid, priceITL){
-  window._hireMilestonePreset = idx;
-  document.querySelectorAll('.ms-preset-btn').forEach((btn, i) => {
-    btn.classList.toggle('border-brand-500', i===idx);
-    btn.classList.toggle('bg-brand-50/60', i===idx);
-    btn.classList.toggle('text-brand-700', i===idx);
-    btn.classList.toggle('border-ink-100', i!==idx);
-  });
-  renderMilestonesBreakdown(priceITL);
-}
-
-function renderMilestonesBreakdown(priceITL){
-  const bd = document.getElementById('milestones-breakdown');
-  if (!bd) return;
-  const preset = MILESTONE_PRESETS[window._hireMilestonePreset || 0];
-  const totalDays = parseInt(document.querySelector('#modal-root .border-ink-100.rounded-xl .font-bold')?.textContent) || 7;
-  bd.innerHTML = preset.pcts.map((pct, i) => {
-    const amount = +((priceITL * pct / 100)).toFixed(2);
-    return `
-    <div class="flex items-center gap-3 p-3 rounded-xl bg-white border border-ink-100">
-      <div class="w-7 h-7 rounded-full bg-brand-50 text-brand-700 text-xs font-extrabold grid place-items-center shrink-0">${i+1}</div>
-      <div class="flex-1 min-w-0">
-        <div class="text-sm font-semibold">${preset.names[i]}</div>
-        <div class="text-[11px] text-ink-500">${pct}% do total</div>
-      </div>
-      <div class="text-sm font-extrabold text-brand-700">${fmtITL(amount)}</div>
-    </div>`;
-  }).join('');
   icons();
 }
 /* ---------- RECEIPT / NOTA FISCAL MODAL ---------- */
@@ -7460,7 +8038,7 @@ function openReceiptModal(orderId){
       </div>
 
       <!-- Footer actions -->
-      <div class="p-4 border-t border-ink-100 flex gap-2 shrink-0 bg-white">
+      <div class="p-4 border-t border-ink-100 flex flex-wrap gap-2 shrink-0 bg-white">
         <button onclick="copyReceiptHash('${escrowTx}')" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
           <i data-lucide="copy" class="w-4 h-4"></i>Copiar tx hash
         </button>
@@ -7468,13 +8046,189 @@ function openReceiptModal(orderId){
           class="flex-1 border border-brand-200 hover:bg-brand-50 text-brand-700 font-semibold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
           <i data-lucide="external-link" class="w-4 h-4"></i>Ver on-chain
         </a>
-        <button onclick="printReceipt()" class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+        <button onclick="printReceipt()" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
           <i data-lucide="printer" class="w-4 h-4"></i>Salvar como PDF
         </button>
+        ${o.status==='approved' ? `
+        <button onclick="openATVSubmitModal('${o.id}')" class="flex-1 border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>Enviar para o ATV
+        </button>` : ''}
       </div>
     </div>
   </div>`;
   icons();
+}
+
+/* ---------- ATV (Average Transaction Value) — ajuda a preencher o formulário oficial ----------
+   Não temos integração/API com o atvinterlink.com (é um site de terceiros), então o jeito
+   "sem complicação" e honesto de facilitar é: já deixar os dados certos prontos pra copiar,
+   exatamente nos campos que o formulário deles pede, e abrir o site num clique. */
+/* ──────────────────────────────────────────────────────────
+ * ATV CHOICE BANNER
+ * ────────────────────────────────────────────────────────── */
+function showATVChoice(orderId){
+  // Remove se já existir
+  const old = document.getElementById('atv-choice-overlay');
+  if (old) old.remove();
+
+  const o   = STATE.orders.find(x => x.id === orderId);
+  const svc = o ? getService(o.serviceId) : null;
+  const amt = o ? fmtITL(o.price || 0) : '';
+
+  const el = document.createElement('div');
+  el.id = 'atv-choice-overlay';
+  el.innerHTML = `
+    <div id="atv-choice-box" style="
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      z-index:99999;
+      width:360px;
+      max-width:calc(100vw - 24px);
+      background:#ffffff;
+      border-radius:24px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.22), 0 0 0 1.5px rgba(245,158,11,0.3);
+      overflow:hidden;
+      font-family:inherit;
+    ">
+      <!-- Topo gradiente -->
+      <div style="background:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%);padding:18px 18px 14px;position:relative;">
+        <button onclick="document.getElementById('atv-choice-overlay').remove()" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.2);border:none;border-radius:8px;width:28px;height:28px;cursor:pointer;display:grid;place-items:center;color:#fff;font-size:16px;line-height:1;">×</button>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <div style="background:rgba(255,255,255,0.25);border-radius:12px;width:42px;height:42px;display:grid;place-items:center;flex-shrink:0;font-size:20px;">🎁</div>
+          <div>
+            <div style="color:#fff;font-weight:900;font-size:16px;line-height:1.2;">Quer receber ATV Rewards?</div>
+            <div style="color:rgba(255,255,255,0.85);font-size:11.5px;margin-top:2px;">Ganhe tokens $ITL pela sua transação!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Corpo -->
+      <div style="padding:16px 18px 18px;">
+        <p style="font-size:13px;color:#475569;line-height:1.6;margin:0 0 14px;">
+          Sua transação <strong style="color:#1e293b;">${escapeHtml(svc?.title || 'Serviço Interwork')}</strong>
+          ${amt ? `no valor de <strong style="color:#f59e0b;">${amt}</strong>` : ''}
+          pode ser submetida ao <strong style="color:#f59e0b;">ATV Network</strong> para gerar pontos que convertem em $ITL todo mês.
+        </p>
+
+        <!-- Vantagens rápidas -->
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          ${[['⚡','Rápido','30 seg'],['💰','Recompensa','Pontos $ITL'],['✅','Grátis','Sem custo']].map(([ic,lb,vl])=>`
+          <div style="flex:1;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:8px 6px;text-align:center;">
+            <div style="font-size:16px;">${ic}</div>
+            <div style="font-weight:700;font-size:11px;color:#92400e;">${lb}</div>
+            <div style="font-size:10px;color:#b45309;">${vl}</div>
+          </div>`).join('')}
+        </div>
+
+        <!-- Botões -->
+        <div style="display:flex;gap:8px;">
+          <button
+            onclick="document.getElementById('atv-choice-overlay').remove()"
+            style="flex:1;border:1.5px solid #e2e8f0;background:#f8fafc;color:#64748b;font-weight:700;font-size:13px;padding:11px 8px;border-radius:14px;cursor:pointer;">
+            Não, obrigado
+          </button>
+          <button
+            onclick="document.getElementById('atv-choice-overlay').remove(); openATVSubmitModal('${orderId}')"
+            style="flex:2;border:none;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-weight:900;font-size:13.5px;padding:11px 8px;border-radius:14px;cursor:pointer;box-shadow:0 4px 16px rgba(245,158,11,0.4);display:flex;align-items:center;justify-content:center;gap:6px;">
+            🚀 Sim! Quero meus Rewards
+          </button>
+        </div>
+
+        <div style="text-align:center;margin-top:10px;font-size:10px;color:#94a3b8;">
+          atvinterlink.com · Average Transaction Value Network
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(el);
+
+  // Auto-fecha em 20 segundos
+  setTimeout(() => {
+    const b = document.getElementById('atv-choice-overlay');
+    if (b) b.remove();
+  }, 20000);
+}
+
+function openATVBanner(orderId){ showATVChoice(orderId); } // alias de compatibilidade
+
+function openATVSubmitModal(orderId){
+  const o = STATE.orders.find(x=>x.id===orderId);
+  if (!o){ toast('Pedido não encontrado.', 'error'); return; }
+  if (o.status !== 'approved'){ toast('Só é possível enviar ao ATV depois da aprovação.', 'warn'); return; }
+  const s = getService(o.serviceId);
+  const client = getUser(o.clientId);
+  const country = COUNTRIES.find(c=>c.id===client?.country);
+  const releaseTx = o.releaseTx || o.escrowTx || '';
+  const productLabel = s ? s.title : 'Serviço Interwork';
+  const proofText = `Serviço entregue e aprovado via Interwork (Interlink). Pedido #${o.id.slice(-8).toUpperCase()}, ${fmtITL(o.total||o.price)} pagos em ITL, tx de liberação ${releaseTx}.`;
+
+  const fields = [
+    { id:'atv-linker', label:'Seu nome / Linker ID', value: client?.handle || client?.name || '' },
+    { id:'atv-hash',   label:'Transaction Hash', value: releaseTx },
+    { id:'atv-product',label:'Product or Service', value: productLabel },
+    { id:'atv-itl',    label:'ITL Amount Used', value: (o.total||o.price||0).toString() },
+    { id:'atv-country',label:'Country / Region', value: country?.name || '' },
+    { id:'atv-proof',  label:'Proof of Transaction', value: proofText },
+  ];
+
+  $('#modal-root').innerHTML = `
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-pop overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-5 border-b border-ink-100 flex items-center justify-between bg-amber-50 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 text-white grid place-items-center"><i data-lucide="shield-check" class="w-5 h-5"></i></div>
+          <div>
+            <div class="font-extrabold text-base">Enviar para o ATV</div>
+            <div class="text-xs text-ink-500">Average Transaction Value · atvinterlink.com</div>
+          </div>
+        </div>
+        <button onclick="closeModal()" aria-label="Fechar" class="w-9 h-9 grid place-items-center rounded-xl hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <div class="overflow-y-auto scrollbar-thin p-5 space-y-4">
+        <div class="text-sm text-ink-600 bg-ink-100/40 border border-ink-100 rounded-xl p-3">
+          O ATV é um formulário do <b>site da Interlink</b>, fora do Interwork — não temos acesso direto pra enviar por você.
+          Já deixamos os campos prontos abaixo: copie cada um e cole no formulário oficial (vai abrir numa aba nova).
+        </div>
+        ${fields.map(f => `
+          <div>
+            <label class="block text-xs font-semibold text-ink-500 mb-1">${f.label}</label>
+            <div class="flex gap-2">
+              <input id="${f.id}" readonly value="${escapeHtml(f.value)}" class="flex-1 border border-ink-200 rounded-xl px-3 py-2 text-sm bg-ink-100/30 font-mono"/>
+              <button onclick="copyATVField('${f.id}')" class="px-3 rounded-xl border border-ink-200 hover:bg-ink-100/50" title="Copiar" aria-label="Copiar ${f.label}"><i data-lucide="copy" class="w-4 h-4"></i></button>
+            </div>
+          </div>`).join('')}
+        <div class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
+          <b>Fiat Value (USD)</b> e <b>Transaction Category</b> não preenchemos automático — o formulário do ATV pede pra você
+          informar isso manualmente, já que não temos uma cotação oficial ITL→USD nem a categoria exata deles.
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-ink-100 flex gap-2 shrink-0 bg-white">
+        <button onclick="copyAllATVFields()" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+          <i data-lucide="copy" class="w-4 h-4"></i>Copiar tudo
+        </button>
+        <a href="https://atvinterlink.com/submit?ref=interwork&order=${escapeHtml(o.id.slice(-8).toUpperCase())}" target="_blank" rel="noopener"
+          class="flex-[2] bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+          <i data-lucide="external-link" class="w-4 h-4"></i>Abrir formulário do ATV
+        </a>
+      </div>
+    </div>
+  </div>`;
+  icons();
+}
+function copyATVField(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.value).then(()=>toast('Copiado!', 'success')).catch(()=>toast('Não foi possível copiar.', 'error'));
+}
+function copyAllATVFields(){
+  const ids = ['atv-linker','atv-hash','atv-product','atv-itl','atv-country','atv-proof'];
+  const labels = ['Linker ID','Transaction Hash','Product or Service','ITL Amount Used','Country / Region','Proof of Transaction'];
+  const text = ids.map((id,i)=>`${labels[i]}: ${document.getElementById(id)?.value||''}`).join('\n');
+  navigator.clipboard.writeText(text).then(()=>toast('Todos os campos copiados!', 'success')).catch(()=>toast('Não foi possível copiar.', 'error'));
 }
 
 function printReceipt(){
@@ -7544,6 +8298,15 @@ function copyReceiptHash(hash){
 }
 
 function closeModal(){ $('#modal-root').innerHTML = ''; }
+(function initModalScrollLock(){
+  const root = document.getElementById('modal-root');
+  if (!root) return;
+  const mo = new MutationObserver(() => {
+    if (root.children.length > 0) document.body.classList.add('modal-open-lock');
+    else document.body.classList.remove('modal-open-lock');
+  });
+  mo.observe(root, { childList: true });
+})();
 
 /* ---------- Service detail gallery (Fiverr-style) ---------- */
 function galleryImages(sid){
@@ -7630,25 +8393,22 @@ function confirmHire(serviceId, tierKey){
     }));
   }
 
-  // === SIMULATE TX BROADCAST (B3) ===
+  // === SIMULATE TX BROADCAST (B3) — transação normal e simples, sem QR ===
   const hash = txHash();
   const url = explorerURL(hash);
   $('#modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in">
-    <div id="tx-card" class="bg-white w-full max-w-md rounded-2xl shadow-pop overflow-hidden">
+    <div id="tx-card" class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
       <div class="p-6 text-center">
         <div class="w-14 h-14 rounded-full bg-brand-50 grid place-items-center mx-auto">
           <i data-lucide="loader-2" class="w-7 h-7 text-brand-500 animate-spin"></i>
         </div>
-        <div class="font-extrabold text-lg mt-3">Enviando transação…</div>
-        <div class="text-sm text-ink-500 mt-1">Assinando com ${STATE.walletProvider} na Interlink Network</div>
+        <div class="font-extrabold text-lg mt-3">Confirmando pagamento…</div>
+        <div class="text-sm text-ink-500 mt-1">${fmtITL(total)} • carteira ${STATE.walletProvider}</div>
         <div class="mt-4 rounded-xl bg-ink-100/40 border border-ink-100 p-3 text-left text-xs">
           <div class="text-ink-500 mb-1">Hash da transação</div>
           <div class="font-mono break-all text-ink-700">${hash}</div>
           <a href="${url}" target="_blank" class="mt-2 inline-flex items-center gap-1 text-brand-500 font-semibold">Ver no Interlink Explorer <i data-lucide="external-link" class="w-3 h-3"></i></a>
-        </div>
-        <div class="mt-3 flex items-center justify-center gap-2 text-xs">
-          <span class="chip bg-amber-50 text-amber-700"><i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>Aguardando confirmação</span>
         </div>
       </div>
     </div>
@@ -7689,6 +8449,10 @@ function confirmHire(serviceId, tierKey){
             <i data-lucide="lock" class="w-4 h-4 text-brand-500 mt-0.5 shrink-0" aria-hidden="true"></i>
             <span class="text-ink-700">🔒 <b>Pagamento protegido:</b> o freelancer só recebe quando você aprovar a entrega.</span>
           </div>
+          <div class="mt-2 flex items-start gap-2 text-left text-xs bg-emerald-50/60 border border-emerald-100 rounded-xl p-3">
+            <img src="${getUser(s.freelancerId).avatar}" class="w-4 h-4 rounded-full mt-0.5 shrink-0"/>
+            <span class="text-ink-700"><b>${escapeHtml(getUser(s.freelancerId).name)} foi notificado</b> e já pode começar a trabalhar no seu pedido.</span>
+          </div>
           ${milestonesConfig ? `
           <div class="mt-4 rounded-xl bg-brand-50 border border-brand-100 p-3 text-left text-xs space-y-2">
             <div class="font-bold text-brand-700 flex items-center gap-1.5"><i data-lucide="milestone" class="w-3.5 h-3.5"></i>Milestones configurados</div>
@@ -7702,7 +8466,7 @@ function confirmHire(serviceId, tierKey){
           <div class="mt-4 rounded-xl bg-amber-50 border border-amber-200 p-3 text-left text-xs flex items-start gap-2">
             <i data-lucide="clipboard-list" class="w-4 h-4 text-amber-700 mt-0.5 shrink-0"></i>
             <span class="text-amber-800">
-              <b>Próximo passo:</b> preencher o briefing obrigatório do vendedor. O prazo de entrega só começa após o envio.
+              <b>Próximo passo:</b> preencher o formulário obrigatório do vendedor. O prazo de entrega só começa após o envio.
             </span>
           </div>` : ''}
           <div class="mt-4 rounded-xl bg-ink-100/40 border border-ink-100 p-3 text-left text-xs">
@@ -7724,7 +8488,7 @@ function confirmHire(serviceId, tierKey){
             <button onclick="closeModal();render()" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl text-sm">Fechar</button>
             ${needsReqs
               ? `<button onclick="closeModal();openRequirementsModal('${order.id}')" class="flex-[2] bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2"><i data-lucide="clipboard-list" class="w-4 h-4"></i>Preencher informações agora</button>`
-              : `<button onclick="closeModal();go('#/dashboard/client')" class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2"><i data-lucide="arrow-right" class="w-4 h-4"></i>Ver meu pedido</button>`
+              : `<button onclick="closeModal();go('#/dashboard/client');setTimeout(showAtvRewardsOffer,600)" class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2"><i data-lucide="arrow-right" class="w-4 h-4"></i>Ver meu pedido</button>`
             }
           </div>
         </div>
@@ -7732,6 +8496,7 @@ function confirmHire(serviceId, tierKey){
     </div>`;
     icons();
     toast('Pedido criado e tx confirmada!', 'success');
+    // ATV Rewards: disparado pelo botão 'Ver meu pedido' após fechar o modal de tx
   }, 1700);
 }
 
@@ -8275,7 +9040,8 @@ const PERSIST_STATE_KEYS = [
   'currentUserId','query','category','country','sort','ratingMin','priceMax','verifiedOnly','availableOnly',
   'selectedServiceId','orders','messages','chatOpenOrderId','dashboardTab','clientOrdersTab','walletConnected',
   'authenticated','onboardingComplete','userRole','walletProvider','network','recentlyViewed','favorites','notifications','txHistory','payouts','selectedProfileHandle',
-  'language','translateChat','selectedTier','selectedAddons','selectedToken','showQR','darkMode','onboardingDismissed'
+  'language','translateChat','selectedTier','selectedAddons','selectedToken','showQR','darkMode','onboardingDismissed',
+  'adminTab',  // lembra a aba ativa no painel admin
 ];
 const PERSIST = { ready:false, timer:null, lastJson:'', quotaWarned:false };
 
@@ -8426,12 +9192,65 @@ const ADMIN_EMAILS = [
 
 // Estado de autenticação Supabase
 STATE.sbUser   = null;   // usuário autenticado no Supabase
-STATE.isAdmin  = false;  // true se email está em ADMIN_EMAILS
+STATE.isAdmin  = false;
+STATE.sbProfile = null;  // Perfil do usuário logado (da tabela "profiles")  // true se email está em ADMIN_EMAILS
 STATE.sbReady  = false;  // true quando Supabase respondeu
 
 /* ──────────────────────────────────────────────────────────
  * AUTH HELPERS
  * ────────────────────────────────────────────────────────── */
+async function handleWalletAuth(address) {
+  if (!SB_READY) {
+    // Se Supabase não estiver pronto, usamos o modo demo
+    connectWallet('Reown', address);
+    return;
+  }
+
+  const email = `${address.toLowerCase()}@wallet.interwork`;
+  const password = `${address.toLowerCase()}INTERWORK_SALT`; // Senha determinística baseada na wallet
+
+  try {
+    // Tenta login
+    let { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      // Se não existir, registra
+      console.log('Criando nova conta para wallet:', address);
+      const { data: signUpData, error: signUpError } = await sb.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: 'Usuário ' + address.slice(0, 6),
+            handle: address.slice(0, 8).toLowerCase(),
+            wallet: address,
+            role: 'client'
+          }
+        }
+      });
+      if (signUpError) throw signUpError;
+      data = signUpData;
+    }
+
+    // Sucesso no Auth
+    STATE.walletConnected = true;
+    STATE.authenticated = true;
+    STATE.sbUser = data.user;
+    
+    // Carrega perfil
+    STATE.sbProfile = await sbLoadProfile(data.user.id);
+    
+    // Inicializar saldo demo se necessário
+    await initializeDemoBalance();
+    
+    toast('Autenticado via Wallet!', 'success');
+    render();
+  } catch (err) {
+    console.error('Erro na auth via wallet:', err);
+    toast('Erro ao autenticar no banco de dados.', 'error');
+  }
+}
+
 async function sbSignIn(email, password){
   if (!sb) return { error: { message: 'Supabase não configurado.' } };
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
@@ -8459,31 +9278,35 @@ async function sbSignOut(){
 
 async function sbInitAuth(){
   if (!sb) return;
+  
+  // 1. Carregar sessão do Supabase Auth
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user) {
     STATE.sbUser  = session.user;
     STATE.isAdmin = ADMIN_EMAILS.includes(session.user.email);
+    
+    // 2. NOVO: Carregar perfil da tabela 'profiles'
+    STATE.sbProfile = await sbLoadProfile(session.user.id);
   }
+  
   STATE.sbReady = true;
-  // Ouve mudanças de sessão
-  sb.auth.onAuthStateChange((_event, session) => {
+  
+  // 3. Ouvir mudanças de sessão
+  sb.auth.onAuthStateChange(async (_event, session) => {
     STATE.sbUser  = session?.user || null;
     STATE.isAdmin = session?.user ? ADMIN_EMAILS.includes(session.user.email) : false;
+    
+    // Carregar/limpar perfil quando sessão muda
+    if (session?.user) {
+      STATE.sbProfile = await sbLoadProfile(session.user.id);
+    } else {
+      STATE.sbProfile = null;
+    }
+    
     render();
   });
 }
 
-/* ──────────────────────────────────────────────────────────
- * SERVICES — Supabase CRUD
- * Tabela: services
- * Colunas: id, title, category, freelancer_id, freelancer_name,
- *          price, delivery_days, country, rating, reviews_count,
- *          description, thumb, gallery (jsonb), tags (jsonb),
- *          includes (jsonb), requirements (jsonb), faqs (jsonb),
- *          status, created_at, approved_at, rejected_reason
- * ────────────────────────────────────────────────────────── */
-
-// Carrega todos os serviços do Supabase e mescla com DB.services
 async function sbLoadServices(){
   if (!sb) return;
   const { data, error } = await sb
@@ -8630,82 +9453,85 @@ function sbSubscribeServices(){
 /* ──────────────────────────────────────────────────────────
  * AUTH MODAL — Login / Registro Supabase
  * ────────────────────────────────────────────────────────── */
-function openSbAuthModal(mode='login'){
-  const isLogin = mode === 'login';
-  openModal(isLogin ? '🔑 Login Admin' : '📝 Criar Conta Admin', `
-  <div class="px-6 pb-6 space-y-4">
-    ${!SB_READY ? `
-    <div class="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
-      <strong>⚠️ Supabase não configurado.</strong><br>
-      Adicione suas credenciais nas linhas <code class="bg-amber-100 px-1 rounded">SUPABASE_URL</code> e <code class="bg-amber-100 px-1 rounded">SUPABASE_ANON</code> no código.
-    </div>` : ''}
-    <div>
-      <label class="block text-xs font-semibold text-ink-500 mb-1">Email</label>
-      <input id="sb-email" type="email" placeholder="admin@interwork.xyz"
-        class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-400"/>
-    </div>
-    <div>
-      <label class="block text-xs font-semibold text-ink-500 mb-1">Senha</label>
-      <input id="sb-pwd" type="password" placeholder="••••••••"
-        class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-400"/>
-    </div>
-    <div id="sb-auth-err" class="hidden rounded-xl bg-rose-50 border border-rose-200 p-3 text-sm text-rose-700"></div>
-    <button onclick="handleSbAuth('${mode}')"
-      class="w-full bg-brand-500 hover:bg-brand-600 text-white font-extrabold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
-      <i data-lucide="${isLogin ? 'log-in' : 'user-plus'}" class="w-4 h-4"></i>
-      ${isLogin ? 'Entrar' : 'Criar conta'}
-    </button>
-    <div class="text-center text-xs text-ink-400">
-      ${isLogin
-        ? `Não tem conta? <button onclick="openSbAuthModal('signup')" class="text-brand-500 font-semibold">Criar uma</button>`
-        : `Já tem conta? <button onclick="openSbAuthModal('login')" class="text-brand-500 font-semibold">Entrar</button>`}
-    </div>
-  </div>`);
-  icons();
-  setTimeout(()=>document.getElementById('sb-email')?.focus(), 100);
-}
-
-async function handleSbAuth(mode){
-  const email = document.getElementById('sb-email')?.value?.trim();
-  const pwd   = document.getElementById('sb-pwd')?.value;
-  const errEl = document.getElementById('sb-auth-err');
-  if (!email || !pwd){ if(errEl){ errEl.textContent='Preencha email e senha.'; errEl.classList.remove('hidden'); } return; }
-  const btn = document.querySelector('#modal-root button[onclick*="handleSbAuth"]');
-  if (btn){ btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Aguarde...'; icons(); }
-  const fn = mode === 'login' ? sbSignIn : sbSignUp;
-  const { data, error } = await fn(email, pwd);
-  if (error){
-    if (errEl){ errEl.textContent = error.message; errEl.classList.remove('hidden'); }
-    if (btn){ btn.disabled = false; btn.textContent = mode === 'login' ? 'Entrar' : 'Criar conta'; }
-    return;
-  }
-  closeModal();
-  if (mode === 'signup'){
-    toast('Conta criada! Verifique seu email para confirmar.', 'success');
-  } else {
-    toast('Login realizado com sucesso!', 'success');
-    if (STATE.isAdmin) go('#/admin');
-  }
-}
-
 /* ──────────────────────────────────────────────────────────
  * ADMIN VIEW
  * ────────────────────────────────────────────────────────── */
+async function handleAdminInlineLogin(){
+  const email = document.getElementById('admin-login-email')?.value?.trim();
+  const pwd   = document.getElementById('admin-login-pwd')?.value;
+  const errEl = document.getElementById('admin-login-err');
+  const btn   = document.getElementById('admin-login-btn');
+  if (errEl) errEl.classList.add('hidden');
+  if (!email || !pwd){
+    if (errEl){ errEl.textContent = 'Preencha email e senha.'; errEl.classList.remove('hidden'); }
+    return;
+  }
+  if (!SB_READY || !sb){
+    if (errEl){ errEl.textContent = 'Supabase não está configurado neste ambiente.'; errEl.classList.remove('hidden'); }
+    return;
+  }
+  if (btn){ btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Aguarde...'; icons(); }
+  let result;
+  try {
+    result = await sbSignIn(email, pwd);
+  } catch (e){
+    // Fallback de debug: mostra o erro exato em vez de falhar silenciosamente
+    if (errEl){ errEl.textContent = 'Erro inesperado: ' + (e?.message || e); errEl.classList.remove('hidden'); }
+    if (btn){ btn.disabled = false; btn.innerHTML = '<i data-lucide="log-in" class="w-4 h-4"></i>Fazer login'; icons(); }
+    return;
+  }
+  if (result?.error){
+    if (errEl){ errEl.textContent = result.error.message || 'Não foi possível entrar.'; errEl.classList.remove('hidden'); }
+    if (btn){ btn.disabled = false; btn.innerHTML = '<i data-lucide="log-in" class="w-4 h-4"></i>Fazer login'; icons(); }
+    return;
+  }
+  // Sucesso: sbSignIn() já chamou render() internamente.
+  toast('Login realizado com sucesso!', 'success');
+}
+
 function viewAdmin(){
   if (!STATE.isAdmin){
     return `
-    <div class="max-w-lg mx-auto px-5 py-20 text-center">
-      <div class="w-16 h-16 rounded-2xl bg-rose-50 grid place-items-center mx-auto mb-4">
-        <i data-lucide="shield-off" class="w-8 h-8 text-rose-500"></i>
+    <div class="max-w-sm mx-auto px-5 py-16">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 rounded-2xl bg-rose-50 grid place-items-center mx-auto mb-4">
+          <i data-lucide="shield-off" class="w-8 h-8 text-rose-500"></i>
+        </div>
+        <h2 class="text-2xl font-extrabold mb-2">Acesso restrito</h2>
+        <p class="text-ink-500 text-sm">Esta área é exclusiva para administradores do Interwork.</p>
       </div>
-      <h2 class="text-2xl font-extrabold mb-2">Acesso restrito</h2>
-      <p class="text-ink-500 text-sm mb-6">Esta área é exclusiva para administradores do Interwork.</p>
-      ${STATE.sbUser
-        ? `<p class="text-xs text-ink-400 mb-4">Conectado como: <strong>${STATE.sbUser.email}</strong> (sem permissão de admin)</p>
-           <button onclick="sbSignOut()" class="px-5 py-2.5 bg-rose-500 text-white font-bold rounded-xl text-sm">Sair</button>`
-        : `<button onclick="openSbAuthModal('login')" class="px-6 py-3 bg-brand-500 text-white font-extrabold rounded-xl text-sm flex items-center gap-2 mx-auto">
-             <i data-lucide="log-in" class="w-4 h-4"></i>Fazer login
-           </button>`}
+
+      ${STATE.sbUser ? `
+        <div class="text-center">
+          <p class="text-xs text-ink-400 mb-4">Conectado como: <strong>${STATE.sbUser.email}</strong> (sem permissão de admin)</p>
+          <button onclick="sbSignOut()" class="px-5 py-2.5 bg-rose-500 text-white font-bold rounded-xl text-sm">Sair</button>
+        </div>
+      ` : `
+        <div class="bg-white border border-ink-100 rounded-2xl p-6 shadow-card space-y-3">
+          ${!SB_READY ? `
+          <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800">
+            <strong>⚠️ Supabase não configurado.</strong><br>
+            Adicione suas credenciais nas constantes <code class="bg-amber-100 px-1 rounded">SUPABASE_URL</code> e <code class="bg-amber-100 px-1 rounded">SUPABASE_ANON</code> no código.
+          </div>` : ''}
+          <div>
+            <label class="block text-xs font-semibold text-ink-500 mb-1">Email</label>
+            <input id="admin-login-email" type="email" placeholder="admin@interwork.xyz" autocomplete="username"
+              class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-400"
+              onkeydown="if(event.key==='Enter')handleAdminInlineLogin()"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-ink-500 mb-1">Senha</label>
+            <input id="admin-login-pwd" type="password" placeholder="••••••••" autocomplete="current-password"
+              class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-400"
+              onkeydown="if(event.key==='Enter')handleAdminInlineLogin()"/>
+          </div>
+          <div id="admin-login-err" class="hidden rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs text-rose-700"></div>
+          <button id="admin-login-btn" onclick="handleAdminInlineLogin()"
+            class="w-full bg-brand-500 hover:bg-brand-600 text-white font-extrabold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
+            <i data-lucide="log-in" class="w-4 h-4"></i>Fazer login
+          </button>
+        </div>
+      `}
     </div>`;
   }
 
@@ -8898,7 +9724,7 @@ create policy "Auth users can read own services"
 create policy "Admin can update"
   on public.services for update
   to authenticated
-  using (auth.email() in ('interworkoficial@gmail.com'))
+  using (auth.email() in ('seu-email@dominio.com'))
   with check (true);
 
 -- 6. Habilitar Realtime
@@ -8942,22 +9768,30 @@ async function adminApprove(id){
 function adminRejectPrompt(id){
   const svc = getService(id);
   if (!svc) return;
-  openModal('❌ Rejeitar serviço', `
-  <div class="px-6 pb-6 space-y-4">
-    <p class="text-sm text-ink-600">Informe o motivo da rejeição para <strong>"${escapeHtml(svc.title)}"</strong>. O freelancer será notificado.</p>
-    <div>
-      <label class="block text-xs font-semibold text-ink-500 mb-1">Motivo (obrigatório)</label>
-      <textarea id="reject-reason" rows="3" placeholder="Ex: Descrição muito vaga, preço incoerente com o serviço..."
-        class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-rose-400 resize-none"></textarea>
+  $('#modal-root').innerHTML = `
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
+      <div class="px-5 pt-4 pb-3 border-b border-ink-100 flex items-center gap-2">
+        <div class="font-extrabold text-sm flex items-center gap-2 flex-1">❌ Rejeitar serviço</div>
+        <button onclick="closeModal()" aria-label="Fechar" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4 text-ink-500"></i></button>
+      </div>
+      <div class="px-6 pb-6 pt-4 space-y-4">
+        <p class="text-sm text-ink-600">Informe o motivo da rejeição para <strong>"${escapeHtml(svc.title)}"</strong>. O freelancer será notificado.</p>
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1">Motivo (obrigatório)</label>
+          <textarea id="reject-reason" rows="3" placeholder="Ex: Descrição muito vaga, preço incoerente com o serviço..."
+            class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-rose-400 resize-none"></textarea>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeModal()" class="flex-1 border border-ink-200 hover:bg-ink-100/50 font-bold py-2.5 rounded-xl text-sm">Cancelar</button>
+          <button onclick="adminRejectConfirm('${id}')"
+            class="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+            <i data-lucide="x" class="w-4 h-4"></i>Confirmar rejeição
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="flex gap-3">
-      <button onclick="closeModal()" class="flex-1 border border-ink-200 hover:bg-ink-100/50 font-bold py-2.5 rounded-xl text-sm">Cancelar</button>
-      <button onclick="adminRejectConfirm('${id}')"
-        class="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
-        <i data-lucide="x" class="w-4 h-4"></i>Confirmar rejeição
-      </button>
-    </div>
-  </div>`);
+  </div>`;
   icons();
   setTimeout(()=>document.getElementById('reject-reason')?.focus(), 100);
 }
@@ -8977,6 +9811,7 @@ async function adminRejectConfirm(id){
     svc.rejectedReason = reason;
   }
   toast(`Serviço rejeitado.`, 'warn');
+  addNotification({ type:'tx', title:'Serviço rejeitado', body:`"${svc.title}" foi rejeitado. Motivo: ${reason}`, link:'#/home' });
   render();
 }
 
@@ -9012,14 +9847,375 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   setTimeout(bindFilterPin, 100);
 
-  // ── Supabase: inicializa auth, carrega serviços reais e ativa realtime ──
+/* ──────────────────────────────────────────────────────────
+ * PROFILES — Supabase (PRIORIDADE 1)
+ * Tabela: profiles
+ * ────────────────────────────────────────────────────────── */
+
+// 1. CARREGAR PERFIL DO USUÁRIO LOGADO
+async function sbLoadProfile(userId) {
+  if (!sb || !userId) return null;
+  try {
+    const { data: profile, error } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+    if (error) {
+      console.warn('[Supabase] Erro ao carregar perfil:', error.message);
+      return null;
+    }
+    console.log('✅ Perfil carregado:', profile.handle);
+    return profile;
+  } catch (err) {
+    console.error('[Supabase] Erro ao carregar perfil:', err);
+    return null;
+  }
+}
+
+// 2. BUSCAR PERFIL POR HANDLE
+async function sbGetProfileByHandle(handle) {
+  if (!sb || !handle) return null;
+  try {
+    const { data: profile, error } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('handle', handle)
+      .single();
+    if (error) {
+      console.warn('[Supabase] Perfil não encontrado:', handle);
+      return null;
+    }
+    return profile;
+  } catch (err) {
+    console.error('[Supabase] Erro ao buscar perfil:', err);
+    return null;
+  }
+}
+
+// 3. ATUALIZAR PERFIL DO USUÁRIO LOGADO
+async function sbUpdateProfile(updates) {
+  if (!sb || !STATE.sbUser?.id) {
+    throw new Error('Usuário não autenticado');
+  }
+  try {
+    const { data: updated, error } = await sb
+      .from('profiles')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', STATE.sbUser.id)
+      .select()
+      .single();
+    if (error) throw error;
+    STATE.sbProfile = updated;
+    console.log('✅ Perfil atualizado');
+    return updated;
+  } catch (err) {
+    console.error('[Supabase] Erro ao atualizar perfil:', err);
+    throw err;
+  }
+}
+
+// 4. REGISTRAR NOVO USUÁRIO
+async function sbRegisterUser(email, password, name, role = 'freelancer') {
+  if (!sb) throw new Error('Supabase não configurado');
+  try {
+    const { data: { user }, error: signUpError } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name,
+          role,
+          handle: email.split('@')[0]
+        }
+      }
+    });
+    if (signUpError) throw signUpError;
+    console.log('✅ Usuário registrado:', user.id);
+    return user;
+  } catch (err) {
+    console.error('[Supabase] Erro ao registrar:', err);
+    throw err;
+  }
+}
+
+// 5. LOGIN
+async function sbLoginUser(email, password) {
+  if (!sb) throw new Error('Supabase não configurado');
+  try {
+    const { data: { user }, error } = await sb.auth.signInWithPassword({
+      email,
+      password
+    });
+    if (error) throw error;
+    console.log('✅ Login bem-sucedido:', user.email);
+    return user;
+  } catch (err) {
+    console.error('[Supabase] Erro ao fazer login:', err);
+    throw err;
+  }
+}
+
+// 6. LOGOUT
+async function sbLogoutUser() {
+  if (!sb) return;
+  try {
+    const { error } = await sb.auth.signOut();
+    if (error) throw error;
+    STATE.sbProfile = null;
+    console.log('✅ Logout bem-sucedido');
+  } catch (err) {
+    console.error('[Supabase] Erro ao fazer logout:', err);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SISTEMA DE PEDIDOS (ORDERS) E ESCROW
+// ═══════════════════════════════════════════════════════════
+
+// 6A. CRIAR UM NOVO PEDIDO (ORDER) COM ESCROW
+async function sbCreateOrder(freelancerId, serviceId, amount, description = '') {
+  if (!SB_READY || !STATE.sbUser) {
+    toast('Erro: Você não está autenticado.', 'error');
+    return null;
+  }
+
+  try {
+    // 1. Verificar saldo do cliente
+    const { data: clientProfile, error: profileError } = await sb
+      .from('profiles')
+      .select('balance_itl')
+      .eq('id', STATE.sbUser.id)
+      .single();
+
+    if (profileError || !clientProfile) {
+      toast('Erro ao verificar saldo.', 'error');
+      return null;
+    }
+
+    if (clientProfile.balance_itl < amount) {
+      toast(`Saldo insuficiente. Você tem ${clientProfile.balance_itl} ITL, mas precisa de ${amount} ITL.`, 'error');
+      return null;
+    }
+
+    // 2. Criar o pedido no banco de dados
+    const { data: order, error: orderError } = await sb
+      .from('orders')
+      .insert([
+        {
+          client_id: STATE.sbUser.id,
+          freelancer_id: freelancerId,
+          service_id: serviceId,
+          amount: amount,
+          status: 'pending',
+          description: description,
+          due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ])
+      .select()
+      .single();
+
+    if (orderError) {
+      console.error('[Supabase] Erro ao criar pedido:', orderError);
+      toast('Erro ao criar pedido.', 'error');
+      return null;
+    }
+
+    // 3. Debitar o saldo do cliente (Escrow)
+    const newBalance = clientProfile.balance_itl - amount;
+    const { error: updateError } = await sb
+      .from('profiles')
+      .update({ balance_itl: newBalance })
+      .eq('id', STATE.sbUser.id);
+
+    if (updateError) {
+      console.error('[Supabase] Erro ao atualizar saldo:', updateError);
+      toast('Erro ao bloquear fundos no escrow.', 'error');
+      return null;
+    }
+
+    console.log('✅ Pedido criado com sucesso:', order.id);
+    toast(`Pedido criado! ${amount} ITL bloqueado no escrow.`, 'success');
+    addNotification({
+      type: 'tx',
+      title: 'Pedido Criado',
+      body: `Você contratou um serviço por ${amount} ITL. Fundos bloqueados no escrow.`,
+      link: `#/order/${order.id}`
+    });
+    return order;
+  } catch (err) {
+    console.error('[Supabase] Erro ao criar pedido:', err);
+    toast('Erro ao processar pedido.', 'error');
+    return null;
+  }
+}
+
+// 6B. CARREGAR TODOS OS PEDIDOS DO USUÁRIO
+async function sbLoadUserOrders() {
+  if (!SB_READY || !STATE.sbUser) return [];
+
+  try {
+    const { data: orders, error } = await sb
+      .from('orders')
+      .select('*')
+      .or(`client_id.eq.${STATE.sbUser.id},freelancer_id.eq.${STATE.sbUser.id}`)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.warn('[Supabase] Erro ao carregar pedidos:', error.message);
+      return [];
+    }
+
+    console.log(`✅ ${orders.length} pedidos carregados`);
+    return orders || [];
+  } catch (err) {
+    console.error('[Supabase] Erro ao carregar pedidos:', err);
+    return [];
+  }
+}
+
+// 6C. ATUALIZAR STATUS DO PEDIDO
+async function sbUpdateOrderStatus(orderId, newStatus) {
+  if (!SB_READY || !STATE.sbUser) {
+    toast('Erro: Você não está autenticado.', 'error');
+    return null;
+  }
+
+  try {
+    const { data: order, error: fetchError } = await sb
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .single();
+
+    if (fetchError || !order) {
+      toast('Pedido não encontrado.', 'error');
+      return null;
+    }
+
+    const isClient = order.client_id === STATE.sbUser.id;
+    const isFreelancer = order.freelancer_id === STATE.sbUser.id;
+
+    if (!isClient && !isFreelancer) {
+      toast('Você não tem permissão para atualizar este pedido.', 'error');
+      return null;
+    }
+
+    const { data: updatedOrder, error: updateError } = await sb
+      .from('orders')
+      .update({ status: newStatus })
+      .eq('id', orderId)
+      .select()
+      .single();
+
+    if (updateError) {
+      console.error('[Supabase] Erro ao atualizar pedido:', updateError);
+      toast('Erro ao atualizar pedido.', 'error');
+      return null;
+    }
+
+    // Se o status for 'completed', liberar o pagamento para o freelancer
+    if (newStatus === 'completed' && isClient) {
+      const { data: freelancerProfile, error: profileError } = await sb
+        .from('profiles')
+        .select('balance_itl')
+        .eq('id', order.freelancer_id)
+        .single();
+
+      if (!profileError && freelancerProfile) {
+        const newFreelancerBalance = (freelancerProfile.balance_itl || 0) + order.amount;
+        await sb
+          .from('profiles')
+          .update({ balance_itl: newFreelancerBalance })
+          .eq('id', order.freelancer_id);
+
+        toast(`Pagamento de ${order.amount} ITL liberado para o freelancer!`, 'success');
+      }
+    }
+
+    console.log(`✅ Pedido ${orderId} atualizado para ${newStatus}`);
+    return updatedOrder;
+  } catch (err) {
+    console.error('[Supabase] Erro ao atualizar pedido:', err);
+    toast('Erro ao processar atualização.', 'error');
+    return null;
+  }
+}
+
+// 6D. CARREGAR SALDO ITL DO USUÁRIO
+async function sbGetUserBalance() {
+  if (!SB_READY || !STATE.sbUser) return 0;
+
+  try {
+    const { data: profile, error } = await sb
+      .from('profiles')
+      .select('balance_itl')
+      .eq('id', STATE.sbUser.id)
+      .single();
+
+    if (error || !profile) return 0;
+    return profile.balance_itl || 0;
+  } catch (err) {
+    console.error('[Supabase] Erro ao carregar saldo:', err);
+    return 0;
+  }
+}
+
+// 6E. INICIALIZAR SALDO DEMO (para testes)
+async function initializeDemoBalance() {
+  if (!SB_READY || !STATE.sbUser) return;
+
+  try {
+    const { data: profile, error } = await sb
+      .from('profiles')
+      .select('balance_itl')
+      .eq('id', STATE.sbUser.id)
+      .single();
+
+    if (!error && profile && profile.balance_itl === 0) {
+      await sb
+        .from('profiles')
+        .update({ balance_itl: 1000 })
+        .eq('id', STATE.sbUser.id);
+      console.log('✅ Saldo demo de 1000 ITL inicializado');
+    }
+  } catch (err) {
+    console.error('[Supabase] Erro ao inicializar saldo demo:', err);
+  }
+}
+
+// 7. LISTAR TODOS OS FREELANCERS VERIFICADOS
+async function sbListFreelancers(filters = {}) {
+  if (!sb) return [];
+  try {
+    let query = sb
+      .from('profiles')
+      .select('*')
+      .eq('verified', true)
+      .eq('role', 'freelancer');
+    if (filters.minRating) {
+      query = query.gte('rating', filters.minRating);
+    }
+    const { data: freelancers, error } = await query
+      .order('rating', { ascending: false });
+    if (error) throw error;
+    return freelancers || [];
+  } catch (err) {
+    console.error('[Supabase] Erro ao listar freelancers:', err);
+    return [];
+  }
+}
+
+  // ── Supabase: inicializa auth
   if (SB_READY) {
     sbInitAuth().then(() => {
       sbLoadServices();
       sbSubscribeServices();
     });
   } else {
-    console.info('[Interwork] Supabase não configurado. Rodando em modo demo (dados locais).');
     // Marca serviços mock para diferenciá-los dos reais
     DB.services.forEach(s => s._mock = true);
   }
