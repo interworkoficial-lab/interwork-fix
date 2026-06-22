@@ -2456,7 +2456,7 @@ window._handleReownConnected = async function(address) {
   STATE.walletConnected = true;
   STATE.authenticated   = true;
   closeModal();
-  toast('Wallet conectada — bem-vindo!', 'success');
+  // toast removido — sem popup ao conectar
   persistNow();
   render();
 };
@@ -2624,7 +2624,7 @@ function finishWalletOnboarding(provider){
   addNotification({ type:'tx', title:'Conta criada', body:`@${fullHandle} conectado via ${provider}`, link:'#/dashboard/'+STATE.dashboardTab });
   persistNow();
   closeModal();
-  toast('Conta criada e wallet conectada.', 'success');
+  // toast removido — sem popup ao criar conta
   go('#/dashboard/'+STATE.dashboardTab);
 }
 function openWalletMenu(e){
@@ -5013,7 +5013,6 @@ function openNewServiceModal(editId){
     ? ((existing.faqs || gigFaqsByCategory(existing.category)).map(f => Array.isArray(f) ? {q:f[0], a:f[1]} : {...f}))
     : defaultFaqs();
 
-  // Wizard state
   STATE._nsStep = 1;
   STATE._nsEdit = editId || null;
   STATE._nsV = {
@@ -5028,6 +5027,387 @@ function openNewServiceModal(editId){
   };
   renderNewServiceWizard();
 }
+
+/* ──────────────────────────────────────────────────────────
+   PÁGINA DEDICADA: Publicar / Editar Serviço
+   Estilo LinkersMap — header + sidebar info + form central
+   ────────────────────────────────────────────────────────── */
+function viewNewServicePage(){
+  const editing = !!STATE._nsEdit;
+  const step    = STATE._nsStep || 1;
+
+  const STEPS = [
+    { n:1, label:'Visão Geral',     icon:'file-text',    desc:'Título, categoria e tags' },
+    { n:2, label:'Descrição & FAQ', icon:'help-circle',  desc:'Pitch do serviço e perguntas' },
+    { n:3, label:'Preço & Mídia',   icon:'tag',          desc:'Valor, prazo e galeria' },
+    { n:4, label:'Revisar',         icon:'check-circle', desc:'Confirmar e publicar' },
+  ];
+
+  const sidebarSteps = STEPS.map((s,i) => {
+    const done   = step > s.n;
+    const active = step === s.n;
+    return `
+    <button onclick="if(${s.n}<${step+1}){STATE._nsStep=${s.n};renderView()}"
+      class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all
+        ${active ? 'bg-brand-50 border border-brand-200' : done ? 'hover:bg-ink-100/40' : 'opacity-40 cursor-default'}">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 shrink-0 transition-all
+        ${done ? 'bg-brand-500 border-brand-500 text-white' : active ? 'border-brand-500 text-brand-600 bg-white' : 'border-ink-200 text-ink-400 bg-white'}">
+        ${done ? `<i data-lucide="check" class="w-4 h-4"></i>` : s.n}
+      </div>
+      <div class="min-w-0">
+        <div class="text-sm font-semibold ${active ? 'text-brand-700' : done ? 'text-ink-700' : 'text-ink-400'}">${s.label}</div>
+        <div class="text-xs ${active ? 'text-brand-500' : 'text-ink-400'} truncate">${s.desc}</div>
+      </div>
+    </button>`;
+  }).join('');
+
+  const v          = STATE._nsV || {};
+  const titleLen   = (v.title||'').length;
+  const descLen    = (v.desc||'').length;
+  const tagCount   = (v.tags||'').split(',').map(x=>x.trim()).filter(Boolean).length;
+
+  /* ── STEP 1 ── */
+  const step1 = `
+  <div class="space-y-5">
+    <details class="rounded-xl border border-brand-100 bg-brand-50/50 overflow-hidden">
+      <summary class="flex items-center justify-between px-4 py-3 cursor-pointer select-none text-sm font-semibold text-brand-700">
+        <span class="flex items-center gap-2"><i data-lucide="info" class="w-4 h-4"></i>Como funciona a listagem de um Serviço</span>
+        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+      </summary>
+      <div class="px-4 pb-3 text-xs text-brand-700 space-y-1 leading-relaxed">
+        <p>• Crie um título claro — "Eu vou criar um logo para sua marca Web3"</p>
+        <p>• Quanto mais detalhado o serviço, mais confiança você gera no cliente.</p>
+        <p>• Serviços com foto e FAQ aprovados têm 3× mais conversão.</p>
+      </div>
+    </details>
+    <div class="flex items-start gap-3 rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 text-xs text-violet-700">
+      <i data-lucide="shield-check" class="w-4 h-4 shrink-0 mt-0.5 text-violet-500"></i>
+      <span><strong>Carteira ITLX Recomendada.</strong> Pagamentos na rede Interlink usam <strong>ITL</strong> — certifique-se que sua carteira é compatível.</span>
+    </div>
+    <div>
+      <label class="text-xs font-bold uppercase tracking-wider text-ink-500">TÍTULO DO SERVIÇO *</label>
+      <input id="ns-title" value="${escapeHtml(v.title)}" maxlength="80"
+        oninput="document.getElementById('ns-tc').textContent=this.value.length"
+        class="w-full mt-1.5 border border-ink-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-brand-400 transition"
+        placeholder="Eu vou criar um logo profissional para sua marca"/>
+      <div class="flex justify-between mt-1">
+        <span class="text-[11px] text-ink-400">Comece com "Eu vou…" — deixa claro o que você entrega</span>
+        <span class="text-[11px] text-ink-400"><span id="ns-tc">${titleLen}</span>/80</span>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">CATEGORIA *</label>
+        <select id="ns-cat" class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-400 transition bg-white">
+          ${CATEGORIES.map(cat=>`<option value="${cat.id}" ${(v.cat||'')==cat.id?'selected':''}>${cat.label}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">PAÍS *</label>
+        <select id="ns-co" class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-400 transition bg-white">
+          ${COUNTRIES.map(co=>`<option value="${co.id}" ${(v.co||'')==co.id?'selected':''}>${co.flag} ${co.name}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div>
+      <label class="text-xs font-bold uppercase tracking-wider text-ink-500">TAGS <span class="font-normal normal-case text-ink-400">(separe por vírgula · até 10)</span></label>
+      <input id="ns-tags" value="${escapeHtml(v.tags)}"
+        oninput="document.getElementById('ns-tagc').textContent=this.value.split(',').map(x=>x.trim()).filter(Boolean).length"
+        class="w-full mt-1.5 border border-ink-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-brand-400 transition"
+        placeholder="ex: logo, branding, web3, design, identidade visual"/>
+      <div class="text-[11px] text-ink-400 mt-1"><span id="ns-tagc">${tagCount}</span>/10 tags — ajudam clientes a te encontrar</div>
+    </div>
+  </div>`;
+
+  /* ── STEP 2 ── */
+  const step2 = `
+  <div class="space-y-5">
+    <div>
+      <label class="text-xs font-bold uppercase tracking-wider text-ink-500">DESCRIÇÃO *</label>
+      <textarea id="ns-desc" rows="6" maxlength="1200"
+        oninput="document.getElementById('ns-dc').textContent=this.value.length"
+        class="w-full mt-1.5 border border-ink-200 rounded-xl px-3.5 py-2.5 text-sm resize-none outline-none focus:border-brand-400 transition"
+        placeholder="Descreva o que está incluso, seu processo passo a passo, diferenciais e resultados esperados…">${escapeHtml(v.desc)}</textarea>
+      <div class="flex justify-between mt-1">
+        <span class="text-[11px] text-ink-400">Mínimo 80 caracteres</span>
+        <span class="text-[11px] text-ink-400"><span id="ns-dc">${descLen}</span>/1200</span>
+      </div>
+    </div>
+    <div class="border-t border-ink-100 pt-4">
+      <div class="flex items-center justify-between mb-1.5">
+        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">FAQ <span class="font-normal normal-case text-ink-400">(recomendado)</span></label>
+        <button type="button" onclick="addFaq()" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>Adicionar pergunta
+        </button>
+      </div>
+      <p class="text-[11px] text-ink-400 mb-2">Responda as dúvidas mais comuns — reduz mensagens repetitivas no chat.</p>
+      <div id="ns-faq-list" class="space-y-2"></div>
+    </div>
+    <div class="border-t border-ink-100 pt-4">
+      <div class="flex items-center justify-between mb-1.5">
+        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">BRIEFING DO CLIENTE *</label>
+        <button type="button" onclick="addRequirement()" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>Adicionar campo
+        </button>
+      </div>
+      <p class="text-[11px] text-ink-400 mb-2">O cliente preenche antes de pagar — você recebe tudo que precisa para começar.</p>
+      <div id="ns-req-list" class="space-y-2"></div>
+    </div>
+  </div>`;
+
+  /* ── STEP 3 ── */
+  const gPrev = (STATE.newServiceGallery||[]).map((src,i)=>`
+    <div class="relative group aspect-square rounded-xl overflow-hidden border border-ink-100">
+      <img src="${src}" class="w-full h-full object-cover pointer-events-none"/>
+      <button onclick="removeGalleryImg(${i})" class="absolute top-1 right-1 w-6 h-6 bg-black/60 text-white rounded-full grid place-items-center opacity-0 group-hover:opacity-100 transition">
+        <i data-lucide="x" class="w-3 h-3"></i>
+      </button>
+      <span class="absolute bottom-1 left-1 text-[9px] font-bold text-white bg-black/40 px-1.5 py-0.5 rounded-full">${i===0?'Capa':i+1}</span>
+    </div>`).join('');
+
+  const step3 = `
+  <div class="space-y-5">
+    <div class="flex items-start gap-2.5 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-800">
+      <i data-lucide="lightbulb" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5"></i>
+      <span>Serviços entre <strong>48 e 280 ITL</strong> têm maior taxa de conversão na plataforma.</span>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">PREÇO (ITL) *</label>
+        <div class="relative mt-1.5">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400 font-bold">⬡</span>
+          <input id="ns-price" type="number" min="1" max="9999" value="${v.price||120}"
+            class="w-full border border-ink-200 rounded-xl pl-8 pr-3 py-2.5 text-sm outline-none focus:border-brand-400 transition"/>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">PRAZO (DIAS) *</label>
+        <div class="relative mt-1.5">
+          <input id="ns-days" type="number" min="1" max="90" value="${v.days||7}"
+            class="w-full border border-ink-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-400 transition pr-12"/>
+          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400 text-xs">dias</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <label class="text-xs font-bold uppercase tracking-wider text-ink-500">MÉTODO DE PAGAMENTO</label>
+      <div class="flex gap-3 mt-2">
+        <div class="flex-1 flex items-center gap-3 border-2 border-brand-500 bg-brand-50 rounded-xl px-4 py-3">
+          <div class="w-8 h-8 rounded-lg bg-brand-500 grid place-items-center shrink-0">
+            <i data-lucide="hexagon" class="w-4 h-4 text-white"></i>
+          </div>
+          <div><div class="text-sm font-extrabold text-brand-700">ITL</div><div class="text-[10px] text-brand-600">Token InterLink</div></div>
+          <i data-lucide="check-circle" class="w-4 h-4 text-brand-500 ml-auto"></i>
+        </div>
+        <div class="flex-1 flex items-center gap-3 border border-ink-200 bg-ink-50 rounded-xl px-4 py-3 opacity-50">
+          <div class="w-8 h-8 rounded-lg bg-ink-200 grid place-items-center shrink-0">
+            <i data-lucide="coins" class="w-4 h-4 text-ink-400"></i>
+          </div>
+          <div><div class="text-sm font-semibold text-ink-500">Stablecoins</div><div class="text-[10px] text-ink-400">Em breve</div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <label class="text-xs font-bold uppercase tracking-wider text-ink-500">FOTO PRINCIPAL *</label>
+      <div class="flex items-center gap-4 mt-2">
+        <div id="ns-logo-preview" class="w-20 h-20 rounded-xl border-2 border-dashed border-ink-200 bg-ink-50 grid place-items-center overflow-hidden shrink-0">
+          ${STATE.newServiceLogo ? `<img src="${STATE.newServiceLogo}" class="w-full h-full object-cover"/>` : `<i data-lucide="image-plus" class="w-7 h-7 text-ink-300"></i>`}
+        </div>
+        <div class="flex-1 space-y-1.5">
+          <input id="ns-logo-input" type="file" accept="image/*" class="hidden" onchange="handleLogoUpload(event)"/>
+          <button type="button" onclick="document.getElementById('ns-logo-input').click()"
+            class="w-full flex items-center justify-center gap-2 border-2 border-dashed border-brand-300 hover:border-brand-500 bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold text-sm py-2.5 rounded-xl transition">
+            <i data-lucide="upload" class="w-4 h-4"></i>${STATE.newServiceLogo ? 'Trocar foto' : 'Enviar foto'}
+          </button>
+          ${STATE.newServiceLogo ? `<button type="button" onclick="clearLogo()" class="w-full text-xs text-rose-500 font-semibold flex items-center justify-center gap-1 hover:text-rose-700"><i data-lucide="x" class="w-3 h-3"></i>Remover</button>` : ''}
+          <p class="text-[11px] text-ink-400 text-center">JPEG, PNG ou WebP até 5 MB</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <label class="text-xs font-bold uppercase tracking-wider text-ink-500">GALERIA <span class="font-normal normal-case text-ink-400">(opcional · até 8 imagens)</span></label>
+      <input id="ns-gallery-input" type="file" accept="image/*" multiple class="hidden" onchange="handleGalleryUpload(event)"/>
+      ${(STATE.newServiceGallery||[]).length ? `<div class="grid grid-cols-5 gap-2 mt-2 mb-2">${gPrev}</div>` : ''}
+      ${(STATE.newServiceGallery||[]).length < 8 ? `
+        <button type="button" onclick="document.getElementById('ns-gallery-input').click()"
+          class="w-full border-2 border-dashed border-ink-200 hover:border-brand-300 hover:bg-brand-50/40 py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold text-ink-500 hover:text-brand-600 transition mt-2">
+          <i data-lucide="image-plus" class="w-4 h-4"></i>Adicionar exemplos do seu trabalho
+        </button>` : ''}
+    </div>
+    <div>
+      <label class="text-xs font-bold uppercase tracking-wider text-ink-500">O QUE ESTÁ INCLUÍDO <span class="font-normal normal-case text-ink-400">(separe por vírgula)</span></label>
+      <input id="ns-inc" value="${escapeHtml(v.inc)}"
+        class="w-full mt-1.5 border border-ink-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:border-brand-400 transition"
+        placeholder="ex: 3 propostas, revisões ilimitadas, arquivo editável"/>
+    </div>
+  </div>`;
+
+  /* ── STEP 4: Revisão ── */
+  const catObj  = CATEGORIES.find(x=>x.id===v.cat);
+  const coObj   = COUNTRIES.find(x=>x.id===v.co);
+  const incList = (v.inc||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const tagList = (v.tags||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const nFaqs   = (STATE.newServiceFaqs||[]).filter(f=>(f.q||f.question)?.trim()&&(f.a||f.answer)?.trim()).length;
+  const nReqs   = (STATE.newServiceRequirements||[]).filter(r=>r.label?.trim()).length;
+
+  const rowItem = (icon,lbl,val,cls='text-ink-800') => `
+    <div class="flex items-start gap-3 py-2.5 border-b border-ink-100 last:border-0">
+      <i data-lucide="${icon}" class="w-4 h-4 text-ink-400 mt-0.5 shrink-0"></i>
+      <span class="text-xs text-ink-500 w-24 shrink-0">${lbl}</span>
+      <span class="text-xs font-semibold ${cls} flex-1">${val}</span>
+    </div>`;
+
+  const step4 = `
+  <div class="space-y-4">
+    <div class="rounded-2xl border border-ink-100 overflow-hidden">
+      ${STATE.newServiceLogo
+        ? `<img src="${STATE.newServiceLogo}" class="w-full h-36 object-cover"/>`
+        : `<div class="w-full h-36 flex items-center justify-center" style="background:${catObj?.color||'#e5e7eb'}15">
+            <i data-lucide="${catObj?.icon||'briefcase'}" class="w-10 h-10 opacity-20" style="color:${catObj?.color||'#9ca3af'}"></i>
+           </div>`}
+      <div class="p-4">
+        <span class="chip text-[10px]" style="background:${catObj?.color||'#e5e7eb'}18;color:${catObj?.color||'#6b7280'}">${catObj?.label||'—'}</span>
+        <div class="font-extrabold text-sm mt-1.5 leading-snug">${escapeHtml(v.title||'—')}</div>
+        <div class="flex items-center justify-between mt-2">
+          <span class="text-xs text-ink-500">${v.days||'?'} dias</span>
+          <span class="text-base font-extrabold text-brand-600">${fmtITL(+(v.price||0))}</span>
+        </div>
+        ${tagList.length ? `<div class="flex flex-wrap gap-1 mt-2">${tagList.map(t=>`<span class="chip bg-ink-100/70 text-ink-500 text-[10px]">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+      </div>
+    </div>
+    <div class="rounded-2xl border border-ink-100 p-4">
+      ${rowItem('map-pin','País',`${coObj?.flag||''} ${coObj?.name||'—'}`)}
+      ${rowItem('package','Incluso',incList.length?incList.join(', '):'—')}
+      ${rowItem('coins','Pagamento','ITL · Token InterLink','text-brand-600')}
+      ${rowItem('help-circle','FAQ',nFaqs?`${nFaqs} pergunta(s)`:'—')}
+      ${rowItem('clipboard-list','Briefing',nReqs?`${nReqs} campo(s)`:'—')}
+      ${(STATE.newServiceGallery||[]).length ? rowItem('image','Galeria',`${STATE.newServiceGallery.length} imagem(ns)`) : ''}
+    </div>
+    <div class="flex items-start gap-3 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
+      <div class="w-8 h-8 rounded-full bg-amber-100 grid place-items-center shrink-0">
+        <i data-lucide="clock" class="w-4 h-4 text-amber-600"></i>
+      </div>
+      <div class="text-xs text-amber-800 leading-relaxed">
+        <span class="font-bold block mb-0.5">Enviar para revisão</span>
+        Após publicar, a equipe Interwork revisa em até <strong>24h</strong>. Você será notificado quando aparecer no marketplace.
+      </div>
+    </div>
+  </div>`;
+
+  const bodies = {1:step1,2:step2,3:step3,4:step4};
+
+  const btnBack = step > 1
+    ? `<button onclick="nsWizardNavPage(-1)" class="flex items-center gap-2 px-5 py-2.5 border border-ink-200 hover:bg-ink-50 font-semibold text-sm rounded-xl transition"><i data-lucide="chevron-left" class="w-4 h-4"></i>Voltar</button>`
+    : `<button onclick="STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView()" class="flex items-center gap-2 px-5 py-2.5 border border-ink-200 hover:bg-ink-50 font-semibold text-sm rounded-xl transition"><i data-lucide="x" class="w-4 h-4"></i>Cancelar</button>`;
+
+  const btnNext = step < 4
+    ? `<button onclick="nsWizardNavPage(1)" class="flex items-center gap-2 px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl transition">Próximo<i data-lucide="chevron-right" class="w-4 h-4"></i></button>`
+    : `<button onclick="${STATE._nsEdit?`saveService('${STATE._nsEdit}')`:'createService()'}" class="flex items-center gap-2 px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl transition"><i data-lucide="send" class="w-4 h-4"></i>Enviar para Revisão</button>`;
+
+  return `
+  <div class="max-w-5xl mx-auto px-4 py-8">
+
+    <!-- Page header -->
+    <div class="mb-8">
+      <div class="flex items-center gap-2 text-xs text-ink-500 mb-3">
+        <button onclick="STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView()" class="hover:text-brand-500 transition">Dashboard</button>
+        <i data-lucide="chevron-right" class="w-3 h-3"></i>
+        <span class="text-ink-700 font-semibold">${editing ? 'Editar Serviço' : 'Publicar Novo Serviço'}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-extrabold text-ink-900">${editing ? 'Editar Serviço' : 'Registrar um Serviço'}</h1>
+          <p class="text-sm text-ink-500 mt-1">Passo ${step} de 4 — ${STEPS[step-1].label}</p>
+        </div>
+        <button onclick="STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView()"
+          class="flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-700 transition">
+          <i data-lucide="x" class="w-4 h-4"></i>Sair
+        </button>
+      </div>
+    </div>
+
+    <!-- Layout: sidebar + form -->
+    <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 items-start">
+
+      <!-- Sidebar com os steps -->
+      <aside class="hidden md:block">
+        <div class="bg-white border border-ink-100 rounded-2xl p-3 space-y-1 sticky top-24">
+          ${sidebarSteps}
+          <div class="pt-3 mt-1 border-t border-ink-100 px-3">
+            <div class="text-[10px] text-ink-400 font-semibold uppercase tracking-wider mb-2">Dica</div>
+            <p class="text-[11px] text-ink-500 leading-relaxed">Serviços com foto, FAQ e briefing têm <strong>3× mais conversão</strong>.</p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Form principal -->
+      <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden">
+
+        <!-- Step header -->
+        <div class="px-6 py-5 border-b border-ink-100 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-brand-50 grid place-items-center shrink-0">
+            <i data-lucide="${STEPS[step-1].icon}" class="w-5 h-5 text-brand-500"></i>
+          </div>
+          <div>
+            <div class="font-extrabold text-base text-ink-900">${STEPS[step-1].label}</div>
+            <div class="text-xs text-ink-500">${STEPS[step-1].desc}</div>
+          </div>
+          <!-- Progress mobile -->
+          <div class="ml-auto flex items-center gap-1 md:hidden">
+            ${STEPS.map(s=>`<div class="w-2 h-2 rounded-full ${step>=s.n?'bg-brand-500':'bg-ink-200'}"></div>`).join('')}
+          </div>
+        </div>
+
+        <!-- Step body -->
+        <div class="px-6 py-6">
+          ${bodies[step] || step1}
+        </div>
+
+        <!-- Footer com botões -->
+        <div class="px-6 py-4 border-t border-ink-100 flex items-center justify-between bg-ink-50/40">
+          ${btnBack}
+          <span class="text-xs text-ink-400 hidden sm:block">${step} / 4</span>
+          ${btnNext}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function nsWizardNavPage(dir){
+  const step = STATE._nsStep || 1;
+  if(dir===1){
+    if(step===1){
+      const title = (document.getElementById('ns-title')?.value||'').trim();
+      if(title.length<5){ toast('Título muito curto — mínimo 5 caracteres.','warn'); return; }
+      STATE._nsV.title = title;
+      STATE._nsV.cat   = document.getElementById('ns-cat')?.value  || '';
+      STATE._nsV.co    = document.getElementById('ns-co')?.value   || '';
+      STATE._nsV.tags  = (document.getElementById('ns-tags')?.value||'').trim();
+    }
+    if(step===2){
+      const desc = (document.getElementById('ns-desc')?.value||'').trim();
+      if(desc.length<80){ toast('Descrição muito curta — mínimo 80 caracteres.','warn'); return; }
+      STATE._nsV.desc = desc;
+      collectFaqsFromBuilder();
+      collectRequirementsFromBuilder();
+    }
+    if(step===3){
+      const price = parseFloat(document.getElementById('ns-price')?.value||'0');
+      const days  = parseInt(document.getElementById('ns-days')?.value||'0',10);
+      if(!price||price<1){ toast('Defina um preço válido.','warn'); return; }
+      if(!days||days<1){   toast('Defina um prazo válido.','warn'); return; }
+      STATE._nsV.price = price;
+      STATE._nsV.days  = days;
+      STATE._nsV.inc   = (document.getElementById('ns-inc')?.value||'').trim();
+    }
+  }
+  STATE._nsStep = Math.max(1, Math.min(4, step+dir));
+  renderView();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+
 function renderNewServiceWizard(){
   const step = STATE._nsStep || 1;
   const v = STATE._nsV || {};
@@ -5974,8 +6354,7 @@ function showAtvRewardsOffer(){
 
   $('#modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 backdrop-blur-sm grid place-items-center p-4 fade-in"
-       style="background:rgba(8,5,18,.78)"
-       onclick="if(event.target===this)closeModal()">
+       style="background:rgba(8,5,18,.78)">
 
     <div class="w-full max-w-sm rounded-3xl overflow-hidden"
          style="background:linear-gradient(160deg,#1a1030 0%,#0f0a22 60%,#18100e 100%);
