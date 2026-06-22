@@ -9947,6 +9947,47 @@ async function sbListFreelancers(filters = {}) {
     return [];
   }
 }
+
+// ════════════════════════════════════════════════════════════
+// WEB3 — sbLoadProfileByWallet, sbLoadOrders, sbSyncITLBalance
+// ════════════════════════════════════════════════════════════
+
+async function sbLoadProfileByWallet(walletAddress) {
+  if (!sb || !walletAddress) return null;
+  try {
+    const { data: profile, error } = await sb.from('profiles').select('*').eq('wallet_address', walletAddress.toLowerCase()).single();
+    if (error) return null;
+    STATE.sbProfile = profile;
+    STATE.currentUserId = profile.id;
+    return profile;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function sbLoadOrders() {
+  if (!sb || !STATE.currentUserId) return [];
+  try {
+    const { data: orders, error } = await sb.from('orders').select('*').or(`client_id.eq.${STATE.currentUserId},freelancer_id.eq.${STATE.currentUserId}`);
+    if (error) throw error;
+    return orders || [];
+  } catch (err) {
+    return [];
+  }
+}
+
+async function sbSyncITLBalance() {
+  if (!sb || !STATE.currentUserId) return 0;
+  try {
+    const { data: profile, error } = await sb.from('profiles').select('balance_itl').eq('id', STATE.currentUserId).single();
+    if (error) throw error;
+    STATE.itlBalance = profile.balance_itl || 0;
+    return STATE.itlBalance;
+  } catch (err) {
+    return 0;
+  }
+}
+
 </script>
 </body>
 </html>
