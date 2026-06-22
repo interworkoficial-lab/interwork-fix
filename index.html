@@ -3635,17 +3635,6 @@ function gigFaqsByCategory(cat){
   };
   return MAP[cat] || MAP.design;
 }
-function gigAttributesByCategory(cat){
-  const MAP = {
-    design:   [['Estilo','Minimalista, Moderno'],['Ferramenta','Figma, Webflow'],['Tipo de entrega','Landing page, Identidade visual'],['Indústria','DeFi, NFT, Web3']],
-    dev:      [['Stack','Next.js, Solidity, wagmi'],['Tipo de projeto','DApp, Smart contract'],['Rede','Interlink, EVM-compatível'],['Nível','Intermediário a avançado']],
-    audit:    [['Tipo de auditoria','Manual + automatizada'],['Ferramentas','Slither, Foundry'],['Foco','DeFi, AMM, Lending, Staking'],['Padrão do relatório','OWASP / SWC Registry']],
-    marketing:[['Canais','Discord, Twitter/X'],['Tipo de estratégia','Growth, Lançamento de token'],['Formato de entrega','Calendário, Relatório semanal'],['Público','Comunidades Web3']],
-    writing:  [['Tipo de texto','Whitepaper, Tradução técnica'],['Idiomas','Português, Inglês'],['Tom','Técnico, formal'],['Formato','PDF, Markdown']],
-    video:    [['Estilo','Cinematográfico, Motion 2D'],['Ferramenta','After Effects'],['Formato','Reels verticais, 16:9'],['Uso','Anúncios, Redes sociais']],
-  };
-  return MAP[cat] || MAP.design;
-}
 function serviceCard(s){
   const u = getUserSafe(s.freelancerId); // ADICIONADO fallback — antes: getUser(s.freelancerId)
   const imgs = serviceCardImages(s);
@@ -6052,6 +6041,41 @@ function renderGalleryPreview(){
   }
   icons();
 }
+function showPendingApprovalScreen(){
+  $('#modal-root').innerHTML = `
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop">
+      <div class="p-7 text-center">
+        <div class="w-14 h-14 rounded-full bg-amber-100 grid place-items-center mx-auto mb-4">
+          <i data-lucide="clock" class="w-7 h-7 text-amber-500"></i>
+        </div>
+        <h2 class="text-lg font-extrabold mb-2">Enviado para revisão</h2>
+        <p class="text-sm text-ink-500 mb-5 leading-relaxed">
+          Seu serviço foi enviado. A equipe Interwork revisa em até <strong>24h</strong> — você será notificado quando aparecer no marketplace.
+        </p>
+        <div class="rounded-xl bg-amber-50 border border-amber-100 p-4 mb-5 text-left space-y-2.5">
+          <div class="flex items-center gap-2 text-xs text-emerald-700 font-semibold">
+            <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-500"></i>Serviço salvo com sucesso
+          </div>
+          <div class="flex items-center gap-2 text-xs text-amber-700 font-semibold">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-amber-500"></i>Equipe Interwork revisando
+          </div>
+          <div class="flex items-center gap-2 text-xs text-ink-400">
+            <i data-lucide="circle" class="w-3.5 h-3.5"></i>Publicação no marketplace
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="closeModal();render()" class="flex-1 border border-ink-200 hover:bg-ink-50 font-semibold py-2.5 rounded-xl text-sm">Fechar</button>
+          <button onclick="closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView()" class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>Ver dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  icons();
+}
+
 function createService(){
   const v = STATE._nsV || {};
   const title = (v.title||'').trim();
@@ -6074,7 +6098,7 @@ function createService(){
     tags,
     requirements,
     faqs,
-    status: 'pending',
+    status: 'pending_approval',
     createdTs: Date.now(), reviews:[],
   };
   DB.services.unshift(svc);
@@ -6795,13 +6819,13 @@ function sbtCard(u){
   const badges = sbtBadgesOf(u);
   if (!badges.length) return `
     <div class="bg-white border border-ink-100 rounded-2xl p-5">
-      <div class="font-extrabold mb-2 flex items-center gap-2"><i data-lucide="gem" class="w-4 h-4 text-violet-500"></i>SBT Reputação</div>
-      <div class="text-xs text-ink-500">Nenhum SBT conquistado ainda. Complete pedidos para mintar badges soulbound.</div>
+      <div class="font-extrabold mb-2 flex items-center gap-2"><i data-lucide="gem" class="w-4 h-4 text-violet-500"></i>Reputação</div>
+      <div class="text-xs text-ink-500">Complete pedidos para construir sua reputação on-chain.</div>
     </div>`;
   return `
     <div class="bg-gradient-to-br from-violet-50 via-white to-brand-50/40 border border-violet-100 rounded-2xl p-5">
       <div class="flex items-center justify-between mb-3">
-        <div class="font-extrabold flex items-center gap-2"><i data-lucide="gem" class="w-4 h-4 text-violet-500"></i>SBT Reputação</div>
+        <div class="font-extrabold flex items-center gap-2"><i data-lucide="gem" class="w-4 h-4 text-violet-500"></i>Reputação</div>
         <span class="chip bg-violet-100 text-violet-700 text-[10px]">${badges.length} on-chain</span>
       </div>
       <div class="text-[10px] text-ink-500 font-mono mb-3 truncate">${SBT_CONTRACT.slice(0,10)}…${SBT_CONTRACT.slice(-6)}</div>
@@ -8729,17 +8753,37 @@ function confirmHire(serviceId, tierKey){
           </div>
         </div>
 
-        <!-- Status aguardando -->
-        <div id="qr-status" class="flex items-center gap-2.5 rounded-xl bg-amber-50 border border-amber-100 px-3 py-2.5 text-xs text-amber-800">
-          <i data-lucide="loader-2" class="w-4 h-4 text-amber-500 animate-spin shrink-0"></i>
-          <span>Aguardando aprovação na carteira…</span>
+        <!-- Passos -->
+        <div class="space-y-2 text-xs">
+          <div class="flex items-center gap-2.5 rounded-xl bg-brand-50 border border-brand-100 px-3 py-2.5">
+            <div class="w-5 h-5 rounded-full bg-brand-500 text-white grid place-items-center font-bold shrink-0 text-[10px]">1</div>
+            <span class="text-ink-700">Abra sua carteira ITLX, MetaMask ou WalletConnect</span>
+          </div>
+          <div class="flex items-center gap-2.5 rounded-xl bg-brand-50 border border-brand-100 px-3 py-2.5">
+            <div class="w-5 h-5 rounded-full bg-brand-500 text-white grid place-items-center font-bold shrink-0 text-[10px]">2</div>
+            <span class="text-ink-700">Escaneie o QR Code acima</span>
+          </div>
+          <div class="flex items-center gap-2.5 rounded-xl bg-brand-50 border border-brand-100 px-3 py-2.5">
+            <div class="w-5 h-5 rounded-full bg-brand-500 text-white grid place-items-center font-bold shrink-0 text-[10px]">3</div>
+            <span class="text-ink-700">Aprove a transação de <strong>${fmtITL(total)}</strong> ITL</span>
+          </div>
+          <div class="flex items-center gap-2.5 rounded-xl bg-amber-50 border border-amber-100 px-3 py-2.5">
+            <div class="w-5 h-5 rounded-full bg-amber-400 text-white grid place-items-center font-bold shrink-0 text-[10px]">4</div>
+            <span class="text-amber-800">Clique no botão abaixo para registrar o pedido</span>
+          </div>
         </div>
 
-        <!-- Botão "Já aprovei" -->
+        <!-- Aviso simulação -->
+        <div class="flex items-start gap-2 text-[11px] text-ink-500 bg-ink-50 border border-ink-100 rounded-xl px-3 py-2">
+          <i data-lucide="info" class="w-3.5 h-3.5 shrink-0 mt-0.5 text-ink-400"></i>
+          <span>Ambiente de demonstração — a transação on-chain será simulada localmente.</span>
+        </div>
+
+        <!-- Botão confirmar -->
         <button id="qr-confirm-btn"
           onclick="qrConfirmPayment(${JSON.stringify(serviceId)}, ${JSON.stringify(tierKey||STATE.selectedTier)}, ${JSON.stringify(brief)}, ${JSON.stringify(total)}, ${JSON.stringify(hash)}, ${JSON.stringify(tier)}, ${JSON.stringify(milestonesConfig)})"
-          class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 transition">
-          <i data-lucide="check-circle" class="w-4 h-4"></i>Já aprovei na carteira
+          class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 transition">
+          <i data-lucide="check-circle" class="w-4 h-4"></i>Confirmar pagamento de ${fmtITL(total)}
         </button>
         <button onclick="closeModal()" class="w-full border border-ink-100 hover:bg-ink-50 font-semibold py-2 rounded-xl text-sm text-ink-500">Cancelar</button>
       </div>
@@ -8747,33 +8791,18 @@ function confirmHire(serviceId, tierKey){
   </div>`;
   icons();
 
-  // Simular detecção automática após 8s (como WalletConnect faz)
-  const qrTimer = setTimeout(()=>{
-    const btn = document.getElementById('qr-confirm-btn');
-    const status = document.getElementById('qr-status');
-    if(status){
-      status.innerHTML = '<i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500 shrink-0"></i><span class="text-emerald-700 font-semibold">Transação detectada! Clique para confirmar.</span>';
-      if(typeof lucide !== 'undefined') lucide.createIcons();
-    }
-    if(btn){ btn.classList.add('animate-pulse'); }
-  }, 8000);
-  window._qrTimer = qrTimer;
-
-  // Não continua automaticamente — espera o usuário clicar "Já aprovei"
+  // O usuário precisa clicar "Já aprovei" — sem auto-confirmação
   return;
 }
 
 function qrConfirmPayment(serviceId, tierKey, brief, total, hash, tier, milestonesConfig){
-  if(window._qrTimer){ clearTimeout(window._qrTimer); }
   const url = explorerURL(hash);
   const s  = getService(serviceId);
   const me = getUser(STATE.currentUserId);
 
-  // Mostrar confirmando
-  const status = document.getElementById('qr-status');
-  const btn    = document.getElementById('qr-confirm-btn');
-  if(status){ status.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 text-brand-500 animate-spin shrink-0"></i><span>Confirmando on-chain…</span>'; if(typeof lucide !== 'undefined') lucide.createIcons(); }
-  if(btn){ btn.disabled = true; btn.textContent = 'Confirmando…'; }
+  // Bloquear botão imediatamente
+  const btn = document.getElementById('qr-confirm-btn');
+  if(btn){ btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Registrando pedido…'; }
 
   setTimeout(async ()=>{
     me.balanceITL = +(me.balanceITL - total).toFixed(2);
