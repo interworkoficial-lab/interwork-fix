@@ -2055,6 +2055,8 @@ function renderView(){
     case 'legal':    v.innerHTML = viewLegal(STATE.selectedLegalPage || 'faq'); break;
     case 'u':        v.innerHTML = viewProfile(STATE.selectedProfileHandle); break;
     case 'admin':    v.innerHTML = viewAdmin(); break;
+    case 'new-service': v.innerHTML = isAuthed() ? viewNewServicePage() : viewAuthRequired(); break;
+    case 'new-service': v.innerHTML = isAuthed() ? viewNewServicePage() : viewAuthRequired(); break;
     case 'home':
     default:         v.innerHTML = viewHome();
   }
@@ -4860,71 +4862,220 @@ function releaseMilestone(orderId, milestoneId){
 
 function openRateModal(orderId){
   const o = STATE.orders.find(x=>x.id===orderId);
+  if(!o){ toast('Pedido não encontrado.','warn'); return; }
+  if(o.rated){ toast('Você já avaliou este pedido.','info'); return; }
   const s = getService(o.serviceId);
   const u = getUser(o.freelancerId);
+  const labels = ['','Péssimo','Ruim','Regular','Bom','Excelente'];
+
   $('#modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-pop overflow-hidden">
-      <div class="p-5 border-b border-ink-100 flex items-center justify-between">
-        <div class="font-extrabold flex items-center gap-2"><i data-lucide="star" class="w-5 h-5 text-amber-400"></i>Avaliar serviço</div>
-        <button onclick="closeModal()" aria-label="Fechar" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4" aria-hidden="true"></i></button>
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
+
+      <!-- Header -->
+      <div class="px-5 py-4 border-b border-ink-100 flex items-center justify-between">
+        <span class="font-extrabold flex items-center gap-2">
+          <i data-lucide="star" class="w-5 h-5 text-amber-400 fill-amber-400"></i>Avaliar serviço
+        </span>
+        <button onclick="closeModal()" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50">
+          <i data-lucide="x" class="w-4 h-4 text-ink-400"></i>
+        </button>
       </div>
-      <div class="p-5 space-y-4">
-        <div class="flex items-center gap-3">
-          <img src="${u.avatar}" class="w-12 h-12 rounded-xl"/>
-          <div>
-            <div class="font-bold">${u.name}</div>
-            <div class="text-xs text-ink-500 line-clamp-1">${escapeHtml(s.title)}</div>
+
+      <div class="px-5 py-4 space-y-4">
+
+        <!-- Freelancer + serviço -->
+        <div class="flex items-center gap-3 p-3 bg-ink-50 rounded-xl border border-ink-100">
+          <img src="${u.avatar}" class="w-10 h-10 rounded-xl object-cover shrink-0"/>
+          <div class="min-w-0">
+            <div class="font-bold text-sm">${escapeHtml(u.name)}</div>
+            <div class="text-xs text-ink-500 truncate">${escapeHtml(s.title)}</div>
           </div>
         </div>
+
+        <!-- Estrelas interativas -->
+        <div class="text-center">
+          <div class="text-sm font-bold mb-3">Como foi a experiência?</div>
+          <div id="rate-stars" class="flex items-center justify-center gap-2 mb-2" data-val="5">
+            ${[1,2,3,4,5].map(n=>`
+              <button class="star-btn group transition-transform hover:scale-110 active:scale-95" data-n="${n}"
+                onmouseenter="rateHover(${n})" onmouseleave="rateUnhover()">
+                <i data-lucide="star" class="w-10 h-10 fill-amber-400 text-amber-400 transition-all"></i>
+              </button>`).join('')}
+          </div>
+          <div id="rate-label" class="text-sm font-bold text-amber-500 h-5">Excelente</div>
+        </div>
+
+        <!-- Texto do review -->
         <div>
-          <div class="text-sm font-bold mb-2">Quantas estrelas?</div>
-          <div id="rate-stars" class="flex items-center gap-1" data-val="5">
-            ${[1,2,3,4,5].map(n=>`<button class="star-btn" data-n="${n}"><i data-lucide="star" class="w-8 h-8 ${n<=5?'fill-amber-400 text-amber-400':'text-ink-300'}"></i></button>`).join('')}
+          <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Comentário <span class="font-normal normal-case text-ink-400">(opcional)</span></label>
+          <textarea id="rate-text" rows="3" maxlength="500"
+            class="mt-1.5 w-full border border-ink-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-amber-300 resize-none transition"
+            placeholder="Descreva sua experiência com o freelancer…"></textarea>
+        </div>
+
+        <!-- Categorias de avaliação -->
+        <div>
+          <div class="text-xs font-bold uppercase tracking-wider text-ink-500 mb-2">Avalie também</div>
+          <div class="grid grid-cols-3 gap-2">
+            ${[
+              ['rate-comm','message-circle','Comunicação'],
+              ['rate-quality','award','Qualidade'],
+              ['rate-deadline','clock','Prazo'],
+            ].map(([id,icon,label])=>`
+              <div class="text-center">
+                <div class="text-[10px] text-ink-500 mb-1 flex items-center justify-center gap-0.5">
+                  <i data-lucide="${icon}" class="w-3 h-3"></i>${label}
+                </div>
+                <div id="${id}-stars" class="flex justify-center gap-0.5" data-val="5">
+                  ${[1,2,3,4,5].map(n=>`
+                    <button class="sub-star-btn" data-id="${id}" data-n="${n}"
+                      onclick="rateSubStar('${id}',${n})">
+                      <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+                    </button>`).join('')}
+                </div>
+              </div>`).join('')}
           </div>
         </div>
-        <textarea id="rate-text" rows="3" class="w-full border border-ink-100 rounded-xl px-3 py-2 text-sm" placeholder="Conte como foi a experiência…"></textarea>
       </div>
-      <div class="p-5 border-t border-ink-100 flex items-center gap-2">
-        <button onclick="closeModal();maybeOfferATV('${orderId}')" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl">Pular</button>
-        <button onclick="submitRate('${orderId}')" class="flex-[2] bg-amber-400 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl">Enviar avaliação</button>
+
+      <!-- Botões -->
+      <div class="px-5 pb-4 flex gap-2">
+        <button onclick="closeModal();maybeOfferATV('${orderId}')"
+          class="flex-1 border border-ink-100 hover:bg-ink-50 font-semibold py-2.5 rounded-xl text-sm">
+          Pular
+        </button>
+        <button onclick="submitRate('${orderId}')"
+          class="flex-[2] bg-amber-400 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 transition">
+          <i data-lucide="star" class="w-4 h-4 fill-white text-white"></i>Publicar avaliação
+        </button>
       </div>
     </div>
   </div>`;
+
   icons();
-  $$('#rate-stars .star-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
+
+  // Interação estrelas principais
+  $$('#rate-stars .star-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
       const n = +btn.dataset.n;
-      $('#rate-stars').dataset.val = n;
-      $$('#rate-stars .star-btn i').forEach((ic,idx)=>{
-        ic.classList.toggle('fill-amber-400', idx<n);
-        ic.classList.toggle('text-amber-400', idx<n);
-        ic.classList.toggle('text-ink-300', idx>=n);
-      });
+      rateSetMain(n);
     });
   });
 }
+
+function rateSetMain(n){
+  const wrap = $('#rate-stars');
+  if(!wrap) return;
+  wrap.dataset.val = n;
+  const labels = ['','Péssimo','Ruim','Regular','Bom','Excelente'];
+  const lbl = document.getElementById('rate-label');
+  if(lbl){ lbl.textContent = labels[n]||''; }
+  $$('#rate-stars .star-btn i').forEach((ic,idx) => {
+    const lit = idx < n;
+    ic.classList.toggle('fill-amber-400', lit);
+    ic.classList.toggle('text-amber-400', lit);
+    ic.classList.toggle('fill-ink-200',   !lit);
+    ic.classList.toggle('text-ink-200',   !lit);
+  });
+}
+
+function rateHover(n){
+  $$('#rate-stars .star-btn i').forEach((ic,idx) => {
+    const lit = idx < n;
+    ic.classList.toggle('fill-amber-300', lit);
+    ic.classList.toggle('text-amber-300', lit);
+  });
+}
+
+function rateUnhover(){
+  const cur = +$('#rate-stars')?.dataset.val || 5;
+  rateSetMain(cur);
+}
+
+function rateSubStar(id, n){
+  const wrap = document.getElementById(id+'-stars');
+  if(!wrap) return;
+  wrap.dataset.val = n;
+  $$('#'+id+'-stars .sub-star-btn i').forEach((ic,idx) => {
+    const lit = idx < n;
+    ic.classList.toggle('fill-amber-400', lit);
+    ic.classList.toggle('text-amber-400', lit);
+    ic.classList.toggle('fill-ink-200',   !lit);
+    ic.classList.toggle('text-ink-200',   !lit);
+  });
+}
+
 function submitRate(orderId){
   const o = STATE.orders.find(x=>x.id===orderId);
-  const stars = +$('#rate-stars').dataset.val;
-  const text  = $('#rate-text').value.trim() || 'Sem comentários.';
-  const s = getService(o.serviceId);
-  const hash = txHash();
-  s.reviews.unshift({ id:uid('r'), userId: o.clientId, text, stars, ts: nowTs(), txHash: hash });
-  s.reviewsCount += 1;
-  s.rating = +(((s.rating*(s.reviewsCount-1))+stars)/s.reviewsCount).toFixed(2);
-  // also bump freelancer aggregate rating (simple running avg)
+  if(!o){ toast('Pedido não encontrado.','warn'); return; }
+  if(o.rated){ toast('Você já avaliou este pedido.','info'); return; }
+
+  const starsWrap = $('#rate-stars');
+  const stars = starsWrap ? +starsWrap.dataset.val : 5;
+  if(stars < 1 || stars > 5){ toast('Selecione uma nota de 1 a 5.','warn'); return; }
+
+  const text = (document.getElementById('rate-text')?.value||'').trim() || 'Sem comentários.';
+  const commStars    = +document.getElementById('rate-comm-stars')?.dataset.val    || stars;
+  const qualityStars = +document.getElementById('rate-quality-stars')?.dataset.val || stars;
+  const deadlineStars= +document.getElementById('rate-deadline-stars')?.dataset.val|| stars;
+
+  const s  = getService(o.serviceId);
   const fu = getUser(o.freelancerId);
-  if (fu){
-    const j = (fu.jobs||0);
-    fu.rating = +(((fu.rating*j)+stars)/(j+1)).toFixed(2);
+  const hash = txHash();
+
+  // Salvar review no serviço
+  s.reviews = s.reviews || [];
+  s.reviews.unshift({
+    id:       uid('r'),
+    userId:   o.clientId,
+    text,
+    stars,
+    subRatings: { communication: commStars, quality: qualityStars, deadline: deadlineStars },
+    ts:       nowTs(),
+    txHash:   hash,
+    orderId:  o.id,
+  });
+  s.reviewsCount = (s.reviewsCount||0) + 1;
+  // Recalcular rating do serviço (média ponderada)
+  const allStars = s.reviews.map(r=>r.stars);
+  s.rating = +(allStars.reduce((a,b)=>a+b,0)/allStars.length).toFixed(2);
+
+  // Recalcular rating do freelancer
+  if(fu){
+    const myOrders = STATE.orders.filter(ord=>ord.freelancerId===fu.id && ord.rated);
+    const avgStars = myOrders.length
+      ? +(myOrders.reduce((acc,ord)=>{
+          const sv = getService(ord.serviceId);
+          const rv = sv?.reviews?.find(r=>r.orderId===ord.id);
+          return acc + (rv?.stars||5);
+        },0) / myOrders.length).toFixed(2)
+      : stars;
+    fu.rating = +avgStars;
+    fu.jobs = (fu.jobs||0) + 1; // contabiliza job completo
   }
-  o.rated = true;
+
+  o.rated   = true;
   o.ratingTx = hash;
+  o.reviewStars = stars;
+
   STATE.txHistory.unshift({ hash, type:'rating', amount:0, token:'ITL', ts:Date.now(), orderId:o.id });
-  addNotification({ type:'rating', title:'Avaliação registrada on-chain', body:`${stars}★ • ${shortHash(hash)}`, link:'#/dashboard/client' });
+  addNotification({
+    type:'rating',
+    title:'Avaliação registrada on-chain',
+    body:`${stars}★ para ${escapeHtml(fu?.name||'freelancer')} • ${shortHash(hash)}`,
+    link:'#/dashboard/client'
+  });
+  // Notificar freelancer
+  addNotification({
+    type:'rating',
+    title:`Nova avaliação: ${stars}★`,
+    body:`"${text.slice(0,60)}${text.length>60?'…':''}"`,
+    link:'#/dashboard/freelancer'
+  });
+
   closeModal();
-  toast('Avaliação registrada on-chain • '+shortHash(hash), 'success');
+  toast(`${stars}★ Avaliação publicada on-chain`, 'success');
   render();
   maybeOfferATV(orderId);
 }
@@ -5025,7 +5176,8 @@ function openNewServiceModal(editId){
     inc: editing ? (existing.includes||[]).join(', ') : '',
     tags: editing ? (existing.tags||[]).join(', ') : '',
   };
-  renderNewServiceWizard();
+  STATE.route = 'new-service';
+  renderView();
 }
 
 /* ──────────────────────────────────────────────────────────
@@ -7931,70 +8083,61 @@ function openHireModal(serviceId, tierKey){
 
   $('#modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
-    <div class="bg-white w-full max-w-lg rounded-2xl shadow-pop overflow-hidden">
-      <div class="p-5 border-b border-ink-100 flex items-center justify-between">
-        <div class="flex items-center gap-2 font-extrabold"><i data-lucide="shield-check" class="w-5 h-5 text-brand-500"></i>Contratar serviço</div>
-        <button onclick="closeModal()" aria-label="Fechar" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4" aria-hidden="true"></i></button>
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
+
+      <!-- Header compacto -->
+      <div class="px-5 py-3.5 border-b border-ink-100 flex items-center justify-between">
+        <span class="font-extrabold text-sm flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4 text-brand-500"></i>Confirmar contratação
+        </span>
+        <button onclick="closeModal()" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50">
+          <i data-lucide="x" class="w-4 h-4 text-ink-400"></i>
+        </button>
       </div>
 
-      <div class="p-5 space-y-4 max-h-[80vh] overflow-y-auto scrollbar-thin">
-        <div class="flex items-center gap-3 p-3 rounded-xl bg-ink-100/40 border border-ink-100">
-          <img src="${s.thumb}" class="w-14 h-14 rounded-lg object-cover" />
+      <div class="px-5 py-4 space-y-3">
+
+        <!-- Serviço + freelancer numa linha -->
+        <div class="flex items-center gap-3">
+          <img src="${s.thumb}" class="w-12 h-12 rounded-xl object-cover shrink-0"/>
           <div class="flex-1 min-w-0">
-            <div class="font-bold text-sm truncate">${escapeHtml(s.title)}</div>
-            <div class="text-xs text-ink-500 flex items-center gap-1">
-              <img src="${u.avatar}" class="w-4 h-4 rounded"/> ${u.name} ${u.verified?'<i data-lucide="badge-check" class="w-3 h-3 text-brand-500"></i>':''}
+            <div class="font-semibold text-sm leading-snug line-clamp-2">${escapeHtml(s.title)}</div>
+            <div class="text-xs text-ink-500 mt-0.5 flex items-center gap-1">
+              ${u.name}${u.verified?' <i data-lucide="badge-check" class="w-3 h-3 text-brand-500"></i>':''}
+              · <i data-lucide="clock" class="w-3 h-3 inline"></i> ${tier.days}d
             </div>
           </div>
-          <span class="chip bg-brand-50 text-brand-700">${tier.label}</span>
         </div>
 
-        <div>
-          <label class="text-sm font-bold">Descreva seu projeto</label>
-          <textarea id="hire-brief" rows="4" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm outline-none focus:ring-brand focus:border-brand-300" placeholder="Ex: Quero uma landing escura para nosso protocolo de yield, com hero animado e seção de FAQ…"></textarea>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 text-sm">
+        <!-- Total em destaque -->
+        <div class="rounded-xl bg-brand-50 border border-brand-100 px-4 py-3 flex items-center justify-between">
           <div>
-            <label class="text-xs font-bold text-ink-500 uppercase tracking-wider">Prazo</label>
-            <div class="mt-1 border border-ink-100 rounded-xl px-3 py-2 flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4 text-brand-500"></i>${tier.days} dias</div>
+            <div class="text-xs text-ink-500">Total em escrow</div>
+            <div class="font-extrabold text-xl text-brand-700">${fmtITL(total)}</div>
+            <div class="text-[11px] text-ink-400">${fmtITL(tier.priceITL)} + 2% taxa</div>
           </div>
-          <div>
-            <label class="text-xs font-bold text-ink-500 uppercase tracking-wider">Revisões</label>
-            <div class="mt-1 border border-ink-100 rounded-xl px-3 py-2 flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4 text-brand-500"></i>${tier.revisions} inclusa${tier.revisions>1?'s':''}</div>
-          </div>
-        </div>
-
-        <!-- Total — só 1 número em destaque; o detalhe (taxa) fica escondido por padrão -->
-        <div class="rounded-2xl border border-ink-100 bg-ink-50/50 p-4">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-sm">Total a pagar</span>
-            <span class="font-extrabold text-brand-700 text-xl">${fmtITL(total)}</span>
-          </div>
-          <button type="button" onclick="document.getElementById('hire-fee-detail').classList.toggle('hidden')" class="text-xs text-ink-500 underline mt-1">Ver detalhes</button>
-          <div id="hire-fee-detail" class="hidden mt-2 pt-2 border-t border-ink-100 space-y-1 text-xs">
-            <div class="flex justify-between"><span class="text-ink-500">Preço do serviço</span><span class="font-semibold">${fmtITL(tier.priceITL)}</span></div>
-            <div class="flex justify-between"><span class="text-ink-500">Taxa Interwork (2%)</span><span class="font-semibold">${fmtITL(fee)}</span></div>
+          <div class="text-right">
+            <div class="text-xs text-ink-500">Saldo</div>
+            <div class="font-bold text-sm ${insufficient?'text-rose-600':'text-ink-700'}">${fmtITL(me.balanceITL)}</div>
+            ${insufficient
+              ? '<div class="text-[11px] text-rose-500">Insuficiente</div>'
+              : '<div class="text-[11px] text-emerald-600 flex items-center gap-0.5 justify-end"><i data-lucide="check" class="w-3 h-3"></i>OK</div>'}
           </div>
         </div>
 
-        <!-- Confiança — o "escrow" inteiro explicado em 1 frase, sem jargão -->
-        <div class="flex items-start gap-2 text-xs bg-brand-50/60 border border-brand-100 rounded-xl p-3">
-          <i data-lucide="lock" class="w-4 h-4 text-brand-500 mt-0.5 shrink-0" aria-hidden="true"></i>
-          <span class="text-ink-700">Seu pagamento fica protegido até você aprovar a entrega. O freelancer só recebe depois disso.</span>
-        </div>
-
-        <div class="flex items-center justify-between text-xs text-ink-500">
-          <span>Saldo: <b class="text-ink-700">${fmtITL(me.balanceITL)}</b> via ${STATE.walletProvider}</span>
-          ${insufficient ? '<span class="text-rose-600 font-semibold">Saldo insuficiente</span>' : '<span class="text-emerald-600 font-semibold flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i>OK</span>'}
+        <!-- Escrow pill -->
+        <div class="flex items-center gap-2 text-xs text-ink-600 bg-ink-100/40 rounded-xl px-3 py-2">
+          <i data-lucide="lock" class="w-3.5 h-3.5 text-brand-500 shrink-0"></i>
+          Pagamento protegido até você aprovar a entrega.
         </div>
       </div>
 
-      <div class="p-5 border-t border-ink-100 flex items-center gap-2">
-        <button onclick="closeModal()" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl">Cancelar</button>
-        <button id="confirm-hire" ${insufficient?'disabled':''} class="flex-[2] bg-brand-500 hover:bg-brand-600 disabled:bg-ink-300 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2"
+      <!-- Botões -->
+      <div class="px-5 pb-4 flex gap-2">
+        <button onclick="closeModal()" class="flex-1 border border-ink-100 hover:bg-ink-50 font-semibold py-2.5 rounded-xl text-sm">Cancelar</button>
+        <button id="confirm-hire" ${insufficient?'disabled':''} class="flex-[2] bg-brand-500 hover:bg-brand-600 disabled:bg-ink-200 disabled:text-ink-400 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm transition"
           onclick="confirmHire('${s.id}','${tierKey||STATE.selectedTier}')">
-          <i data-lucide="shield-check" class="w-4 h-4"></i> Travar ${fmtITL(total)} e contratar
+          <i data-lucide="shield-check" class="w-4 h-4"></i>Travar e contratar
         </button>
       </div>
     </div>
@@ -8516,8 +8659,9 @@ function lightboxNav(sid, dir){
 }
 
 function confirmHire(serviceId, tierKey){
-  const brief = $('#hire-brief').value.trim();
-  if (!brief || brief.length<10){ toast('Descreva o projeto com pelo menos 10 caracteres.', 'warn'); return; }
+  const briefEl = document.getElementById('hire-brief');
+  const brief = briefEl ? briefEl.value.trim() : '';
+  // Brief é opcional no modal compacto — cliente preenche depois no formulário de briefing
   const s = getService(serviceId);
   const tier = { priceITL: s.price, days: s.deadline||s.days||7, label:'Padrão', revisions: 2, includes: s.includes||[] };
   const me = getUser(STATE.currentUserId);
