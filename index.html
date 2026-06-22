@@ -2,20 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Interwork — The Workforce Marketplace for the Interlink Ecosystem</title>
-<meta name="description" content="Hire verified humans using ITL. The decentralized workforce marketplace built for the Interlink ecosystem — on-chain escrow, DAO-based dispute resolution and zero middlemen." />
-<meta property="og:title" content="Interwork — The Workforce Marketplace for the Interlink Ecosystem" />
-<meta property="og:description" content="Hire verified humans using ITL. On-chain escrow. Built for Interlink." />
-<meta property="og:type" content="website" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>InterWork — Find the perfect freelance talent</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
 <!-- Reown AppKit — WalletConnect real com 530+ carteiras (bundle local) -->
 <script src="./reown-bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function initReown() {
   const MAX = 50, DELAY = 100;
@@ -23,8 +19,8 @@
   function tryInit() {
     tries++;
     const createAppKit = window.__ReownCreateAppKit;
-    const EthersAdapter  = window.__ReownEthersAdapter;
-    const nets           = window.__ReownNetworks;
+    const EthersAdapter = window.__ReownEthersAdapter;
+    const nets = window.__ReownNetworks;
     if (!createAppKit || !EthersAdapter || !nets) {
       if (tries < MAX) setTimeout(tryInit, DELAY);
       return;
@@ -65,186 +61,394 @@
   }
 })();
 </script>
-<script>
-  tailwind.config = {
-    darkMode: 'class',
-    theme: {
-      extend: {
-        colors: {
-          brand: { 50:'var(--brand-50)',100:'var(--brand-100)',200:'var(--brand-200)',300:'var(--brand-300)',400:'var(--brand-400)',500:'var(--brand-500)',600:'var(--brand-600)',700:'var(--brand-700)',800:'var(--brand-800)',900:'var(--brand-900)' },
-          ink: { 900:'#0b1220', 700:'#1f2937', 500:'#475569', 300:'#94a3b8', 100:'#e2e8f0' },
-          sonic: 'var(--sonic)',
-          neon: { cyan:'var(--neon-cyan)', lime:'var(--neon-lime)', violet:'var(--neon-violet)' },
-          surf: { 950:'var(--surf-950)', 900:'var(--surf-900)', 800:'var(--surf-800)', 700:'var(--surf-700)', 600:'var(--surf-600)', line:'rgba(255,255,255,0.08)' }
-        },
-        fontFamily: { sans:['Inter','ui-sans-serif','system-ui'], mono:['JetBrains Mono','ui-monospace'] },
-        boxShadow: {
-          card:'0 1px 2px rgba(15,23,42,.06),0 4px 16px rgba(15,23,42,.06)',
-          pop:'0 10px 40px rgba(26,115,232,.18)',
-          glow:'0 0 0 1px rgba(34,211,238,.35), 0 8px 32px rgba(34,211,238,.25)'
-        },
-      }
-    }
-  }
-</script>
 <style>
-  html,body{font-family:'Inter',ui-sans-serif,system-ui}
-  body.modal-open-lock{overflow:hidden;height:100vh}
-  .scrollbar-thin::-webkit-scrollbar{width:6px;height:6px}
-  .scrollbar-thin::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
-  .grad-hero{background:radial-gradient(1200px 500px at 20% 0%, #d9e8ff 0%, transparent 60%),radial-gradient(800px 400px at 90% 10%, #efe7ff 0%, transparent 60%),linear-gradient(180deg,#fafbff 0%,#ffffff 100%)}
-  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600}
-  .star-btn{transition:transform .15s}
-  .star-btn:hover{transform:scale(1.15)}
-  .fade-in{animation:fade .25s ease-out}
-  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-  .ring-brand{box-shadow:0 0 0 3px rgba(26,115,232,.18)}
-  details>summary{list-style:none;cursor:pointer}
-  details>summary::-webkit-details-marker{display:none}
-  .progress{height:6px;background:#e2e8f0;border-radius:999px;overflow:hidden}
-  .progress>span{display:block;height:100%;background:linear-gradient(90deg,#1a73e8,#7C3AED);border-radius:999px;transition:width .4s}
-
-  /* ============ CHAT — typing indicator ============ */
-  .typing-dot{width:6px;height:6px;border-radius:50%;background:#94a3b8;display:inline-block;animation:typingBlink 1.2s infinite ease-in-out}
-  .typing-dot:nth-child(2){animation-delay:.2s}
-  .typing-dot:nth-child(3){animation-delay:.4s}
-  @keyframes typingBlink{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-2px)}}
-
-  /* ============ SKELETON LOADING ============ */
-  .skel{position:relative;overflow:hidden;background:#e9edf3}
-  .skel::after{content:'';position:absolute;inset:0;transform:translateX(-100%);
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
-    animation:skelShimmer 1.4s infinite}
-  @keyframes skelShimmer{100%{transform:translateX(100%)}}
-  html.dark .skel{background:var(--surf-800)}
-  html.dark .skel::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)}
-
-  /* ============ FILTER BAR (now static — no longer follows scroll) ============ */
-  .filters-sticky{
-    position:static !important;top:auto;z-index:auto;
-    margin-left:-1.25rem;margin-right:-1.25rem;padding:.75rem 1.25rem;margin-bottom:1.5rem;
-    background:#ffffff;border-bottom:1px solid #e2e8f0;
-    box-shadow:0 2px 8px rgba(15,23,42,.04);
+  :root{
+    --primary:#8b7cff;
+    --primary-600:#7a6bf0;
+    --primary-soft:#efeaff;
+    --primary-text:#5b4ee0;
+    --ink:#0f172a;
+    --muted:#64748b;
+    --line:#e5e7eb;
+    --bg:#ffffff;
+    --bg-soft:#f8fafc;
+    --warning:#f59e0b;
+    --warning-soft:#fef3c7;
+    --warning-text:#b45309;
+    --pro:#10b981;
+    --pro-soft:#d1fae5;
+    --pro-text:#047857;
   }
-  html.dark .filters-sticky{background:var(--surf-900);border-bottom-color:rgba(255,255,255,.07);box-shadow:0 2px 12px rgba(0,0,0,.4)}
-  /* Pin fallback disabled: keep bar in its natural position even if JS adds the class */
-  .filters-sticky.is-pinned{
-    position:static !important;top:auto;left:auto;right:auto;margin:0 -1.25rem 1.5rem;padding:.75rem 1.25rem;
-    border-radius:0;box-shadow:0 2px 8px rgba(15,23,42,.04);
-  }
-  html.dark .filters-sticky.is-pinned{box-shadow:0 2px 12px rgba(0,0,0,.4)}
-  .filters-sticky-spacer,.filters-sticky-spacer.is-active{display:none !important;height:0 !important}
-
-  /* Kill old sticky helpers on filter bar only — aside sidebar now uses inline sticky */
-  .no-stick,.no-stick.sticky{position:static !important;top:auto !important}
-
-  /* ============ GIG CARD (Fiverr-style, bulletproof) ============ */
-  .gig-card{display:flex;flex-direction:column;min-width:0;width:100%}
-  .gig-thumb{position:relative;width:100%;padding-bottom:75%;background:#f1f5f9}
-  .gig-thumb>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-  .gig-title{
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-    overflow:hidden;text-overflow:ellipsis;min-height:40px;word-break:break-word;
-  }
-  html.dark .gig-thumb{background:var(--surf-800)}
-
-  /* ============ GALLERY DRAG-DROP (owner only) ============ */
-  .gig-thumb-drag{cursor:grab;transition:transform .15s, box-shadow .15s, opacity .15s}
-  .gig-thumb-drag:active{cursor:grabbing}
-  .gig-thumb-drag.dragging{opacity:.35;transform:scale(.92)}
-  .gig-thumb-drag.drag-over{transform:scale(1.06);box-shadow:0 0 0 3px rgba(26,115,232,.45);border-radius:.5rem}
-
-  /* ============ DARK MODE — Interlink dApp vibe ============ */
-  html.dark{color-scheme:dark}
-  html.dark body{background:var(--surf-950);color:#e2e8f0}
-html.dark {
-  --ink-50:  #1e293b;
-  --ink-100: #1e293b;
-  --ink-200: #334155;
-  --ink-300: #475569;
-  --ink-400: #64748b;
-  --ink-500: #94a3b8;
-  --ink-600: #cbd5e1;
-  --ink-700: #e2e8f0;
-  --ink-800: #f1f5f9;
-  --ink-900: #f8fafc;
-  --ink-text: #e7ecf5;
-  --ink-muted: #94a3b8;
-  --surface: #131c2e;
-  --surface-alt: #1e293b;
-}
-  html.dark .scrollbar-thin::-webkit-scrollbar-thumb{background:var(--surf-600)}
-  html.dark .grad-hero{
-    background:
-      radial-gradient(900px 420px at 18% 0%, rgba(34,211,238,.12) 0%, transparent 60%),
-      radial-gradient(700px 360px at 88% 10%, rgba(167,139,250,.14) 0%, transparent 60%),
-      linear-gradient(180deg,#06080f 0%, #0a0f1e 100%);
-  }
-  html.dark .progress{background:var(--surf-700)}
-  html.dark .progress>span{background:linear-gradient(90deg,var(--neon-cyan),var(--neon-violet))}
-
-  /* Map common Tailwind utilities to dark surfaces */
-  html.dark .bg-white{background-color:var(--surf-900) !important}
-  #ns-days::-webkit-outer-spin-button,#ns-days::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-  #ns-days{-moz-appearance:textfield}
-  html.dark .bg-white\/85{background-color:var(--surf-900)C7 !important}
-  html.dark .bg-white\/95{background-color:var(--surf-900) !important}
-  html.dark .bg-white\/60{background-color:var(--surf-900)99 !important}
-  html.dark .text-ink-900{color:#e7ecf5 !important}
-  html.dark .text-ink-700{color:#cbd5e1 !important}
-  html.dark .text-ink-500{color:#94a3b8 !important}
-  html.dark .text-ink-300{color:#64748b !important}
-  html.dark .border-ink-100{border-color:rgba(255,255,255,.07) !important}
-  html.dark .bg-ink-100\/60,html.dark .bg-ink-100\/40,html.dark .bg-ink-100\/30,html.dark .hover\:bg-ink-100\/40:hover,html.dark .hover\:bg-ink-100\/50:hover,html.dark .hover\:bg-ink-100\/70:hover{background-color:rgba(255,255,255,.04) !important}
-  html.dark .bg-ink-100{background-color:var(--surf-700) !important}
-  html.dark .bg-brand-50,html.dark .bg-brand-50\/50,html.dark .bg-brand-50\/40{background-color:var(--brand-500)15 !important}
-  html.dark .bg-brand-100,html.dark .hover\:bg-brand-100:hover{background-color:rgba(34,211,238,.16) !important}
-  html.dark .text-brand-700,html.dark .text-brand-500{color:var(--neon-cyan) !important}
-  html.dark .border-brand-100,html.dark .border-brand-300,html.dark .hover\:border-brand-300:hover{border-color:var(--brand-500)55 !important}
-  html.dark .bg-amber-50{background-color:rgba(245,158,11,.10) !important}
-  html.dark .text-amber-700,html.dark .text-amber-800{color:#fbbf24 !important}
-  html.dark .border-amber-100{border-color:rgba(245,158,11,.25) !important}
-  html.dark .bg-emerald-50,html.dark .bg-emerald-50\/40{background-color:rgba(16,185,129,.10) !important}
-  html.dark .text-emerald-700,html.dark .text-emerald-600{color:#34d399 !important}
-  html.dark .border-emerald-100{border-color:rgba(16,185,129,.25) !important}
-  html.dark .bg-rose-50,html.dark .hover\:bg-rose-100:hover{background-color:rgba(244,63,94,.12) !important}
-  html.dark .text-rose-700,html.dark .text-rose-600{color:#fb7185 !important}
-  html.dark .border-rose-100{border-color:rgba(244,63,94,.25) !important}
-  html.dark .bg-violet-50,html.dark .bg-violet-50\/40{background-color:rgba(167,139,250,.10) !important}
-  html.dark .text-violet-700,html.dark .text-violet-500{color:#a78bfa !important}
-  html.dark .border-violet-100{border-color:rgba(167,139,250,.25) !important}
-  html.dark .bg-gradient-to-b.from-white,html.dark .from-white{--tw-gradient-from:var(--surf-900) !important}
-  html.dark .from-brand-50,html.dark .via-white{--tw-gradient-from:var(--surf-900) !important;--tw-gradient-via:var(--surf-900) !important}
-  html.dark .to-violet-50\/40,html.dark .to-violet-50{--tw-gradient-to:var(--neon-violet)0D !important}
-  html.dark input,html.dark select,html.dark textarea{background-color:var(--surf-900);color:#e2e8f0;border-color:rgba(255,255,255,.08)}
-  html.dark .shadow-card{box-shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
-  html.dark .shadow-pop{box-shadow:0 14px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04)}
-
-  /* Glow on primary CTA */
-  .cta-glow{box-shadow:0 0 0 1px rgba(34,211,238,.45), 0 8px 28px rgba(34,211,238,.28);transition:box-shadow .25s}
-  .cta-glow:hover{box-shadow:0 0 0 1px rgba(34,211,238,.7), 0 12px 38px rgba(34,211,238,.45)}
-
+  html,body{font-family:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
+  .btn-primary{background:var(--primary);color:#fff;transition:background .15s}
+  .btn-primary:hover{background:var(--primary-600)}
+  .chip{border:1px solid var(--line);background:#fff;color:#475569;transition:all .15s}
+  .chip:hover{border-color:#c7c0ff;color:var(--primary-text);background:#fafaff}
+  .pill{border:1px solid var(--line);color:#334155;background:#fff;transition:all .15s}
+  .pill:hover{border-color:#c7c0ff;color:var(--primary-text)}
+  .pill-active{background:#a99cff;color:#fff;border-color:transparent}
+  .pill-active:hover{background:var(--primary-600);color:#fff}
+  .card{transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;border:1px solid var(--line)}
+  .card:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(91,78,224,.18);border-color:#c7c0ff}
+  .card .gig-img{transition:transform .4s ease}
+  .card:hover .gig-img{transform:scale(1.06)}
+  .badge{background:rgba(255,255,255,.94);backdrop-filter:blur(6px)}
+  .footer-link{color:#0f172a;transition:color .15s}
+  .footer-link:hover{color:#5b4ee0}
+  .scrollbar-hide::-webkit-scrollbar{display:none}
+  .scrollbar-hide{scrollbar-width:none}
+  .heart-btn.active i{color:#ef4444;font-weight:900}
+  .heart-btn.active i::before{content:"\ee0e"}
+  .sort-menu{display:none}
+  .sort-menu.open{display:block}
 </style>
 </head>
-<body class="bg-white text-ink-900">
+<body class="min-h-screen">
 
-  <main id="view" role="main" tabindex="-1" class="min-h-[80vh]"></main>
+<!-- HEADER -->
+<header class="border-b border-slate-100 sticky top-0 bg-white/90 backdrop-blur z-40">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+    <a href="#" class="flex items-center gap-2 shrink-0">
+      <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white">
+        <i class="ri-briefcase-4-fill text-base"></i>
+      </span>
+      <span class="font-extrabold text-slate-900 tracking-tight">InterWork</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
+      <a href="#" class="hover:text-slate-900">Find Work</a>
+      <a href="#" class="hover:text-slate-900">Hire Talent</a>
+      <a href="#" class="hover:text-slate-900">How It Works</a>
+      <a href="#" class="hover:text-slate-900">Community</a>
+    </nav>
+    <div class="flex items-center gap-3 sm:gap-5 text-sm">
+      <button class="hidden sm:flex items-center gap-1 text-slate-600 hover:text-slate-900">
+        <span class="w-4 h-4 rounded-full bg-slate-300 inline-block"></span> EN
+      </button>
+      <a href="#" class="hidden sm:inline text-slate-700 hover:text-slate-900 font-medium">Log In</a>
+      <button onclick="openConnectWallet()" class="btn-primary px-3 sm:px-4 py-2 rounded-lg font-semibold whitespace-nowrap text-xs sm:text-sm"><i class="ri-wallet-line"></i> Connect Wallet</button>
+      <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-700 text-xl" aria-label="Menu">
+        <i class="ri-menu-line"></i>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-100 bg-white">
+    <nav class="px-4 py-3 flex flex-col gap-1 text-sm font-medium text-slate-700">
+      <a href="#" class="py-2 hover:text-slate-900">Find Work</a>
+      <a href="#" class="py-2 hover:text-slate-900">Hire Talent</a>
+      <a href="#" class="py-2 hover:text-slate-900">How It Works</a>
+      <a href="#" class="py-2 hover:text-slate-900">Community</a>
+      <div class="sm:hidden border-t border-slate-100 mt-2 pt-2 flex flex-col gap-1">
+        <a href="#" class="py-2">Log In</a>
+        <button class="py-2 text-left flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-slate-300"></span> EN</button>
+      </div>
+    </nav>
+  </div>
+</header>
 
-  <!-- Raízes para modals, chat e notificações -->
-  <div id="modal-root" aria-live="polite"></div>
-  <div id="chat-root"></div>
-  <div id="toast-root" role="status" aria-live="polite" aria-atomic="true" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-2"></div>
+<!-- HERO + SEARCH -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-6 text-center">
+  <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">Find the perfect freelance talent</h1>
+  <p class="mt-3 text-sm sm:text-base text-slate-500">Browse 20+ verified services from top Web3 professionals</p>
+
+  <form id="searchForm" class="mt-6 sm:mt-7 mx-auto max-w-2xl" onsubmit="event.preventDefault();applyFilters();">
+    <div class="flex items-center gap-2 bg-white rounded-xl border border-slate-200 shadow-sm pl-3 pr-2 py-2 focus-within:border-[#a99cff]">
+      <i class="ri-search-line text-slate-400 text-lg shrink-0"></i>
+      <input id="searchInput" oninput="applyFilters()" class="flex-1 min-w-0 outline-none text-sm py-2 placeholder:text-slate-400 bg-transparent" placeholder="Search for any service..." />
+      <button type="button" id="clearBtn" onclick="clearSearch()" class="hidden text-slate-400 hover:text-slate-600 shrink-0 px-1"><i class="ri-close-line text-lg"></i></button>
+      <button type="submit" class="btn-primary shrink-0 px-3 sm:px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5">
+        <i class="ri-search-line sm:hidden"></i>
+        <span class="hidden sm:inline">Search</span>
+      </button>
+    </div>
+  </form>
+
+  <!-- Quick chips -->
+  <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+    <button onclick="quickSearch('Web Dev')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-code-s-slash-line"></i> Web Development</button>
+    <button onclick="quickSearch('UI/UX')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-pencil-ruler-2-line"></i> UI/UX Design</button>
+    <button onclick="quickSearch('Mobile')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-smartphone-line"></i> Mobile Apps</button>
+    <button onclick="quickSearch('AI/ML')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-sparkling-2-line"></i> AI &amp; Machine Learning</button>
+    <button onclick="quickSearch('Blockchain')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-link"></i> Blockchain</button>
+  </div>
+</section>
+
+<!-- FILTER BAR -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 border-b border-slate-100 pb-3">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+    <div id="catBar" class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-2 -mx-4 px-4 sm:mx-0 sm:px-0"></div>
+    <div class="flex items-center justify-between sm:justify-end gap-4 text-sm text-slate-500 shrink-0 relative">
+      <span id="resultCount">20 results</span>
+      <button id="sortBtn" onclick="toggleSort(event)" class="flex items-center gap-1 hover:text-slate-700 font-medium">
+        <i class="ri-arrow-up-down-line"></i>
+        <span id="sortLabel">Top Rated</span>
+        <i class="ri-arrow-down-s-line"></i>
+      </button>
+      <div id="sortMenu" class="sort-menu absolute right-0 top-full mt-2 w-44 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-30 text-left">
+        <button onclick="setSort('rating','Top Rated')" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Top Rated</button>
+        <button onclick="setSort('reviews','Most Reviews')" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Most Reviews</button>
+        <button onclick="setSort('priceAsc','Lowest Price')" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Lowest Price</button>
+        <button onclick="setSort('priceDesc','Highest Price')" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Highest Price</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GIGS GRID -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+  <div id="gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+  <div id="emptyState" class="hidden text-center py-20">
+    <div class="mx-auto w-16 h-16 rounded-full bg-slate-100 grid place-items-center text-slate-400">
+      <i class="ri-search-line text-2xl"></i>
+    </div>
+    <h3 class="mt-4 text-lg font-bold text-slate-800">No gigs match your filters</h3>
+    <p class="mt-1 text-sm text-slate-500">Try different keywords or clear your filters.</p>
+    <button onclick="clearAll()" class="mt-5 px-5 py-2 rounded-full bg-[#efeaff] text-[#6b5ce7] text-sm font-semibold hover:bg-[#e3dcff]">Clear all filters</button>
+  </div>
+  <div id="loadMoreWrap" class="flex justify-center mt-10">
+    <button id="loadMoreBtn" onclick="loadMore()" class="px-6 py-2.5 rounded-full text-sm font-semibold bg-[#efeaff] text-[#6b5ce7] hover:bg-[#e3dcff]">Load more gigs</button>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-white text-slate-600 mt-12 border-t border-slate-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 grid grid-cols-2 md:grid-cols-5 gap-10">
+    <div class="col-span-2 md:col-span-1">
+      <div class="flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white">
+          <i class="ri-briefcase-4-fill"></i>
+        </span>
+        <span class="font-extrabold text-slate-900">InterWork</span>
+      </div>
+      <p class="mt-4 text-sm text-slate-500 leading-relaxed">The Web3 freelance marketplace. Hire verified talent, pay in ITL, zero middlemen.</p>
+      <div class="mt-5 flex gap-2">
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-twitter-x-fill"></i></a>
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-discord-fill"></i></a>
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-telegram-fill"></i></a>
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-github-fill"></i></a>
+      </div>
+    </div>
+    <div>
+      <h4 class="text-slate-900 font-bold mb-4">For Clients</h4>
+      <ul class="space-y-3 text-sm">
+        <li><a href="#" class="footer-link">Find Freelancers</a></li>
+        <li><a href="#" class="footer-link">Post a Job</a></li>
+        <li><a href="#" class="footer-link">How it Works</a></li>
+        <li><a href="#" class="footer-link">Enterprise</a></li>
+        <li><a href="#" class="footer-link">Success Stories</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-slate-900 font-bold mb-4">For Freelancers</h4>
+      <ul class="space-y-3 text-sm">
+        <li><a href="#" class="footer-link">Find Work</a></li>
+        <li><a href="#" class="footer-link">Create Profile</a></li>
+        <li><a href="#" class="footer-link">Community Programs</a></li>
+        <li><a href="#" class="footer-link">Reward Pools</a></li>
+        <li><a href="#" class="footer-link">Help Center</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-slate-900 font-bold mb-4">Resources</h4>
+      <ul class="space-y-3 text-sm">
+        <li><a href="#" class="footer-link">Blog</a></li>
+        <li><a href="#" class="footer-link">Documentation</a></li>
+        <li><a href="#" class="footer-link">API</a></li>
+        <li><a href="#" class="footer-link">Partners</a></li>
+        <li><a href="#" class="footer-link">System Status</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-slate-900 font-bold mb-4">Company</h4>
+      <ul class="space-y-3 text-sm">
+        <li><a href="#" class="footer-link">About Us</a></li>
+        <li><a href="#" class="footer-link">Careers</a></li>
+        <li><a href="#" class="footer-link">Press Kit</a></li>
+        <li><a href="#" class="footer-link">Terms of Service</a></li>
+        <li><a href="#" class="footer-link">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+      <span>© 2026 InterWork. All rights reserved.</span>
+      <span>Powered by Interlink · ITL Token</span>
+    </div>
+  </div>
+</footer>
 
 <script>
+  // ===== Data =====
+  const CATS = ['All','Web Dev','UI/UX','Mobile','Content','Video','AI/ML','Marketing','Blockchain','DevOps','Data'];
+
+  const GIGS = [
+    // Web Dev (3)
+    {badge:'BEST SELLER', tag:'Top Rated', initial:'A', initialBg:'#fecaca', name:'Andre Martins', title:'I will build a modern responsive website with React & Tailwind', rating:4.9, reviews:342, cat:'Web Dev', catLabel:'Web Development', price:120, img:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80'},
+    {badge:'', tag:'Pro', initial:'G', initialBg:'#bbf7d0', name:'Gabriel Souza', title:'I will build a scalable full-stack SaaS platform for your startup', rating:4.8, reviews:198, cat:'Web Dev', catLabel:'Web Development', price:280, img:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80'},
+    {badge:'RISING STAR', tag:'Pro', initial:'L', initialBg:'#bae6fd', name:'Lucas Pereira', title:'I will create a high-conversion landing page with Next.js', rating:4.9, reviews:128, cat:'Web Dev', catLabel:'Web Development', price:160, img:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80'},
+    // UI/UX (2)
+    {badge:'BEST SELLER', tag:'Top Rated', initial:'I', initialBg:'#fed7aa', name:'Isabela Rocha', title:'I will design a complete brand identity and logo package', rating:4.9, reviews:267, cat:'UI/UX', catLabel:'UI/UX Design', price:175, img:'https://images.unsplash.com/photo-1561070791-2526d30994b8?w=800&q=80'},
+    {badge:'', tag:'Top Rated', initial:'M', initialBg:'#bae6fd', name:'Mariana Costa', title:'I will design a stunning UI/UX for your Web3 application', rating:4.8, reviews:218, cat:'UI/UX', catLabel:'UI/UX Design', price:95, img:'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=800&q=80'},
+    // Mobile (2)
+    {badge:'BEST SELLER', tag:'Top Rated', initial:'R', initialBg:'#ddd6fe', name:'Rafael Lima', title:'I will develop a cross-platform mobile app with React Native', rating:4.9, reviews:189, cat:'Mobile', catLabel:'Mobile Apps', price:420, img:'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80'},
+    {badge:'RISING STAR', tag:'Pro', initial:'J', initialBg:'#fbcfe8', name:'Juliana Mendes', title:'I will publish your iOS and Android app to the stores', rating:4.8, reviews:74, cat:'Mobile', catLabel:'Mobile Apps', price:250, img:'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&q=80'},
+    // Content (2)
+    {badge:'RISING STAR', tag:'Top Rated', initial:'C', initialBg:'#fde68a', name:'Carolina Santos', title:'I will write your Web3 whitepaper and technical documentation', rating:5, reviews:89, cat:'Content', catLabel:'Content Writing', price:350, img:'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800&q=80'},
+    {badge:'', tag:'Pro', initial:'T', initialBg:'#fcd34d', name:'Thiago Ribeiro', title:'I will craft SEO blog articles that rank on Google', rating:4.8, reviews:156, cat:'Content', catLabel:'Content Writing', price:80, img:'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&q=80'},
+    // Video (2)
+    {badge:'RISING STAR', tag:'Top Rated', initial:'E', initialBg:'#fde68a', name:'Enzo Carvalho', title:'I will create stunning 3D product animations and renderings', rating:4.9, reviews:112, cat:'Video', catLabel:'Video & Motion', price:300, img:'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=800&q=80'},
+    {badge:'', tag:'Pro', initial:'V', initialBg:'#c7d2fe', name:'Vitoria Lopes', title:'I will edit a cinematic YouTube video with motion graphics', rating:4.8, reviews:203, cat:'Video', catLabel:'Video & Motion', price:140, img:'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80'},
+    // AI/ML (2)
+    {badge:'BEST SELLER', tag:'Top Rated', initial:'B', initialBg:'#fcd34d', name:'Beatriz Almeida', title:'I will develop custom AI/ML models for your business needs', rating:4.9, reviews:73, cat:'AI/ML', catLabel:'AI & Machine Learning', price:500, img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80'},
+    {badge:'', tag:'Pro', initial:'M', initialBg:'#fecaca', name:'Marcos Vinicius', title:'I will build predictive ML models and data dashboards', rating:4.8, reviews:81, cat:'AI/ML', catLabel:'AI & Machine Learning', price:450, img:'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80'},
+    // Marketing (2)
+    {badge:'BEST SELLER', tag:'Top Rated', initial:'N', initialBg:'#fbcfe8', name:'Natalia Freitas', title:'I will manage your Google Ads and Meta Ads campaigns', rating:4.9, reviews:241, cat:'Marketing', catLabel:'Marketing', price:220, img:'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80'},
+    {badge:'', tag:'Pro', initial:'D', initialBg:'#bbf7d0', name:'Daniel Castro', title:'I will grow your brand on Instagram and TikTok', rating:4.7, reviews:165, cat:'Marketing', catLabel:'Marketing', price:130, img:'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80'},
+    // Blockchain (2)
+    {badge:'RISING STAR', tag:'Top Rated', initial:'P', initialBg:'#ddd6fe', name:'Pedro Alves', title:'I will develop secure smart contracts on Ethereum and Solana', rating:5, reviews:64, cat:'Blockchain', catLabel:'Blockchain & Web3', price:400, img:'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=80'},
+    {badge:'BEST SELLER', tag:'Top Rated', initial:'H', initialBg:'#ddd6fe', name:'Henrique Nunes', title:'I will build your custom NFT marketplace from scratch', rating:4.9, reviews:55, cat:'Blockchain', catLabel:'Blockchain & Web3', price:600, img:'https://images.unsplash.com/photo-1620321023374-d1a68fbc720d?w=800&q=80'},
+    // DevOps (2)
+    {badge:'RISING STAR', tag:'Top Rated', initial:'F', initialBg:'#bae6fd', name:'Felipe Andrade', title:'I will perform a complete security audit for your Web3 application', rating:5, reviews:47, cat:'DevOps', catLabel:'DevOps & Cloud', price:550, img:'https://images.unsplash.com/photo-1581090700227-1e8e7c9a5f3e?w=800&q=80'},
+    {badge:'', tag:'Top Rated', initial:'R', initialBg:'#fde68a', name:'Ricardo Borges', title:'I will set up your AWS cloud infrastructure with CI/CD pipelines', rating:4.8, reviews:137, cat:'DevOps', catLabel:'DevOps & Cloud', price:350, img:'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80'},
+    // Data (1)
+    {badge:'RISING STAR', tag:'Pro', initial:'S', initialBg:'#c7d2fe', name:'Sofia Barbosa', title:'I will build interactive data dashboards with Power BI and Tableau', rating:4.9, reviews:102, cat:'Data', catLabel:'Data Analytics', price:240, img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80'},
+  ];
+
+  // ===== State =====
+  let state = { cat:'All', q:'', sort:'rating', visible:12, favs:new Set() };
+
+  // ===== Helpers =====
+  const tagColor = t => t === 'Pro'
+    ? 'bg-emerald-100 text-emerald-700'
+    : 'bg-amber-100 text-amber-700';
+
+  function renderCats(){
+    document.getElementById('catBar').innerHTML = CATS.map(c => `
+      <button onclick="setCat('${c}')" class="pill ${state.cat===c?'pill-active':''} rounded-full text-sm px-4 py-1.5 font-medium whitespace-nowrap">${c}</button>
+    `).join('');
+  }
+
+  function filtered(){
+    let list = GIGS.filter(g => state.cat==='All' || g.cat===state.cat);
+    if(state.q.trim()){
+      const q = state.q.toLowerCase();
+      list = list.filter(g =>
+        g.title.toLowerCase().includes(q) ||
+        g.name.toLowerCase().includes(q) ||
+        g.catLabel.toLowerCase().includes(q)
+      );
+    }
+    if(state.sort==='rating') list.sort((a,b)=>b.rating-a.rating || b.reviews-a.reviews);
+    if(state.sort==='reviews') list.sort((a,b)=>b.reviews-a.reviews);
+    if(state.sort==='priceAsc') list.sort((a,b)=>a.price-b.price);
+    if(state.sort==='priceDesc') list.sort((a,b)=>b.price-a.price);
+    return list;
+  }
+
+  function render(){
+    const list = filtered();
+    const slice = list.slice(0, state.visible);
+    document.getElementById('resultCount').textContent = `${list.length} result${list.length===1?'':'s'}`;
+
+    const empty = document.getElementById('emptyState');
+    const grid = document.getElementById('gigs');
+    const loadWrap = document.getElementById('loadMoreWrap');
+
+    if(list.length===0){
+      grid.innerHTML='';
+      empty.classList.remove('hidden');
+      loadWrap.classList.add('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+
+    grid.innerHTML = slice.map((g,i)=>cardHTML(g,GIGS.indexOf(g))).join('');
+
+    if(state.visible >= list.length) loadWrap.classList.add('hidden');
+    else loadWrap.classList.remove('hidden');
+  }
+
+  function cardHTML(g, idx){
+    const fav = state.favs.has(idx);
+    return `
+    <a href="service.html" class="card bg-white rounded-xl overflow-hidden flex flex-col block">
+      <div class="relative overflow-hidden">
+        <img src="${g.img}" alt="" class="gig-img w-full aspect-[3/2] object-cover" loading="lazy" />
+        ${g.badge ? `<span class="badge absolute top-3 left-0 text-[10px] font-extrabold tracking-wide text-slate-700 px-2.5 py-1 rounded-r-md">${g.badge}</span>` : ''}
+        <button onclick="toggleFav(${idx},event)" class="heart-btn ${fav?'active':''} absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 grid place-items-center shadow-sm hover:bg-white">
+          <i class="ri-heart-line text-slate-500"></i>
+        </button>
+      </div>
+      <div class="p-4 flex-1 flex flex-col">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 text-sm text-slate-700">
+            <span class="w-6 h-6 rounded-full grid place-items-center text-[11px] font-bold" style="background:${g.initialBg};color:#475569">${g.initial}</span>
+            <span class="font-semibold">${g.name}</span>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded ${tagColor(g.tag)}">${g.tag}</span>
+        </div>
+        <h3 class="mt-3 text-sm font-bold text-[#5b4ee0] leading-snug">${g.title}</h3>
+        <div class="mt-2 flex items-center gap-1 text-xs text-slate-500">
+          <i class="ri-star-fill text-amber-400"></i>
+          <span class="font-bold text-slate-700">${g.rating}</span>
+          <span>(${g.reviews})</span>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+          <span class="text-slate-500">${g.catLabel}</span>
+          <span class="text-slate-500">From <b class="font-extrabold text-slate-900">${g.price} ITL</b></span>
+        </div>
+      </div>
+    </a>`;
+  }
+
+  function toggleFav(i,e){ e.preventDefault(); e.stopPropagation(); if(state.favs.has(i)) state.favs.delete(i); else state.favs.add(i); render(); }
+
+  // ===== Actions =====
+  function setCat(c){ state.cat=c; state.visible=12; renderCats(); render(); }
+  function applyFilters(){
+    const v = document.getElementById('searchInput').value;
+    state.q = v;
+    document.getElementById('clearBtn').classList.toggle('hidden', !v);
+    state.visible=12; render();
+  }
+  function clearSearch(){ document.getElementById('searchInput').value=''; applyFilters(); }
+  function quickSearch(label){
+    const map = {'Web Dev':'Web Dev','UI/UX':'UI/UX','Mobile':'Mobile','AI/ML':'AI/ML','Blockchain':'Blockchain'};
+    setCat(map[label]||'All');
+  }
+  function loadMore(){ state.visible += 8; render(); }
+  function clearAll(){
+    state = {cat:'All',q:'',sort:'rating',visible:12,favs:state.favs};
+    document.getElementById('searchInput').value='';
+    document.getElementById('clearBtn').classList.add('hidden');
+    document.getElementById('sortLabel').textContent='Top Rated';
+    renderCats(); render();
+  }
+  function toggleSort(e){ e.stopPropagation(); document.getElementById('sortMenu').classList.toggle('open'); }
+  function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
+  function setSort(s,label){
+    state.sort=s;
+    document.getElementById('sortLabel').textContent=label;
+    document.getElementById('sortMenu').classList.remove('open');
+    render();
+  }
+  document.addEventListener('click', e=>{
+    if(!e.target.closest('#sortBtn') && !e.target.closest('#sortMenu'))
+      document.getElementById('sortMenu').classList.remove('open');
+  });
+
+  // ===== Init =====
+  renderCats();
+  render();
+
 /* ═══════════════════════════════════════════════════════════════
-   CONFIGURAÇÕES SUPABASE — COLE SUAS CREDENCIAIS AQUI
+   CONFIGURAÇÃO SUPABASE
    ═══════════════════════════════════════════════════════════════ */
 const SUPABASE_URL  = 'https://mtxfpsmvftuszlujxtbg.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10eGZwc212ZnR1c3psdWp4dGJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MjAwMzQsImV4cCI6MjA5NzQ5NjAzNH0.hOxufLcgcznx9cHmM5yAHt-ISCSJjcSCRtxtrIfNUYk';
 const SB_READY = SUPABASE_URL !== 'COLE_SUA_URL_AQUI' && SUPABASE_ANON !== 'COLE_SUA_ANON_KEY_AQUI';
 
-let sb = null; // instância do cliente Supabase
-
+let sb = null;
 if (SB_READY) {
   try {
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
@@ -254,96 +458,95 @@ if (SB_READY) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ESTADO GLOBAL DA APLICAÇÃO
+   ESTADO DA CARTEIRA
    ═══════════════════════════════════════════════════════════════ */
-const STATE = {
-  walletConnected: false,
-  authenticated: false,
-  walletProvider: null,
-  onboardingComplete: false,
-  userRole: 'client', // 'client' ou 'freelancer'
-  currentUserId: 'user1',
-  dashboardTab: 'client',
-  sbUser: null,
+let walletState = {
+  connected: false,
+  address: null,
   sbProfile: null,
-  sbReady: false,
-  isAdmin: false,
-  toastSeq: 0,
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   FUNÇÕES AUXILIARES BÁSICAS
+   FUNÇÕES DE CARTEIRA — DO v36
    ═══════════════════════════════════════════════════════════════ */
 
-// Helper para pegar elemento do DOM
-function $(sel) { return document.querySelector(sel); }
-
-// Avatar SVG simples
-function avatarSVG(letter, color) {
-  return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect fill='${encodeURIComponent(color)}' width='120' height='120'/%3E%3Ctext x='60' y='70' font-size='50' font-weight='bold' fill='white' text-anchor='middle' font-family='Inter'%3E${letter}%3C/text%3E%3C/svg%3E`;
-}
-
-function getAvatarSrc(name, color) {
-  return { type: 'generated', src: avatarSVG((name || 'U')[0].toUpperCase(), color || '#1a73e8') };
-}
-
-// Toast notificação
-function toast(msg, kind = 'info') {
-  STATE.toastSeq++;
-  const id = 't' + STATE.toastSeq;
-  const colors = { info: 'bg-ink-900', success: 'bg-emerald-600', warn: 'bg-amber-500', error: 'bg-rose-600' };
-  const root = $('#toast-root');
-  const el = document.createElement('div');
-  el.id = id;
-  el.className = `fade-in ${colors[kind]} text-white text-sm font-medium px-4 py-3 rounded-xl shadow-pop flex items-center gap-2 max-w-sm`;
-  el.innerHTML = `<i data-lucide="${kind === 'success' ? 'check-circle' : kind === 'error' ? 'alert-circle' : 'info'}" class="w-4 h-4"></i><span>${msg}</span>`;
-  root.appendChild(el);
-  lucide.createIcons();
-  setTimeout(() => {
-    el.style.transition = 'opacity .3s';
-    el.style.opacity = '0';
-    setTimeout(() => el.remove(), 300);
-  }, 3200);
-}
-
-// Fechar modal
-function closeModal() {
-  $('#modal-root').innerHTML = '';
-}
-
-// Render (placeholder)
-function render() {
-  console.log('🔄 Render called - STATE:', STATE);
-}
-
-// Persistência local
-const STORAGE_KEY = 'interwork_v1';
-function persistNow() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
-  } catch (e) {
-    console.warn('LocalStorage error:', e);
+// Abre modal nativo do Reown com QR code e lista de carteiras
+function openConnectWallet(reason) {
+  if (window._reownModal) {
+    window._reownModal.open();
+    return;
   }
+  // SDK ainda carregando — aguarda até 6s
+  alert('Carregando carteiras...');
+  let tries = 0;
+  const poll = setInterval(() => {
+    tries++;
+    if (window._reownModal) {
+      clearInterval(poll);
+      window._reownModal.open();
+      return;
+    }
+    if (tries > 20) {
+      clearInterval(poll);
+      alert('Erro ao carregar SDK de carteira. Recarregue a página.');
+    }
+  }, 300);
 }
 
-// Recuperar do localStorage
-function loadState() {
+// Chamado pelo módulo Reown quando carteira conecta com sucesso
+window._handleReownConnected = async function(address) {
+  // Sincroniza com Supabase (Anonymous Auth) ligada à wallet
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const loaded = JSON.parse(saved);
-      Object.assign(STATE, loaded);
-      console.log('✅ Estado restaurado do localStorage');
+    if (typeof sb !== 'undefined' && sb) {
+      let { data: sessionData } = await sb.auth.getSession();
+      if (!sessionData.session) {
+        const { error: signInError } = await sb.auth.signInAnonymously({
+          options: { data: { wallet: address, name: 'Usuário', role: 'client' } }
+        });
+        if (signInError) console.warn('[Supabase] Erro no login anônimo:', signInError.message);
+      }
+      const { data: { user } } = await sb.auth.getUser();
+      if (user) {
+        await sb.from('profiles').update({ wallet_address: address }).eq('id', user.id);
+        walletState.sbProfile = await sbLoadProfile(user.id);
+      }
     }
   } catch (e) {
-    console.warn('Erro ao restaurar estado:', e);
+    console.warn('[Supabase] Falha ao sincronizar sessão da wallet:', e);
   }
+
+  // Atualiza estado da carteira
+  const shortW = address.slice(0, 6) + '...' + address.slice(-4);
+  walletState.connected = true;
+  walletState.address = address;
+
+  console.log('✅ Carteira conectada:', shortW);
+  alert(`Carteira conectada: ${shortW}`);
+  updateHeaderWallet();
+};
+
+// Chamado pelo módulo Reown quando carteira desconecta
+window._handleReownDisconnected = function() {
+  if (!walletState.connected) return;
+  walletState.connected = false;
+  walletState.address = null;
+  console.log('❌ Carteira desconectada');
+  alert('Wallet desconectada');
+  updateHeaderWallet();
+};
+
+// Desconecta carteira
+function disconnectWallet() {
+  if (window._reownModal) {
+    try { window._reownModal.disconnect(); } catch (e) {}
+  }
+  walletState.connected = false;
+  walletState.address = null;
+  alert('Wallet desconectada');
+  updateHeaderWallet();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   FUNÇÕES SUPABASE
-   ═══════════════════════════════════════════════════════════════ */
-
+// Carrega perfil do Supabase
 async function sbLoadProfile(userId) {
   if (!sb || !userId) return null;
   try {
@@ -364,150 +567,22 @@ async function sbLoadProfile(userId) {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   FUNÇÕES DE CONEXÃO COM CARTEIRA — DO CÓDIGO v36
-   ═══════════════════════════════════════════════════════════════ */
-
-// Abre o modal nativo do Reown com QR code e lista de carteiras
-function openConnectWallet(reason) {
-  if (window._reownModal) {
-    window._reownModal.open();
-    return;
+// Atualiza header com estado da carteira
+function updateHeaderWallet() {
+  const btn = document.querySelector('a[class*="btn-primary"]') || document.querySelector('button[onclick="openConnectWallet()"]');
+  if (!btn) return;
+  
+  if (walletState.connected) {
+    btn.textContent = `✓ ${walletState.address.slice(0, 6)}...${walletState.address.slice(-4)}`;
+    btn.onclick = disconnectWallet;
+    btn.style.background = '#22c55e';
+  } else {
+    btn.innerHTML = '<i class="ri-wallet-line"></i> Connect Wallet';
+    btn.onclick = openConnectWallet;
+    btn.style.background = 'var(--primary)';
   }
-  // SDK ainda carregando — aguarda até 6s
-  toast('Carregando carteiras...', 'warn');
-  let tries = 0;
-  const poll = setInterval(() => {
-    tries++;
-    if (window._reownModal) {
-      clearInterval(poll);
-      window._reownModal.open();
-      return;
-    }
-    if (tries > 20) {
-      clearInterval(poll);
-      toast('Erro ao carregar SDK de carteira. Recarregue a página.', 'error');
-    }
-  }, 300);
 }
-
-// Chamado pelo módulo Reown quando carteira conecta com sucesso
-window._handleReownConnected = async function(address) {
-  // Sincroniza com Supabase (Anonymous Auth) ligada à wallet
-  try {
-    if (typeof sb !== 'undefined' && sb) {
-      let { data: sessionData } = await sb.auth.getSession();
-      if (!sessionData.session) {
-        const { error: signInError } = await sb.auth.signInAnonymously({
-          options: { data: { wallet: address, name: 'Usuário', role: 'client' } }
-        });
-        if (signInError) console.warn('[Supabase] Erro no login anônimo:', signInError.message);
-      }
-      const { data: { user } } = await sb.auth.getUser();
-      if (user) {
-        await sb.from('profiles').update({ wallet_address: address }).eq('id', user.id);
-        STATE.sbProfile = await sbLoadProfile(user.id);
-      }
-    }
-  } catch (e) {
-    console.warn('[Supabase] Falha ao sincronizar sessão da wallet:', e);
-  }
-
-  // Atualiza STATE com dados da wallet
-  const shortW = address.slice(0, 6) + '...' + address.slice(-4);
-  if (!STATE.onboardingComplete) {
-    STATE.onboardingComplete = true;
-    STATE.userRole = 'client';
-    STATE.dashboardTab = 'client';
-  }
-  STATE.walletProvider = 'WalletConnect';
-  STATE.walletConnected = true;
-  STATE.authenticated = true;
-  STATE.sbUser = { id: address }; // Armazena endereço como ID
-
-  console.log('✅ Carteira conectada:', shortW);
-  toast(`Carteira conectada: ${shortW}`, 'success');
-  closeModal();
-  persistNow();
-  render();
-};
-
-// Chamado pelo módulo Reown quando carteira desconecta
-window._handleReownDisconnected = function() {
-  if (!STATE.walletConnected) return;
-  STATE.walletConnected = false;
-  STATE.authenticated = false;
-  toast('Wallet desconectada.', 'warn');
-  render();
-};
-
-// Wrapper para compatibilidade
-function connectWallet(provider) {
-  openConnectWallet();
-}
-
-// Desconecta carteira
-function disconnectWallet() {
-  if (window._reownModal) {
-    try { window._reownModal.disconnect(); } catch (e) {}
-  }
-  STATE.walletConnected = false;
-  STATE.authenticated = false;
-  closeModal();
-  toast('Wallet desconectada', 'info');
-  render();
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   INICIALIZAÇÃO
-   ═══════════════════════════════════════════════════════════════ */
-
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('🚀 InterWork inicializado');
-  loadState();
-  lucide.createIcons();
-
-  // Teste: botão para conectar carteira
-  const view = $('#view');
-  if (view) {
-    view.innerHTML = `
-      <div class="p-8 max-w-4xl mx-auto">
-        <div class="bg-gradient-to-br from-brand-50 to-violet-50 rounded-2xl p-12 text-center">
-          <h1 class="text-4xl font-bold text-ink-900 mb-4">Bem-vindo ao Interwork</h1>
-          <p class="text-ink-600 mb-8 text-lg">Marketplace descentralizado para freelancers na Interlink Network</p>
-          
-          ${!STATE.walletConnected ? `
-            <button 
-              onclick="openConnectWallet()" 
-              class="inline-flex items-center gap-2 px-8 py-4 bg-brand-500 text-white rounded-xl font-semibold hover:bg-brand-600 transition shadow-pop"
-            >
-              <i data-lucide="wallet" class="w-5 h-5"></i>
-              Conectar Carteira
-            </button>
-          ` : `
-            <div class="space-y-4">
-              <div class="bg-white rounded-xl p-6 text-left inline-block">
-                <p class="text-sm text-ink-500 mb-2">Carteira conectada</p>
-                <p class="text-2xl font-bold text-brand-500">${STATE.sbUser?.id || 'Desconhecido'}</p>
-              </div>
-              <div>
-                <button 
-                  onclick="disconnectWallet()" 
-                  class="inline-flex items-center gap-2 px-8 py-4 bg-rose-500 text-white rounded-xl font-semibold hover:bg-rose-600 transition"
-                >
-                  <i data-lucide="log-out" class="w-5 h-5"></i>
-                  Desconectar
-                </button>
-              </div>
-            </div>
-          `}
-        </div>
-      </div>
-    `;
-    lucide.createIcons();
-  }
-});
 </script>
-
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
