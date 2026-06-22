@@ -2170,7 +2170,7 @@ function renderHeader(){
   const me = getUser(STATE.currentUserId);
   const langObj = LANGUAGES_LIST.find(l=>l.id===STATE.language);
   const authed = isAuthed();
-  const isHero = STATE.route==='home' && !STATE.query && STATE.category==='all';
+  const isHero = (STATE.route==='home' && !STATE.query && STATE.category==='all') || STATE.route==='service';
 
   // On the hero page, header is transparent over dark bg; on other pages it's white/glass
   const headerBg = isHero
@@ -2290,12 +2290,7 @@ function renderHeader(){
                 : `<span>${(me?.name||'U')[0].toUpperCase()}</span>`}
             </div>
           </a>
-        ` : `
-          <button onclick="openConnectWallet()" class="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-[13px] transition ${STATE.darkMode?'bg-white text-ink-900 hover:bg-white/90':'bg-ink-900 text-white hover:bg-ink-700'}">
-            <i data-lucide="wallet" class="w-4 h-4"></i>
-            Connect Wallet
-          </button>
-        `}
+        ` : ``}
 
       </div>
     </div>
@@ -2456,7 +2451,7 @@ window._handleReownConnected = async function(address) {
   STATE.walletConnected = true;
   STATE.authenticated   = true;
   closeModal();
-  toast('Wallet conectada — bem-vindo!', 'success');
+  // Toast de conexão removido — sem notificação ao conectar carteira
   persistNow();
   render();
 };
@@ -3027,48 +3022,28 @@ function viewHeroPage(){
   ];
 
   return `
-  <!-- ═══ HERO — Supabase style: preto puro, título centralizado, dois CTAs ═══ -->
-  <section id="hero-section" class="relative overflow-hidden" style="min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+  <!-- ═══ HERO — Supabase style: título compacto, search central ═══ -->
+  <section id="hero-section" class="relative overflow-hidden" style="min-height:72vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
 
     <!-- Glow sutil atrás do título -->
     <div class="hero-glow absolute inset-0 pointer-events-none"></div>
 
-    <div class="relative w-full max-w-4xl mx-auto px-6 text-center pt-16 pb-12">
+    <div class="relative w-full max-w-3xl mx-auto px-6 text-center pt-10 pb-8">
 
-      <!-- Badge -->
-      <div class="hero-badge inline-flex items-center gap-2 mb-7 px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-wide uppercase border">
-        <span class="w-1.5 h-1.5 rounded-full bg-[#a78bfa]"></span>
-        Powered by Interlink
-      </div>
-
-      <!-- Título: linha sólida + linha com gradiente colorido -->
-      <h1 class="font-extrabold leading-[1.05] tracking-tight">
-        <span class="hero-title-text block" style="font-size:clamp(2.6rem,7vw,5.25rem)">The Web3 freelance</span>
-        <span class="block" style="font-size:clamp(2.6rem,7vw,5.25rem);background:linear-gradient(90deg,#a78bfa 0%,#60a5fa 50%,#34d399 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">marketplace.</span>
+      <!-- Título -->
+      <h1 class="font-extrabold leading-[1.08] tracking-tight">
+        <span class="hero-title-text block" style="font-size:clamp(2.2rem,5.5vw,3.8rem)">The Web3 freelance</span>
+        <span class="block" style="font-size:clamp(2.2rem,5.5vw,3.8rem);background:linear-gradient(90deg,#a78bfa 0%,#60a5fa 50%,#34d399 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">marketplace.</span>
       </h1>
 
-      <!-- Subtítulo -->
-      <p class="hero-subtitle mt-6 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-normal">
-        Hire verified professionals. Pay in ITL.<br class="hidden md:block"/>
-        Every transaction protected by an automatic contract — no middlemen.
+      <!-- Subtítulo — curto como Supabase -->
+      <p class="hero-subtitle mt-4 text-base md:text-lg max-w-xl mx-auto leading-relaxed font-normal">
+        Hire verified professionals. Pay in ITL. Every transaction protected by escrow — no middlemen.
       </p>
 
-      <!-- CTAs — Primary + Outlined -->
-      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <button onclick="STATE.category='all';STATE.query='';STATE.page=1;renderView()"
-          class="flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-[15px] transition-all hover:opacity-90"
-          style="background:#8b5cf6;color:#ffffff;">
-          <i data-lucide="search" class="w-4 h-4"></i>Browse Services
-        </button>
-        <button onclick="openConnectWallet()"
-          class="hero-outline-btn flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-[15px] border transition-all">
-          <i data-lucide="wallet" class="w-4 h-4"></i>Connect Wallet
-        </button>
-      </div>
-
-      <!-- Search bar — minimal, com seta em vez de botão -->
-      <div id="search-wrap" class="mt-10 relative max-w-lg mx-auto">
-        <form id="home-search" class="hero-search-bar flex items-center rounded-xl overflow-hidden border" style="height:52px;" onsubmit="event.preventDefault()">
+      <!-- Search bar PRINCIPAL — em destaque logo abaixo do subtítulo -->
+      <div id="search-wrap" class="mt-7 relative max-w-xl mx-auto">
+        <form id="home-search" class="hero-search-bar flex items-center rounded-xl overflow-hidden border" style="height:54px;" onsubmit="event.preventDefault()">
           <i data-lucide="search" class="hero-search-icon w-4 h-4 ml-4 shrink-0"></i>
           <input aria-label="Buscar serviços" id="q" value="${escapeHtml(STATE.query)}" placeholder="Search for any service..."
             autocomplete="off"
@@ -3084,8 +3059,8 @@ function viewHeroPage(){
         <div id="search-dropdown" class="hero-dropdown hidden absolute left-0 right-0 top-full mt-1 border rounded-2xl shadow-pop z-50 overflow-hidden"></div>
       </div>
 
-      <!-- Tags — pílulas simples, sem ícone -->
-      <div class="mt-5 flex flex-wrap justify-center gap-2 items-center">
+      <!-- Tags -->
+      <div class="mt-4 flex flex-wrap justify-center gap-2 items-center">
         ${heroTags.map(tag=>`
           <button onclick="pickTrendingTag('${escapeHtml(tag).replace(/'/g,"\\'")}' )"
             class="hero-tag inline-flex items-center text-[11px] px-3 py-1 rounded-full border transition font-medium">
@@ -3093,13 +3068,26 @@ function viewHeroPage(){
           </button>`).join('')}
       </div>
 
-      <!-- Stats — em vez da faixa de parceiros -->
-      <div class="mt-12 flex items-center justify-center gap-10">
-        <div><div class="hero-stat-num text-[22px] font-bold">500+</div><div class="hero-stat-label text-[11px] mt-0.5">Serviços ativos</div></div>
-        <div class="hero-divider w-px h-8"></div>
-        <div><div class="hero-stat-num text-[22px] font-bold">ITL</div><div class="hero-stat-label text-[11px] mt-0.5">Moeda nativa</div></div>
-        <div class="hero-divider w-px h-8"></div>
-        <div><div class="hero-stat-num text-[22px] font-bold">0</div><div class="hero-stat-label text-[11px] mt-0.5">Intermediários</div></div>
+      <!-- CTAs -->
+      <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <button onclick="STATE.category='all';STATE.query='';STATE.page=1;renderView()"
+          class="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
+          style="background:#8b5cf6;color:#ffffff;">
+          <i data-lucide="search" class="w-4 h-4"></i>Browse Services
+        </button>
+        <button onclick="openConnectWallet()"
+          class="hero-outline-btn flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm border transition-all">
+          <i data-lucide="wallet" class="w-4 h-4"></i>Connect Wallet
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-8 flex items-center justify-center gap-10">
+        <div><div class="hero-stat-num text-xl font-bold">500+</div><div class="hero-stat-label text-[11px] mt-0.5">Serviços ativos</div></div>
+        <div class="hero-divider w-px h-7"></div>
+        <div><div class="hero-stat-num text-xl font-bold">ITL</div><div class="hero-stat-label text-[11px] mt-0.5">Moeda nativa</div></div>
+        <div class="hero-divider w-px h-7"></div>
+        <div><div class="hero-stat-num text-xl font-bold">0</div><div class="hero-stat-label text-[11px] mt-0.5">Intermediários</div></div>
       </div>
     </div>
   </section>
@@ -3898,7 +3886,7 @@ function viewService(id){
               <div class="relative bg-ink-100/30 select-none" style="border-radius:0">
                 <img id="gig-main-${s.id}" src="${imgs[0]}"
                   class="w-full object-cover cursor-zoom-in block"
-                  style="height:360px;max-height:58vw;transition:opacity .2s"
+                  style="height:260px;max-height:40vw;transition:opacity .2s"
                   onclick="openLightbox('${s.id}', parseInt(this.dataset.idx||'0'))"
                   data-idx="0"/>
 
@@ -4192,18 +4180,22 @@ function viewService(id){
       <aside class="w-full lg:w-[38%] shrink-0" style="position:sticky;top:72px;align-self:flex-start">
         <div class="space-y-4">
           <div class="bg-white border border-ink-100 rounded-2xl shadow-card overflow-hidden">
-            <!-- Cabeçalho de preço -->
-            <div class="p-5 bg-gradient-to-br from-brand-50 to-white">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="text-[11px] font-bold uppercase tracking-wider text-ink-400 mb-1">Preço</div>
-                  <div class="text-3xl font-extrabold text-brand-700">${fmtITL(s.price)} <span class="text-sm font-semibold text-ink-400">ITL</span></div>
+            <!-- Cabeçalho de preço — grid simétrico -->
+            <div class="p-5" style="background:linear-gradient(135deg,#0f0f0f 0%,#1c1c1c 100%)">
+              <div class="grid grid-cols-2" style="gap:0">
+                <!-- PREÇO -->
+                <div class="flex flex-col items-center justify-center py-3 px-4 text-center">
+                  <div class="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-2">Preço</div>
+                  <div class="text-2xl font-extrabold text-white leading-tight">${fmtITL(s.price)}</div>
+                  <div class="text-xs font-semibold text-white/40 mt-0.5">ITL</div>
                 </div>
-                <div class="text-right">
-                  <div class="text-[11px] font-bold uppercase tracking-wider text-ink-400 mb-1">Prazo</div>
-                  <div class="flex items-center gap-1 text-sm font-bold text-ink-700">
-                    <i data-lucide="clock" class="w-3.5 h-3.5 text-brand-400"></i>${s.deliveryDays||s.deadline||7} dias
-                  </div>
+                <!-- Divisor central -->
+                <div class="absolute left-1/2 -translate-x-1/2 top-5 bottom-5 w-px" style="background:rgba(255,255,255,0.08);position:relative;left:0;transform:none;top:0;bottom:0;width:1px;margin:0"></div>
+                <!-- PRAZO -->
+                <div class="flex flex-col items-center justify-center py-3 px-4 text-center">
+                  <div class="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-2">Prazo</div>
+                  <div class="text-2xl font-extrabold text-white leading-tight">${s.deliveryDays||s.deadline||7}</div>
+                  <div class="text-xs font-semibold text-white/40 mt-0.5">dias</div>
                 </div>
               </div>
             </div>
@@ -7829,6 +7821,7 @@ function showATVChoice(orderId){
       box-shadow:0 20px 60px rgba(0,0,0,0.22), 0 0 0 1.5px rgba(245,158,11,0.3);
       overflow:hidden;
       font-family:inherit;
+      pointer-events:all;
     ">
       <!-- Topo gradiente -->
       <div style="background:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%);padding:18px 18px 14px;position:relative;">
