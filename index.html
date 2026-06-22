@@ -2170,7 +2170,7 @@ function renderHeader(){
   const me = getUser(STATE.currentUserId);
   const langObj = LANGUAGES_LIST.find(l=>l.id===STATE.language);
   const authed = isAuthed();
-  const isHero = (STATE.route==='home' && !STATE.query && STATE.category==='all') || STATE.route==='service';
+  const isHero = STATE.route==='home' && !STATE.query && STATE.category==='all';
 
   // On the hero page, header is transparent over dark bg; on other pages it's white/glass
   const headerBg = isHero
@@ -2290,7 +2290,12 @@ function renderHeader(){
                 : `<span>${(me?.name||'U')[0].toUpperCase()}</span>`}
             </div>
           </a>
-        ` : ``}
+        ` : `
+          <button onclick="openConnectWallet()" class="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-[13px] transition ${STATE.darkMode?'bg-white text-ink-900 hover:bg-white/90':'bg-ink-900 text-white hover:bg-ink-700'}">
+            <i data-lucide="wallet" class="w-4 h-4"></i>
+            Connect Wallet
+          </button>
+        `}
 
       </div>
     </div>
@@ -2451,7 +2456,11 @@ window._handleReownConnected = async function(address) {
   STATE.walletConnected = true;
   STATE.authenticated   = true;
   closeModal();
-  // Toast de conexão removido — sem notificação ao conectar carteira
+  // Toast dispara apenas UMA vez por carregamento de página (subscribeAccount re-dispara a cada render)
+  if (!window._walletToastFired) {
+    window._walletToastFired = true;
+    toast('Wallet conectada — bem-vindo!', 'success');
+  }
   persistNow();
   render();
 };
@@ -3886,7 +3895,7 @@ function viewService(id){
               <div class="relative bg-ink-100/30 select-none" style="border-radius:0">
                 <img id="gig-main-${s.id}" src="${imgs[0]}"
                   class="w-full object-cover cursor-zoom-in block"
-                  style="height:260px;max-height:40vw;transition:opacity .2s"
+                  style="height:360px;max-height:58vw;transition:opacity .2s"
                   onclick="openLightbox('${s.id}', parseInt(this.dataset.idx||'0'))"
                   data-idx="0"/>
 
@@ -4180,22 +4189,18 @@ function viewService(id){
       <aside class="w-full lg:w-[38%] shrink-0" style="position:sticky;top:72px;align-self:flex-start">
         <div class="space-y-4">
           <div class="bg-white border border-ink-100 rounded-2xl shadow-card overflow-hidden">
-            <!-- Cabeçalho de preço — grid simétrico -->
-            <div class="p-5" style="background:linear-gradient(135deg,#0f0f0f 0%,#1c1c1c 100%)">
-              <div class="grid grid-cols-2" style="gap:0">
-                <!-- PREÇO -->
-                <div class="flex flex-col items-center justify-center py-3 px-4 text-center">
-                  <div class="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-2">Preço</div>
-                  <div class="text-2xl font-extrabold text-white leading-tight">${fmtITL(s.price)}</div>
-                  <div class="text-xs font-semibold text-white/40 mt-0.5">ITL</div>
+            <!-- Cabeçalho de preço -->
+            <div class="p-5 bg-gradient-to-br from-brand-50 to-white">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="text-[11px] font-bold uppercase tracking-wider text-ink-400 mb-1">Preço</div>
+                  <div class="text-3xl font-extrabold text-brand-700">${fmtITL(s.price)} <span class="text-sm font-semibold text-ink-400">ITL</span></div>
                 </div>
-                <!-- Divisor central -->
-                <div class="absolute left-1/2 -translate-x-1/2 top-5 bottom-5 w-px" style="background:rgba(255,255,255,0.08);position:relative;left:0;transform:none;top:0;bottom:0;width:1px;margin:0"></div>
-                <!-- PRAZO -->
-                <div class="flex flex-col items-center justify-center py-3 px-4 text-center">
-                  <div class="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-2">Prazo</div>
-                  <div class="text-2xl font-extrabold text-white leading-tight">${s.deliveryDays||s.deadline||7}</div>
-                  <div class="text-xs font-semibold text-white/40 mt-0.5">dias</div>
+                <div class="text-right">
+                  <div class="text-[11px] font-bold uppercase tracking-wider text-ink-400 mb-1">Prazo</div>
+                  <div class="flex items-center gap-1 text-sm font-bold text-ink-700">
+                    <i data-lucide="clock" class="w-3.5 h-3.5 text-brand-400"></i>${s.deliveryDays||s.deadline||7} dias
+                  </div>
                 </div>
               </div>
             </div>
