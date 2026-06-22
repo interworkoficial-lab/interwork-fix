@@ -2275,11 +2275,13 @@ function renderHeader(){
         </button>
 
 
-        <!-- Sell service button -->
-        <button onclick="openNewServiceModal()" class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold text-[13px] transition border ${STATE.darkMode?'border-white/15 text-white/80 hover:bg-white/10':'border-ink-200 text-ink-700 hover:bg-ink-100/60 hover:border-ink-300'}">
-          <i data-lucide="plus-circle" class="w-4 h-4"></i>
-          ${t('nav_sell')}
-        </button>
+        <!-- Sell service button — só quando autenticado -->
+        ${authed ? `
+          <button onclick="openNewServiceModal()" class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold text-[13px] transition border ${STATE.darkMode?'border-white/15 text-white/80 hover:bg-white/10':'border-ink-200 text-ink-700 hover:bg-ink-100/60 hover:border-ink-300'}">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            ${t('nav_sell')}
+          </button>
+        ` : ''}
         <!-- Wallet / Auth button — always rightmost -->
         ${authed ? `
           <!-- Avatar chip -->
@@ -2456,6 +2458,12 @@ window._handleReownConnected = async function(address) {
   STATE.walletConnected = true;
   STATE.authenticated   = true;
   closeModal();
+  // Executar ação pendente após autenticação (ex: abrir modal de vender serviço)
+  if (window._pendingAfterAuth) {
+    const fn = window._pendingAfterAuth;
+    window._pendingAfterAuth = null;
+    setTimeout(fn, 300);
+  }
   // Toast dispara apenas UMA vez por carregamento de página (subscribeAccount re-dispara a cada render)
   if (!window._walletToastFired) {
     window._walletToastFired = true;
@@ -3082,11 +3090,11 @@ function viewHeroPage(){
         <button onclick="STATE.category='all';STATE.query='';STATE.page=1;renderView()"
           class="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90"
           style="background:#8b5cf6;color:#ffffff;">
-          <i data-lucide="search" class="w-4 h-4"></i>Browse Services
+          <i data-lucide="search" class="w-4 h-4"></i>${t('cta_browse')||'Explorar serviços'}
         </button>
-        <button onclick="openConnectWallet()"
+        <button onclick="authed?openNewServiceModal():openConnectWallet()"
           class="hero-outline-btn flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm border transition-all">
-          <i data-lucide="wallet" class="w-4 h-4"></i>Connect Wallet
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>${authed?t('nav_sell'):'Publicar serviço'}
         </button>
       </div>
 
@@ -4990,7 +4998,11 @@ function submitDelivery(orderId){
 }
 
 function openNewServiceModal(editId){
-  if (!requireAuth(editId ? 'editar serviços' : 'publicar serviços')) return;
+  if (!requireAuth(editId ? 'editar serviços' : 'publicar serviços')) {
+    // Após conectar, redireciona de volta para o modal
+    window._pendingAfterAuth = () => openNewServiceModal(editId);
+    return;
+  }
   const editing = !!editId;
   const existing = editing ? getService(editId) : null;
   if (editing && !existing){ toast('Serviço não encontrado.', 'warn'); return; }
