@@ -3460,21 +3460,50 @@ function filterServices(){
   if (STATE.priceMin>0)       arr = arr.filter(s=>s.price>=STATE.priceMin);
   if (STATE.verifiedOnly)     arr = arr.filter(s=>{ const u=getUser(s.freelancerId); return u && u.verified; });
   if (STATE.availableOnly)    arr = arr.filter(s=>{ const u=getUser(s.freelancerId); return u && u.online; });
+
+  // ALTERADO — busca local agora calcula um score de relevância por serviço, em vez de só
+  // filtrar por .includes(). Continua 100% local (sem mudar o banco): título pesa mais que
+  // descrição, que pesa mais que tags/categoria/nome do freelancer. Quando há busca de texto
+  // e nenhum sort manual foi escolhido, a lista é ordenada pelo score (mais relevante primeiro).
+  let searchScores = null;
   if (STATE.query){
-    const q = STATE.query.toLowerCase();
-    arr = arr.filter(s =>
-      s.title.toLowerCase().includes(q) ||
-      s.description.toLowerCase().includes(q) ||
-      getCategory(s.category).label.toLowerCase().includes(q) ||
-      (s.tags || []).some(tag => tag.toLowerCase().includes(q))
-    );
+    const q = STATE.query.toLowerCase().trim();
+    const terms = q.split(/\s+/).filter(Boolean);
+    searchScores = new Map();
+    arr = arr.filter(s => {
+      const title = s.title.toLowerCase();
+      const desc  = s.description.toLowerCase();
+      const tags  = (s.tags||[]).join(' ').toLowerCase();
+      const cat   = getCategory(s.category).label.toLowerCase();
+      const freelancerName = (getUser(s.freelancerId)?.name || '').toLowerCase();
+
+      let score = 0;
+      let matched = false;
+      for (const term of terms){
+        if (title===q) score += 100; // título idêntico à busca inteira
+        if (title.startsWith(term)) { score += 50; matched = true; }
+        else if (title.includes(term)) { score += 30; matched = true; }
+        if (desc.includes(term))           { score += 10; matched = true; }
+        if (tags.includes(term))           { score += 15; matched = true; }
+        if (cat.includes(term))            { score += 8;  matched = true; }
+        if (freelancerName.includes(term)) { score += 5;  matched = true; }
+      }
+      if (!matched) return false;
+      searchScores.set(s.id, score);
+      return true;
+    });
   }
+
   switch(STATE.trendingActive ? 'trending' : STATE.sort){
     case 'rating':     arr.sort((a,b)=>b.rating-a.rating); break;
     case 'price_asc':  arr.sort((a,b)=>a.price-b.price); break;
     case 'price_desc': arr.sort((a,b)=>b.price-a.price); break;
     case 'recent':     arr.sort((a,b)=>b.createdTs-a.createdTs); break;
-    default:           arr.sort((a,b)=>(b.rating*b.reviewsCount)-(a.rating*a.reviewsCount));
+    default:
+      // ADICIONADO — quando há busca de texto e a ordenação é a padrão (relevância),
+      // usa o score calculado acima em vez do antigo rating*reviewsCount.
+      if (searchScores) arr.sort((a,b)=>searchScores.get(b.id)-searchScores.get(a.id));
+      else arr.sort((a,b)=>(b.rating*b.reviewsCount)-(a.rating*a.reviewsCount));
   }
   return arr;
 }
@@ -6398,6 +6427,18 @@ function confirmDispute(orderId, perspective){
   toast('Disputa registrada on-chain. 3 árbitros sorteados.', 'info');
   openDisputeView(orderId);
 
+  // ADICIONADO — tenta salvar a disputa de verdade no Supabase. Se não houver sessão real
+  // ou o pedido não tiver UUID real (order.sbId), segue 100% local como já funcionava.
+  sbCreateDispute(o, o.dispute).then(({ data, error }) => {
+    if (data) {
+      o.disputeSbId = data.id;
+      console.log('✅ Disputa salva no Supabase:', data.id);
+      sbSubscribeDispute(o);
+    } else if (error) {
+      console.warn('[Supabase] Disputa não salva no banco (seguindo apenas local):', error.message);
+    }
+  });
+
   // simulate voting over a few seconds
   setTimeout(()=>simulateVote(orderId, 0), 1500);
   setTimeout(()=>simulateVote(orderId, 1), 3200);
@@ -6418,6 +6459,9 @@ function simulateVote(orderId, idx){
   // if 3 votes cast → resolve
   if (o.dispute.arbiters.every(a=>a.vote)) resolveDispute(orderId);
   if ($('#dispute-modal')) renderDisputeView(o);
+
+  // ADICIONADO — sincroniza o voto simulado com o Supabase, se a disputa tiver UUID real.
+  if (o.disputeSbId) sbUpdateDispute(o, o.dispute);
 }
 
 function resolveDispute(orderId){
@@ -6441,6 +6485,7 @@ function resolveDispute(orderId){
 function openDisputeView(orderId){
   const o = STATE.orders.find(x=>x.id===orderId);
   if (!o || !o.dispute) return;
+  if (o.disputeSbId) sbSubscribeDispute(o); // ADICIONADO — escuta votos/resolução em tempo real
   renderDisputeView(o);
 }
 function renderDisputeView(o){
@@ -8021,7 +8066,7 @@ function copyReceiptHash(hash){
   navigator.clipboard.writeText(hash).then(()=>toast('Tx hash copiado!', 'success')).catch(()=>toast('Não foi possível copiar.', 'warn'));
 }
 
-function closeModal(){ $('#modal-root').innerHTML = ''; }
+function closeModal(){ $('#modal-root').innerHTML = ''; sbUnsubscribeDispute(); }
 (function initModalScrollLock(){
   const root = document.getElementById('modal-root');
   if (!root) return;
@@ -9090,6 +9135,68 @@ async function sbCreateOrder(order, freelancerUuid){
   const { data, error } = await sb.from('orders').insert(payload).select().single();
   if (error){ console.warn('[Supabase] Erro ao criar pedido:', error.message); return { error }; }
   return { data };
+}
+
+// ADICIONADO — salva a disputa de verdade na tabela "disputes" do Supabase, para que
+// cliente e freelancer vejam a mesma disputa e o mesmo resultado em qualquer dispositivo.
+// A votação dos árbitros continua simulada localmente (Math.random em simulateVote) —
+// isso só sincroniza o estado, não torna a arbitragem real.
+async function sbCreateDispute(order, dispute){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  if (!order || !order.sbId) return { error: { message: 'Pedido sem UUID real — disputa ficou apenas local.' } };
+  if (!STATE.sbProfile || !STATE.sbProfile.id) return { error: { message: 'Sem sessão real da wallet — disputa ficou apenas local.' } };
+  const payload = {
+    order_id:      order.sbId,
+    opened_by:     STATE.sbProfile.id,
+    reason:        dispute.reason,
+    description:   dispute.desc,
+    want:          dispute.want,
+    bond_itl:      dispute.bondITL,
+    open_tx_hash:  dispute.txHash,
+    status:        dispute.status,
+    arbiters:      dispute.arbiters,
+    votes:         dispute.votes,
+    resolution:    dispute.resolution,
+  };
+  const { data, error } = await sb.from('disputes').insert(payload).select().single();
+  if (error){ console.warn('[Supabase] Erro ao criar disputa:', error.message); return { error }; }
+  return { data };
+}
+
+// ADICIONADO — atualiza a disputa real (chamado a cada voto simulado e na resolução final).
+async function sbUpdateDispute(order, dispute){
+  if (!sb || !order || !order.disputeSbId) return { error: { message: 'Disputa sem UUID real — atualização ficou apenas local.' } };
+  const payload = {
+    status:     dispute.status,
+    arbiters:   dispute.arbiters,
+    votes:      dispute.votes,
+    resolution: dispute.resolution,
+  };
+  const { data, error } = await sb.from('disputes').update(payload).eq('id', order.disputeSbId).select().single();
+  if (error){ console.warn('[Supabase] Erro ao atualizar disputa:', error.message); return { error }; }
+  return { data };
+}
+
+// ADICIONADO — escuta mudanças em tempo real na disputa de um pedido (votos chegando,
+// resolução acontecendo), para que a outra parte veja sem precisar atualizar a página.
+let _sbDisputeChannel = null;
+function sbSubscribeDispute(order){
+  sbUnsubscribeDispute();
+  if (!sb || !order || !order.disputeSbId) return;
+  _sbDisputeChannel = sb.channel('dispute-'+order.disputeSbId)
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'disputes', filter: 'id=eq.'+order.disputeSbId }, payload => {
+      const incoming = payload.new;
+      if (!order.dispute) return;
+      order.dispute.status     = incoming.status;
+      order.dispute.arbiters   = incoming.arbiters;
+      order.dispute.votes      = incoming.votes;
+      order.dispute.resolution = incoming.resolution;
+      if ($('#dispute-modal')) renderDisputeView(order);
+    })
+    .subscribe();
+}
+function sbUnsubscribeDispute(){
+  if (_sbDisputeChannel){ sb.removeChannel(_sbDisputeChannel); _sbDisputeChannel = null; }
 }
 
 // Aprova um serviço (admin only)
