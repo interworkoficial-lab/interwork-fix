@@ -1149,7 +1149,7 @@ if (SB_READY) {
 /* ─────────────────────────────────────────
    WALLET
 ───────────────────────────────────────── */
-let walletState = { connected: false, address: null, sbProfile: null };
+let walletState = { connected: false, address: null, sbProfile: null, sbUser: null, sbReady: false, isAdmin: false };
 
 function openConnectWallet(reason) {
   if (window._reownModal) { window._reownModal.open(); return; }
@@ -1163,8 +1163,13 @@ function openConnectWallet(reason) {
 }
 
 window._handleReownConnected = async function(address) {
+  const shortW = address.slice(0, 6) + '...' + address.slice(-4);
+  walletState.connected = true;
+  walletState.address   = address;
+
   try {
-    if (typeof sb !== 'undefined' && sb) {
+    if (sb) {
+      // 1. Garante sessão Supabase ligada à wallet
       let { data: sessionData } = await sb.auth.getSession();
       if (!sessionData.session) {
         const { error: signInError } = await sb.auth.signInAnonymously({
@@ -1172,21 +1177,31 @@ window._handleReownConnected = async function(address) {
         });
         if (signInError) console.warn('[Supabase] Erro no login anônimo:', signInError.message);
       }
+      // 2. Carrega ou cria perfil
       const { data: { user } } = await sb.auth.getUser();
       if (user) {
-        await sb.from('profiles').update({ wallet_address: address }).eq('id', user.id);
+        walletState.sbUser = user;
+        // Atualiza wallet_address no perfil
+        await sb.from('profiles').upsert({
+          id: user.id,
+          wallet_address: address.toLowerCase(),
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'id' });
         walletState.sbProfile = await sbLoadProfile(user.id);
+        console.log('✅ Perfil sincronizado:', walletState.sbProfile?.handle || user.id);
       }
+      // 3. Carrega serviços do banco
+      if (typeof sbLoadServices === 'function') await sbLoadServices();
+      // 4. Ativa Realtime
+      if (typeof sbSubscribeServices === 'function') sbSubscribeServices();
     }
   } catch (e) {
     console.warn('[Supabase] Falha ao sincronizar sessão da wallet:', e);
   }
-  const shortW = address.slice(0, 6) + '...' + address.slice(-4);
-  walletState.connected = true;
-  walletState.address = address;
+
   console.log('✅ Carteira conectada:', shortW);
-  alert(`Carteira conectada: ${shortW}`);
   updateHeaderWallet();
+  if (typeof render === 'function') render();
 };
 
 window._handleReownDisconnected = function() {
@@ -1206,18 +1221,7 @@ function disconnectWallet() {
   updateHeaderWallet();
 }
 
-async function sbLoadProfile(userId) {
-  if (!sb || !userId) return null;
-  try {
-    const { data: profile, error } = await sb.from('profiles').select('*').eq('id', userId).single();
-    if (error) { console.warn('[Supabase] Erro ao carregar perfil:', error.message); return null; }
-    console.log('✅ Perfil carregado:', profile.handle);
-    return profile;
-  } catch (err) {
-    console.error('[Supabase] Erro ao carregar perfil:', err);
-    return null;
-  }
-}
+// sbLoadProfile substituída pela versão completa do v36 abaixo
 
 function updateHeaderWallet() {
   const btn = document.getElementById('walletBtn');
@@ -1238,6 +1242,1087 @@ function updateHeaderWallet() {
 ───────────────────────────────────────── */
 renderCats();
 render();
+
+// ── Inicializa Supabase após DOM pronto
+if (SB_READY && sb) {
+  sbInitAuth().then(() => {
+    if (typeof sbLoadServices === 'function') {
+      sbLoadServices();
+      sbSubscribeServices();
+    }
+  });
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SUPABASE — Funções completas portadas do v36
+   Inclui: Auth, Services, Orders, Disputes, Chat (Realtime),
+           Profiles, Admin helpers
+   ═══════════════════════════════════════════════════════════════ */
+
+async function sbSignIn(email, password){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) return { error };
+  walletState.sbUser  = data.user;
+  walletState.isAdmin = ADMIN_EMAILS.includes(data.user.email);
+  render();
+  return { data };
+}
+
+async function sbSignUp(email, password){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if (error) return { error };
+  return { data };
+}
+
+async function sbSignOut(){
+  if (!sb) return;
+  await sb.auth.signOut();
+  walletState.sbUser  = null;
+  walletState.isAdmin = false;
+  if(typeof render==="function")render();
+}
+
+async function sbInitAuth(){
+  if (!sb) return;
+  
+  // 1. Carregar sessão do Supabase Auth
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    walletState.sbUser  = session.user;
+    walletState.isAdmin = ADMIN_EMAILS.includes(session.user.email);
+    
+    // 2. NOVO: Carregar perfil da tabela 'profiles'
+    walletState.sbProfile = await sbLoadProfile(session.user.id);
+  }
+  
+  walletState.sbReady = true;
+  
+  // 3. Ouvir mudanças de sessão
+  sb.auth.onAuthStateChange(async (_event, session) => {
+    walletState.sbUser  = session?.user || null;
+    walletState.isAdmin = session?.user ? ADMIN_EMAILS.includes(session.user.email) : false;
+    
+    // Carregar/limpar perfil quando sessão muda
+    if (session?.user) {
+      walletState.sbProfile = await sbLoadProfile(session.user.id);
+    } else {
+      walletState.sbProfile = null;
+    }
+    
+    render();
+  });
+}
+
+async function sbLoadServices(){
+  if (!sb) return;
+  const { data, error } = await sb
+    .from('services')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
+
+  // ALTERADO — antes: qualquer linha no banco (mesmo pending/rejected) já mesclava com mocks.
+  // Agora: os mocks só permanecem como fallback até existir pelo menos 1 serviço REAL APROVADO.
+  // Assim que o primeiro serviço real for aprovado, os mocks somem por completo da listagem.
+  const approvedReal = (data || []).filter(s => s.status === 'approved');
+  if (approvedReal.length > 0) {
+    DB.services = data.map(sbSvcToLocal); // só dados reais (todos os status, p/ admin/dono ver os próprios)
+  }
+  // Se ainda não há nenhum serviço real aprovado, DB.services continua com os mocks do initMock,
+  // mas qualquer serviço real (mesmo pending) já fica disponível pra quem precisa vê-lo (admin/dono).
+  else if (data && data.length > 0) {
+    const dbIds = new Set(data.map(s => s.id));
+    DB.services = [
+      ...data.map(sbSvcToLocal),
+      ...DB.services.filter(s => s._mock && !dbIds.has(s.id)),
+    ];
+  }
+  renderView();
+}
+
+// Salva um serviço novo no Supabase
+async function sbCreateService(svc){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  const me = getUser(STATE.currentUserId);
+  const payload = localSvcToSb(svc, me);
+  const { data, error } = await sb.from('services').insert(payload).select().single();
+  if (error) return { error };
+  // Atualiza o item local com id real do banco
+  const idx = DB.services.findIndex(s => s.id === svc.id);
+  if (idx >= 0) DB.services[idx] = sbSvcToLocal(data);
+  return { data };
+}
+
+// ADICIONADO — salva o pedido de verdade na tabela "orders" do Supabase.
+// Exige que o comprador tenha sessão real (walletState.sbProfile) — sem isso, retorna erro
+// e o app continua funcionando apenas em modo local (comportamento de hoje).
+async function sbCreateOrder(order, freelancerUuid){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  if (!walletState.sbProfile || !walletState.sbProfile.id) return { error: { message: 'Sem sessão real da wallet — pedido salvo apenas localmente.' } };
+  if (!freelancerUuid) return { error: { message: 'Vendedor ainda não possui cadastro real (freelancer_uuid) — pedido salvo apenas localmente.' } };
+  // Não envia order.id (formato local tipo "o_a1b2c3d", incompatível com a coluna UUID).
+  // O Supabase gera o UUID real via DEFAULT uuid_generate_v4(); guardamos esse valor
+  // de volta em order.sbId, mantendo order.id local intacto (chat/milestones continuam usando ele).
+  const payload = {
+    client_id:      walletState.sbProfile.id,
+    freelancer_id:  freelancerUuid,
+    service_id:     order.serviceId,
+    amount:         order.total,
+    status:         (order.status === 'awaiting_requirements') ? 'pending' : (order.status || 'in_progress'),
+    due_date:       order.deliveryAt ? new Date(order.deliveryAt).toISOString() : null,
+    description:    order.brief || '',
+  };
+  const { data, error } = await sb.from('orders').insert(payload).select().single();
+  if (error){ console.warn('[Supabase] Erro ao criar pedido:', error.message); return { error }; }
+  return { data };
+}
+
+// ADICIONADO — salva a disputa de verdade na tabela "disputes" do Supabase, para que
+// cliente e freelancer vejam a mesma disputa e o mesmo resultado em qualquer dispositivo.
+// A votação dos árbitros continua simulada localmente (Math.random em simulateVote) —
+// isso só sincroniza o estado, não torna a arbitragem real.
+async function sbCreateDispute(order, dispute){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  if (!order || !order.sbId) return { error: { message: 'Pedido sem UUID real — disputa ficou apenas local.' } };
+  if (!walletState.sbProfile || !walletState.sbProfile.id) return { error: { message: 'Sem sessão real da wallet — disputa ficou apenas local.' } };
+  const payload = {
+    order_id:      order.sbId,
+    opened_by:     walletState.sbProfile.id,
+    reason:        dispute.reason,
+    description:   dispute.desc,
+    want:          dispute.want,
+    bond_itl:      dispute.bondITL,
+    open_tx_hash:  dispute.txHash,
+    status:        dispute.status,
+    arbiters:      dispute.arbiters,
+    votes:         dispute.votes,
+    resolution:    dispute.resolution,
+  };
+  const { data, error } = await sb.from('disputes').insert(payload).select().single();
+  if (error){ console.warn('[Supabase] Erro ao criar disputa:', error.message); return { error }; }
+  return { data };
+}
+
+// ADICIONADO — atualiza a disputa real (chamado a cada voto simulado e na resolução final).
+async function sbUpdateDispute(order, dispute){
+  if (!sb || !order || !order.disputeSbId) return { error: { message: 'Disputa sem UUID real — atualização ficou apenas local.' } };
+  const payload = {
+    status:     dispute.status,
+    arbiters:   dispute.arbiters,
+    votes:      dispute.votes,
+    resolution: dispute.resolution,
+  };
+  const { data, error } = await sb.from('disputes').update(payload).eq('id', order.disputeSbId).select().single();
+  if (error){ console.warn('[Supabase] Erro ao atualizar disputa:', error.message); return { error }; }
+  return { data };
+}
+
+// ADICIONADO — escuta mudanças em tempo real na disputa de um pedido (votos chegando,
+// resolução acontecendo), para que a outra parte veja sem precisar atualizar a página.
+let _sbDisputeChannel = null;
+function sbSubscribeDispute(order){
+  sbUnsubscribeDispute();
+  if (!sb || !order || !order.disputeSbId) return;
+  _sbDisputeChannel = sb.channel('dispute-'+order.disputeSbId)
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'disputes', filter: 'id=eq.'+order.disputeSbId }, payload => {
+      const incoming = payload.new;
+      if (!order.dispute) return;
+      order.dispute.status     = incoming.status;
+      order.dispute.arbiters   = incoming.arbiters;
+      order.dispute.votes      = incoming.votes;
+      order.dispute.resolution = incoming.resolution;
+      if ($('#dispute-modal')) renderDisputeView(order);
+    })
+    .subscribe();
+}
+function sbUnsubscribeDispute(){
+  if (_sbDisputeChannel){ sb.removeChannel(_sbDisputeChannel); _sbDisputeChannel = null; }
+}
+
+// Aprova um serviço (admin only)
+async function sbApproveService(id){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  const { data, error } = await sb
+    .from('services')
+    .update({ status: 'approved', approved_at: new Date().toISOString(), rejected_reason: null })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) return { error };
+  const idx = DB.services.findIndex(s => s.id === id);
+  if (idx >= 0) DB.services[idx] = sbSvcToLocal(data);
+  return { data };
+}
+
+// Rejeita um serviço (admin only)
+async function sbRejectService(id, reason=''){
+  if (!sb) return { error: { message: 'Supabase não configurado.' } };
+  const { data, error } = await sb
+    .from('services')
+    .update({ status: 'rejected', rejected_reason: reason, approved_at: null })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) return { error };
+  const idx = DB.services.findIndex(s => s.id === id);
+  if (idx >= 0) DB.services[idx] = sbSvcToLocal(data);
+  return { data };
+}
+
+// Converte objeto Supabase → formato local
+function sbSvcToLocal(s){
+  return {
+    id:            s.id,
+    title:         s.title,
+    category:      s.category,
+    freelancerId:  s.freelancer_id,
+    freelancerUuid: s.freelancer_uuid || null, // ADICIONADO — usado por sbCreateOrder para gravar pedido real
+    price:         s.price,
+    deliveryDays:  s.delivery_days,
+    country:       s.country || 'br',
+    rating:        s.rating || 5,
+    reviewsCount:  s.reviews_count || 0,
+    description:   s.description || '',
+    thumb:         s.thumb || thumbSVG(s.title, '#1a73e8'),
+    gallery:       s.gallery || [],
+    tags:          s.tags || [],
+    includes:      s.includes || [],
+    requirements:  s.requirements || [],
+    faqs:          s.faqs || [],
+    status:        s.status || 'pending',
+    createdTs:     new Date(s.created_at).getTime(),
+    approvedAt:    s.approved_at ? new Date(s.approved_at).getTime() : null,
+    rejectedReason: s.rejected_reason || null,
+    reviews:       [],
+    _sb: true,     // marca como vindo do Supabase
+  };
+}
+
+// Converte objeto local → payload para o Supabase
+function localSvcToSb(svc, me){
+  return {
+    id:              svc.id,
+    title:           svc.title,
+    category:        svc.category,
+    freelancer_id:   svc.freelancerId,
+    freelancer_uuid: walletState.sbProfile?.id || null, // ADICIONADO — liga ao profile real da wallet (auth.uid())
+    freelancer_name: me ? me.name : 'Anônimo',
+    price:           svc.price,
+    delivery_days:   svc.deliveryDays,
+    country:         svc.country || 'br',
+    rating:          svc.rating || 5,
+    reviews_count:   svc.reviewsCount || 0,
+    description:     svc.description || '',
+    thumb:           svc.thumb || null,
+    gallery:         svc.gallery || [],
+    tags:            svc.tags || [],
+    includes:        svc.includes || [],
+    requirements:    svc.requirements || [],
+    faqs:            svc.faqs || [],
+    status:          svc.status || 'pending',
+  };
+}
+
+/* ──────────────────────────────────────────────────────────
+ * REALTIME — ouve atualizações ao vivo (ex: aprovação)
+ * ────────────────────────────────────────────────────────── */
+function sbSubscribeServices(){
+  if (!sb) return;
+  sb.channel('services-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'services' }, payload => {
+      const changed = payload.new || payload.old;
+      if (!changed) return;
+      const idx = DB.services.findIndex(s => s.id === changed.id);
+      if (payload.eventType === 'DELETE'){
+        if (idx >= 0) DB.services.splice(idx, 1);
+      } else {
+        const local = sbSvcToLocal(changed);
+        if (idx >= 0) DB.services[idx] = local;
+        else DB.services.unshift(local);
+      }
+      renderView();
+      // Notifica freelancer se o status mudou para aprovado
+      if (payload.eventType === 'UPDATE' && changed.status === 'approved' && changed.freelancer_id === STATE.currentUserId){
+        addNotification({ type:'tx', title:'✅ Serviço aprovado!', body:`"${changed.title}" foi aprovado e já está visível no marketplace.`, link:'#/dashboard/freelancer' });
+        toast('Seu serviço foi aprovado! 🎉', 'success');
+      }
+      if (payload.eventType === 'UPDATE' && changed.status === 'rejected' && changed.freelancer_id === STATE.currentUserId){
+        addNotification({ type:'tx', title:'❌ Serviço rejeitado', body:`"${changed.title}": ${changed.rejected_reason || 'sem motivo informado'}.`, link:'#/dashboard/freelancer' });
+        toast('Um serviço foi rejeitado. Veja detalhes no dashboard.', 'warn');
+      }
+    })
+    .subscribe();
+}
+
+/* ──────────────────────────────────────────────────────────
+ * CHAT — Supabase (tabela real: public.messages)
+ *
+ * Schema usado:
+ *   id            UUID PRIMARY KEY DEFAULT gen_random_uuid()
+ *   order_id      UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE
+ *   sender_id     UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE
+ *   text          TEXT NOT NULL
+ *   attachment_url TEXT          ← string simples (URL ou nome do arquivo)
+ *   created_at    TIMESTAMPTZ DEFAULT NOW()
+ *
+ * RLS verifica via JOIN com orders (client_id ou freelancer_id = auth.uid())
+ * Não existe receiver_id nem status — read receipts ficam só no frontend.
+ * ────────────────────────────────────────────────────────── */
+
+let _chatRealtimeChannel = null; // Canal Realtime ativo no momento
+
+/**
+ * Envia uma mensagem para a tabela `messages` do Supabase.
+ * Requer que o pedido tenha um UUID real (order.sbId).
+ * @param {string} sbOrderId  - UUID do pedido no Supabase (order.sbId)
+ * @param {string} text       - Texto da mensagem
+ * @param {string|null} attachmentUrl - URL ou nome do arquivo (opcional)
+ * @returns {object|null} Row inserida ou null em caso de erro
+ */
+async function sbSendMessage(sbOrderId, text, attachmentUrl = null) {
+  if (!sb || !walletState.sbProfile?.id || !sbOrderId) return null;
+  const payload = {
+    order_id:       sbOrderId,
+    sender_id:      walletState.sbProfile.id,
+    text:           text || '',
+    attachment_url: attachmentUrl || null,
+  };
+  const { data, error } = await sb
+    .from('messages')
+    .insert(payload)
+    .select()
+    .single();
+  if (error) {
+    console.warn('[Supabase Chat] Erro ao enviar mensagem:', error.message);
+    return null;
+  }
+  return data;
+}
+
+/**
+ * Carrega o histórico de mensagens de um pedido da tabela `messages`.
+ * Mescla com STATE.messages local — mantém mensagens locais com dataURL de imagem.
+ * @param {object} order - Objeto de pedido (usa order.sbId como order_id)
+ */
+async function sbLoadMessages(order) {
+  if (!sb || !walletState.sbProfile?.id || !order.sbId) return;
+  const { data, error } = await sb
+    .from('messages')
+    .select('*')
+    .eq('order_id', order.sbId)
+    .order('created_at', { ascending: true });
+  if (error) {
+    console.warn('[Supabase Chat] Erro ao carregar mensagens:', error.message);
+    return;
+  }
+  if (!data || !data.length) return;
+
+  // Converte formato Supabase → formato local do STATE.messages
+  const remote = data.map(m => ({
+    id:         m.id,
+    _sbId:      m.id,
+    // sender_id é UUID do Supabase — minha própria UUID → STATE.currentUserId
+    from:       m.sender_id === walletState.sbProfile.id ? STATE.currentUserId : m.sender_id,
+    text:       m.text || '',
+    // attachment_url vira um chip no bubble (sem dataURL para preview de imagem)
+    attachments: m.attachment_url ? [{ name: m.attachment_url, size: '', type: '', dataURL: null }] : [],
+    status:     'read', // mensagens antigas já foram lidas
+    ts:         new Date(m.created_at).getTime(),
+  }));
+
+  // Mescla: preserva mensagens locais que têm dataURL (preview de imagem)
+  const existing = STATE.messages[order.id] || [];
+  const remoteIds = new Set(remote.map(r => r._sbId));
+  const localOnly = existing.filter(l =>
+    !l._sbId &&
+    l.attachments?.some(a => a.dataURL)
+  );
+  const merged = [...remote, ...localOnly].sort((a, b) => a.ts - b.ts);
+  STATE.messages[order.id] = merged;
+}
+
+/**
+ * Abre canal Realtime para a tabela `messages` filtrado pelo order_id (sbId).
+ * Mensagens novas do outro usuário chegam sem necessidade de refresh.
+ * @param {object} order    - Objeto do pedido (precisa de order.sbId)
+ * @param {boolean} ephemeral
+ */
+function sbSubscribeChat(order, ephemeral) {
+  if (!sb || !walletState.sbProfile?.id || !order.sbId) return;
+
+  // Cancela canal anterior se houver
+  if (_chatRealtimeChannel) {
+    sb.removeChannel(_chatRealtimeChannel);
+    _chatRealtimeChannel = null;
+  }
+
+  _chatRealtimeChannel = sb
+    .channel('chat-' + order.sbId)
+    .on(
+      'postgres_changes',
+      {
+        event:  'INSERT',
+        schema: 'public',
+        table:  'messages',
+        filter: `order_id=eq.${order.sbId}`,
+      },
+      (payload) => {
+        const m = payload.new;
+        if (!m) return;
+
+        // Ignora próprias mensagens (já inseridas localmente no submit)
+        if (m.sender_id === walletState.sbProfile?.id) return;
+
+        const localMsg = {
+          id:          m.id,
+          _sbId:       m.id,
+          from:        m.sender_id, // UUID Supabase do remetente
+          text:        m.text || '',
+          attachments: m.attachment_url
+            ? [{ name: m.attachment_url, size: '', type: '', dataURL: null }]
+            : [],
+          status:      'delivered',
+          ts:          new Date(m.created_at).getTime(),
+        };
+
+        STATE.messages[order.id] = STATE.messages[order.id] || [];
+        STATE.messages[order.id].push(localMsg);
+
+        if (STATE.chatOpenOrderId === order.id) {
+          // Chat aberto: re-renderiza imediatamente
+          renderChat(order, ephemeral);
+        } else {
+          // Chat fechado: badge de notificação
+          addNotification({
+            type:  'message',
+            title: 'Nova mensagem',
+            body:  m.text ? m.text.slice(0, 80) : '📎 Arquivo recebido',
+            link:  '#/dashboard/client',
+          });
+          renderHeader();
+        }
+      }
+    )
+    .subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('[Supabase Chat] Realtime conectado para pedido', order.sbId);
+      }
+    });
+}
+
+/**
+ * Cancela a assinatura Realtime do chat.
+ * Chamado em closeChat().
+ */
+function sbUnsubscribeChat() {
+  if (_chatRealtimeChannel && sb) {
+    sb.removeChannel(_chatRealtimeChannel);
+    _chatRealtimeChannel = null;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+ * AUTH MODAL — Login / Registro Supabase
+ * ────────────────────────────────────────────────────────── */
+/* ──────────────────────────────────────────────────────────
+ * ADMIN VIEW
+ * ────────────────────────────────────────────────────────── */
+async function handleAdminInlineLogin(){
+  const email = document.getElementById('admin-login-email')?.value?.trim();
+  const pwd   = document.getElementById('admin-login-pwd')?.value;
+  const errEl = document.getElementById('admin-login-err');
+  const btn   = document.getElementById('admin-login-btn');
+  if (errEl) errEl.classList.add('hidden');
+  if (!email || !pwd){
+    if (errEl){ errEl.textContent = 'Preencha email e senha.'; errEl.classList.remove('hidden'); }
+    return;
+  }
+  if (!SB_READY || !sb){
+    if (errEl){ errEl.textContent = 'Supabase não está configurado neste ambiente.'; errEl.classList.remove('hidden'); }
+    return;
+  }
+  if (btn){ btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Aguarde...'; icons(); }
+  let result;
+  try {
+    result = await sbSignIn(email, pwd);
+  } catch (e){
+    // Fallback de debug: mostra o erro exato em vez de falhar silenciosamente
+    if (errEl){ errEl.textContent = 'Erro inesperado: ' + (e?.message || e); errEl.classList.remove('hidden'); }
+    if (btn){ btn.disabled = false; btn.innerHTML = '<i data-lucide="log-in" class="w-4 h-4"></i>Fazer login'; icons(); }
+    return;
+  }
+  if (result?.error){
+    if (errEl){ errEl.textContent = result.error.message || 'Não foi possível entrar.'; errEl.classList.remove('hidden'); }
+    if (btn){ btn.disabled = false; btn.innerHTML = '<i data-lucide="log-in" class="w-4 h-4"></i>Fazer login'; icons(); }
+    return;
+  }
+  // Sucesso: sbSignIn() já chamou render() internamente.
+  toast('Login realizado com sucesso!', 'success');
+}
+
+function viewAdmin(){
+  if (!walletState.isAdmin){
+    return `
+    <div class="max-w-sm mx-auto px-5 py-16">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 rounded-2xl bg-rose-50 grid place-items-center mx-auto mb-4">
+          <i data-lucide="shield-off" class="w-8 h-8 text-rose-500"></i>
+        </div>
+        <h2 class="text-2xl font-extrabold mb-2">Acesso restrito</h2>
+        <p class="text-ink-500 text-sm">Esta área é exclusiva para administradores do Interwork.</p>
+      </div>
+
+      ${walletState.sbUser ? `
+        <div class="text-center">
+          <p class="text-xs text-ink-400 mb-4">Conectado como: <strong>${walletState.sbUser.email}</strong> (sem permissão de admin)</p>
+          <button onclick="sbSignOut()" class="px-5 py-2.5 bg-rose-500 text-white font-bold rounded-xl text-sm">Sair</button>
+        </div>
+      ` : `
+        <div class="bg-white border border-ink-100 rounded-2xl p-6 shadow-card space-y-3">
+          ${!SB_READY ? `
+          <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800">
+            <strong>⚠️ Supabase não configurado.</strong><br>
+            Adicione suas credenciais nas constantes <code class="bg-amber-100 px-1 rounded">SUPABASE_URL</code> e <code class="bg-amber-100 px-1 rounded">SUPABASE_ANON</code> no código.
+          </div>` : ''}
+          <div>
+            <label class="block text-xs font-semibold text-ink-500 mb-1">Email</label>
+            <input id="admin-login-email" type="email" placeholder="admin@interwork.xyz" autocomplete="username"
+              class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-400"
+              onkeydown="if(event.key==='Enter')handleAdminInlineLogin()"/>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-ink-500 mb-1">Senha</label>
+            <input id="admin-login-pwd" type="password" placeholder="••••••••" autocomplete="current-password"
+              class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-400"
+              onkeydown="if(event.key==='Enter')handleAdminInlineLogin()"/>
+          </div>
+          <div id="admin-login-err" class="hidden rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs text-rose-700"></div>
+          <button id="admin-login-btn" onclick="handleAdminInlineLogin()"
+            class="w-full bg-brand-500 hover:bg-brand-600 text-white font-extrabold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
+            <i data-lucide="log-in" class="w-4 h-4"></i>Fazer login
+          </button>
+        </div>
+      `}
+    </div>`;
+  }
+
+  const pending  = DB.services.filter(s => s.status === 'pending');
+  const approved = DB.services.filter(s => s.status === 'approved');
+  const rejected = DB.services.filter(s => s.status === 'rejected');
+  const allSvcs  = DB.services.filter(s => s._sb); // apenas os reais do Supabase
+
+  const tabData = [
+    { key:'pending',  label:'Aguardando',  count: pending.length,  color:'text-amber-600',  bg:'bg-amber-50 border-amber-200' },
+    { key:'approved', label:'Aprovados',   count: approved.length, color:'text-emerald-600',bg:'bg-emerald-50 border-emerald-200' },
+    { key:'rejected', label:'Rejeitados',  count: rejected.length, color:'text-rose-600',   bg:'bg-rose-50 border-rose-200' },
+    { key:'all',      label:'Todos',       count: allSvcs.length,  color:'text-ink-600',    bg:'bg-ink-100/40 border-ink-200' },
+  ];
+
+  const activeTab = STATE.adminTab || 'pending';
+  let showSvcs;
+  if      (activeTab === 'pending')  showSvcs = pending;
+  else if (activeTab === 'approved') showSvcs = approved;
+  else if (activeTab === 'rejected') showSvcs = rejected;
+  else                               showSvcs = allSvcs;
+
+  function svcRow(s){
+    const catObj = getCategory(s.category);
+    const statusChipHtml = {
+      pending:  `<span class="chip bg-amber-50 text-amber-700 border border-amber-200"><i data-lucide="clock" class="w-3 h-3"></i>Pendente</span>`,
+      approved: `<span class="chip bg-emerald-50 text-emerald-700 border border-emerald-200"><i data-lucide="check" class="w-3 h-3"></i>Aprovado</span>`,
+      rejected: `<span class="chip bg-rose-50 text-rose-700 border border-rose-200"><i data-lucide="x" class="w-3 h-3"></i>Rejeitado</span>`,
+    }[s.status] || `<span class="chip bg-ink-100 text-ink-600">${s.status}</span>`;
+
+    return `
+    <div class="bg-white border border-ink-100 rounded-2xl p-5 hover:shadow-card transition flex flex-col md:flex-row gap-4" id="admin-svc-${s.id}">
+      <!-- Thumb -->
+      <div class="shrink-0 w-20 h-16 rounded-xl overflow-hidden bg-ink-100">
+        <img src="${s.thumb}" class="w-full h-full object-cover" alt=""/>
+      </div>
+      <!-- Info -->
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start gap-2 flex-wrap mb-1">
+          ${statusChipHtml}
+          <span class="chip bg-ink-100/60 text-ink-600 text-[11px]">${catObj ? catObj.label : s.category}</span>
+        </div>
+        <div class="font-extrabold text-base truncate">${escapeHtml(s.title)}</div>
+        <div class="text-xs text-ink-500 mt-0.5">
+          Freelancer ID: <code class="bg-ink-100 px-1 rounded">${s.freelancerId}</code> ·
+          ${s.price} ITL · ${s.deliveryDays}d ·
+          Criado: ${new Date(s.createdTs).toLocaleDateString('pt-BR')}
+        </div>
+        ${s.rejectedReason ? `<div class="mt-1 text-xs text-rose-600 flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3"></i>${escapeHtml(s.rejectedReason)}</div>` : ''}
+        <p class="text-xs text-ink-500 mt-1.5 line-clamp-2">${escapeHtml(s.description||'')}</p>
+      </div>
+      <!-- Actions -->
+      <div class="flex md:flex-col gap-2 shrink-0 items-start">
+        <button onclick="go('#/service/${s.id}')"
+          class="px-3 py-1.5 rounded-xl text-xs font-bold border border-ink-200 hover:bg-ink-100/50 flex items-center gap-1">
+          <i data-lucide="eye" class="w-3 h-3"></i>Ver
+        </button>
+        ${s.status !== 'approved' ? `
+        <button onclick="adminApprove('${s.id}')"
+          class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500 hover:bg-emerald-600 text-white flex items-center gap-1">
+          <i data-lucide="check" class="w-3 h-3"></i>Aprovar
+        </button>` : ''}
+        ${s.status !== 'rejected' ? `
+        <button onclick="adminRejectPrompt('${s.id}')"
+          class="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-500 hover:bg-rose-600 text-white flex items-center gap-1">
+          <i data-lucide="x" class="w-3 h-3"></i>Rejeitar
+        </button>` : ''}
+      </div>
+    </div>`;
+  }
+
+  return `
+  <div class="max-w-5xl mx-auto px-5 py-10">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-8">
+      <div>
+        <div class="chip bg-violet-50 text-violet-700 mb-2">🛡️ Painel Admin</div>
+        <h1 class="text-3xl font-extrabold tracking-tight">Moderação de Serviços</h1>
+        <p class="text-ink-500 text-sm mt-1">Conectado como <strong class="text-ink-700">${walletState.sbUser?.email}</strong></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="sbLoadServices().then(()=>toast('Atualizado!','success'))"
+          class="px-4 py-2.5 border border-ink-200 hover:bg-ink-100/50 rounded-xl text-sm font-bold flex items-center gap-2">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>Atualizar
+        </button>
+        <button onclick="sbSignOut()"
+          class="px-4 py-2.5 bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 rounded-xl text-sm font-bold flex items-center gap-2">
+          <i data-lucide="log-out" class="w-4 h-4"></i>Sair
+        </button>
+      </div>
+    </div>
+
+    ${!SB_READY ? `
+    <div class="rounded-2xl bg-amber-50 border border-amber-200 p-6 mb-8">
+      <div class="flex items-start gap-3">
+        <i data-lucide="alert-triangle" class="w-6 h-6 text-amber-600 mt-0.5 shrink-0"></i>
+        <div>
+          <div class="font-extrabold text-amber-900 mb-1">Supabase não configurado</div>
+          <p class="text-sm text-amber-800">
+            Você está vendo dados <strong>mock (locais)</strong>. Para ativar o banco real:
+          </p>
+          <ol class="text-sm text-amber-800 mt-2 space-y-1 list-decimal list-inside">
+            <li>Crie um projeto gratuito em <a href="https://supabase.com" target="_blank" class="underline font-semibold">supabase.com</a></li>
+            <li>Execute o SQL de criação de tabelas (veja o guia abaixo)</li>
+            <li>Copie a <strong>URL</strong> e a <strong>anon key</strong> do painel Settings → API</li>
+            <li>Cole nas variáveis <code class="bg-amber-100 px-1 rounded">SUPABASE_URL</code> e <code class="bg-amber-100 px-1 rounded">SUPABASE_ANON</code> no código</li>
+          </ol>
+        </div>
+      </div>
+    </div>` : `
+    <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 mb-8 flex items-center gap-3">
+      <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+      <div class="text-sm text-emerald-800"><strong>Supabase conectado.</strong> Dados sincronizados em tempo real.</div>
+    </div>`}
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      ${tabData.map(t=>`
+      <button onclick="STATE.adminTab='${t.key}';render()"
+        class="text-left p-5 rounded-2xl border ${activeTab===t.key ? t.bg+' border-current' : 'bg-white border-ink-100 hover:bg-ink-100/30'} transition">
+        <div class="font-extrabold text-3xl ${activeTab===t.key?t.color:'text-ink-900'}">${t.count}</div>
+        <div class="text-xs font-semibold text-ink-500 mt-1">${t.label}</div>
+      </button>`).join('')}
+    </div>
+
+    <!-- Services list -->
+    <div class="space-y-4">
+      ${showSvcs.length === 0
+        ? `<div class="text-center py-16 text-ink-400">
+             <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-3 opacity-40"></i>
+             <div class="font-semibold">Nenhum serviço nesta categoria.</div>
+           </div>`
+        : showSvcs.map(svcRow).join('')}
+    </div>
+
+    <!-- SQL Setup Guide -->
+    <div class="mt-14 rounded-2xl bg-ink-900 text-white p-6">
+      <div class="flex items-center gap-3 mb-4">
+        <i data-lucide="database" class="w-5 h-5 text-cyan-400"></i>
+        <div class="font-extrabold text-lg">SQL para criar as tabelas no Supabase</div>
+      </div>
+      <p class="text-sm text-white/70 mb-4">Execute este SQL no painel Supabase → SQL Editor → New query:</p>
+      <pre class="text-xs text-emerald-300 overflow-x-auto leading-relaxed bg-black/30 rounded-xl p-4 select-all">${escapeHtml(`-- 1. Tabela de serviços
+create table if not exists public.services (
+  id              text primary key,
+  title           text not null,
+  category        text not null,
+  freelancer_id   text not null,
+  freelancer_name text,
+  price           numeric not null default 0,
+  delivery_days   int not null default 7,
+  country         text default 'br',
+  rating          numeric default 5,
+  reviews_count   int default 0,
+  description     text,
+  thumb           text,
+  gallery         jsonb default '[]',
+  tags            jsonb default '[]',
+  includes        jsonb default '[]',
+  requirements    jsonb default '[]',
+  faqs            jsonb default '[]',
+  status          text default 'pending' check (status in ('pending','approved','rejected')),
+  rejected_reason text,
+  approved_at     timestamptz,
+  created_at      timestamptz default now()
+);
+
+-- 2. Habilitar Row Level Security
+alter table public.services enable row level security;
+
+-- 3. Qualquer pessoa pode LER serviços aprovados
+create policy "Public can read approved services"
+  on public.services for select
+  using (status = 'approved');
+
+-- 4. Usuários autenticados podem inserir e ler seus próprios serviços
+create policy "Auth users can insert"
+  on public.services for insert
+  to authenticated
+  with check (true);
+
+create policy "Auth users can read own services"
+  on public.services for select
+  to authenticated
+  using (freelancer_id = auth.uid()::text OR status = 'approved');
+
+-- 5. Apenas admin pode update (approve/reject)
+-- Substitua pelos emails dos seus admins:
+create policy "Admin can update"
+  on public.services for update
+  to authenticated
+  using (auth.email() in ('interworkoficial@gmail.com'))
+  with check (true);
+
+-- 6. Habilitar Realtime
+alter publication supabase_realtime add table public.services;`)}</pre>
+      <div class="mt-4 flex gap-3">
+        <a href="https://supabase.com/dashboard" target="_blank"
+          class="px-5 py-2.5 bg-white text-ink-900 font-bold rounded-xl text-sm hover:bg-white/90 transition flex items-center gap-2">
+          <i data-lucide="external-link" class="w-4 h-4"></i>Abrir Supabase
+        </a>
+        <button onclick="navigator.clipboard.writeText(document.querySelector('#modal-root pre, .admin-sql pre, pre')?.textContent||'').catch(()=>{});toast('SQL copiado!','success')"
+          class="px-5 py-2.5 bg-white/10 text-white font-bold rounded-xl text-sm hover:bg-white/20 transition flex items-center gap-2">
+          <i data-lucide="copy" class="w-4 h-4"></i>Copiar SQL
+        </button>
+      </div>
+    </div>
+
+  </div>`;
+}
+
+/* Admin action helpers */
+async function adminApprove(id){
+  const svc = getService(id);
+  if (!svc) return;
+  // Feedback visual imediato
+  const el = document.getElementById('admin-svc-'+id);
+  if (el) el.style.opacity = '0.5';
+
+  if (SB_READY && sb){
+    const { error } = await sbApproveService(id);
+    if (error){ toast('Erro: '+error.message, 'error'); if(el) el.style.opacity='1'; return; }
+  } else {
+    // Modo demo: só atualiza localmente
+    svc.status = 'approved';
+    svc.approvedAt = Date.now();
+  }
+  toast(`✅ "${svc.title}" aprovado!`, 'success');
+  addNotification({ type:'tx', title:'Serviço aprovado', body:`"${svc.title}" está agora público no marketplace.`, link:'#/home' });
+  if(typeof render==="function")render();
+}
+
+function adminRejectPrompt(id){
+  const svc = getService(id);
+  if (!svc) return;
+  $('#modal-root').innerHTML = `
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
+      <div class="px-5 pt-4 pb-3 border-b border-ink-100 flex items-center gap-2">
+        <div class="font-extrabold text-sm flex items-center gap-2 flex-1">❌ Rejeitar serviço</div>
+        <button onclick="closeModal()" aria-label="Fechar" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4 text-ink-500"></i></button>
+      </div>
+      <div class="px-6 pb-6 pt-4 space-y-4">
+        <p class="text-sm text-ink-600">Informe o motivo da rejeição para <strong>"${escapeHtml(svc.title)}"</strong>. O freelancer será notificado.</p>
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1">Motivo (obrigatório)</label>
+          <textarea id="reject-reason" rows="3" placeholder="Ex: Descrição muito vaga, preço incoerente com o serviço..."
+            class="w-full border border-ink-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-rose-400 resize-none"></textarea>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeModal()" class="flex-1 border border-ink-200 hover:bg-ink-100/50 font-bold py-2.5 rounded-xl text-sm">Cancelar</button>
+          <button onclick="adminRejectConfirm('${id}')"
+            class="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+            <i data-lucide="x" class="w-4 h-4"></i>Confirmar rejeição
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  icons();
+  setTimeout(()=>document.getElementById('reject-reason')?.focus(), 100);
+}
+
+async function adminRejectConfirm(id){
+  const reason = document.getElementById('reject-reason')?.value?.trim();
+  if (!reason){ toast('Informe o motivo da rejeição.', 'warn'); return; }
+  const svc = getService(id);
+  if (!svc) return;
+  closeModal();
+
+  if (SB_READY && sb){
+    const { error } = await sbRejectService(id, reason);
+    if (error){ toast('Erro: '+error.message, 'error'); return; }
+  } else {
+    svc.status = 'rejected';
+    svc.rejectedReason = reason;
+  }
+  toast(`Serviço rejeitado.`, 'warn');
+  addNotification({ type:'tx', title:'Serviço rejeitado', body:`"${svc.title}" foi rejeitado. Motivo: ${reason}`, link:'#/home' });
+  if(typeof render==="function")render();
+}
+
+/* ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  initMock();
+  DB.services.forEach(s => s._mock = true); // marca ANTES do Supabase sobrescrever
+  const restored = restorePersistedData();
+  startPersistence();
+  bindRouter();
+  if (restored) setTimeout(()=>toast('Dados restaurados do localStorage.', 'success'), 250);
+
+  // ── Auto-approve engine: run once on boot, then every 60 s ──
+  runAutoApprove();
+  setInterval(runAutoApprove, 60_000);
+
+
+  // Re-render dashboard countdown banners every 60 s so timers stay accurate
+  setInterval(()=>{
+    const hasDelivered = STATE.orders.some(o => o.status === 'delivered');
+    if (hasDelivered && ['dashboard'].includes(STATE.route)) render();
+  }, 60_000);
+  // Filter bar pinning disabled by request — bar is now static and scrolls with the page
+  function bindFilterPin(){
+    const bar = document.querySelector('.filters-sticky');
+    const spacer = document.querySelector('.filters-sticky-spacer');
+    if (bar) bar.classList.remove('is-pinned');
+    if (spacer){ spacer.classList.remove('is-active'); spacer.style.height = '0px'; }
+  }
+  // Re-bind after every view render (innerHTML replacement loses listeners on children but window listener persists)
+  const origRender = window.renderView;
+  if (typeof origRender === 'function'){
+    window.renderView = function(){ origRender.apply(this, arguments); setTimeout(bindFilterPin, 0); };
+  }
+  setTimeout(bindFilterPin, 100);
+
+  // ── Supabase: inicializa auth
+  if (SB_READY) {
+    sbInitAuth().then(() => {
+      sbLoadServices();
+      sbSubscribeServices();
+    });
+  } else {
+    // Marca serviços mock para diferenciá-los dos reais
+    DB.services.forEach(s => s._mock = true);
+  }
+});
+
+/* ──────────────────────────────────────────────────────────
+ * PROFILES — Supabase (PRIORIDADE 1)
+ * Tabela: profiles
+ * Declaradas no escopo global para que _handleReownConnected
+ * e qualquer outro código as enxergue antes do DOMContentLoaded.
+ * ────────────────────────────────────────────────────────── */
+
+// 1. CARREGAR PERFIL DO USUÁRIO LOGADO
+async function sbLoadProfile(userId) {
+  if (!sb || !userId) return null;
+  try {
+    const { data: profile, error } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+    if (error) {
+      console.warn('[Supabase] Erro ao carregar perfil:', error.message);
+      return null;
+    }
+    console.log('✅ Perfil carregado:', profile.handle);
+    return profile;
+  } catch (err) {
+    console.error('[Supabase] Erro ao carregar perfil:', err);
+    return null;
+  }
+}
+
+// 2. BUSCAR PERFIL POR HANDLE
+async function sbGetProfileByHandle(handle) {
+  if (!sb || !handle) return null;
+  try {
+    const { data: profile, error } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('handle', handle)
+      .single();
+    if (error) {
+      console.warn('[Supabase] Perfil não encontrado:', handle);
+      return null;
+    }
+    return profile;
+  } catch (err) {
+    console.error('[Supabase] Erro ao buscar perfil:', err);
+    return null;
+  }
+}
+
+// 3. ATUALIZAR PERFIL DO USUÁRIO LOGADO
+async function sbUpdateProfile(updates) {
+  if (!sb || !walletState.sbUser?.id) {
+    throw new Error('Usuário não autenticado');
+  }
+  try {
+    const { data: updated, error } = await sb
+      .from('profiles')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', walletState.sbUser.id)
+      .select()
+      .single();
+    if (error) throw error;
+    walletState.sbProfile = updated;
+    console.log('✅ Perfil atualizado');
+    return updated;
+  } catch (err) {
+    console.error('[Supabase] Erro ao atualizar perfil:', err);
+    throw err;
+  }
+}
+
+// 4. REGISTRAR NOVO USUÁRIO
+async function sbRegisterUser(email, password, name, role = 'freelancer') {
+  if (!sb) throw new Error('Supabase não configurado');
+  try {
+    const { data: { user }, error: signUpError } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name,
+          role,
+          handle: email.split('@')[0]
+        }
+      }
+    });
+    if (signUpError) throw signUpError;
+    console.log('✅ Usuário registrado:', user.id);
+    return user;
+  } catch (err) {
+    console.error('[Supabase] Erro ao registrar:', err);
+    throw err;
+  }
+}
+
+// 5. LOGIN
+async function sbLoginUser(email, password) {
+  if (!sb) throw new Error('Supabase não configurado');
+  try {
+    const { data: { user }, error } = await sb.auth.signInWithPassword({
+      email,
+      password
+    });
+    if (error) throw error;
+    console.log('✅ Login bem-sucedido:', user.email);
+    return user;
+  } catch (err) {
+    console.error('[Supabase] Erro ao fazer login:', err);
+    throw err;
+  }
+}
+
+// 6. LOGOUT
+async function sbLogoutUser() {
+  if (!sb) return;
+  try {
+    const { error } = await sb.auth.signOut();
+    if (error) throw error;
+    walletState.sbProfile = null;
+    console.log('✅ Logout bem-sucedido');
+  } catch (err) {
+    console.error('[Supabase] Erro ao fazer logout:', err);
+  }
+}
+
+// 7. LISTAR TODOS OS FREELANCERS VERIFICADOS
+async function sbListFreelancers(filters = {}) {
+  if (!sb) return [];
+  try {
+    let query = sb
+      .from('profiles')
+      .select('*')
+      .eq('verified', true)
+      .eq('role', 'freelancer');
+    if (filters.minRating) {
+      query = query.gte('rating', filters.minRating);
+    }
+    const { data: freelancers, error } = await query
+      .order('rating', { ascending: false });
+    if (error) throw error;
+    return freelancers || [];
+  } catch (err) {
+    console.error('[Supabase] Erro ao listar freelancers:', err);
+    return [];
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// WEB3 — sbLoadProfileByWallet, sbLoadOrders, sbSyncITLBalance
+// ════════════════════════════════════════════════════════════
+
+async function sbLoadProfileByWallet(walletAddress) {
+  if (!sb || !walletAddress) return null;
+  try {
+    const { data: profile, error } = await sb.from('profiles').select('*').eq('wallet_address', walletAddress.toLowerCase()).single();
+    if (error) return null;
+    walletState.sbProfile = profile;
+    STATE.currentUserId = profile.id;
+    return profile;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function sbLoadOrders() {
+  if (!sb || !STATE.currentUserId) return [];
+  try {
+    const { data: orders, error } = await sb.from('orders').select('*').or(`client_id.eq.${STATE.currentUserId},freelancer_id.eq.${STATE.currentUserId}`);
+    if (error) throw error;
+    return orders || [];
+  } catch (err) {
+    return [];
+  }
+}
+
+async function sbSyncITLBalance() {
+  if (!sb || !STATE.currentUserId) return 0;
+  try {
+    const { data: profile, error } = await sb.from('profiles').select('balance_itl').eq('id', STATE.currentUserId).single();
+    if (error) throw error;
+    STATE.itlBalance = profile.balance_itl || 0;
+    return STATE.itlBalance;
+  } catch (err) {
+    return 0;
+  }
+}
 
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
