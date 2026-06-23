@@ -145,11 +145,16 @@
     --primary-alt-600: #7a6bf0;
     --primary-alt-soft: #efeaff;
     --primary-alt-text: #5b4ee0;
+    --warning-alt: #f59e0b;
   }
+  .btn-primary-alt { background: var(--primary-alt); color: #fff; transition: background .15s; }
+  .btn-primary-alt:hover { background: var(--primary-alt-600); }
+  .btn-outline-alt { border: 1px solid #e2e8f0; color: #0f172a; background: #fff; transition: all .15s; }
+  .btn-outline-alt:hover { border-color: #c7c0ff; color: var(--primary-alt-text); }
   .tab-alt { border-bottom: 2px solid transparent; color: #64748b; transition: all .15s; }
   .tab-alt:hover { color: #0f172a; }
   .tab-alt-active { color: #0f172a; border-color: var(--primary-alt); font-weight: 700; }
-  .pkg-card-alt { transition: all .2s ease; border: 1px solid #e5e7eb; background: #fff; }
+  .pkg-card-alt { transition: all .2s ease; border: 1px solid #e5e7eb; background: #fff; border-radius: 0.75rem; }
   .pkg-card-alt.active { border-color: var(--primary-alt); box-shadow: 0 8px 24px -10px rgba(139,124,255,.35); }
   .thumb-alt { border: 2px solid transparent; cursor: pointer; transition: all .15s; border-radius: 8px; }
   .thumb-alt.active { border-color: var(--primary-alt); }
@@ -158,7 +163,9 @@
   .accordion-alt summary::-webkit-details-marker { display: none; }
   .accordion-alt summary .ic { transition: transform .2s; }
   .accordion-alt[open] summary .ic { transform: rotate(180deg); }
-  .star-row-alt i { color: #f59e0b; }
+  .star-row-alt i { color: var(--warning-alt); }
+  .chip-alt { border: 1px solid #e5e7eb; background: #fff; color: #475569; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .chip-alt:hover { border-color: #c7c0ff; color: var(--primary-alt-text); background: #fafaff; }
 
   /* ============ GIG CARD (Fiverr-style, bulletproof) ============ */
   .gig-card{display:flex;flex-direction:column;min-width:0;width:100%}
@@ -3777,12 +3784,12 @@ function viewService(id){
         </h1>
         <div class="mt-4 flex flex-wrap items-center gap-3 sm:gap-4 text-sm">
           <div class="flex items-center gap-2">
-            <a href="#/u/${u.handle}" class="w-9 h-9 rounded-full grid place-items-center font-bold text-slate-600 hover:ring-4 hover:ring-[#efeaff] transition overflow-hidden">
-               <img src="${u.avatar}" class="w-full h-full object-cover"/>
+            <a href="#/u/${u.handle}" class="w-9 h-9 rounded-full grid place-items-center font-bold text-slate-600 hover:ring-4 hover:ring-[#efeaff] transition overflow-hidden" style="background:${u.avatar ? 'transparent' : '#fecaca'}">
+               ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover"/>` : u.name[0]}
             </a>
             <div class="flex flex-col">
               <a href="#/u/${u.handle}" class="font-bold text-slate-900 hover:text-[#5b4ee0]">${escapeHtml(u.name)}</a>
-              <span class="text-xs text-slate-500">${u.verified ? 'Verified' : 'Member'} · Since ${new Date(u.joinedTs).getFullYear()}</span>
+              <span class="text-xs text-slate-500">${u.verified ? 'Top Rated' : 'Member'} · Member since ${new Date(u.joinedTs).getFullYear()}</span>
             </div>
           </div>
           <span class="hidden sm:inline text-slate-300">|</span>
@@ -3813,7 +3820,7 @@ function viewService(id){
         </div>
         <div class="mt-3 grid grid-cols-5 gap-2 sm:gap-3">
           ${[s.thumb, ...(s.gallery || [])].filter(Boolean).map((src, i) => `
-            <img class="thumb-alt ${i === 0 ? 'active' : ''} aspect-[4/3] object-cover" onclick="setMainAlt(this)" src="${src}">
+            <img class="thumb-alt ${i === 0 ? 'active' : ''} rounded-lg aspect-[4/3] object-cover" onclick="setMainAlt(this)" src="${src}">
           `).join('')}
         </div>
       </div>
@@ -3846,23 +3853,26 @@ function viewService(id){
         <h2 class="text-xl font-extrabold text-slate-900">About the seller</h2>
         <div class="mt-4 flex flex-col sm:flex-row gap-5">
           <div class="flex items-center gap-4 sm:flex-col sm:items-center">
-            <a href="#/u/${u.handle}" class="w-20 h-20 rounded-full grid place-items-center overflow-hidden hover:ring-4 hover:ring-[#efeaff] transition">
-              <img src="${u.avatar}" class="w-full h-full object-cover"/>
+            <a href="#/u/${u.handle}" class="w-20 h-20 rounded-full grid place-items-center text-2xl font-extrabold text-slate-700 hover:ring-4 hover:ring-[#efeaff] transition overflow-hidden" style="background:${u.avatar ? 'transparent' : '#fecaca'}">
+               ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover"/>` : u.name[0]}
             </a>
             <div class="sm:text-center">
               <a href="#/u/${u.handle}" class="font-bold text-slate-900 hover:text-[#5b4ee0]">${escapeHtml(u.name)}</a>
-              <div class="text-xs text-slate-500">Freelancer</div>
-              <a href="#/u/${u.handle}" class="mt-2 inline-block text-xs btn-outline px-3 py-1.5 rounded-lg">View profile</a>
+              <div class="text-xs text-slate-500">${u.bio ? escapeHtml(u.bio.split('.')[0]) : 'Senior Freelancer'}</div>
+              <a href="#/u/${u.handle}" class="mt-2 inline-block text-xs btn-outline-alt px-3 py-1.5 rounded-lg">View profile</a>
             </div>
           </div>
           <div class="flex-1">
             <div class="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
               <div><span class="text-slate-500">From</span><div class="font-semibold text-slate-900">${co.flag} ${co.name}</div></div>
-              <div><span class="text-slate-500">Member since</span><div class="font-semibold text-slate-900">${new Date(u.joinedTs).getFullYear()}</div></div>
+              <div><span class="text-slate-500">Member since</span><div class="font-semibold text-slate-900">${new Date(u.joinedTs).toLocaleString('en-US', { month: 'short', year: 'numeric' })}</div></div>
               <div><span class="text-slate-500">Avg. response</span><div class="font-semibold text-slate-900">~1 hour</div></div>
-              <div><span class="text-slate-500">Orders completed</span><div class="font-semibold text-slate-900">${u.jobs}</div></div>
+              <div><span class="text-slate-500">Last delivery</span><div class="font-semibold text-slate-900">2 days ago</div></div>
             </div>
-            <p class="mt-4 text-sm text-slate-600 leading-relaxed line-clamp-3">${escapeHtml(u.bio || '')}</p>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">${escapeHtml(u.bio || '')}</p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              ${(u.skills || ['React', 'Tailwind', 'TypeScript']).map(skill => `<span class="chip-alt rounded-full text-xs px-3 py-1">${escapeHtml(skill)}</span>`).join('')}
+            </div>
           </div>
         </div>
       </section>
@@ -3885,7 +3895,7 @@ function viewService(id){
               const pct = (count / distTotal * 100).toFixed(0);
               return `
               <div class="flex items-center gap-2 text-xs">
-                <span class="w-12 text-slate-600">${star} stars</span>
+                <span class="w-12 text-slate-600">${star} star${star > 1 ? 's' : ''}</span>
                 <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div class="h-full bg-amber-400" style="width:${pct}%"></div>
                 </div>
@@ -3907,8 +3917,8 @@ function viewService(id){
             <article class="rounded-lg border border-slate-200 p-4">
               <header class="flex items-center justify-between flex-wrap gap-2">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-full bg-slate-100 grid place-items-center font-bold text-slate-700 overflow-hidden">
-                    <img src="${getUserSafe(r.userId).avatar}" class="w-full h-full object-cover"/>
+                  <div class="w-10 h-10 rounded-full bg-slate-100 grid place-items-center font-bold text-slate-700 overflow-hidden" style="background:${getUserSafe(r.userId).avatar ? 'transparent' : '#e2e8f0'}">
+                    ${getUserSafe(r.userId).avatar ? `<img src="${getUserSafe(r.userId).avatar}" class="w-full h-full object-cover"/>` : getUserSafe(r.userId).name[0]}
                   </div>
                   <div>
                     <div class="font-bold text-slate-900 text-sm">${escapeHtml(getUserSafe(r.userId).name)}</div>
@@ -3924,6 +3934,7 @@ function viewService(id){
             </article>
           `).join('')}
         </div>
+        <button class="mt-6 btn-outline-alt rounded-full px-5 py-2 text-sm font-semibold">Show more reviews</button>
       </section>
 
       <!-- FAQ -->
@@ -3948,7 +3959,7 @@ function viewService(id){
     <!-- RIGHT — Pricing card -->
     <aside class="lg:col-span-1">
       <div class="lg:sticky lg:top-20 space-y-4">
-        <div class="pkg-card-alt active rounded-xl bg-white p-5 border border-slate-200 shadow-sm">
+        <div class="pkg-card-alt active bg-white p-5">
           <div class="flex items-center justify-between pb-4 border-b border-slate-200">
             <span class="text-xs font-bold tracking-wide text-[#5b4ee0] bg-[#efeaff] px-2.5 py-1 rounded-full">STANDARD</span>
             <div class="text-right">
@@ -3965,14 +3976,14 @@ function viewService(id){
               <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i><span>${escapeHtml(inc)}</span></li>
             `).join('')}
           </ul>
-          <div class="mt-5 grid grid-cols-2 gap-2 text-xs">
+          <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
             <div class="flex items-center gap-2 text-slate-600"><i class="ri-time-line"></i><span>${s.deliveryDays}-day delivery</span></div>
             <div class="flex items-center gap-2 text-slate-600"><i class="ri-refresh-line"></i><span>Unlimited revisions</span></div>
           </div>
-          <button onclick="openHireModal('${s.id}')" class="mt-5 w-full bg-[#8b7cff] hover:bg-[#7a6bf0] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition">
+          <button onclick="openHireModal('${s.id}')" class="mt-5 w-full btn-primary-alt py-3 rounded-lg font-bold flex items-center justify-center gap-2 shadow-sm">
             Continue <i class="ri-arrow-right-line"></i>
           </button>
-          <button onclick="openChatPrep('${s.id}')" class="mt-2 w-full border border-slate-200 hover:bg-slate-50 py-3 rounded-lg font-bold text-slate-900 transition">Contact me</button>
+          <button onclick="openChatPrep('${s.id}')" class="mt-2 w-full btn-outline-alt py-3 rounded-lg font-bold text-slate-900">Contact me</button>
         </div>
 
         <!-- Trust card -->
