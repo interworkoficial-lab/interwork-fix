@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
-<!-- Reown AppKit — WalletConnect real com 530+ carteiras (bundle local) -->
 <script src="./reown-bundle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -82,6 +81,8 @@
   html,body{font-family:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
   .btn-primary{background:var(--primary);color:#fff;transition:background .15s}
   .btn-primary:hover{background:var(--primary-600)}
+  .btn-outline{border:1px solid #e2e8f0;color:#0f172a;background:#fff;transition:all .15s}
+  .btn-outline:hover{border-color:#c7c0ff;color:var(--primary-text)}
   .chip{border:1px solid var(--line);background:#fff;color:#475569;transition:all .15s}
   .chip:hover{border-color:#c7c0ff;color:var(--primary-text);background:#fafaff}
   .pill{border:1px solid var(--line);color:#334155;background:#fff;transition:all .15s}
@@ -101,21 +102,50 @@
   .heart-btn.active i::before{content:"\ee0e"}
   .sort-menu{display:none}
   .sort-menu.open{display:block}
+  /* Service page */
+  .tab{border-bottom:2px solid transparent;color:#64748b;transition:all .15s}
+  .tab:hover{color:#0f172a}
+  .tab-active{color:#0f172a;border-color:#8b7cff;font-weight:700}
+  .pkg-card{transition:all .2s ease;border:1px solid #e5e7eb}
+  .pkg-card.active{border-color:#8b7cff;box-shadow:0 8px 24px -10px rgba(139,124,255,.35)}
+  .thumb{border:2px solid transparent;cursor:pointer;transition:all .15s}
+  .thumb.active{border-color:#8b7cff}
+  .thumb:hover{opacity:.85}
+  .star-row i{color:#f59e0b}
+  .accordion summary{cursor:pointer;list-style:none}
+  .accordion summary::-webkit-details-marker{display:none}
+  .accordion summary .ic{transition:transform .2s}
+  .accordion[open] summary .ic{transform:rotate(180deg)}
+  /* Profile page */
+  .cover{background:linear-gradient(120deg,#efeaff 0%,#dcd5ff 40%,#c8bcff 100%)}
+  .card-gig{transition:transform .2s, box-shadow .2s, border-color .2s;border:1px solid #e5e7eb}
+  .card-gig:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(91,78,224,.18);border-color:#c7c0ff}
+  .card-gig .gig-img{transition:transform .4s}
+  .card-gig:hover .gig-img{transform:scale(1.06)}
+  .lvl-bar{height:6px;background:#f1f5f9;border-radius:9999px;overflow:hidden}
+  .lvl-fill{height:100%;background:#8b7cff;border-radius:9999px}
+  .badge-verified{background:#dcfce7;color:#15803d}
+  .badge-top{background:#fef3c7;color:#b45309}
+  /* Page transitions */
+  .page{display:none}
+  .page.active{display:block}
 </style>
 </head>
 <body class="min-h-screen">
 
-<!-- HEADER -->
+<!-- ══════════════════════════════════════════════════════════════
+     HEADER (compartilhado)
+══════════════════════════════════════════════════════════════ -->
 <header class="border-b border-slate-100 sticky top-0 bg-white/90 backdrop-blur z-40">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-    <a href="#" class="flex items-center gap-2 shrink-0">
+    <a href="#" onclick="navigate('home');return false;" class="flex items-center gap-2 shrink-0">
       <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white">
         <i class="ri-briefcase-4-fill text-base"></i>
       </span>
       <span class="font-extrabold text-slate-900 tracking-tight">InterWork</span>
     </a>
     <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
-      <a href="#" class="hover:text-slate-900">Find Work</a>
+      <a href="#" onclick="navigate('home');return false;" class="hover:text-slate-900">Find Work</a>
       <a href="#" class="hover:text-slate-900">Hire Talent</a>
       <a href="#" class="hover:text-slate-900">How It Works</a>
       <a href="#" class="hover:text-slate-900">Community</a>
@@ -125,7 +155,7 @@
         <span class="w-4 h-4 rounded-full bg-slate-300 inline-block"></span> EN
       </button>
       <a href="#" class="hidden sm:inline text-slate-700 hover:text-slate-900 font-medium">Log In</a>
-      <button onclick="openConnectWallet()" class="btn-primary px-3 sm:px-4 py-2 rounded-lg font-semibold whitespace-nowrap text-xs sm:text-sm"><i class="ri-wallet-line"></i> Connect Wallet</button>
+      <button id="walletBtn" onclick="openConnectWallet()" class="btn-primary px-3 sm:px-4 py-2 rounded-lg font-semibold whitespace-nowrap text-xs sm:text-sm"><i class="ri-wallet-line"></i> Connect Wallet</button>
       <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-700 text-xl" aria-label="Menu">
         <i class="ri-menu-line"></i>
       </button>
@@ -134,7 +164,7 @@
   <!-- Mobile menu -->
   <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-100 bg-white">
     <nav class="px-4 py-3 flex flex-col gap-1 text-sm font-medium text-slate-700">
-      <a href="#" class="py-2 hover:text-slate-900">Find Work</a>
+      <a href="#" onclick="navigate('home');toggleMobileMenu();return false;" class="py-2 hover:text-slate-900">Find Work</a>
       <a href="#" class="py-2 hover:text-slate-900">Hire Talent</a>
       <a href="#" class="py-2 hover:text-slate-900">How It Works</a>
       <a href="#" class="py-2 hover:text-slate-900">Community</a>
@@ -146,10 +176,15 @@
   </div>
 </header>
 
+<!-- ══════════════════════════════════════════════════════════════
+     PÁGINA: HOME
+══════════════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
 <!-- HERO + SEARCH -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-6 text-center">
   <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">Find the perfect freelance talent</h1>
-  <p class="mt-3 text-sm sm:text-base text-slate-500">Browse 20+ verified services from top Web3 professionals</p>
+  <p class="mt-3 text-sm sm:text-base text-slate-500">Browse verified services from top Web3 professionals</p>
 
   <form id="searchForm" class="mt-6 sm:mt-7 mx-auto max-w-2xl" onsubmit="event.preventDefault();applyFilters();">
     <div class="flex items-center gap-2 bg-white rounded-xl border border-slate-200 shadow-sm pl-3 pr-2 py-2 focus-within:border-[#a99cff]">
@@ -178,7 +213,7 @@
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
     <div id="catBar" class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-2 -mx-4 px-4 sm:mx-0 sm:px-0"></div>
     <div class="flex items-center justify-between sm:justify-end gap-4 text-sm text-slate-500 shrink-0 relative">
-      <span id="resultCount">20 results</span>
+      <span id="resultCount">10 results</span>
       <button id="sortBtn" onclick="toggleSort(event)" class="flex items-center gap-1 hover:text-slate-700 font-medium">
         <i class="ri-arrow-up-down-line"></i>
         <span id="sortLabel">Top Rated</span>
@@ -210,14 +245,269 @@
   </div>
 </main>
 
-<!-- FOOTER -->
+<!-- FOOTER HOME -->
+<footer class="bg-white text-slate-600 mt-12 border-t border-slate-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+    <div class="flex flex-col items-center text-center">
+      <div class="flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white"><i class="ri-briefcase-4-fill"></i></span>
+        <span class="font-extrabold text-slate-900">InterWork</span>
+      </div>
+      <p class="mt-4 text-sm text-slate-500 leading-relaxed max-w-sm">The Web3 freelance marketplace. Hire verified talent, pay in ITL, zero middlemen.</p>
+      <div class="mt-5 flex gap-2">
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-twitter-x-fill"></i></a>
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-discord-fill"></i></a>
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-telegram-fill"></i></a>
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-github-fill"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+      <span>© 2026 InterWork. All rights reserved.</span>
+      <span>Powered by Interlink · ITL Token</span>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /page-home -->
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PÁGINA: SERVICE
+══════════════════════════════════════════════════════════════ -->
+<div id="page-service" class="page">
+
+<!-- BREADCRUMB -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 pt-5">
+  <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500">
+    <a href="#" onclick="navigate('home');return false;" class="hover:text-slate-900">Home</a>
+    <i class="ri-arrow-right-s-line"></i>
+    <a href="#" onclick="navigate('home');return false;" class="hover:text-slate-900">Web Development</a>
+    <i class="ri-arrow-right-s-line"></i>
+    <span class="text-slate-700 truncate">Modern responsive website with React &amp; Tailwind</span>
+  </nav>
+</div>
+
+<!-- MAIN SERVICE -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+  <!-- LEFT (2 cols) -->
+  <div class="lg:col-span-2 space-y-8">
+
+    <!-- Title block -->
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-snug">
+        I will build a modern responsive website with React &amp; Tailwind
+      </h1>
+      <div class="mt-4 flex flex-wrap items-center gap-3 sm:gap-4 text-sm">
+        <div class="flex items-center gap-2">
+          <a href="#" onclick="navigate('profile');return false;" class="w-9 h-9 rounded-full grid place-items-center font-bold text-slate-600 hover:ring-4 hover:ring-[#efeaff] transition" style="background:#fecaca">A</a>
+          <div class="flex flex-col">
+            <a href="#" onclick="navigate('profile');return false;" class="font-bold text-slate-900 hover:text-[#5b4ee0]">Andre Martins</a>
+            <span class="text-xs text-slate-500">Top Rated · Member since 2024</span>
+          </div>
+        </div>
+        <span class="hidden sm:inline text-slate-300">|</span>
+        <div class="flex items-center gap-1 star-row">
+          <i class="ri-star-fill"></i>
+          <span class="font-bold text-slate-900">4.9</span>
+          <span class="text-slate-500">(342 reviews)</span>
+        </div>
+        <span class="hidden sm:inline text-slate-300">|</span>
+        <div class="flex items-center gap-1 text-slate-500">
+          <i class="ri-shopping-bag-3-line"></i>
+          <span>1.2k orders in queue</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gallery -->
+    <div>
+      <div class="aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
+        <img id="mainImg" src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1400&q=85" class="w-full h-full object-cover" />
+      </div>
+      <div class="mt-3 grid grid-cols-5 gap-2 sm:gap-3">
+        <img class="thumb active rounded-lg aspect-[4/3] object-cover" onclick="setMain(this)" src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&q=80">
+        <img class="thumb rounded-lg aspect-[4/3] object-cover" onclick="setMain(this)" src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&q=80">
+        <img class="thumb rounded-lg aspect-[4/3] object-cover" onclick="setMain(this)" src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&q=80">
+        <img class="thumb rounded-lg aspect-[4/3] object-cover" onclick="setMain(this)" src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80">
+        <img class="thumb rounded-lg aspect-[4/3] object-cover" onclick="setMain(this)" src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80">
+      </div>
+    </div>
+
+    <!-- About this gig -->
+    <section>
+      <h2 class="text-xl font-extrabold text-slate-900">About this gig</h2>
+      <div class="mt-3 text-slate-600 leading-relaxed space-y-3 text-sm sm:text-base">
+        <p>Looking for a fast, modern and pixel-perfect website? I build production-grade React applications styled with Tailwind CSS. Whether you need a landing page, a SaaS dashboard or a Web3 dApp interface, I deliver clean code, smooth animations and full responsiveness across every device.</p>
+        <p>I have shipped 340+ projects for startups, agencies and Web3 protocols. You get clear daily updates, a dedicated Figma-to-code workflow and 14 days of post-launch support on every package.</p>
+      </div>
+
+      <div class="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Delivery</div><div class="font-bold text-slate-900 text-sm mt-1">3 days</div></div>
+        <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Revisions</div><div class="font-bold text-slate-900 text-sm mt-1">Unlimited</div></div>
+        <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Source code</div><div class="font-bold text-slate-900 text-sm mt-1">Included</div></div>
+        <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Languages</div><div class="font-bold text-slate-900 text-sm mt-1">EN · PT · ES</div></div>
+      </div>
+
+      <h3 class="mt-6 font-bold text-slate-900">What you get</h3>
+      <ul class="mt-3 space-y-2 text-sm text-slate-600">
+        <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i>Modern React (Vite or Next.js) + Tailwind CSS codebase</li>
+        <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i>Fully responsive design — mobile, tablet, desktop</li>
+        <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i>Lighthouse score 95+ across performance, accessibility and SEO</li>
+        <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i>Deployment to Vercel or Netlify included</li>
+        <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i>14 days of free post-delivery support</li>
+      </ul>
+    </section>
+
+    <!-- About the seller -->
+    <section class="border-t border-slate-200 pt-8">
+      <h2 class="text-xl font-extrabold text-slate-900">About the seller</h2>
+      <div class="mt-4 flex flex-col sm:flex-row gap-5">
+        <div class="flex items-center gap-4 sm:flex-col sm:items-center">
+          <a href="#" onclick="navigate('profile');return false;" class="w-20 h-20 rounded-full grid place-items-center text-2xl font-extrabold text-slate-700 hover:ring-4 hover:ring-[#efeaff] transition" style="background:#fecaca">A</a>
+          <div class="sm:text-center">
+            <a href="#" onclick="navigate('profile');return false;" class="font-bold text-slate-900 hover:text-[#5b4ee0]">Andre Martins</a>
+            <div class="text-xs text-slate-500">Senior Frontend Engineer</div>
+            <a href="#" onclick="navigate('profile');return false;" class="mt-2 inline-block text-xs btn-outline px-3 py-1.5 rounded-lg">View profile</a>
+          </div>
+        </div>
+        <div class="flex-1">
+          <div class="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
+            <div><span class="text-slate-500">From</span><div class="font-semibold text-slate-900">São Paulo, Brazil</div></div>
+            <div><span class="text-slate-500">Member since</span><div class="font-semibold text-slate-900">Jan 2024</div></div>
+            <div><span class="text-slate-500">Avg. response</span><div class="font-semibold text-slate-900">~1 hour</div></div>
+            <div><span class="text-slate-500">Last delivery</span><div class="font-semibold text-slate-900">2 days ago</div></div>
+          </div>
+          <p class="mt-4 text-sm text-slate-600 leading-relaxed">7+ years building production web apps. I lead frontend at a fintech and freelance in nights/weekends. I love clean code, fast UX and shipping on time. Let's talk about your idea!</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="chip rounded-full text-xs px-3 py-1">React</span>
+            <span class="chip rounded-full text-xs px-3 py-1">Next.js</span>
+            <span class="chip rounded-full text-xs px-3 py-1">Tailwind</span>
+            <span class="chip rounded-full text-xs px-3 py-1">TypeScript</span>
+            <span class="chip rounded-full text-xs px-3 py-1">Figma</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    <section class="border-t border-slate-200 pt-8">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <h2 class="text-xl font-extrabold text-slate-900">Reviews</h2>
+        <div class="flex items-center gap-2 text-sm">
+          <span class="star-row inline-flex items-center gap-1"><i class="ri-star-fill"></i><b class="text-slate-900">4.9</b></span>
+          <span class="text-slate-500">(342 reviews)</span>
+        </div>
+      </div>
+
+      <!-- Rating breakdown -->
+      <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-xs"><span class="w-12 text-slate-600">5 stars</span><div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-amber-400" style="width:88%"></div></div><span class="w-10 text-right text-slate-500">301</span></div>
+          <div class="flex items-center gap-2 text-xs"><span class="w-12 text-slate-600">4 stars</span><div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-amber-400" style="width:9%"></div></div><span class="w-10 text-right text-slate-500">30</span></div>
+          <div class="flex items-center gap-2 text-xs"><span class="w-12 text-slate-600">3 stars</span><div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-amber-400" style="width:2%"></div></div><span class="w-10 text-right text-slate-500">7</span></div>
+          <div class="flex items-center gap-2 text-xs"><span class="w-12 text-slate-600">2 stars</span><div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-amber-400" style="width:1%"></div></div><span class="w-10 text-right text-slate-500">3</span></div>
+          <div class="flex items-center gap-2 text-xs"><span class="w-12 text-slate-600">1 star</span><div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-amber-400" style="width:0%"></div></div><span class="w-10 text-right text-slate-500">1</span></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">Communication</div><div class="font-bold text-slate-900 text-lg mt-1">5.0</div></div>
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">Service quality</div><div class="font-bold text-slate-900 text-lg mt-1">4.9</div></div>
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">Recommendation</div><div class="font-bold text-slate-900 text-lg mt-1">4.9</div></div>
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">On time delivery</div><div class="font-bold text-slate-900 text-lg mt-1">5.0</div></div>
+        </div>
+      </div>
+
+      <!-- Review items -->
+      <div id="serviceReviewList" class="mt-6 space-y-5"></div>
+      <button class="mt-6 btn-outline rounded-full px-5 py-2 text-sm font-semibold">Show more reviews</button>
+    </section>
+
+    <!-- FAQ -->
+    <section class="border-t border-slate-200 pt-8">
+      <h2 class="text-xl font-extrabold text-slate-900">Frequently asked questions</h2>
+      <div class="mt-4 space-y-2">
+        <details class="accordion rounded-lg border border-slate-200 p-4">
+          <summary class="flex items-center justify-between font-semibold text-slate-900 text-sm"><span>Do you provide the source code?</span><i class="ic ri-arrow-down-s-line text-slate-500"></i></summary>
+          <p class="mt-3 text-sm text-slate-600">Yes — every package includes the full source code, hosted on a private GitHub repo of your choice.</p>
+        </details>
+        <details class="accordion rounded-lg border border-slate-200 p-4">
+          <summary class="flex items-center justify-between font-semibold text-slate-900 text-sm"><span>Can you deploy the site for me?</span><i class="ic ri-arrow-down-s-line text-slate-500"></i></summary>
+          <p class="mt-3 text-sm text-slate-600">Absolutely. Deployment to Vercel, Netlify or Cloudflare Pages is included on Standard and Premium packages.</p>
+        </details>
+        <details class="accordion rounded-lg border border-slate-200 p-4">
+          <summary class="flex items-center justify-between font-semibold text-slate-900 text-sm"><span>Do you connect wallets and Web3 features?</span><i class="ic ri-arrow-down-s-line text-slate-500"></i></summary>
+          <p class="mt-3 text-sm text-slate-600">Yes. I integrate wagmi, viem, RainbowKit and connect to Ethereum, Solana or Base smart contracts on the Premium package.</p>
+        </details>
+        <details class="accordion rounded-lg border border-slate-200 p-4">
+          <summary class="flex items-center justify-between font-semibold text-slate-900 text-sm"><span>What if I need changes after delivery?</span><i class="ic ri-arrow-down-s-line text-slate-500"></i></summary>
+          <p class="mt-3 text-sm text-slate-600">All packages include 14 days of free post-delivery support. After that I offer a friendly hourly rate.</p>
+        </details>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RIGHT — Pricing card -->
+  <aside class="lg:col-span-1">
+    <div class="lg:sticky lg:top-20 space-y-4">
+      <div class="pkg-card active rounded-xl bg-white p-5">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+          <span class="text-xs font-bold tracking-wide text-[#5b4ee0] bg-[#efeaff] px-2.5 py-1 rounded-full">BASIC</span>
+          <div class="text-right">
+            <div class="text-xs text-slate-500">From</div>
+            <div class="font-extrabold text-slate-900 text-xl">120 ITL</div>
+          </div>
+        </div>
+        <div class="mt-4">
+          <h3 class="font-extrabold text-slate-900">Starter Landing</h3>
+          <p class="mt-2 text-sm text-slate-600">One-page responsive landing built with React + Tailwind. Up to 5 sections, deployed to Vercel.</p>
+        </div>
+        <ul class="mt-4 space-y-2 text-sm text-slate-700">
+          <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i><span>React + Tailwind setup</span></li>
+          <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i><span>Up to 5 sections</span></li>
+          <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i><span>Mobile responsive</span></li>
+          <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i><span>Basic SEO</span></li>
+          <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i><span>1 hero animation</span></li>
+        </ul>
+        <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+          <div class="flex items-center gap-2 text-slate-600"><i class="ri-time-line"></i><span>3-day delivery</span></div>
+          <div class="flex items-center gap-2 text-slate-600"><i class="ri-refresh-line"></i><span>2 revisions</span></div>
+        </div>
+        <button class="mt-5 w-full btn-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2">
+          Continue <i class="ri-arrow-right-line"></i>
+        </button>
+        <button class="mt-2 w-full btn-outline py-3 rounded-lg font-bold">Contact me</button>
+      </div>
+
+      <!-- Trust card -->
+      <div class="rounded-xl border border-slate-200 p-4 bg-white">
+        <div class="flex items-center gap-2 text-sm">
+          <i class="ri-shield-check-fill text-[#8b7cff] text-lg"></i>
+          <span class="font-bold text-slate-900">Pay in ITL · escrow protected</span>
+        </div>
+        <p class="mt-2 text-xs text-slate-500 leading-relaxed">Your funds are held in escrow until you approve the delivery. Refund guarantee if the gig is not delivered as described.</p>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<!-- RELATED GIGS -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 py-10 border-t border-slate-100 mt-6">
+  <div class="flex items-center justify-between mb-5">
+    <h2 class="text-xl font-extrabold text-slate-900">People also viewed</h2>
+    <a href="#" onclick="navigate('home');return false;" class="text-sm font-semibold text-[#5b4ee0] hover:underline">View all gigs →</a>
+  </div>
+  <div id="relatedGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+</section>
+
+<!-- FOOTER SERVICE -->
 <footer class="bg-white text-slate-600 mt-12 border-t border-slate-200">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 grid grid-cols-2 md:grid-cols-5 gap-10">
     <div class="col-span-2 md:col-span-1">
       <div class="flex items-center gap-2">
-        <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white">
-          <i class="ri-briefcase-4-fill"></i>
-        </span>
+        <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white"><i class="ri-briefcase-4-fill"></i></span>
         <span class="font-extrabold text-slate-900">InterWork</span>
       </div>
       <p class="mt-4 text-sm text-slate-500 leading-relaxed">The Web3 freelance marketplace. Hire verified talent, pay in ITL, zero middlemen.</p>
@@ -277,173 +567,572 @@
   </div>
 </footer>
 
+</div><!-- /page-service -->
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     PÁGINA: PROFILE
+══════════════════════════════════════════════════════════════ -->
+<div id="page-profile" class="page">
+
+<!-- COVER -->
+<div class="cover h-40 sm:h-52 w-full relative">
+  <div class="max-w-7xl mx-auto h-full px-4 sm:px-6 flex items-end justify-end pb-4">
+    <button class="btn-outline rounded-lg text-sm font-semibold px-4 py-2 flex items-center gap-2">
+      <i class="ri-share-line"></i><span class="hidden sm:inline">Share profile</span>
+    </button>
+  </div>
+</div>
+
+<!-- PROFILE HEAD -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 -mt-14 sm:-mt-16 relative">
+  <div class="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
+    <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-4 border-white shadow-lg grid place-items-center font-extrabold text-3xl sm:text-4xl text-slate-700" style="background:#fecaca">A</div>
+    <div class="flex-1 sm:pb-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Andre Martins</h1>
+        <span class="badge-verified text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1"><i class="ri-shield-check-fill"></i>VERIFIED</span>
+        <span class="badge-top text-[10px] font-bold px-2 py-0.5 rounded-full">TOP RATED</span>
+      </div>
+      <p class="text-slate-600 font-medium mt-1">Senior Frontend Engineer · React &amp; Web3 Specialist</p>
+      <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-slate-500">
+        <span class="flex items-center gap-1"><i class="ri-map-pin-line"></i>São Paulo, Brazil</span>
+        <span class="flex items-center gap-1"><i class="ri-calendar-line"></i>Member since Jan 2024</span>
+        <span class="flex items-center gap-1"><i class="ri-time-line"></i>~1h response</span>
+        <span class="flex items-center gap-1 star-row"><i class="ri-star-fill"></i><b class="text-slate-900">4.9</b> (342 reviews)</span>
+      </div>
+    </div>
+    <div class="sm:pb-3 flex gap-2">
+      <button class="btn-outline rounded-lg text-sm font-semibold px-4 py-2 flex items-center gap-2"><i class="ri-heart-line"></i><span class="hidden sm:inline">Save</span></button>
+      <button class="btn-primary rounded-lg text-sm font-bold px-5 py-2 flex items-center gap-2"><i class="ri-message-3-line"></i>Contact me</button>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+    <div class="rounded-xl border border-slate-200 p-4">
+      <div class="text-xs text-slate-500">Total orders</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl">1,284</div>
+    </div>
+    <div class="rounded-xl border border-slate-200 p-4">
+      <div class="text-xs text-slate-500">In queue</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl">12</div>
+    </div>
+    <div class="rounded-xl border border-slate-200 p-4">
+      <div class="text-xs text-slate-500">On time</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl">99%</div>
+    </div>
+    <div class="rounded-xl border border-slate-200 p-4">
+      <div class="text-xs text-slate-500">Earned in ITL</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl">128k</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROFILE TABS -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 border-b border-slate-200">
+  <div class="flex items-center gap-6 sm:gap-8 overflow-x-auto text-sm">
+    <button onclick="showProfileTab('gigs',this)" class="tab tab-active whitespace-nowrap" id="ptab-gigs">Active gigs <span class="text-slate-400 ml-1">(8)</span></button>
+    <button onclick="showProfileTab('about',this)" class="tab whitespace-nowrap">About</button>
+    <button onclick="showProfileTab('reviews',this)" class="tab whitespace-nowrap">Reviews <span class="text-slate-400 ml-1">(342)</span></button>
+    <button onclick="showProfileTab('portfolio',this)" class="tab whitespace-nowrap">Portfolio</button>
+  </div>
+</section>
+
+<!-- PROFILE MAIN -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="lg:col-span-1 space-y-6 order-2 lg:order-1">
+    <div class="rounded-xl border border-slate-200 p-5">
+      <h3 class="font-extrabold text-slate-900">About me</h3>
+      <p class="mt-3 text-sm text-slate-600 leading-relaxed">7+ years building production web apps. I lead frontend at a fintech and freelance on nights and weekends. I love clean code, fast UX and shipping on time. Available for long-term projects and quick landing pages alike.</p>
+    </div>
+    <div class="rounded-xl border border-slate-200 p-5">
+      <h3 class="font-extrabold text-slate-900">Languages</h3>
+      <ul class="mt-3 space-y-3 text-sm">
+        <li class="flex items-center justify-between"><span class="text-slate-700">Portuguese</span><span class="text-xs text-slate-500">Native</span></li>
+        <li class="flex items-center justify-between"><span class="text-slate-700">English</span><span class="text-xs text-slate-500">Fluent (C2)</span></li>
+        <li class="flex items-center justify-between"><span class="text-slate-700">Spanish</span><span class="text-xs text-slate-500">Conversational</span></li>
+      </ul>
+    </div>
+    <div class="rounded-xl border border-slate-200 p-5">
+      <h3 class="font-extrabold text-slate-900">Skills</h3>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <span class="chip rounded-full text-xs px-3 py-1">React</span>
+        <span class="chip rounded-full text-xs px-3 py-1">Next.js</span>
+        <span class="chip rounded-full text-xs px-3 py-1">Tailwind</span>
+        <span class="chip rounded-full text-xs px-3 py-1">TypeScript</span>
+        <span class="chip rounded-full text-xs px-3 py-1">Node.js</span>
+        <span class="chip rounded-full text-xs px-3 py-1">Figma</span>
+        <span class="chip rounded-full text-xs px-3 py-1">wagmi / viem</span>
+        <span class="chip rounded-full text-xs px-3 py-1">GSAP</span>
+        <span class="chip rounded-full text-xs px-3 py-1">Solidity</span>
+      </div>
+    </div>
+    <div class="rounded-xl border border-slate-200 p-5">
+      <h3 class="font-extrabold text-slate-900">Education</h3>
+      <ul class="mt-3 space-y-4 text-sm">
+        <li>
+          <div class="font-semibold text-slate-900">B.Sc. Computer Science</div>
+          <div class="text-xs text-slate-500">USP · 2015 – 2019</div>
+        </li>
+        <li>
+          <div class="font-semibold text-slate-900">Frontend Masters Bootcamp</div>
+          <div class="text-xs text-slate-500">2021</div>
+        </li>
+      </ul>
+    </div>
+    <div class="rounded-xl border border-slate-200 p-5">
+      <h3 class="font-extrabold text-slate-900">Certifications</h3>
+      <ul class="mt-3 space-y-3 text-sm">
+        <li class="flex items-start gap-3">
+          <i class="ri-medal-2-fill text-[#8b7cff] text-lg mt-0.5"></i>
+          <div><div class="font-semibold text-slate-900">AWS Solutions Architect</div><div class="text-xs text-slate-500">Amazon · 2023</div></div>
+        </li>
+        <li class="flex items-start gap-3">
+          <i class="ri-medal-2-fill text-[#8b7cff] text-lg mt-0.5"></i>
+          <div><div class="font-semibold text-slate-900">Ethereum Developer Certified</div><div class="text-xs text-slate-500">ConsenSys · 2024</div></div>
+        </li>
+      </ul>
+    </div>
+    <div class="rounded-xl border border-slate-200 p-5">
+      <h3 class="font-extrabold text-slate-900">On-chain</h3>
+      <div class="mt-3 flex items-center gap-2 text-sm">
+        <i class="ri-wallet-3-line text-slate-500"></i>
+        <code class="font-mono text-xs text-slate-700 bg-slate-50 px-2 py-1 rounded">0x7a91…f4c2</code>
+        <button class="ml-auto text-slate-400 hover:text-slate-700"><i class="ri-file-copy-line"></i></button>
+      </div>
+      <p class="mt-3 text-xs text-slate-500">Verified ITL wallet. All payouts are settled on-chain.</p>
+    </div>
+  </aside>
+
+  <!-- RIGHT CONTENT -->
+  <div class="lg:col-span-2 order-1 lg:order-2 space-y-10">
+
+    <!-- ACTIVE GIGS -->
+    <section id="pane-gigs">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-xl font-extrabold text-slate-900">Active gigs</h2>
+        <a href="#" onclick="navigate('home');return false;" class="text-sm font-semibold text-[#5b4ee0] hover:underline">View all →</a>
+      </div>
+      <div id="gigGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-5"></div>
+    </section>
+
+    <!-- ABOUT pane -->
+    <section id="pane-about" class="hidden space-y-4">
+      <h2 class="text-xl font-extrabold text-slate-900">About me</h2>
+      <p class="text-slate-600 text-sm sm:text-base leading-relaxed">I'm Andre — a senior frontend engineer based in São Paulo. I've shipped production web apps for fintechs, e-commerce stores and Web3 protocols over the last 7 years. My day job is leading a 6-person frontend team; my nights and weekends are dedicated to freelance clients on InterWork.</p>
+      <p class="text-slate-600 text-sm sm:text-base leading-relaxed">My focus is performance, accessibility and pixel-perfect implementation. I'm picky about clean code, tiny bundle sizes and smooth interactions. If you need a landing page that loads in under a second, a dashboard that doesn't lag, or a dApp that doesn't break — let's talk.</p>
+    </section>
+
+    <!-- REVIEWS pane -->
+    <section id="pane-reviews" class="hidden">
+      <div class="flex items-center justify-between flex-wrap gap-2 mb-5">
+        <h2 class="text-xl font-extrabold text-slate-900">Reviews</h2>
+        <div class="flex items-center gap-2 text-sm">
+          <span class="star-row inline-flex items-center gap-1"><i class="ri-star-fill"></i><b class="text-slate-900">4.9</b></span>
+          <span class="text-slate-500">(342 reviews)</span>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 text-xs"><span class="w-12 text-slate-600">5 stars</span><div class="lvl-bar flex-1"><div class="lvl-fill" style="width:88%;background:#f59e0b"></div></div><span class="w-10 text-right text-slate-500">301</span></div>
+          <div class="flex items-center gap-2 text-xs"><span class="w-12 text-slate-600">4 stars</span><div class="lvl-bar flex-1"><div class="lvl-fill" style="width:9%;background:#f59e0b"></div></div><span class="w-10 text-right text-slate-500">30</span></div>
+          <div class="flex items-center gap-2 text-xs"><span class="w-12 text-slate-600">3 stars</span><div class="lvl-bar flex-1"><div class="lvl-fill" style="width:2%;background:#f59e0b"></div></div><span class="w-10 text-right text-slate-500">7</span></div>
+          <div class="flex items-center gap-2 text-xs"><span class="w-12 text-slate-600">2 stars</span><div class="lvl-bar flex-1"><div class="lvl-fill" style="width:1%;background:#f59e0b"></div></div><span class="w-10 text-right text-slate-500">3</span></div>
+          <div class="flex items-center gap-2 text-xs"><span class="w-12 text-slate-600">1 star</span><div class="lvl-bar flex-1"><div class="lvl-fill" style="width:0%;background:#f59e0b"></div></div><span class="w-10 text-right text-slate-500">1</span></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">Communication</div><div class="font-extrabold text-slate-900 text-lg mt-1">5.0</div></div>
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">Service quality</div><div class="font-extrabold text-slate-900 text-lg mt-1">4.9</div></div>
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">Recommendation</div><div class="font-extrabold text-slate-900 text-lg mt-1">4.9</div></div>
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">On time</div><div class="font-extrabold text-slate-900 text-lg mt-1">5.0</div></div>
+        </div>
+      </div>
+      <div id="profileReviewList" class="space-y-5"></div>
+    </section>
+
+    <!-- PORTFOLIO pane -->
+    <section id="pane-portfolio" class="hidden">
+      <h2 class="text-xl font-extrabold text-slate-900 mb-5">Portfolio</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <img class="rounded-lg aspect-square object-cover w-full" src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80">
+        <img class="rounded-lg aspect-square object-cover w-full" src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80">
+        <img class="rounded-lg aspect-square object-cover w-full" src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80">
+        <img class="rounded-lg aspect-square object-cover w-full" src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80">
+        <img class="rounded-lg aspect-square object-cover w-full" src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=80">
+        <img class="rounded-lg aspect-square object-cover w-full" src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=600&q=80">
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- FOOTER PROFILE -->
+<footer class="bg-white text-slate-600 mt-12 border-t border-slate-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14 grid grid-cols-2 md:grid-cols-5 gap-10">
+    <div class="col-span-2 md:col-span-1">
+      <div class="flex items-center gap-2">
+        <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white"><i class="ri-briefcase-4-fill"></i></span>
+        <span class="font-extrabold text-slate-900">InterWork</span>
+      </div>
+      <p class="mt-4 text-sm text-slate-500 leading-relaxed">The Web3 freelance marketplace. Hire verified talent, pay in ITL, zero middlemen.</p>
+      <div class="mt-5 flex gap-2">
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-twitter-x-fill"></i></a>
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-discord-fill"></i></a>
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-telegram-fill"></i></a>
+        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-github-fill"></i></a>
+      </div>
+    </div>
+    <div>
+      <h4 class="text-slate-900 font-bold mb-4">For Clients</h4>
+      <ul class="space-y-3 text-sm">
+        <li><a href="#" class="footer-link">Find Freelancers</a></li>
+        <li><a href="#" class="footer-link">Post a Job</a></li>
+        <li><a href="#" class="footer-link">How it Works</a></li>
+        <li><a href="#" class="footer-link">Enterprise</a></li>
+        <li><a href="#" class="footer-link">Success Stories</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-slate-900 font-bold mb-4">For Freelancers</h4>
+      <ul class="space-y-3 text-sm">
+        <li><a href="#" class="footer-link">Find Work</a></li>
+        <li><a href="#" class="footer-link">Create Profile</a></li>
+        <li><a href="#" class="footer-link">Community Programs</a></li>
+        <li><a href="#" class="footer-link">Reward Pools</a></li>
+        <li><a href="#" class="footer-link">Help Center</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-slate-900 font-bold mb-4">Resources</h4>
+      <ul class="space-y-3 text-sm">
+        <li><a href="#" class="footer-link">Blog</a></li>
+        <li><a href="#" class="footer-link">Documentation</a></li>
+        <li><a href="#" class="footer-link">API</a></li>
+        <li><a href="#" class="footer-link">Partners</a></li>
+        <li><a href="#" class="footer-link">System Status</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-slate-900 font-bold mb-4">Company</h4>
+      <ul class="space-y-3 text-sm">
+        <li><a href="#" class="footer-link">About Us</a></li>
+        <li><a href="#" class="footer-link">Careers</a></li>
+        <li><a href="#" class="footer-link">Press Kit</a></li>
+        <li><a href="#" class="footer-link">Terms of Service</a></li>
+        <li><a href="#" class="footer-link">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+      <span>© 2026 InterWork. All rights reserved.</span>
+      <span>Powered by Interlink · ITL Token</span>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /page-profile -->
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════════════════════ -->
 <script>
-  // ===== Data =====
-  const CATS = ['All','Web Dev','UI/UX','Mobile','Content','Video','AI/ML','Marketing','Blockchain','DevOps','Data'];
 
-  const GIGS = [
-    // Web Dev (3)
-    {badge:'BEST SELLER', tag:'Top Rated', initial:'A', initialBg:'#fecaca', name:'Andre Martins', title:'I will build a modern responsive website with React & Tailwind', rating:4.9, reviews:342, cat:'Web Dev', catLabel:'Web Development', price:120, img:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80'},
-    {badge:'', tag:'Pro', initial:'G', initialBg:'#bbf7d0', name:'Gabriel Souza', title:'I will build a scalable full-stack SaaS platform for your startup', rating:4.8, reviews:198, cat:'Web Dev', catLabel:'Web Development', price:280, img:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80'},
-    {badge:'RISING STAR', tag:'Pro', initial:'L', initialBg:'#bae6fd', name:'Lucas Pereira', title:'I will create a high-conversion landing page with Next.js', rating:4.9, reviews:128, cat:'Web Dev', catLabel:'Web Development', price:160, img:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80'},
-    // UI/UX (2)
-    {badge:'BEST SELLER', tag:'Top Rated', initial:'I', initialBg:'#fed7aa', name:'Isabela Rocha', title:'I will design a complete brand identity and logo package', rating:4.9, reviews:267, cat:'UI/UX', catLabel:'UI/UX Design', price:175, img:'https://images.unsplash.com/photo-1561070791-2526d30994b8?w=800&q=80'},
-    {badge:'', tag:'Top Rated', initial:'M', initialBg:'#bae6fd', name:'Mariana Costa', title:'I will design a stunning UI/UX for your Web3 application', rating:4.8, reviews:218, cat:'UI/UX', catLabel:'UI/UX Design', price:95, img:'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=800&q=80'},
-    // Mobile (2)
-    {badge:'BEST SELLER', tag:'Top Rated', initial:'R', initialBg:'#ddd6fe', name:'Rafael Lima', title:'I will develop a cross-platform mobile app with React Native', rating:4.9, reviews:189, cat:'Mobile', catLabel:'Mobile Apps', price:420, img:'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80'},
-    {badge:'RISING STAR', tag:'Pro', initial:'J', initialBg:'#fbcfe8', name:'Juliana Mendes', title:'I will publish your iOS and Android app to the stores', rating:4.8, reviews:74, cat:'Mobile', catLabel:'Mobile Apps', price:250, img:'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&q=80'},
-    // Content (2)
-    {badge:'RISING STAR', tag:'Top Rated', initial:'C', initialBg:'#fde68a', name:'Carolina Santos', title:'I will write your Web3 whitepaper and technical documentation', rating:5, reviews:89, cat:'Content', catLabel:'Content Writing', price:350, img:'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800&q=80'},
-    {badge:'', tag:'Pro', initial:'T', initialBg:'#fcd34d', name:'Thiago Ribeiro', title:'I will craft SEO blog articles that rank on Google', rating:4.8, reviews:156, cat:'Content', catLabel:'Content Writing', price:80, img:'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&q=80'},
-    // Video (2)
-    {badge:'RISING STAR', tag:'Top Rated', initial:'E', initialBg:'#fde68a', name:'Enzo Carvalho', title:'I will create stunning 3D product animations and renderings', rating:4.9, reviews:112, cat:'Video', catLabel:'Video & Motion', price:300, img:'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=800&q=80'},
-    {badge:'', tag:'Pro', initial:'V', initialBg:'#c7d2fe', name:'Vitoria Lopes', title:'I will edit a cinematic YouTube video with motion graphics', rating:4.8, reviews:203, cat:'Video', catLabel:'Video & Motion', price:140, img:'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80'},
-    // AI/ML (2)
-    {badge:'BEST SELLER', tag:'Top Rated', initial:'B', initialBg:'#fcd34d', name:'Beatriz Almeida', title:'I will develop custom AI/ML models for your business needs', rating:4.9, reviews:73, cat:'AI/ML', catLabel:'AI & Machine Learning', price:500, img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80'},
-    {badge:'', tag:'Pro', initial:'M', initialBg:'#fecaca', name:'Marcos Vinicius', title:'I will build predictive ML models and data dashboards', rating:4.8, reviews:81, cat:'AI/ML', catLabel:'AI & Machine Learning', price:450, img:'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80'},
-    // Marketing (2)
-    {badge:'BEST SELLER', tag:'Top Rated', initial:'N', initialBg:'#fbcfe8', name:'Natalia Freitas', title:'I will manage your Google Ads and Meta Ads campaigns', rating:4.9, reviews:241, cat:'Marketing', catLabel:'Marketing', price:220, img:'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80'},
-    {badge:'', tag:'Pro', initial:'D', initialBg:'#bbf7d0', name:'Daniel Castro', title:'I will grow your brand on Instagram and TikTok', rating:4.7, reviews:165, cat:'Marketing', catLabel:'Marketing', price:130, img:'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80'},
-    // Blockchain (2)
-    {badge:'RISING STAR', tag:'Top Rated', initial:'P', initialBg:'#ddd6fe', name:'Pedro Alves', title:'I will develop secure smart contracts on Ethereum and Solana', rating:5, reviews:64, cat:'Blockchain', catLabel:'Blockchain & Web3', price:400, img:'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=80'},
-    {badge:'BEST SELLER', tag:'Top Rated', initial:'H', initialBg:'#ddd6fe', name:'Henrique Nunes', title:'I will build your custom NFT marketplace from scratch', rating:4.9, reviews:55, cat:'Blockchain', catLabel:'Blockchain & Web3', price:600, img:'https://images.unsplash.com/photo-1620321023374-d1a68fbc720d?w=800&q=80'},
-    // DevOps (2)
-    {badge:'RISING STAR', tag:'Top Rated', initial:'F', initialBg:'#bae6fd', name:'Felipe Andrade', title:'I will perform a complete security audit for your Web3 application', rating:5, reviews:47, cat:'DevOps', catLabel:'DevOps & Cloud', price:550, img:'https://images.unsplash.com/photo-1581090700227-1e8e7c9a5f3e?w=800&q=80'},
-    {badge:'', tag:'Top Rated', initial:'R', initialBg:'#fde68a', name:'Ricardo Borges', title:'I will set up your AWS cloud infrastructure with CI/CD pipelines', rating:4.8, reviews:137, cat:'DevOps', catLabel:'DevOps & Cloud', price:350, img:'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80'},
-    // Data (1)
-    {badge:'RISING STAR', tag:'Pro', initial:'S', initialBg:'#c7d2fe', name:'Sofia Barbosa', title:'I will build interactive data dashboards with Power BI and Tableau', rating:4.9, reviews:102, cat:'Data', catLabel:'Data Analytics', price:240, img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80'},
+/* ─────────────────────────────────────────
+   ROTEADOR SPA
+───────────────────────────────────────── */
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  window.scrollTo(0, 0);
+  if (page === 'service') initServicePage();
+  if (page === 'profile') initProfilePage();
+}
+
+/* ─────────────────────────────────────────
+   HOME — Data & Render
+───────────────────────────────────────── */
+const CATS = ['All','Web Dev','UI/UX','Mobile','Content','Video','AI/ML','Marketing','Blockchain','DevOps','Data'];
+
+const GIGS = [
+  {badge:'BEST SELLER', tag:'Top Rated', initial:'A', initialBg:'#fecaca', name:'Andre Martins', title:'I will build a modern responsive website with React & Tailwind', rating:4.9, reviews:342, cat:'Web Dev', catLabel:'Web Development', price:120, img:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80'},
+  {badge:'RISING STAR', tag:'Pro', initial:'L', initialBg:'#bae6fd', name:'Lucas Pereira', title:'I will create a high-conversion landing page with Next.js', rating:4.9, reviews:128, cat:'Web Dev', catLabel:'Web Development', price:160, img:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80'},
+  {badge:'BEST SELLER', tag:'Top Rated', initial:'I', initialBg:'#fed7aa', name:'Isabela Rocha', title:'I will design a complete brand identity and logo package', rating:4.9, reviews:267, cat:'UI/UX', catLabel:'UI/UX Design', price:175, img:'https://images.unsplash.com/photo-1561070791-2526d30994b8?w=800&q=80'},
+  {badge:'BEST SELLER', tag:'Top Rated', initial:'R', initialBg:'#ddd6fe', name:'Rafael Lima', title:'I will develop a cross-platform mobile app with React Native', rating:4.9, reviews:189, cat:'Mobile', catLabel:'Mobile Apps', price:420, img:'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80'},
+  {badge:'RISING STAR', tag:'Top Rated', initial:'C', initialBg:'#fde68a', name:'Carolina Santos', title:'I will write your Web3 whitepaper and technical documentation', rating:5, reviews:89, cat:'Content', catLabel:'Content Writing', price:350, img:'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800&q=80'},
+  {badge:'RISING STAR', tag:'Top Rated', initial:'E', initialBg:'#fde68a', name:'Enzo Carvalho', title:'I will create stunning 3D product animations and renderings', rating:4.9, reviews:112, cat:'Video', catLabel:'Video & Motion', price:300, img:'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?w=800&q=80'},
+  {badge:'BEST SELLER', tag:'Top Rated', initial:'B', initialBg:'#fcd34d', name:'Beatriz Almeida', title:'I will develop custom AI/ML models for your business needs', rating:4.9, reviews:73, cat:'AI/ML', catLabel:'AI & Machine Learning', price:500, img:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80'},
+  {badge:'BEST SELLER', tag:'Top Rated', initial:'N', initialBg:'#fbcfe8', name:'Natalia Freitas', title:'I will manage your Google Ads and Meta Ads campaigns', rating:4.9, reviews:241, cat:'Marketing', catLabel:'Marketing', price:220, img:'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80'},
+  {badge:'BEST SELLER', tag:'Top Rated', initial:'H', initialBg:'#ddd6fe', name:'Henrique Nunes', title:'I will build your custom NFT marketplace from scratch', rating:4.9, reviews:55, cat:'Blockchain', catLabel:'Blockchain & Web3', price:600, img:'https://images.unsplash.com/photo-1620321023374-d1a68fbc720d?w=800&q=80'},
+  {badge:'RISING STAR', tag:'Top Rated', initial:'F', initialBg:'#bae6fd', name:'Felipe Andrade', title:'I will perform a complete security audit for your Web3 application', rating:5, reviews:47, cat:'DevOps', catLabel:'DevOps & Cloud', price:550, img:'https://images.unsplash.com/photo-1581090700227-1e8e7c9a5f3e?w=800&q=80'},
+];
+
+let state = { cat:'All', q:'', sort:'rating', visible:12, favs:new Set() };
+
+const tagColor = t => t === 'Pro' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700';
+
+function renderCats(){
+  document.getElementById('catBar').innerHTML = CATS.map(c => `
+    <button onclick="setCat('${c}')" class="pill ${state.cat===c?'pill-active':''} rounded-full text-sm px-4 py-1.5 font-medium whitespace-nowrap">${c}</button>
+  `).join('');
+}
+
+function filtered(){
+  let list = GIGS.filter(g => state.cat==='All' || g.cat===state.cat);
+  if(state.q.trim()){
+    const q = state.q.toLowerCase();
+    list = list.filter(g =>
+      g.title.toLowerCase().includes(q) ||
+      g.name.toLowerCase().includes(q) ||
+      g.catLabel.toLowerCase().includes(q)
+    );
+  }
+  if(state.sort==='rating') list.sort((a,b)=>b.rating-a.rating || b.reviews-a.reviews);
+  if(state.sort==='reviews') list.sort((a,b)=>b.reviews-a.reviews);
+  if(state.sort==='priceAsc') list.sort((a,b)=>a.price-b.price);
+  if(state.sort==='priceDesc') list.sort((a,b)=>b.price-a.price);
+  return list;
+}
+
+function render(){
+  const list = filtered();
+  const slice = list.slice(0, state.visible);
+  document.getElementById('resultCount').textContent = `${list.length} result${list.length===1?'':'s'}`;
+
+  const empty = document.getElementById('emptyState');
+  const grid = document.getElementById('gigs');
+  const loadWrap = document.getElementById('loadMoreWrap');
+
+  if(list.length===0){
+    grid.innerHTML='';
+    empty.classList.remove('hidden');
+    loadWrap.classList.add('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  grid.innerHTML = slice.map((g,i)=>cardHTML(g,GIGS.indexOf(g))).join('');
+  if(state.visible >= list.length) loadWrap.classList.add('hidden');
+  else loadWrap.classList.remove('hidden');
+}
+
+function cardHTML(g, idx){
+  const fav = state.favs.has(idx);
+  return `
+  <a href="#" onclick="navigate('service');return false;" class="card bg-white rounded-xl overflow-hidden flex flex-col block">
+    <div class="relative overflow-hidden">
+      <img src="${g.img}" alt="" class="gig-img w-full aspect-[3/2] object-cover" loading="lazy" />
+      ${g.badge ? `<span class="badge absolute top-3 left-0 text-[10px] font-extrabold tracking-wide text-slate-700 px-2.5 py-1 rounded-r-md">${g.badge}</span>` : ''}
+      <button onclick="toggleFav(${idx},event)" class="heart-btn ${fav?'active':''} absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 grid place-items-center shadow-sm hover:bg-white">
+        <i class="ri-heart-line text-slate-500"></i>
+      </button>
+    </div>
+    <div class="p-4 flex-1 flex flex-col">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2 text-sm text-slate-700">
+          <span class="w-6 h-6 rounded-full grid place-items-center text-[11px] font-bold" style="background:${g.initialBg};color:#475569">${g.initial}</span>
+          <span class="font-semibold">${g.name}</span>
+        </div>
+        <span class="text-[10px] font-bold px-2 py-0.5 rounded ${tagColor(g.tag)}">${g.tag}</span>
+      </div>
+      <h3 class="mt-3 text-sm font-bold text-[#5b4ee0] leading-snug">${g.title}</h3>
+      <div class="mt-2 flex items-center gap-1 text-xs text-slate-500">
+        <i class="ri-star-fill text-amber-400"></i>
+        <span class="font-bold text-slate-700">${g.rating}</span>
+        <span>(${g.reviews})</span>
+      </div>
+      <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+        <span class="text-slate-500">${g.catLabel}</span>
+        <span class="text-slate-500">From <b class="font-extrabold text-slate-900">${g.price} ITL</b></span>
+      </div>
+    </div>
+  </a>`;
+}
+
+function toggleFav(i,e){ e.preventDefault(); e.stopPropagation(); if(state.favs.has(i)) state.favs.delete(i); else state.favs.add(i); render(); }
+
+function setCat(c){ state.cat=c; state.visible=12; renderCats(); render(); }
+function applyFilters(){
+  const v = document.getElementById('searchInput').value;
+  state.q = v;
+  document.getElementById('clearBtn').classList.toggle('hidden', !v);
+  state.visible=12; render();
+}
+function clearSearch(){ document.getElementById('searchInput').value=''; applyFilters(); }
+function quickSearch(label){
+  const map = {'Web Dev':'Web Dev','UI/UX':'UI/UX','Mobile':'Mobile','AI/ML':'AI/ML','Blockchain':'Blockchain'};
+  setCat(map[label]||'All');
+}
+function loadMore(){ state.visible += 8; render(); }
+function clearAll(){
+  state = {cat:'All',q:'',sort:'rating',visible:12,favs:state.favs};
+  document.getElementById('searchInput').value='';
+  document.getElementById('clearBtn').classList.add('hidden');
+  document.getElementById('sortLabel').textContent='Top Rated';
+  renderCats(); render();
+}
+function toggleSort(e){ e.stopPropagation(); document.getElementById('sortMenu').classList.toggle('open'); }
+function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
+function setSort(s,label){
+  state.sort=s;
+  document.getElementById('sortLabel').textContent=label;
+  document.getElementById('sortMenu').classList.remove('open');
+  render();
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest('#sortBtn') && !e.target.closest('#sortMenu'))
+    document.getElementById('sortMenu').classList.remove('open');
+});
+
+/* ─────────────────────────────────────────
+   SERVICE — Init
+───────────────────────────────────────── */
+let _serviceInited = false;
+function initServicePage() {
+  if (_serviceInited) return;
+  _serviceInited = true;
+
+  const SERVICE_REVIEWS = [
+    {n:'Mariana C.', i:'M', bg:'#bae6fd', rate:5, date:'2 weeks ago', country:'🇧🇷 Brazil', text:'Andre delivered way beyond expectations. The site loads instantly and the animations are super smooth. Will hire again for sure.', price:'120 ITL', days:3},
+    {n:'James R.', i:'J', bg:'#fcd34d', rate:5, date:'1 month ago', country:'🇺🇸 USA', text:'Best React dev I have worked with on InterWork. Clean code, daily updates, deployed to Vercel and helped me wire the domain. 10/10.', price:'280 ITL', days:5},
+    {n:'Sofia L.', i:'S', bg:'#fbcfe8', rate:4, date:'1 month ago', country:'🇵🇹 Portugal', text:'Great work overall, small revisions on the mobile menu but quickly fixed. Would recommend for a quick landing page.', price:'120 ITL', days:4},
   ];
+  document.getElementById('serviceReviewList').innerHTML = SERVICE_REVIEWS.map(r=>`
+    <article class="rounded-lg border border-slate-200 p-4">
+      <header class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-full grid place-items-center font-bold text-slate-700" style="background:${r.bg}">${r.i}</span>
+          <div>
+            <div class="font-bold text-slate-900 text-sm">${r.n}</div>
+            <div class="text-xs text-slate-500">${r.country} · ${r.date}</div>
+          </div>
+        </div>
+        <div class="star-row inline-flex items-center gap-1 text-xs">
+          ${Array(r.rate).fill('<i class="ri-star-fill"></i>').join('')}
+          ${Array(5-r.rate).fill('<i class="ri-star-line text-slate-300"></i>').join('')}
+          <b class="text-slate-900 ml-1">${r.rate}.0</b>
+        </div>
+      </header>
+      <p class="mt-3 text-sm text-slate-600 leading-relaxed">${r.text}</p>
+      <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+        <span class="chip rounded-full px-2.5 py-0.5"><i class="ri-shopping-bag-3-line mr-1"></i>${r.price}</span>
+        <span class="chip rounded-full px-2.5 py-0.5"><i class="ri-time-line mr-1"></i>Delivered in ${r.days} days</span>
+      </div>
+    </article>`).join('');
 
-  // ===== State =====
-  let state = { cat:'All', q:'', sort:'rating', visible:12, favs:new Set() };
-
-  // ===== Helpers =====
-  const tagColor = t => t === 'Pro'
-    ? 'bg-emerald-100 text-emerald-700'
-    : 'bg-amber-100 text-amber-700';
-
-  function renderCats(){
-    document.getElementById('catBar').innerHTML = CATS.map(c => `
-      <button onclick="setCat('${c}')" class="pill ${state.cat===c?'pill-active':''} rounded-full text-sm px-4 py-1.5 font-medium whitespace-nowrap">${c}</button>
-    `).join('');
-  }
-
-  function filtered(){
-    let list = GIGS.filter(g => state.cat==='All' || g.cat===state.cat);
-    if(state.q.trim()){
-      const q = state.q.toLowerCase();
-      list = list.filter(g =>
-        g.title.toLowerCase().includes(q) ||
-        g.name.toLowerCase().includes(q) ||
-        g.catLabel.toLowerCase().includes(q)
-      );
-    }
-    if(state.sort==='rating') list.sort((a,b)=>b.rating-a.rating || b.reviews-a.reviews);
-    if(state.sort==='reviews') list.sort((a,b)=>b.reviews-a.reviews);
-    if(state.sort==='priceAsc') list.sort((a,b)=>a.price-b.price);
-    if(state.sort==='priceDesc') list.sort((a,b)=>b.price-a.price);
-    return list;
-  }
-
-  function render(){
-    const list = filtered();
-    const slice = list.slice(0, state.visible);
-    document.getElementById('resultCount').textContent = `${list.length} result${list.length===1?'':'s'}`;
-
-    const empty = document.getElementById('emptyState');
-    const grid = document.getElementById('gigs');
-    const loadWrap = document.getElementById('loadMoreWrap');
-
-    if(list.length===0){
-      grid.innerHTML='';
-      empty.classList.remove('hidden');
-      loadWrap.classList.add('hidden');
-      return;
-    }
-    empty.classList.add('hidden');
-
-    grid.innerHTML = slice.map((g,i)=>cardHTML(g,GIGS.indexOf(g))).join('');
-
-    if(state.visible >= list.length) loadWrap.classList.add('hidden');
-    else loadWrap.classList.remove('hidden');
-  }
-
-  function cardHTML(g, idx){
-    const fav = state.favs.has(idx);
-    return `
-    <a href="service.html" class="card bg-white rounded-xl overflow-hidden flex flex-col block">
+  const RELATED = [
+    {badge:'BEST SELLER', tag:'Top Rated', i:'I', bg:'#fed7aa', name:'Isabela Rocha', title:'I will design a complete brand identity and logo package', rating:4.9, reviews:267, cat:'UI/UX Design', price:175, img:'https://images.unsplash.com/photo-1561070791-2526d30994b8?w=800&q=80'},
+    {badge:'', tag:'Pro', i:'G', bg:'#bbf7d0', name:'Gabriel Souza', title:'I will build a scalable full-stack SaaS platform for your startup', rating:4.8, reviews:198, cat:'Web Development', price:280, img:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80'},
+    {badge:'RISING STAR', tag:'Pro', i:'L', bg:'#bae6fd', name:'Lucas Pereira', title:'I will create a high-conversion landing page with Next.js', rating:4.9, reviews:128, cat:'Web Development', price:160, img:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80'},
+    {badge:'', tag:'Top Rated', i:'M', bg:'#bae6fd', name:'Mariana Costa', title:'I will design a stunning UI/UX for your Web3 application', rating:4.8, reviews:218, cat:'UI/UX Design', price:95, img:'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=800&q=80'},
+  ];
+  document.getElementById('relatedGrid').innerHTML = RELATED.map(g=>`
+    <a href="#" onclick="navigate('service');return false;" class="bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-lg hover:border-[#c7c0ff] transition">
       <div class="relative overflow-hidden">
-        <img src="${g.img}" alt="" class="gig-img w-full aspect-[3/2] object-cover" loading="lazy" />
-        ${g.badge ? `<span class="badge absolute top-3 left-0 text-[10px] font-extrabold tracking-wide text-slate-700 px-2.5 py-1 rounded-r-md">${g.badge}</span>` : ''}
-        <button onclick="toggleFav(${idx},event)" class="heart-btn ${fav?'active':''} absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 grid place-items-center shadow-sm hover:bg-white">
-          <i class="ri-heart-line text-slate-500"></i>
-        </button>
+        <img src="${g.img}" class="w-full aspect-[3/2] object-cover" loading="lazy" />
+        ${g.badge?`<span class="absolute top-3 left-0 text-[10px] font-extrabold tracking-wide text-slate-700 px-2.5 py-1 rounded-r-md bg-white/95">${g.badge}</span>`:''}
       </div>
       <div class="p-4 flex-1 flex flex-col">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2 text-sm text-slate-700">
-            <span class="w-6 h-6 rounded-full grid place-items-center text-[11px] font-bold" style="background:${g.initialBg};color:#475569">${g.initial}</span>
-            <span class="font-semibold">${g.name}</span>
+          <div class="flex items-center gap-2 text-sm">
+            <span class="w-6 h-6 rounded-full grid place-items-center text-[11px] font-bold" style="background:${g.bg};color:#475569">${g.i}</span>
+            <span class="font-semibold text-slate-700">${g.name}</span>
           </div>
           <span class="text-[10px] font-bold px-2 py-0.5 rounded ${tagColor(g.tag)}">${g.tag}</span>
         </div>
         <h3 class="mt-3 text-sm font-bold text-[#5b4ee0] leading-snug">${g.title}</h3>
         <div class="mt-2 flex items-center gap-1 text-xs text-slate-500">
-          <i class="ri-star-fill text-amber-400"></i>
-          <span class="font-bold text-slate-700">${g.rating}</span>
-          <span>(${g.reviews})</span>
+          <i class="ri-star-fill text-amber-400"></i><b class="text-slate-700">${g.rating}</b><span>(${g.reviews})</span>
         </div>
-        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-          <span class="text-slate-500">${g.catLabel}</span>
-          <span class="text-slate-500">From <b class="font-extrabold text-slate-900">${g.price} ITL</b></span>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+          <span>${g.cat}</span>
+          <span>From <b class="font-extrabold text-slate-900">${g.price} ITL</b></span>
         </div>
       </div>
-    </a>`;
-  }
+    </a>`).join('');
+}
 
-  function toggleFav(i,e){ e.preventDefault(); e.stopPropagation(); if(state.favs.has(i)) state.favs.delete(i); else state.favs.add(i); render(); }
+// Gallery
+function setMain(el){
+  document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mainImg').src = el.src.replace('w=400','w=1400');
+}
 
-  // ===== Actions =====
-  function setCat(c){ state.cat=c; state.visible=12; renderCats(); render(); }
-  function applyFilters(){
-    const v = document.getElementById('searchInput').value;
-    state.q = v;
-    document.getElementById('clearBtn').classList.toggle('hidden', !v);
-    state.visible=12; render();
-  }
-  function clearSearch(){ document.getElementById('searchInput').value=''; applyFilters(); }
-  function quickSearch(label){
-    const map = {'Web Dev':'Web Dev','UI/UX':'UI/UX','Mobile':'Mobile','AI/ML':'AI/ML','Blockchain':'Blockchain'};
-    setCat(map[label]||'All');
-  }
-  function loadMore(){ state.visible += 8; render(); }
-  function clearAll(){
-    state = {cat:'All',q:'',sort:'rating',visible:12,favs:state.favs};
-    document.getElementById('searchInput').value='';
-    document.getElementById('clearBtn').classList.add('hidden');
-    document.getElementById('sortLabel').textContent='Top Rated';
-    renderCats(); render();
-  }
-  function toggleSort(e){ e.stopPropagation(); document.getElementById('sortMenu').classList.toggle('open'); }
-  function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
-  function setSort(s,label){
-    state.sort=s;
-    document.getElementById('sortLabel').textContent=label;
-    document.getElementById('sortMenu').classList.remove('open');
-    render();
-  }
-  document.addEventListener('click', e=>{
-    if(!e.target.closest('#sortBtn') && !e.target.closest('#sortMenu'))
-      document.getElementById('sortMenu').classList.remove('open');
+/* ─────────────────────────────────────────
+   PROFILE — Init & Tabs
+───────────────────────────────────────── */
+let _profileInited = false;
+function initProfilePage() {
+  if (_profileInited) return;
+  _profileInited = true;
+
+  const PROF_GIGS = [
+    {badge:'BEST SELLER', title:'I will build a modern responsive website with React & Tailwind', rating:4.9, reviews:342, price:120, img:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80'},
+    {badge:'RISING STAR', title:'I will create a high-conversion landing page with Next.js', rating:4.9, reviews:128, price:160, img:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80'},
+    {badge:'', title:'I will build a scalable full-stack SaaS platform for your startup', rating:4.8, reviews:198, price:280, img:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80'},
+    {badge:'BEST SELLER', title:'I will integrate your Web3 dApp with wallet connect and wagmi', rating:4.9, reviews:87, price:420, img:'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=80'},
+  ];
+  document.getElementById('gigGrid').innerHTML = PROF_GIGS.map(g=>`
+    <a href="#" onclick="navigate('service');return false;" class="card-gig bg-white rounded-xl overflow-hidden flex flex-col">
+      <div class="relative overflow-hidden">
+        <img src="${g.img}" class="gig-img w-full aspect-[3/2] object-cover" loading="lazy" />
+        ${g.badge?`<span class="absolute top-3 left-0 text-[10px] font-extrabold tracking-wide text-slate-700 px-2.5 py-1 rounded-r-md bg-white/95">${g.badge}</span>`:''}
+      </div>
+      <div class="p-4 flex-1 flex flex-col">
+        <h3 class="text-sm font-bold text-[#5b4ee0] leading-snug">${g.title}</h3>
+        <div class="mt-2 flex items-center gap-1 text-xs text-slate-500">
+          <i class="ri-star-fill text-amber-400"></i><b class="text-slate-700">${g.rating}</b><span>(${g.reviews})</span>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-end text-xs text-slate-500">
+          <span>From <b class="font-extrabold text-slate-900">${g.price} ITL</b></span>
+        </div>
+      </div>
+    </a>`).join('');
+
+  const PROF_REVIEWS = [
+    {n:'Mariana C.', i:'M', bg:'#bae6fd', rate:5, date:'2 weeks ago', country:'🇧🇷 Brazil', text:'Andre delivered way beyond expectations. The site loads instantly and the animations are super smooth. Will hire again for sure.'},
+    {n:'James R.', i:'J', bg:'#fcd34d', rate:5, date:'1 month ago', country:'🇺🇸 USA', text:'Best React dev I have worked with on InterWork. Clean code, daily updates, deployed to Vercel and helped me wire the domain. 10/10.'},
+    {n:'Sofia L.', i:'S', bg:'#fbcfe8', rate:4, date:'1 month ago', country:'🇵🇹 Portugal', text:'Great work overall, small revisions on the mobile menu but quickly fixed. Would recommend for a quick landing page.'},
+    {n:'Henrique N.', i:'H', bg:'#ddd6fe', rate:5, date:'2 months ago', country:'🇧🇷 Brazil', text:'Super responsive and proactive. Suggested improvements I had not even thought of. Delivered ahead of the deadline.'},
+  ];
+  document.getElementById('profileReviewList').innerHTML = PROF_REVIEWS.map(r=>`
+    <article class="rounded-lg border border-slate-200 p-4">
+      <header class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-full grid place-items-center font-bold text-slate-700" style="background:${r.bg}">${r.i}</span>
+          <div>
+            <div class="font-bold text-slate-900 text-sm">${r.n}</div>
+            <div class="text-xs text-slate-500">${r.country} · ${r.date}</div>
+          </div>
+        </div>
+        <div class="star-row inline-flex items-center gap-1 text-xs">
+          ${Array(r.rate).fill('<i class="ri-star-fill"></i>').join('')}
+          ${Array(5-r.rate).fill('<i class="ri-star-line text-slate-300"></i>').join('')}
+          <b class="text-slate-900 ml-1">${r.rate}.0</b>
+        </div>
+      </header>
+      <p class="mt-3 text-sm text-slate-600 leading-relaxed">${r.text}</p>
+    </article>`).join('');
+}
+
+function showProfileTab(name, btn){
+  document.querySelectorAll('#page-profile .tab').forEach(t=>t.classList.remove('tab-active'));
+  btn.classList.add('tab-active');
+  ['gigs','about','reviews','portfolio'].forEach(n=>{
+    document.getElementById('pane-'+n).classList.add('hidden');
   });
+  document.getElementById('pane-'+name).classList.remove('hidden');
+}
 
-  // ===== Init =====
-  renderCats();
-  render();
-
-/* ═══════════════════════════════════════════════════════════════
-   CONFIGURAÇÃO SUPABASE
-   ═══════════════════════════════════════════════════════════════ */
+/* ─────────────────────────────────────────
+   SUPABASE
+───────────────────────────────────────── */
 const SUPABASE_URL  = 'https://mtxfpsmvftuszlujxtbg.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10eGZwc212ZnR1c3psdWp4dGJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5MjAwMzQsImV4cCI6MjA5NzQ5NjAzNH0.hOxufLcgcznx9cHmM5yAHt-ISCSJjcSCRtxtrIfNUYk';
 const SB_READY = SUPABASE_URL !== 'COLE_SUA_URL_AQUI' && SUPABASE_ANON !== 'COLE_SUA_ANON_KEY_AQUI';
@@ -457,45 +1146,23 @@ if (SB_READY) {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ESTADO DA CARTEIRA
-   ═══════════════════════════════════════════════════════════════ */
-let walletState = {
-  connected: false,
-  address: null,
-  sbProfile: null,
-};
+/* ─────────────────────────────────────────
+   WALLET
+───────────────────────────────────────── */
+let walletState = { connected: false, address: null, sbProfile: null };
 
-/* ═══════════════════════════════════════════════════════════════
-   FUNÇÕES DE CARTEIRA — DO v36
-   ═══════════════════════════════════════════════════════════════ */
-
-// Abre modal nativo do Reown com QR code e lista de carteiras
 function openConnectWallet(reason) {
-  if (window._reownModal) {
-    window._reownModal.open();
-    return;
-  }
-  // SDK ainda carregando — aguarda até 6s
+  if (window._reownModal) { window._reownModal.open(); return; }
   alert('Carregando carteiras...');
   let tries = 0;
   const poll = setInterval(() => {
     tries++;
-    if (window._reownModal) {
-      clearInterval(poll);
-      window._reownModal.open();
-      return;
-    }
-    if (tries > 20) {
-      clearInterval(poll);
-      alert('Erro ao carregar SDK de carteira. Recarregue a página.');
-    }
+    if (window._reownModal) { clearInterval(poll); window._reownModal.open(); return; }
+    if (tries > 20) { clearInterval(poll); alert('Erro ao carregar SDK de carteira. Recarregue a página.'); }
   }, 300);
 }
 
-// Chamado pelo módulo Reown quando carteira conecta com sucesso
 window._handleReownConnected = async function(address) {
-  // Sincroniza com Supabase (Anonymous Auth) ligada à wallet
   try {
     if (typeof sb !== 'undefined' && sb) {
       let { data: sessionData } = await sb.auth.getSession();
@@ -514,18 +1181,14 @@ window._handleReownConnected = async function(address) {
   } catch (e) {
     console.warn('[Supabase] Falha ao sincronizar sessão da wallet:', e);
   }
-
-  // Atualiza estado da carteira
   const shortW = address.slice(0, 6) + '...' + address.slice(-4);
   walletState.connected = true;
   walletState.address = address;
-
   console.log('✅ Carteira conectada:', shortW);
   alert(`Carteira conectada: ${shortW}`);
   updateHeaderWallet();
 };
 
-// Chamado pelo módulo Reown quando carteira desconecta
 window._handleReownDisconnected = function() {
   if (!walletState.connected) return;
   walletState.connected = false;
@@ -535,30 +1198,19 @@ window._handleReownDisconnected = function() {
   updateHeaderWallet();
 };
 
-// Desconecta carteira
 function disconnectWallet() {
-  if (window._reownModal) {
-    try { window._reownModal.disconnect(); } catch (e) {}
-  }
+  if (window._reownModal) { try { window._reownModal.disconnect(); } catch (e) {} }
   walletState.connected = false;
   walletState.address = null;
   alert('Wallet desconectada');
   updateHeaderWallet();
 }
 
-// Carrega perfil do Supabase
 async function sbLoadProfile(userId) {
   if (!sb || !userId) return null;
   try {
-    const { data: profile, error } = await sb
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single();
-    if (error) {
-      console.warn('[Supabase] Erro ao carregar perfil:', error.message);
-      return null;
-    }
+    const { data: profile, error } = await sb.from('profiles').select('*').eq('id', userId).single();
+    if (error) { console.warn('[Supabase] Erro ao carregar perfil:', error.message); return null; }
     console.log('✅ Perfil carregado:', profile.handle);
     return profile;
   } catch (err) {
@@ -567,13 +1219,11 @@ async function sbLoadProfile(userId) {
   }
 }
 
-// Atualiza header com estado da carteira
 function updateHeaderWallet() {
-  const btn = document.querySelector('a[class*="btn-primary"]') || document.querySelector('button[onclick="openConnectWallet()"]');
+  const btn = document.getElementById('walletBtn');
   if (!btn) return;
-  
   if (walletState.connected) {
-    btn.textContent = `✓ ${walletState.address.slice(0, 6)}...${walletState.address.slice(-4)}`;
+    btn.textContent = `✓ ${walletState.address.slice(0,6)}...${walletState.address.slice(-4)}`;
     btn.onclick = disconnectWallet;
     btn.style.background = '#22c55e';
   } else {
@@ -582,6 +1232,13 @@ function updateHeaderWallet() {
     btn.style.background = 'var(--primary)';
   }
 }
+
+/* ─────────────────────────────────────────
+   INIT
+───────────────────────────────────────── */
+renderCats();
+render();
+
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
