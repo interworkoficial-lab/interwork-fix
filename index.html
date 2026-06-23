@@ -1403,5 +1403,92 @@ renderCats();
 render();
 
 </script>
+  <section class="max-w-6xl mx-auto px-4 py-12 flex flex-col gap-12 font-sans text-slate-900 dark:text-white">
+  
+  <div class="border border-slate-200 dark:border-zinc-800 rounded-2xl bg-white dark:bg-zinc-900 shadow-sm overflow-hidden">
+    <div class="p-6 border-b border-slate-200 dark:border-zinc-800 flex justify-between items-center bg-slate-50/50 dark:bg-zinc-950/20">
+      <div>
+        <h2 class="text-xl font-bold tracking-tight">Painel de Administração</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Visão analítica de dados e contratos inteligentes ativos</p>
+      </div>
+      <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900">Live Sync</span>
+    </div>
+    
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/40 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <th class="p-4 pl-6">Categoria de Dados</th>
+            <th class="p-4">Estatística Atual</th>
+            <th class="p-4 pr-6">Status On-chain</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm divide-y divide-slate-100 dark:divide-zinc-800/60">
+          <tr class="hover:bg-slate-50/50 dark:hover:bg-zinc-900/50 transition-colors">
+            <td class="p-4 pl-6 font-medium">Talentos Registrados (SBT)</td>
+            <td class="p-4 font-mono font-semibold">1.245</td>
+            <td class="p-4 pr-6"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-500"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Ativo</span></td>
+          </tr>
+          <tr class="hover:bg-slate-50/50 dark:hover:bg-zinc-900/50 transition-colors">
+            <td class="p-4 pl-6 font-medium">Contratos Freelance</td>
+            <td class="p-4 font-mono font-semibold">382</td>
+            <td class="p-4 pr-6"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-teal-500"><span class="h-1.5 w-1.5 rounded-full bg-teal-500"></span>Sincronizado</span></td>
+          </tr>
+          <tr class="hover:bg-slate-50/50 dark:hover:bg-zinc-900/50 transition-colors">
+            <td class="p-4 pl-6 font-medium">Fundos em Escrow</td>
+            <td class="p-4 font-mono font-semibold text-blue-500">45.2 ETH</td>
+            <td class="p-4 pr-6"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-500"><span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>Seguro</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="border border-slate-200 dark:border-zinc-800 rounded-2xl bg-white dark:bg-zinc-900 shadow-sm p-6">
+    <div class="mb-6">
+      <h2 class="text-xl font-bold tracking-tight">Chat Descentralizado</h2>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Comunicação P2P criptografada vinculada à sua carteira.</p>
+    </div>
+
+    <div id="iw-chat-disconnected" class="flex flex-col items-center text-center py-10 border border-dashed border-slate-200 dark:border-zinc-800 rounded-xl bg-slate-50/30 dark:bg-zinc-950/10">
+      <h3 class="text-md font-semibold">Autenticação Requerida</h3>
+      <p class="text-sm text-slate-500 dark:text-slate-400 max-w-sm mt-1 mb-6">Conecte sua carteira para descriptografar e acessar as mensagens.</p>
+      <button id="iw-btn-connect-chat" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2.5 px-5 rounded-lg transition-colors shadow-sm">
+        Conectar Carteira ao Chat
+      </button>
+    </div>
+
+    <div id="iw-chat-connected" class="hidden flex flex-col gap-4">
+      <div class="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-zinc-800">
+        <span class="flex h-2 w-2 rounded-full bg-emerald-500 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span></span>
+        <p class="text-xs text-emerald-600 dark:text-emerald-400 font-mono uppercase tracking-wider font-semibold">Canal Seguro &amp; Criptografado</p>
+      </div>
+      
+      <div class="border border-slate-200 dark:border-zinc-800 h-48 rounded-xl bg-slate-50 dark:bg-zinc-950/50 p-4 overflow-y-auto flex flex-col justify-between">
+        <div class="text-xs text-slate-400 dark:text-slate-500 text-center py-1 font-mono">
+          — Histórico On-chain Seguro —
+        </div>
+        <div class="text-xs text-slate-400 dark:text-slate-500 italic text-center my-auto">
+          Nenhuma mensagem anterior neste bloco. Comece o chat abaixo.
+        </div>
+      </div>
+      
+      <div class="flex gap-2 items-end">
+        <input type="text" class="flex-1 border border-slate-200 dark:border-zinc-800 p-3 rounded-xl bg-white dark:bg-zinc-950 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Digite sua mensagem para o talento...">
+        <button class="bg-teal-600 hover:bg-teal-700 text-white font-semibold text-sm h-[46px] px-5 rounded-xl transition-colors shadow-sm">
+          Enviar
+        </button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+  document.getElementById('iw-btn-connect-chat').addEventListener('click', function() {
+      document.getElementById('iw-chat-disconnected').classList.add('hidden');
+      document.getElementById('iw-chat-connected').classList.remove('hidden');
+  });
+</script>
 </body>
 </html>
