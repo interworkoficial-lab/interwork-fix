@@ -3032,21 +3032,35 @@ function viewHeroPage(){
 
   </section>
 
+  <!-- CATEGORY BAR (Restored with Fidelity) -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 border-b border-slate-100">
+    <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-4">
+      <button onclick="STATE.category='all';STATE.query='';renderView()" class="px-4 py-2 rounded-full text-[13px] font-bold transition-all whitespace-nowrap ${STATE.category==='all'&&!STATE.query?'bg-[#8b7cff] text-white':'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}">
+        All
+      </button>
+      ${['dev','design','mobile','writing','video','ai','marketing','audit'].map(catId=>{
+        const cat = getCategory(catId);
+        const active = STATE.category===catId && !STATE.query;
+        return `<button onclick="STATE.category='${catId}';STATE.query='';renderView()" class="px-4 py-2 rounded-full text-[13px] font-bold transition-all whitespace-nowrap ${active?'bg-[#8b7cff] text-white':'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}">${cat.label}</button>`;
+      }).join('')}
+    </div>
+  </section>
+
   <!-- FILTER BAR (Refined) -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-3 mt-4">
-    <div class="flex items-center justify-between gap-4 text-sm text-ink-500 relative border-b border-ink-100 pb-4">
-      <span id="resultCount" class="font-medium text-slate-900">${filtered.length} results found</span>
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-3 mt-6">
+    <div class="flex items-center justify-between gap-4 text-sm text-ink-500 relative border-b border-slate-100 pb-4">
+      <span id="resultCount" class="font-bold text-slate-900">${filtered.length} services available</span>
       <div class="flex items-center gap-4">
-        <button id="sortBtn" onclick="toggleSort(event)" class="flex items-center gap-1 hover:text-ink-700 font-bold text-slate-900 transition">
-          <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
+        <button id="sortBtn" onclick="toggleSort(event)" class="flex items-center gap-1 hover:text-[#8b7cff] font-bold text-slate-900 transition">
+          <i class="ri-arrow-up-down-line"></i>
           <span id="sortLabel">Top Rated</span>
-          <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          <i class="ri-arrow-down-s-line"></i>
         </button>
-        <div id="sortMenu" class="hidden absolute right-0 top-full mt-2 w-44 bg-white border border-ink-200 rounded-lg shadow-lg py-1 z-30 text-left">
-          <button onclick="setSort('rating','Top Rated')" class="w-full text-left px-3 py-2 text-sm hover:bg-ink-50 text-ink-700">Top Rated</button>
-          <button onclick="setSort('reviews','Most Reviews')" class="w-full text-left px-3 py-2 text-sm hover:bg-ink-50 text-ink-700">Most Reviews</button>
-          <button onclick="setSort('priceAsc','Lowest Price')" class="w-full text-left px-3 py-2 text-sm hover:bg-ink-50 text-ink-700">Lowest Price</button>
-          <button onclick="setSort('priceDesc','Highest Price')" class="w-full text-left px-3 py-2 text-sm hover:bg-ink-50 text-ink-700">Highest Price</button>
+        <div id="sortMenu" class="hidden absolute right-0 top-full mt-2 w-44 bg-white border border-slate-200 rounded-xl shadow-xl py-1 z-30 text-left">
+          <button onclick="setSort('rating','Top Rated')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-medium">Top Rated</button>
+          <button onclick="setSort('reviews','Most Reviews')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-medium">Most Reviews</button>
+          <button onclick="setSort('priceAsc','Lowest Price')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-medium">Lowest Price</button>
+          <button onclick="setSort('priceDesc','Highest Price')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-medium">Highest Price</button>
         </div>
       </div>
     </div>
@@ -3123,20 +3137,32 @@ function viewExploreResults(){
       ${STATE.query ? `<i data-lucide="chevron-right" class="w-3 h-3"></i><span class="text-ink-600 font-medium">"${escapeHtml(STATE.query)}"</span>` : ''}
     </div>
 
+    <!-- CATEGORY BAR (Restored in Explore) -->
+    <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide mb-6">
+      <button onclick="STATE.category='all';STATE.query='';renderView()" class="px-4 py-2 rounded-full text-[13px] font-bold transition-all whitespace-nowrap ${STATE.category==='all'&&!STATE.query?'bg-[#8b7cff] text-white':'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}">
+        All
+      </button>
+      ${['dev','design','mobile','writing','video','ai','marketing','audit'].map(catId=>{
+        const cat = getCategory(catId);
+        const active = STATE.category===catId && !STATE.query;
+        return `<button onclick="STATE.category='${catId}';STATE.query='';renderView()" class="px-4 py-2 rounded-full text-[13px] font-bold transition-all whitespace-nowrap ${active?'bg-[#8b7cff] text-white':'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}">${cat.label}</button>`;
+      }).join('')}
+    </div>
+
     <!-- Results header -->
-    <div class="flex items-end justify-between mb-5 flex-wrap gap-3">
-      <h1 class="text-[26px] font-extrabold text-ink-900 leading-tight">
-        ${STATE.query ? `${escapeHtml(STATE.query)}` : (catObj ? catObj.label : (STATE.trendingActive ? 'Em alta agora' : 'Todos os serviços'))}
+    <div class="flex items-end justify-between mb-8 flex-wrap gap-3">
+      <h1 class="text-[28px] font-extrabold text-slate-900 leading-tight">
+        ${STATE.query ? `Results for "${escapeHtml(STATE.query)}"` : (catObj ? catObj.label : (STATE.trendingActive ? 'Trending now' : 'All services'))}
       </h1>
       <!-- Sort -->
       <div class="flex items-center gap-2">
-        <label class="text-[13px] text-ink-500 font-medium">Ordenar por:</label>
-        <select aria-label="Ordenar resultados" onchange="STATE.sort=this.value;renderView()" class="text-[13px] border-0 font-bold text-ink-900 bg-transparent outline-none cursor-pointer">
-          <option value="relevance" ${STATE.sort==='relevance'?'selected':''}>Relevância</option>
-          <option value="rating" ${STATE.sort==='rating'?'selected':''}>Melhor avaliado</option>
-          <option value="price_asc" ${STATE.sort==='price_asc'?'selected':''}>Menor preço</option>
-          <option value="price_desc" ${STATE.sort==='price_desc'?'selected':''}>Maior preço</option>
-          <option value="recent" ${STATE.sort==='recent'?'selected':''}>Mais recentes</option>
+        <label class="text-[13px] text-slate-500 font-bold">Sort by:</label>
+        <select aria-label="Sort results" onchange="STATE.sort=this.value;renderView()" class="text-[13px] border-0 font-extrabold text-[#8b7cff] bg-transparent outline-none cursor-pointer">
+          <option value="relevance" ${STATE.sort==='relevance'?'selected':''}>Relevance</option>
+          <option value="rating" ${STATE.sort==='rating'?'selected':''}>Top Rated</option>
+          <option value="price_asc" ${STATE.sort==='price_asc'?'selected':''}>Price: Low to High</option>
+          <option value="price_desc" ${STATE.sort==='price_desc'?'selected':''}>Price: High to Low</option>
+          <option value="recent" ${STATE.sort==='recent'?'selected':''}>Newest</option>
         </select>
       </div>
     </div>
