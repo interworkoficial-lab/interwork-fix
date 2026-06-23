@@ -154,7 +154,6 @@
       <button class="hidden sm:flex items-center gap-1 text-slate-600 hover:text-slate-900">
         <span class="w-4 h-4 rounded-full bg-slate-300 inline-block"></span> EN
       </button>
-      <a href="#" class="hidden sm:inline text-slate-700 hover:text-slate-900 font-medium">Log In</a>
       <button id="walletBtn" onclick="openConnectWallet()" class="btn-primary px-3 sm:px-4 py-2 rounded-lg font-semibold whitespace-nowrap text-xs sm:text-sm"><i class="ri-wallet-line"></i> Connect Wallet</button>
       <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-700 text-xl" aria-label="Menu">
         <i class="ri-menu-line"></i>
@@ -169,7 +168,6 @@
       <a href="#" class="py-2 hover:text-slate-900">How It Works</a>
       <a href="#" class="py-2 hover:text-slate-900">Community</a>
       <div class="sm:hidden border-t border-slate-100 mt-2 pt-2 flex flex-col gap-1">
-        <a href="#" class="py-2">Log In</a>
         <button class="py-2 text-left flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-slate-300"></span> EN</button>
       </div>
     </nav>
@@ -1264,14 +1262,84 @@ function updateHeaderWallet() {
   const btn = document.getElementById('walletBtn');
   if (!btn) return;
   if (walletState.connected) {
-    btn.textContent = `✓ ${walletState.address.slice(0,6)}...${walletState.address.slice(-4)}`;
-    btn.onclick = disconnectWallet;
+    const short = walletState.address.slice(0,6)+'...'+walletState.address.slice(-4);
+    btn.innerHTML = `<i class="ri-checkbox-circle-line"></i> ${short} <i class="ri-arrow-down-s-line"></i>`;
     btn.style.background = '#22c55e';
+    btn.onclick = toggleWalletDropdown;
   } else {
     btn.innerHTML = '<i class="ri-wallet-line"></i> Connect Wallet';
-    btn.onclick = openConnectWallet;
     btn.style.background = 'var(--primary)';
+    btn.onclick = openConnectWallet;
+    // remove dropdown se existir
+    const old = document.getElementById('wallet-dropdown');
+    if (old) old.remove();
   }
+}
+
+function toggleWalletDropdown() {
+  const existing = document.getElementById('wallet-dropdown');
+  if (existing) { existing.remove(); return; }
+
+  const btn = document.getElementById('walletBtn');
+  const rect = btn.getBoundingClientRect();
+  const short = walletState.address.slice(0,6)+'...'+walletState.address.slice(-4);
+
+  const dd = document.createElement('div');
+  dd.id = 'wallet-dropdown';
+  Object.assign(dd.style, {
+    position:'fixed',
+    top: (rect.bottom + 6) + 'px',
+    right: (window.innerWidth - rect.right) + 'px',
+    zIndex:'99999',
+    background:'#ffffff',
+    border:'1px solid #e2e8f0',
+    borderRadius:'12px',
+    boxShadow:'0 8px 24px rgba(0,0,0,.12)',
+    minWidth:'220px',
+    overflow:'hidden',
+    fontFamily:'inherit',
+  });
+
+  dd.innerHTML = `
+    <div style="padding:12px 14px;border-bottom:1px solid #f1f5f9;">
+      <div style="font-size:11px;color:#94a3b8;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Carteira conectada</div>
+      <div style="font-size:13px;font-weight:600;color:#0f172a;font-family:monospace">${walletState.address}</div>
+    </div>
+    <div style="padding:6px">
+      <button onclick="copyWalletAddress()" style="width:100%;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:none;background:none;cursor:pointer;font-size:13px;color:#334155;text-align:left" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'">
+        <i class="ri-file-copy-line"></i> Copiar endereço
+      </button>
+      <button onclick="confirmDisconnect()" style="width:100%;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:none;background:none;cursor:pointer;font-size:13px;color:#ef4444;text-align:left" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='none'">
+        <i class="ri-logout-box-r-line"></i> Desconectar carteira
+      </button>
+    </div>`;
+
+  document.body.appendChild(dd);
+
+  // Fecha ao clicar fora
+  setTimeout(() => {
+    document.addEventListener('click', function handler(e) {
+      if (!dd.contains(e.target) && e.target !== btn) {
+        dd.remove();
+        document.removeEventListener('click', handler);
+      }
+    });
+  }, 10);
+}
+
+function copyWalletAddress() {
+  if (!walletState.address) return;
+  navigator.clipboard.writeText(walletState.address)
+    .then(() => showToast('Endereço copiado!', 'success'))
+    .catch(() => showToast('Não foi possível copiar.', 'warn'));
+  const dd = document.getElementById('wallet-dropdown');
+  if (dd) dd.remove();
+}
+
+function confirmDisconnect() {
+  const dd = document.getElementById('wallet-dropdown');
+  if (dd) dd.remove();
+  disconnectWallet();
 }
 
 /* ─────────────────────────────────────────
