@@ -139,14 +139,18 @@
   /* Kill old sticky helpers on filter bar only — aside sidebar now uses inline sticky */
   .no-stick,.no-stick.sticky{position:static !important;top:auto !important}
 
-  /* ============ SERVICE PAGE (Integrated from Analysis) ============ */
+  /* ============ GLOBAL & SERVICE PAGE (Refined for 100% Fidelity) ============ */
   :root {
     --primary-alt: #8b7cff;
     --primary-alt-600: #7a6bf0;
     --primary-alt-soft: #efeaff;
     --primary-alt-text: #5b4ee0;
     --warning-alt: #f59e0b;
+    --ink-alt: #0f172a;
+    --muted-alt: #64748b;
+    --line-alt: #e5e7eb;
   }
+  body { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; color: var(--ink-alt); }
   .btn-primary-alt { background: var(--primary-alt); color: #fff; transition: background .15s; }
   .btn-primary-alt:hover { background: var(--primary-alt-600); }
   .btn-outline-alt { border: 1px solid #e2e8f0; color: #0f172a; background: #fff; transition: all .15s; }
@@ -166,6 +170,12 @@
   .star-row-alt i { color: var(--warning-alt); }
   .chip-alt { border: 1px solid #e5e7eb; background: #fff; color: #475569; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
   .chip-alt:hover { border-color: #c7c0ff; color: var(--primary-alt-text); background: #fafaff; }
+  .glass { backdrop-filter: blur(8px); background: rgba(255,255,255,0.8); }
+  .card-alt { transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; border: 1px solid var(--line-alt); border-radius: 1rem; overflow: hidden; }
+  .card-alt:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -12px rgba(91,78,224,0.18); border-color: #c7c0ff; }
+  
+  /* Hide old category strip styles */
+  .cat-strip-inner, .cat-strip-arrow, .cat-strip-wrap { display: none !important; }
 
   /* ============ GIG CARD (Fiverr-style, bulletproof) ============ */
   .gig-card{display:flex;flex-direction:column;min-width:0;width:100%}
@@ -2300,150 +2310,107 @@ function catStripScroll(dir){
 }
 
 function renderHeader(){
-  // Salvar posição do scroll do cat-strip antes de re-renderizar
-  const _prevStripScroll = document.getElementById('cat-strip')?.scrollLeft || 0;
   const me = getUser(STATE.currentUserId);
-  const langObj = LANGUAGES_LIST.find(l=>l.id===STATE.language);
   const authed = isAuthed();
-  const isHero = STATE.route==='home' && !STATE.query && STATE.category==='all';
-
-  // On the hero page, header is transparent; on other pages it's white/glass
-  const headerBg = isHero
-    ? 'bg-transparent border-transparent'
-    : 'bg-white border-b border-ink-100';
+  const langObj = LANGUAGES_LIST.find(l=>l.id===STATE.language);
 
   $('#app-header').innerHTML = `
-  <div class="sticky top-0 z-40 transition-all duration-200 bg-white border-b border-ink-100 glass">
-    <div class="max-w-7xl mx-auto px-4 h-[64px] flex items-center gap-3">
-
+  <header class="bg-white border-b border-slate-100 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      
       <!-- Logo -->
-      <a href="#/home" class="flex items-center gap-2 shrink-0" aria-label="Interwork Home">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-sonic grid place-items-center shadow">
-          <i data-lucide="hexagon" class="w-4 h-4 text-white"></i>
-        </div>
-        <span class="font-extrabold text-[18px] tracking-tight text-ink-900">Interwork<span class="text-brand-400">.</span></span>
+      <a href="#/home" class="flex items-center gap-2 shrink-0">
+        <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white shadow-sm">
+          <i class="ri-briefcase-4-fill text-base"></i>
+        </span>
+        <span class="font-extrabold text-slate-900 tracking-tight text-lg">InterWork</span>
       </a>
 
-      <!-- Desktop search bar — hidden on hero, shown everywhere else -->
-      ${(!isHero) ? `
-      <form id="header-search" class="header-search-form hidden md:flex flex-1 mx-4 items-center bg-ink-100/60 border border-ink-200 rounded-full h-10 px-4 gap-2 max-w-sm" onsubmit="event.preventDefault();pickHeaderSuggestion(document.getElementById('header-q')?.value.trim()||'')">
-        <i data-lucide="search" class="w-3.5 h-3.5 text-ink-400 shrink-0"></i>
-        <input id="header-q" value="${escapeHtml(STATE.query)}" placeholder="${t('search_ph')}"
-          autocomplete="off"
-          class="flex-1 outline-none text-sm bg-transparent placeholder:text-ink-400 text-ink-900"
-          oninput="handleHeaderSearch(this.value)"
-          onkeydown="handleHeaderSearchKey(event)"
-          onfocus="handleHeaderSearch(this.value)"
-        />
-        ${STATE.query ? `<button type="button" onclick="clearHeaderSearch()" class="text-ink-400 hover:text-ink-700"><i data-lucide="x" class="w-3 h-3"></i></button>` : ''}
-        <div id="header-search-dropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-ink-100 rounded-2xl shadow-pop z-50 overflow-hidden" style="top:42px;position:absolute;width:100%"></div>
-      </form>
-      ` : '<div class="flex-1"></div>'}
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
+        <a href="#/home" class="hover:text-slate-900 transition">Find Work</a>
+        <a href="#/home" class="hover:text-slate-900 transition">Hire Talent</a>
+        <a href="#/home" class="hover:text-slate-900 transition">How It Works</a>
+        <a href="#/home" class="hover:text-slate-900 transition">Community</a>
+      </nav>
 
-      <!-- RIGHT SIDE -->
-      <div class="flex items-center gap-2">
-
-        <!-- Language selector -->
-        <div class="relative">
-          <button onclick="toggleLangMenu(event)" aria-label="Idioma" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[13px] font-semibold transition border border-ink-200 text-ink-700 hover:bg-ink-100/50">
-            <span class="text-base leading-none">${langObj.flag}</span>
-            <span class="hidden sm:inline text-xs">${langObj.label}</span>
-            <i data-lucide="chevron-down" class="w-3 h-3 opacity-60"></i>
-          </button>
-          <div id="lang-menu" class="hidden absolute right-0 mt-2 w-60 bg-white border border-ink-200 rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.18)] p-2 z-50">
-            ${LANGUAGES_LIST.map(l=>`
-              <button onclick="setLang('${l.id}')" class="w-full text-left px-3 py-2.5 rounded-xl text-[14px] flex items-center gap-2.5 ${STATE.language===l.id?'bg-brand-50 text-brand-700 font-semibold':'hover:bg-ink-100/50 text-ink-700'}">
-                <span class="text-lg">${l.flag}</span>
-                <span class="flex-1">${l.label}</span>
-                ${STATE.language===l.id?`<i data-lucide="check" class="w-4 h-4"></i>`:''}
-              </button>`).join('')}
-          </div>
-        </div>
-
-
-
-
-
-        <!-- Sell service button -->
-        <button onclick="openNewServiceModal()" class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold text-[13px] transition border border-ink-200 text-ink-700 hover:bg-ink-100/60 hover:border-ink-300">
-          <i data-lucide="plus-circle" class="w-4 h-4"></i>
-          ${t('nav_sell')}
+      <!-- Right Actions -->
+      <div class="flex items-center gap-3 sm:gap-5">
+        
+        <!-- Language (Desktop) -->
+        <button onclick="toggleLangMenu(event)" class="hidden sm:flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition">
+          <span class="w-4 h-4 rounded-full bg-slate-200 grid place-items-center text-[10px] overflow-hidden">${langObj.flag}</span>
+          <span>${langObj.id.toUpperCase()}</span>
+          <i class="ri-arrow-down-s-line opacity-50"></i>
         </button>
-        <!-- Wallet / Auth button — always rightmost -->
+
         ${authed ? `
-          <!-- Avatar chip -->
-          <a href="#/u/${me?.handle||''}" class="relative flex items-center gap-1.5 text-ink-700 hover:text-ink-900 transition">
-            <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-ink-200 flex items-center justify-center bg-brand-100 text-brand-700 font-bold text-sm">
-              ${me?.avatar && me.avatarType!=='initials'
-                ? `<img src="${me.avatar}" class="w-full h-full object-cover" />`
-                : `<span>${(me?.name||'U')[0].toUpperCase()}</span>`}
-            </div>
-            ${unreadCount() ? `<span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose-500 text-white text-[9px] font-extrabold rounded-full grid place-items-center">${unreadCount()}</span>` : ''}
+          <!-- Profile Link -->
+          <a href="#/u/${me?.handle||''}" class="w-9 h-9 rounded-full overflow-hidden border border-slate-200 hover:ring-4 hover:ring-[#efeaff] transition shrink-0 relative">
+            ${me?.avatar && me.avatarType!=='initials'
+              ? `<img src="${me.avatar}" class="w-full h-full object-cover" />`
+              : `<div class="w-full h-full bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs"><span>${(me?.name||'U')[0].toUpperCase()}</span></div>`}
+            ${unreadCount() ? `<span class="absolute top-0 right-0 w-3 h-3 bg-rose-500 border-2 border-white rounded-full"></span>` : ''}
           </a>
         ` : `
-          <button onclick="openConnectWallet()" class="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-[13px] transition bg-ink-900 text-white hover:bg-ink-700">
-            <i data-lucide="wallet" class="w-4 h-4"></i>
-            Connect Wallet
+          <button onclick="openConnectWallet()" class="btn-primary-alt px-4 py-2 rounded-lg font-bold text-xs sm:text-sm flex items-center gap-2 shadow-sm">
+            <i class="ri-wallet-line"></i> <span class="hidden xs:inline">Connect Wallet</span><span class="xs:hidden">Connect</span>
           </button>
         `}
 
+        <!-- Mobile Menu Toggle -->
+        <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-700 text-xl p-1" aria-label="Menu">
+          <i id="mobMenuIcon" class="ri-menu-line"></i>
+        </button>
       </div>
     </div>
 
-    <!-- Mobile search bar (non-hero) -->
-    ${STATE.route!=='home' || STATE.query || STATE.category!=='all' ? `
-    <div class="md:hidden px-4 pb-2">
-      <form class="mobile-search-form flex items-center bg-[#f5f5f5] border border-ink-200 rounded-full h-9 px-3 gap-2" onsubmit="event.preventDefault();commitSearch(this.querySelector('input').value.trim())">
-        <i data-lucide="search" class="w-3.5 h-3.5 text-ink-400 shrink-0"></i>
-        <input id="q-mob" value="${escapeHtml(STATE.query)}" placeholder="${t('search_ph')}"
-          autocomplete="off"
-          class="flex-1 outline-none text-sm bg-transparent placeholder:text-ink-400"
-          oninput="handleSearchInput(this.value)"
-          onkeydown="handleSearchKey(event)"
-        />
-        ${STATE.query ? `<button type="button" onclick="clearSearch()" class="text-ink-400"><i data-lucide="x" class="w-3 h-3"></i></button>` : ''}
-      </form>
-    </div>` : ''}
+    <!-- Mobile menu dropdown -->
+    <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-100 bg-white overflow-hidden transition-all">
+      <nav class="px-4 py-4 flex flex-col gap-2 text-sm font-medium text-slate-700">
+        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Find Work</a>
+        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Hire Talent</a>
+        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
+        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Community</a>
+        <div class="border-t border-slate-100 mt-2 pt-2">
+           <button onclick="toggleLangMenu(event)" class="w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between">
+              <span>Language: ${langObj.label}</span>
+              <span class="text-lg">${langObj.flag}</span>
+           </button>
+        </div>
+      </nav>
+    </div>
 
-    <!-- Category strip — below header on non-hero pages -->
-    ${STATE.route!=='home' || STATE.query || STATE.category!=='all' ? `
-    <div class="border-t border-ink-100 relative" id="cat-strip-wrap">
-      <button id="cat-arrow-l" onclick="catStripScroll(-1)" class="cat-strip-arrow cat-strip-arrow-l hidden" aria-label="Categorias anteriores">
-        <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
-      </button>
-      <div id="cat-strip" class="cat-strip-inner">
-        <button onclick="pickTrending()"
-          class="cat-strip-btn ${STATE.trendingActive?'cat-strip-btn--active':''}">
-          <i data-lucide="flame" class="w-3.5 h-3.5 inline-block mr-1 text-orange-500" style="vertical-align:-2px"></i>Em alta
-        </button>
-        ${CATEGORIES.map(c=>`
-          <button onclick="pickCategory('${c.id}')"
-            class="cat-strip-btn ${STATE.category===c.id&&!STATE.query?'cat-strip-btn--active':''}">
-            ${escapeHtml(c.label)}
-          </button>`).join('')}
-      </div>
-      <button id="cat-arrow-r" onclick="catStripScroll(1)" class="cat-strip-arrow cat-strip-arrow-r" aria-label="Mais categorias">
-        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-      </button>
-    </div>` : ''}
-  </div>`;
+    <!-- Lang menu floating -->
+    <div id="lang-menu" class="hidden absolute right-4 sm:right-20 mt-1 w-56 bg-white border border-slate-200 rounded-xl shadow-xl p-2 z-[60]">
+      ${LANGUAGES_LIST.map(l=>`
+        <button onclick="setLang('${l.id}')" class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-3 ${STATE.language===l.id?'bg-slate-50 text-[#5b4ee0] font-bold':'hover:bg-slate-50 text-slate-700'}">
+          <span class="text-lg">${l.flag}</span>
+          <span class="flex-1">${l.label}</span>
+          ${STATE.language===l.id?`<i class="ri-check-line"></i>`:''}
+        </button>`).join('')}
+    </div>
+  </header>
+  `;
 
   icons();
-  setTimeout(()=>{
-    initCatStrip();
-    // Restaurar posição do scroll do strip (evita pulo para o início)
-    const strip = document.getElementById('cat-strip');
-    if(strip && _prevStripScroll > 0){
-      strip.scrollLeft = _prevStripScroll;
-    }
-  }, 0);
-  document.addEventListener('click', closeMenusOnOutside, { once:true });
 }
 
-function toggleThemeMenu(e){ e.stopPropagation(); closeMenus(); $('#theme-menu')?.classList.toggle('hidden'); }
+function toggleMobileMenu(){
+  const menu = document.getElementById('mobileMenu');
+  const icon = document.getElementById('mobMenuIcon');
+  if(!menu || !icon) return;
+  menu.classList.toggle('hidden');
+  icon.classList.toggle('ri-menu-line');
+  icon.classList.toggle('ri-close-line');
+}
+
+
 function closeMenus(){
   $('#lang-menu')?.classList.add('hidden');
-  $('#theme-menu')?.classList.add('hidden');
+  $('#mobileMenu')?.classList.add('hidden');
+  const icon = document.getElementById('mobMenuIcon');
+  if(icon) { icon.classList.add('ri-menu-line'); icon.classList.remove('ri-close-line'); }
 }
 function toggleLangMenu(e){ e.stopPropagation(); $('#lang-menu')?.classList.toggle('hidden'); }
 function closeMenusOnOutside(){ closeMenus(); }
@@ -3104,42 +3071,14 @@ function viewHeroPage(){
       </div>
     </form>
 
-    <!-- Quick chips -->
-    <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
-      <button onclick="pickTrendingTag('Web Development')" class="border border-ink-200 bg-white hover:border-brand-400 hover:text-brand-500 text-ink-600 transition-all rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5">
-        <i data-lucide="code" class="w-3.5 h-3.5"></i> Web Development
-      </button>
-      <button onclick="pickTrendingTag('UI/UX Design')" class="border border-ink-200 bg-white hover:border-brand-400 hover:text-brand-500 text-ink-600 transition-all rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5">
-        <i data-lucide="layout" class="w-3.5 h-3.5"></i> UI/UX Design
-      </button>
-      <button onclick="pickTrendingTag('Mobile Apps')" class="border border-ink-200 bg-white hover:border-brand-400 hover:text-brand-500 text-ink-600 transition-all rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5">
-        <i data-lucide="smartphone" class="w-3.5 h-3.5"></i> Mobile Apps
-      </button>
-      <button onclick="pickTrendingTag('AI & Machine Learning')" class="border border-ink-200 bg-white hover:border-brand-400 hover:text-brand-500 text-ink-600 transition-all rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI &amp; Machine Learning
-      </button>
-      <button onclick="pickTrendingTag('Blockchain')" class="border border-ink-200 bg-white hover:border-brand-400 hover:text-brand-500 text-ink-600 transition-all rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5">
-        <i data-lucide="link" class="w-3.5 h-3.5"></i> Blockchain
-      </button>
-    </div>
   </section>
 
-  <!-- FILTER BAR -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 border-b border-ink-100 pb-3">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
-      <div id="catBar" class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-        <button onclick="STATE.category='all';STATE.query='';renderView()" class="px-4 py-1.5 rounded-full text-sm font-semibold border transition-all whitespace-nowrap ${STATE.category==='all'&&!STATE.query?'bg-brand-500 text-white border-brand-500':'border-ink-200 text-ink-600 hover:border-brand-400'}">
-          All
-        </button>
-        ${['dev','design','mobile','writing','video','ai','marketing','audit','business','data'].map(catId=>{
-          const cat = getCategory(catId);
-          const label = catId==='dev'?'Web Dev':catId==='design'?'UI/UX':catId==='mobile'?'Mobile':catId==='writing'?'Content':catId==='video'?'Video':catId==='ai'?'AI/ML':catId==='marketing'?'Marketing':catId==='audit'?'Blockchain':catId==='business'?'DevOps':'Data';
-          return `<button onclick="STATE.category='${catId}';STATE.query='';renderView()" class="px-4 py-1.5 rounded-full text-sm font-semibold border transition-all whitespace-nowrap ${STATE.category===catId&&!STATE.query?'bg-brand-500 text-white border-brand-500':'border-ink-200 text-ink-600 hover:border-brand-400'}">${label}</button>`;
-        }).join('')}
-      </div>
-      <div class="flex items-center justify-between sm:justify-end gap-4 text-sm text-ink-500 shrink-0 relative">
-        <span id="resultCount">${filtered.length} results</span>
-        <button id="sortBtn" onclick="toggleSort(event)" class="flex items-center gap-1 hover:text-ink-700 font-medium transition">
+  <!-- FILTER BAR (Refined) -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-3 mt-4">
+    <div class="flex items-center justify-between gap-4 text-sm text-ink-500 relative border-b border-ink-100 pb-4">
+      <span id="resultCount" class="font-medium text-slate-900">${filtered.length} results found</span>
+      <div class="flex items-center gap-4">
+        <button id="sortBtn" onclick="toggleSort(event)" class="flex items-center gap-1 hover:text-ink-700 font-bold text-slate-900 transition">
           <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
           <span id="sortLabel">Top Rated</span>
           <i data-lucide="chevron-down" class="w-4 h-4"></i>
@@ -3243,72 +3182,42 @@ function viewExploreResults(){
       </div>
     </div>
 
-    <!-- Filter pills row — compact, Fiverr-style dropdown triggers -->
+    <!-- Filter pills row (Fidelity Refinement) -->
     <div class="flex items-center gap-2 flex-wrap mb-6 pb-5 border-b border-ink-100">
 
-      <!-- Budget filter — typeable -->
+      <!-- Budget filter -->
       <div class="relative">
-        <button onclick="toggleFilterMenu('fm-budget',event)" class="flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-[13px] font-semibold transition ${(STATE.priceMax>0||STATE.priceMin>0)?'bg-ink-900 text-white border-ink-900':'bg-white border-ink-300 text-ink-700 hover:border-ink-500 hover:shadow-sm'}">
+        <button onclick="toggleFilterMenu('fm-budget',event)" class="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 bg-white text-[13px] font-bold text-slate-700 hover:border-slate-400 transition">
           ${STATE.priceMin>0 && STATE.priceMax>0 ? `${fmtITL(STATE.priceMin)} – ${fmtITL(STATE.priceMax)}`
             : STATE.priceMax>0 ? `Até ${fmtITL(STATE.priceMax)}`
             : STATE.priceMin>0 ? `A partir de ${fmtITL(STATE.priceMin)}`
-            : 'Orçamento'}
-          <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-70"></i>
+            : 'Budget'}
+          <i class="ri-arrow-down-s-line opacity-50"></i>
         </button>
-        <div id="fm-budget" data-fmenu class="hidden absolute left-0 mt-2 w-64 bg-white border border-ink-200 rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.18)] p-4 z-50" onclick="event.stopPropagation()">
-          <div class="text-[10px] uppercase font-bold tracking-wider text-ink-400 mb-2">Faixa de preço (ITL)</div>
+        <div id="fm-budget" data-fmenu class="hidden absolute left-0 mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-4 z-50" onclick="event.stopPropagation()">
+          <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2">Price Range (ITL)</div>
           <div class="flex items-center gap-2">
-            <div class="flex-1">
-              <label class="text-[10px] text-ink-400 font-semibold">Mínimo</label>
-              <input aria-label="Preço mínimo" id="budget-min-input" type="number" min="0" placeholder="0"
-                value="${STATE.priceMin>0?STATE.priceMin:''}"
-                class="w-full mt-1 border border-ink-200 rounded-lg px-2.5 py-1.5 text-sm outline-none focus:border-brand-400"
-                onkeydown="if(event.key==='Enter')applyBudgetInputs()"/>
-            </div>
-            <span class="text-ink-300 mt-4">—</span>
-            <div class="flex-1">
-              <label class="text-[10px] text-ink-400 font-semibold">Máximo</label>
-              <input aria-label="Preço máximo" id="budget-max-input" type="number" min="0" placeholder="Qualquer"
-                value="${STATE.priceMax>0?STATE.priceMax:''}"
-                class="w-full mt-1 border border-ink-200 rounded-lg px-2.5 py-1.5 text-sm outline-none focus:border-brand-400"
-                onkeydown="if(event.key==='Enter')applyBudgetInputs()"/>
-            </div>
+            <input aria-label="Min" id="budget-min-input" type="number" placeholder="Min" value="${STATE.priceMin||''}" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-sm outline-none focus:border-[#8b7cff]"/>
+            <input aria-label="Max" id="budget-max-input" type="number" placeholder="Max" value="${STATE.priceMax||''}" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-sm outline-none focus:border-[#8b7cff]"/>
           </div>
           <div class="flex items-center gap-2 mt-3">
-            <button onclick="applyBudgetInputs()" class="flex-1 bg-ink-900 hover:bg-ink-700 text-white text-sm font-bold py-2 rounded-xl transition">Aplicar</button>
-            ${(STATE.priceMin>0||STATE.priceMax>0) ? `<button onclick="STATE.priceMin=0;STATE.priceMax=0;renderView()" class="px-3 py-2 rounded-xl border border-ink-200 text-sm font-semibold text-ink-600 hover:bg-ink-100/60">Limpar</button>` : ''}
-          </div>
-          <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-ink-100">
-            ${[100,250,500,1000,2500].map(v=>`
-              <button onclick="STATE.priceMin=0;STATE.priceMax=${v};renderView()" class="px-2.5 py-1 rounded-full text-[11px] font-semibold border ${STATE.priceMax===v&&STATE.priceMin===0?'bg-brand-50 border-brand-200 text-brand-700':'border-ink-200 text-ink-600 hover:border-ink-400'}">
-                até ${fmtITL(v)}
-              </button>`).join('')}
+            <button onclick="applyBudgetInputs()" class="flex-1 btn-primary-alt text-sm font-bold py-2 rounded-lg transition">Apply</button>
           </div>
         </div>
       </div>
 
       <!-- Seller level -->
       <div class="relative">
-        <button onclick="toggleFilterMenu('fm-seller',event)" class="flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-[13px] font-semibold transition ${STATE.verifiedOnly?'bg-ink-900 text-white border-ink-900':'bg-white border-ink-300 text-ink-700 hover:border-ink-500 hover:shadow-sm'}">
-          Vendedor
-          <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-70"></i>
+        <button onclick="toggleFilterMenu('fm-seller',event)" class="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 bg-white text-[13px] font-bold text-slate-700 hover:border-slate-400 transition">
+          Seller
+          <i class="ri-arrow-down-s-line opacity-50"></i>
         </button>
-        <div id="fm-seller" data-fmenu class="hidden absolute left-0 mt-2 w-56 bg-white border border-ink-200 rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.18)] p-3 z-50" onclick="event.stopPropagation()">
-          <label class="flex items-center gap-2 px-2 py-2 rounded-xl hover:bg-ink-100/50 cursor-pointer text-sm">
-            <input type="checkbox" ${STATE.verifiedOnly?'checked':''} onchange="STATE.verifiedOnly=this.checked;renderView()" class="rounded"/>
-            Verificados
+        <div id="fm-seller" data-fmenu class="hidden absolute left-0 mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-xl p-3 z-50" onclick="event.stopPropagation()">
+          <label class="flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-slate-50 cursor-pointer text-sm">
+            <input type="checkbox" ${STATE.verifiedOnly?'checked':''} onchange="STATE.verifiedOnly=this.checked;renderView()" class="rounded border-slate-300 text-[#8b7cff] focus:ring-[#8b7cff]"/>
+            Top Rated Sellers
           </label>
-          <label class="flex items-center gap-2 px-2 py-2 rounded-xl hover:bg-ink-100/50 cursor-pointer text-sm">
-            <input type="checkbox" ${STATE.availableOnly?'checked':''} onchange="STATE.availableOnly=this.checked;renderView()" class="rounded"/>
-            Online agora
-          </label>
-          <div class="border-t border-ink-100 mt-2 pt-2">
-            <div class="text-[10px] uppercase font-bold tracking-wider text-ink-400 mb-1">Avaliação mínima</div>
-            ${[0,4,4.5].map(v=>`
-              <button onclick="STATE.ratingMin=${v};renderView()" class="w-full text-left px-2 py-1.5 rounded-xl text-sm ${STATE.ratingMin===v?'bg-brand-50 text-brand-700 font-semibold':'hover:bg-ink-100/50'}">
-                ${v===0?'Todas':'⭐ '+v+'+'}
-              </button>`).join('')}
-          </div>
+
         </div>
       </div>
 
