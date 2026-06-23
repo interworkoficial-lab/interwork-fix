@@ -13,6 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- Reown AppKit — WalletConnect real com 530+ carteiras (bundle local) -->
 <script src="./reown-bundle.js"></script>
@@ -137,6 +138,27 @@
 
   /* Kill old sticky helpers on filter bar only — aside sidebar now uses inline sticky */
   .no-stick,.no-stick.sticky{position:static !important;top:auto !important}
+
+  /* ============ SERVICE PAGE (Integrated from Analysis) ============ */
+  :root {
+    --primary-alt: #8b7cff;
+    --primary-alt-600: #7a6bf0;
+    --primary-alt-soft: #efeaff;
+    --primary-alt-text: #5b4ee0;
+  }
+  .tab-alt { border-bottom: 2px solid transparent; color: #64748b; transition: all .15s; }
+  .tab-alt:hover { color: #0f172a; }
+  .tab-alt-active { color: #0f172a; border-color: var(--primary-alt); font-weight: 700; }
+  .pkg-card-alt { transition: all .2s ease; border: 1px solid #e5e7eb; background: #fff; }
+  .pkg-card-alt.active { border-color: var(--primary-alt); box-shadow: 0 8px 24px -10px rgba(139,124,255,.35); }
+  .thumb-alt { border: 2px solid transparent; cursor: pointer; transition: all .15s; border-radius: 8px; }
+  .thumb-alt.active { border-color: var(--primary-alt); }
+  .thumb-alt:hover { opacity: .85; }
+  .accordion-alt summary { cursor: pointer; list-style: none; }
+  .accordion-alt summary::-webkit-details-marker { display: none; }
+  .accordion-alt summary .ic { transition: transform .2s; }
+  .accordion-alt[open] summary .ic { transform: rotate(180deg); }
+  .star-row-alt i { color: #f59e0b; }
 
   /* ============ GIG CARD (Fiverr-style, bulletproof) ============ */
   .gig-card{display:flex;flex-direction:column;min-width:0;width:100%}
@@ -3719,7 +3741,7 @@ function viewFavorites(){
 function viewService(id){
   const s = getService(id);
   if (!s) return `<div class="max-w-3xl mx-auto p-10 text-center text-ink-500">Serviço não encontrado. <a href="#/home" class="text-brand-500 font-semibold">Voltar</a></div>`;
-  const u = getUserSafe(s.freelancerId); // ADICIONADO fallback — antes: getUser(s.freelancerId)
+  const u = getUserSafe(s.freelancerId);
   const cat = getCategory(s.category);
   const co  = getCountry(s.country);
   const recommended = recommendedFor(s);
@@ -3728,409 +3750,283 @@ function viewService(id){
   const dist = reviewDistribution(s);
   const distTotal = dist.reduce((a,b)=>a+b,0) || 1;
 
-  // Format title Fiverr-style
-  const titleHtml = s.title.toLowerCase().startsWith('i will ')
-    ? `<span class="text-ink-400 font-semibold">I will </span>${escapeHtml(s.title.slice(7))}`
-    : escapeHtml(s.title);
+  const titleHtml = escapeHtml(s.title);
 
   return `
-  <div class="max-w-6xl mx-auto px-5 py-6">
-    <!-- breadcrumb -->
-    <div class="flex items-center gap-1 text-xs text-ink-500 mb-4 flex-wrap">
-      <a href="#/home" class="hover:text-brand-500">Explore</a>
-      <i data-lucide="chevron-right" class="w-3 h-3"></i>
-      <a href="#/home" onclick="STATE.category='${cat.id}';renderView()" class="hover:text-brand-500">${cat.label}</a>
-      <i data-lucide="chevron-right" class="w-3 h-3"></i>
-      <span class="text-ink-700 truncate max-w-xs">${escapeHtml(s.title)}</span>
+  <!-- BREADCRUMB -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-5">
+    <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500">
+      <a href="#/home" class="hover:text-slate-900">Home</a>
+      <i class="ri-arrow-right-s-line"></i>
+      <a href="#/home" onclick="STATE.category='${cat.id}';renderView()" class="hover:text-slate-900">${cat.label}</a>
+      <i class="ri-arrow-right-s-line"></i>
+      <span class="text-slate-700 truncate">${titleHtml}</span>
+    </nav>
+  </div>
+
+  <!-- MAIN SERVICE -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- LEFT (2 cols) -->
+    <div class="lg:col-span-2 space-y-8">
+
+      <!-- Title block -->
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-snug">
+          ${titleHtml}
+        </h1>
+        <div class="mt-4 flex flex-wrap items-center gap-3 sm:gap-4 text-sm">
+          <div class="flex items-center gap-2">
+            <a href="#/u/${u.handle}" class="w-9 h-9 rounded-full grid place-items-center font-bold text-slate-600 hover:ring-4 hover:ring-[#efeaff] transition overflow-hidden">
+               <img src="${u.avatar}" class="w-full h-full object-cover"/>
+            </a>
+            <div class="flex flex-col">
+              <a href="#/u/${u.handle}" class="font-bold text-slate-900 hover:text-[#5b4ee0]">${escapeHtml(u.name)}</a>
+              <span class="text-xs text-slate-500">${u.verified ? 'Verified' : 'Member'} · Since ${new Date(u.joinedTs).getFullYear()}</span>
+            </div>
+          </div>
+          <span class="hidden sm:inline text-slate-300">|</span>
+          <div class="flex items-center gap-1 star-row-alt">
+            <i class="ri-star-fill"></i>
+            <span class="font-bold text-slate-900">${s.rating.toFixed(1)}</span>
+            <span class="text-slate-500">(${s.reviewsCount} reviews)</span>
+          </div>
+          <span class="hidden sm:inline text-slate-300">|</span>
+          <div class="flex items-center gap-1 text-slate-500">
+            <i class="ri-shopping-bag-3-line"></i>
+            <span>${u.jobs} orders completed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery -->
+      <div>
+        <div class="aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 bg-slate-100 relative group">
+          <img id="mainImg" src="${s.thumb}" class="w-full h-full object-cover" />
+          ${isServiceOwner(s) ? `
+            <div class="absolute top-3 left-3 flex items-center gap-2">
+              <button onclick="openEditServiceModal('${s.id}')" class="px-3 py-1.5 rounded-lg bg-white/95 text-slate-900 text-xs font-bold shadow-sm flex items-center gap-1 hover:bg-white">
+                <i class="ri-pencil-line"></i> EDIT
+              </button>
+            </div>
+          ` : ''}
+        </div>
+        <div class="mt-3 grid grid-cols-5 gap-2 sm:gap-3">
+          ${[s.thumb, ...(s.gallery || [])].filter(Boolean).map((src, i) => `
+            <img class="thumb-alt ${i === 0 ? 'active' : ''} aspect-[4/3] object-cover" onclick="setMainAlt(this)" src="${src}">
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- About this gig -->
+      <section>
+        <h2 class="text-xl font-extrabold text-slate-900">About this gig</h2>
+        <div class="mt-3 text-slate-600 leading-relaxed space-y-3 text-sm sm:text-base whitespace-pre-line">
+          ${escapeHtml(s.description)}
+        </div>
+
+        <div class="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Delivery</div><div class="font-bold text-slate-900 text-sm mt-1">${s.deliveryDays} days</div></div>
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Revisions</div><div class="font-bold text-slate-900 text-sm mt-1">Unlimited</div></div>
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Source code</div><div class="font-bold text-slate-900 text-sm mt-1">Included</div></div>
+          <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Languages</div><div class="font-bold text-slate-900 text-sm mt-1">${(u.languages || ['EN']).join(' · ').toUpperCase()}</div></div>
+        </div>
+
+        ${s.includes && s.includes.length ? `
+        <h3 class="mt-6 font-bold text-slate-900">What you get</h3>
+        <ul class="mt-3 space-y-2 text-sm text-slate-600">
+          ${s.includes.map(inc => `
+            <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i>${escapeHtml(inc)}</li>
+          `).join('')}
+        </ul>` : ''}
+      </section>
+
+      <!-- About the seller -->
+      <section class="border-t border-slate-200 pt-8">
+        <h2 class="text-xl font-extrabold text-slate-900">About the seller</h2>
+        <div class="mt-4 flex flex-col sm:flex-row gap-5">
+          <div class="flex items-center gap-4 sm:flex-col sm:items-center">
+            <a href="#/u/${u.handle}" class="w-20 h-20 rounded-full grid place-items-center overflow-hidden hover:ring-4 hover:ring-[#efeaff] transition">
+              <img src="${u.avatar}" class="w-full h-full object-cover"/>
+            </a>
+            <div class="sm:text-center">
+              <a href="#/u/${u.handle}" class="font-bold text-slate-900 hover:text-[#5b4ee0]">${escapeHtml(u.name)}</a>
+              <div class="text-xs text-slate-500">Freelancer</div>
+              <a href="#/u/${u.handle}" class="mt-2 inline-block text-xs btn-outline px-3 py-1.5 rounded-lg">View profile</a>
+            </div>
+          </div>
+          <div class="flex-1">
+            <div class="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
+              <div><span class="text-slate-500">From</span><div class="font-semibold text-slate-900">${co.flag} ${co.name}</div></div>
+              <div><span class="text-slate-500">Member since</span><div class="font-semibold text-slate-900">${new Date(u.joinedTs).getFullYear()}</div></div>
+              <div><span class="text-slate-500">Avg. response</span><div class="font-semibold text-slate-900">~1 hour</div></div>
+              <div><span class="text-slate-500">Orders completed</span><div class="font-semibold text-slate-900">${u.jobs}</div></div>
+            </div>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed line-clamp-3">${escapeHtml(u.bio || '')}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reviews -->
+      <section class="border-t border-slate-200 pt-8">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <h2 class="text-xl font-extrabold text-slate-900">Reviews</h2>
+          <div class="flex items-center gap-2 text-sm">
+            <span class="star-row-alt inline-flex items-center gap-1"><i class="ri-star-fill"></i><b class="text-slate-900">${s.rating.toFixed(1)}</b></span>
+            <span class="text-slate-500">(${s.reviewsCount} reviews)</span>
+          </div>
+        </div>
+
+        <!-- Rating breakdown -->
+        <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            ${[5, 4, 3, 2, 1].map(star => {
+              const count = dist[star - 1] || 0;
+              const pct = (count / distTotal * 100).toFixed(0);
+              return `
+              <div class="flex items-center gap-2 text-xs">
+                <span class="w-12 text-slate-600">${star} stars</span>
+                <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-amber-400" style="width:${pct}%"></div>
+                </div>
+                <span class="w-10 text-right text-slate-500">${count}</span>
+              </div>`;
+            }).join('')}
+          </div>
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">Communication</div><div class="font-bold text-slate-900 text-lg mt-1">5.0</div></div>
+            <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">Service quality</div><div class="font-bold text-slate-900 text-lg mt-1">${s.rating.toFixed(1)}</div></div>
+            <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">Recommendation</div><div class="font-bold text-slate-900 text-lg mt-1">4.9</div></div>
+            <div class="rounded-lg border border-slate-200 p-3"><div class="text-slate-500">On time delivery</div><div class="font-bold text-slate-900 text-lg mt-1">5.0</div></div>
+          </div>
+        </div>
+
+        <!-- Review items -->
+        <div class="mt-6 space-y-5">
+          ${visReviews.map(r => `
+            <article class="rounded-lg border border-slate-200 p-4">
+              <header class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-slate-100 grid place-items-center font-bold text-slate-700 overflow-hidden">
+                    <img src="${getUserSafe(r.userId).avatar}" class="w-full h-full object-cover"/>
+                  </div>
+                  <div>
+                    <div class="font-bold text-slate-900 text-sm">${escapeHtml(getUserSafe(r.userId).name)}</div>
+                    <div class="text-xs text-slate-500">${new Date(r.ts).toLocaleDateString()}</div>
+                  </div>
+                </div>
+                <div class="star-row-alt inline-flex items-center gap-1 text-xs">
+                  ${Array(Math.floor(r.rating)).fill('<i class="ri-star-fill"></i>').join('')}
+                  <b class="text-slate-900 ml-1">${r.rating.toFixed(1)}</b>
+                </div>
+              </header>
+              <p class="mt-3 text-sm text-slate-600 leading-relaxed">${escapeHtml(r.text)}</p>
+            </article>
+          `).join('')}
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      ${s.faqs && s.faqs.length ? `
+      <section class="border-t border-slate-200 pt-8">
+        <h2 class="text-xl font-extrabold text-slate-900">Frequently asked questions</h2>
+        <div class="mt-4 space-y-2">
+          ${s.faqs.map(f => `
+            <details class="accordion-alt rounded-lg border border-slate-200 p-4">
+              <summary class="flex items-center justify-between font-semibold text-slate-900 text-sm">
+                <span>${escapeHtml(f.q)}</span>
+                <i class="ic ri-arrow-down-s-line text-slate-500"></i>
+              </summary>
+              <p class="mt-3 text-sm text-slate-600">${escapeHtml(f.a)}</p>
+            </details>
+          `).join('')}
+        </div>
+      </section>` : ''}
+
     </div>
 
-    <div class="flex flex-col lg:flex-row gap-7 items-start">
-      <!-- LEFT: ~62% width like Fiverr -->
-      <div class="w-full lg:w-[62%] space-y-5 min-w-0">
-
-        <!-- TITLE + SELLER MINI (Fiverr top section) -->
-        <div>
-          <h1 class="text-xl md:text-2xl font-extrabold leading-tight mb-3">${titleHtml}</h1>
-          <!-- Seller row -->
-          <div class="flex items-center gap-3 flex-wrap">
-            <a href="#/u/${u.handle}" class="flex items-center gap-2.5 group">
-              <img src="${u.avatar}" class="w-10 h-10 rounded-full border-2 border-ink-100 group-hover:border-brand-300 transition" />
-              <div>
-                <div class="flex items-center gap-1.5">
-                  <span class="font-bold text-sm text-ink-900 group-hover:text-brand-500">${escapeHtml(u.name)}</span>
-                  ${u.verified ? `<i data-lucide="badge-check" class="w-4 h-4 text-brand-500"></i>` : ''}
-                  ${levelChip(u.level)}
-                </div>
-                <div class="text-[11px] text-ink-400 font-mono">@${u.handle} · ${co.flag} ${co.name}</div>
-              </div>
-            </a>
-            <div class="flex items-center gap-1 ml-1">
-              ${stars(s.rating,'w-3.5 h-3.5')}
-              <span class="text-sm font-bold ml-1">${s.rating.toFixed(1)}</span>
-              <span class="text-xs text-ink-500">(${s.reviewsCount})</span>
-            </div>
-            <div class="ml-auto flex items-center gap-2">
-              <button onclick="toggleFavorite('${s.id}', event)" aria-label="${isFavorited(s.id)?'Remover':'Salvar'}" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border ${isFavorited(s.id)?'border-rose-200 bg-rose-50 text-rose-600':'border-ink-100 hover:bg-ink-100/40 text-ink-500'} text-xs font-semibold">
-                <i data-lucide="heart" class="w-3.5 h-3.5 ${isFavorited(s.id)?'fill-rose-500 text-rose-500':''}"></i>${isFavorited(s.id)?'Saved':'Save'}
-              </button>
+    <!-- RIGHT — Pricing card -->
+    <aside class="lg:col-span-1">
+      <div class="lg:sticky lg:top-20 space-y-4">
+        <div class="pkg-card-alt active rounded-xl bg-white p-5 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+            <span class="text-xs font-bold tracking-wide text-[#5b4ee0] bg-[#efeaff] px-2.5 py-1 rounded-full">STANDARD</span>
+            <div class="text-right">
+              <div class="text-xs text-slate-500">From</div>
+              <div class="font-extrabold text-slate-900 text-xl">${s.price} ITL</div>
             </div>
           </div>
-        </div>
-        <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden shadow-card">
-          ${(() => {
-            const imgs = [s.thumb, ...(s.gallery||[])].filter(Boolean);
-            const hasMany = imgs.length > 1;
-            const isOwner = isServiceOwner(s);
-            const MAX_GALLERY = 8;
-            const galleryFull = (s.gallery||[]).length >= MAX_GALLERY;
-            const showStrip = hasMany || isOwner;
-            return `
-            <div class="gig-gallery" data-gallery-id="${s.id}">
-
-              <!-- ── MAIN IMAGE with overlay arrows (Fiverr style) ── -->
-              <div class="relative bg-ink-100/30 select-none" style="border-radius:0">
-                <img id="gig-main-${s.id}" src="${imgs[0]}"
-                  class="w-full object-cover cursor-zoom-in block"
-                  style="height:360px;max-height:58vw;transition:opacity .2s"
-                  onclick="openLightbox('${s.id}', parseInt(this.dataset.idx||'0'))"
-                  data-idx="0"/>
-
-                <!-- counter badge -->
-                <div id="gig-counter-${s.id}" class="absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-black/65 text-white text-xs font-bold" ${imgs.length<2?'style="display:none"':''}>
-                  1 / ${imgs.length}
-                </div>
-
-                <!-- fullscreen hint -->
-                <div class="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-black/55 text-white text-[11px] font-semibold flex items-center gap-1 pointer-events-none">
-                  <i data-lucide="maximize-2" class="w-3 h-3"></i> Full Screen
-                </div>
-
-                <!-- LEFT arrow -->
-                ${hasMany ? `
-                <button id="gig-prev-${s.id}" onclick="galleryNav('${s.id}',-1)" aria-label="Imagem anterior"
-                  class="absolute left-0 top-0 bottom-0 w-14 flex items-center justify-center group transition"
-                  style="background:linear-gradient(to right,rgba(0,0,0,.32),transparent)">
-                  <span class="w-9 h-9 grid place-items-center rounded-full bg-white/90 group-hover:bg-white shadow-md ring-1 ring-black/10 transition">
-                    <i data-lucide="chevron-left" class="w-5 h-5 text-ink-900"></i>
-                  </span>
-                </button>
-                <!-- RIGHT arrow -->
-                <button id="gig-next-${s.id}" onclick="galleryNav('${s.id}',1)" aria-label="Próxima imagem"
-                  class="absolute right-0 top-0 bottom-0 w-14 flex items-center justify-center group transition"
-                  style="background:linear-gradient(to left,rgba(0,0,0,.32),transparent)">
-                  <span class="w-9 h-9 grid place-items-center rounded-full bg-white/90 group-hover:bg-white shadow-md ring-1 ring-black/10 transition">
-                    <i data-lucide="chevron-right" class="w-5 h-5 text-ink-900"></i>
-                  </span>
-                </button>` : ''}
-
-                <!-- Owner badges -->
-                ${isOwner ? `
-                  <div class="absolute top-3 left-3 flex items-center gap-2">
-                    <div class="px-2.5 py-1 rounded-full bg-brand-500/90 text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-                      <i data-lucide="user-check" class="w-3 h-3"></i>Seu serviço
-                    </div>
-                    <button onclick="openEditServiceModal('${s.id}')" title="Editar serviço"
-                      class="px-2.5 py-1 rounded-full bg-white/95 hover:bg-white text-ink-900 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow ring-1 ring-black/10 transition">
-                      <i data-lucide="pencil" class="w-3 h-3"></i>Editar
-                    </button>
-                    <button onclick="deleteService('${s.id}')" title="Excluir serviço"
-                      class="px-2.5 py-1 rounded-full bg-rose-500/95 hover:bg-rose-600 text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow ring-1 ring-black/10 transition">
-                      <i data-lucide="trash-2" class="w-3 h-3"></i>Excluir
-                    </button>
-                  </div>
-                ` : ''}
-              </div>
-
-              <!-- ── THUMBNAIL STRIP with scroll arrows (Fiverr style) ── -->
-              ${showStrip ? `
-              <div class="relative border-t border-ink-100 bg-white" style="padding:10px 40px">
-                <!-- strip scroll left -->
-                <button onclick="(function(){var s=document.querySelector('[data-gallery-strip=\\'${s.id}\\']');if(s)s.scrollBy({left:-220,behavior:'smooth'})})()" aria-label="Rolar esquerda"
-                  class="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center bg-white hover:bg-ink-100/60 border-r border-ink-100 transition z-10">
-                  <i data-lucide="chevron-left" class="w-4 h-4 text-ink-700"></i>
-                </button>
-
-                <div class="flex gap-2 overflow-x-auto scrollbar-thin" data-gallery-strip="${s.id}" style="scroll-behavior:smooth">
-                  ${imgs.map((src,i) => `
-                    <div class="relative group shrink-0 ${isOwner ? 'gig-thumb-drag' : ''}"
-                      style="width:106px;height:80px"
-                      ${isOwner ? `draggable="true" data-drag-idx="${i}" ondragstart="galleryDragStart(event, '${s.id}', ${i})" ondragover="galleryDragOver(event)" ondragenter="galleryDragEnter(event)" ondragleave="galleryDragLeave(event)" ondrop="galleryDrop(event, '${s.id}', ${i})" ondragend="galleryDragEnd(event)"` : ''}>
-                      <button onclick="galleryGo('${s.id}',${i})" data-thumb-idx="${i}"
-                        class="gig-thumb-btn w-full h-full overflow-hidden border-2 transition pointer-events-auto"
-                        style="border-radius:4px;border-color:${i===0?'#1a73e8':'#e2e8f0'}">
-                        <img src="${src}" class="w-full h-full object-cover pointer-events-none"/>
-                      </button>
-                      ${isOwner ? `
-                        <span class="absolute top-0.5 left-0.5 w-4 h-4 grid place-items-center rounded bg-black/60 text-white text-[9px] font-bold opacity-0 group-hover:opacity-100 transition pointer-events-none">
-                          <i data-lucide="grip-vertical" class="w-2.5 h-2.5"></i>
-                        </span>
-                      ` : ''}
-                      ${isOwner && i>0 ? `
-                        <button onclick="event.stopPropagation();removeServiceGalleryImg('${s.id}', ${i-1})" title="Remover esta foto"
-                          class="absolute -top-1.5 -right-1.5 w-5 h-5 grid place-items-center rounded-full bg-rose-500 hover:bg-rose-600 text-white opacity-0 group-hover:opacity-100 transition shadow ring-2 ring-white">
-                          <i data-lucide="x" class="w-3 h-3"></i>
-                        </button>
-                      ` : ''}
-                    </div>
-                  `).join('')}
-                  ${isOwner ? `
-                    <input id="sv-gallery-input-${s.id}" type="file" accept="image/*" multiple class="hidden" onchange="handleServiceGalleryUpload(event, '${s.id}')"/>
-                    <button type="button" onclick="document.getElementById('sv-gallery-input-${s.id}').click()" ${galleryFull ? 'disabled' : ''}
-                      title="${galleryFull ? 'Limite de '+MAX_GALLERY+' fotos atingido' : 'Adicionar fotos'}"
-                      class="shrink-0 border-2 border-dashed border-brand-300 hover:border-brand-500 hover:bg-brand-50/60 text-brand-500 flex flex-col items-center justify-center transition ${galleryFull ? 'opacity-40 cursor-not-allowed' : ''}"
-                      style="width:106px;height:80px;border-radius:4px">
-                      <i data-lucide="image-plus" class="w-5 h-5"></i>
-                      <span class="text-[9px] font-bold mt-0.5">${galleryFull ? 'Cheio' : 'Add fotos'}</span>
-                    </button>
-                  ` : ''}
-                </div>
-
-                <!-- strip scroll right -->
-                <button onclick="(function(){var s=document.querySelector('[data-gallery-strip=\\'${s.id}\\']');if(s)s.scrollBy({left:220,behavior:'smooth'})})()" aria-label="Rolar direita"
-                  class="absolute right-0 top-0 bottom-0 w-10 flex items-center justify-center bg-white hover:bg-ink-100/60 border-l border-ink-100 transition z-10">
-                  <i data-lucide="chevron-right" class="w-4 h-4 text-ink-700"></i>
-                </button>
-              </div>
-              ` : ''}
-            </div>`;
-          })()}
-        </div>
-
-        <!-- DESCRIPTION -->
-        <div class="bg-white border border-ink-100 rounded-2xl p-6">
-          <h2 class="font-extrabold text-lg mb-3">Sobre este serviço</h2>
-          <p class="text-ink-700 leading-relaxed text-sm whitespace-pre-line">${escapeHtml(s.description)}</p>
-          ${s.includes && s.includes.length ? `
-          <div class="mt-4 pt-4 border-t border-ink-100">
-            <div class="text-xs font-bold uppercase tracking-wider text-ink-500 mb-2">O que está incluso</div>
-            <div class="flex flex-wrap gap-2">
-              ${s.includes.map(inc=>`<span class="chip bg-brand-50 text-brand-700 text-xs">${escapeHtml(inc)}</span>`).join('')}
-            </div>
-          </div>` : ''}
-        </div>
-
-        <!-- ABOUT THE SELLER — Fiverr style -->
-        <div class="bg-white border border-ink-100 rounded-2xl p-6">
-          <h2 class="font-extrabold text-lg mb-5">About the seller</h2>
-          <div class="flex items-start gap-4">
-            <a href="#/u/${u.handle}" class="shrink-0">
-              <img src="${u.avatar}" class="w-20 h-20 rounded-full border-2 border-ink-100 hover:border-brand-300 transition" />
-            </a>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 flex-wrap mb-0.5">
-                <a href="#/u/${u.handle}" class="font-extrabold text-base hover:text-brand-500">${escapeHtml(u.name)}</a>
-                ${u.verified ? `<i data-lucide="badge-check" class="w-4 h-4 text-brand-500"></i>` : ''}
-                ${levelChip(u.level)}
-              </div>
-              <div class="text-xs text-ink-400 font-mono mb-2">@${u.handle}</div>
-              <div class="flex items-center gap-1 mb-3">
-                ${stars(s.rating,'w-3.5 h-3.5')}
-                <span class="text-sm font-bold ml-1">${u.rating.toFixed(1)}</span>
-                <span class="text-xs text-ink-500 ml-1">(${u.jobs} reviews)</span>
-              </div>
-              <button onclick="openChatPrep('${s.id}')" class="px-4 py-2 rounded-xl border border-ink-200 hover:border-brand-300 hover:bg-brand-50 text-sm font-semibold text-ink-700 transition">
-                Contact me
-              </button>
-            </div>
+          <div class="mt-4">
+            <h3 class="font-extrabold text-slate-900">Service Package</h3>
+            <p class="mt-2 text-sm text-slate-600">${escapeHtml(s.title)}</p>
           </div>
-
-          <!-- Stats grid -->
-          <div class="grid grid-cols-2 gap-x-6 gap-y-3 mt-5 pt-5 border-t border-ink-100 text-sm">
-            ${[
-              ['From',          co.flag+' '+co.name],
-              ['Member since',  new Date(u.joinedTs).getFullYear()],
-              ['Avg. response', 'Under 1 hour'],
-              ['Last delivery', 'About 2 days'],
-              ['Languages',     (u.languages||['pt','en']).join(', ').toUpperCase()],
-              ['Completed',     u.jobs+' orders'],
-            ].map(([k,v])=>`
-              <div class="flex flex-col gap-0.5">
-                <span class="text-xs text-ink-400 font-semibold uppercase tracking-wide">${k}</span>
-                <span class="font-semibold text-ink-800">${v}</span>
-              </div>`).join('')}
-          </div>
-        </div>
-
-        <!-- RECOMMENDED FOR YOU -->
-        ${recommended.length ? `
-        <div>
-          <h2 class="font-extrabold text-lg mb-3">Recommended for you</h2>
-          <div class="relative">
-            <button onclick="scrollCarousel(event,'rec-${s.id}',-1)" aria-label="Anterior" class="absolute left-0 top-[35%] -translate-y-1/2 -translate-x-3 z-10 w-9 h-9 grid place-items-center rounded-full bg-white shadow-pop border border-ink-100 hover:bg-ink-100/40">
-              <i data-lucide="chevron-left" class="w-4 h-4 text-ink-700"></i>
-            </button>
-            <div data-carousel="rec-${s.id}" class="flex gap-4 overflow-x-auto scrollbar-thin pb-1 snap-x scroll-smooth">
-              ${recommended.map(recommendedCard).join('')}
-            </div>
-            <button onclick="scrollCarousel(event,'rec-${s.id}',1)" aria-label="Próximo" class="absolute right-0 top-[35%] -translate-y-1/2 translate-x-3 z-10 w-9 h-9 grid place-items-center rounded-full bg-white shadow-pop border border-ink-100 hover:bg-ink-100/40">
-              <i data-lucide="chevron-right" class="w-4 h-4 text-ink-700"></i>
-            </button>
-          </div>
-        </div>` : ''}
-
-        <!-- FAQ -->
-        ${(() => { const faqList = (s.faqs && s.faqs.length) ? s.faqs.map(f=>[f.q,f.a]) : gigFaqsByCategory(s.category); return faqList.length ? `
-        <div class="bg-white border border-ink-100 rounded-2xl p-6">
-          <h2 class="font-extrabold text-lg mb-4">FAQ</h2>
-          <div class="divide-y divide-ink-100">
-            ${faqList.map((f,i)=>`
-              <details ${i===0?'open':''} class="group py-4 first:pt-0 last:pb-0">
-                <summary class="cursor-pointer flex items-center justify-between gap-3 list-none">
-                  <span class="font-bold text-sm text-ink-900">${escapeHtml(f[0])}</span>
-                  <i data-lucide="chevron-down" class="w-4 h-4 text-ink-400 group-open:rotate-180 transition shrink-0"></i>
-                </summary>
-                <p class="text-sm text-ink-600 mt-2 leading-relaxed">${escapeHtml(f[1])}</p>
-              </details>
+          <ul class="mt-4 space-y-2 text-sm text-slate-700">
+            ${(s.includes || []).slice(0, 5).map(inc => `
+              <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i><span>${escapeHtml(inc)}</span></li>
             `).join('')}
+          </ul>
+          <div class="mt-5 grid grid-cols-2 gap-2 text-xs">
+            <div class="flex items-center gap-2 text-slate-600"><i class="ri-time-line"></i><span>${s.deliveryDays}-day delivery</span></div>
+            <div class="flex items-center gap-2 text-slate-600"><i class="ri-refresh-line"></i><span>Unlimited revisions</span></div>
           </div>
-        </div>` : ''; })()}
-
-        <!-- REVIEWS — Fiverr style, no final -->
-        <div class="bg-white border border-ink-100 rounded-2xl p-6">
-          <h2 class="font-extrabold text-lg mb-1">Reviews</h2>
-          <div class="flex items-center justify-between flex-wrap gap-2 mb-5">
-            <div class="text-sm text-ink-500">${s.reviewsCount} reviews for this Gig</div>
-            <div class="flex items-center gap-2">${stars(s.rating)} <span class="font-bold">${s.rating.toFixed(1)}</span></div>
-          </div>
-
-          <!-- Breakdown -->
-          <div class="grid md:grid-cols-2 gap-8 pb-6 border-b border-ink-100 mb-5">
-            <div class="space-y-2">
-              ${[5,4,3,2,1].map((n,i)=>`
-                <div class="flex items-center gap-2 text-sm">
-                  <span class="w-14 text-ink-600 shrink-0">${n} Star${n>1?'s':''}</span>
-                  <div class="flex-1 h-2 rounded-full bg-ink-100 overflow-hidden">
-                    <div class="h-full bg-ink-800" style="width:${Math.round((dist[i]/distTotal)*100)}%"></div>
-                  </div>
-                  <span class="w-10 text-right text-ink-400 text-xs shrink-0">(${dist[i]})</span>
-                </div>`).join('')}
-            </div>
-            <div>
-              <div class="text-sm font-bold text-ink-900 mb-3">Rating Breakdown</div>
-              <div class="space-y-2 text-sm">
-                ${[['Seller communication level',s.rating],['Quality of delivery',s.rating],['Value of delivery',s.rating]].map(([k,v])=>`
-                  <div class="flex items-center justify-between gap-3">
-                    <span class="text-ink-500">${k}</span>
-                    <span class="font-bold flex items-center gap-1 shrink-0"><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>${v.toFixed(1)}</span>
-                  </div>`).join('')}
-              </div>
-            </div>
-          </div>
-
-          <!-- Search + sort + filter -->
-          <div class="flex flex-wrap items-center gap-3 mb-5">
-            <div class="flex items-center border border-ink-200 rounded-lg overflow-hidden flex-1 min-w-[180px] max-w-xs">
-              <input value="${escapeHtml(STATE.reviewQuery||'')}" oninput="setReviewQuery(this.value)" placeholder="Search reviews" class="flex-1 px-3 py-2 text-sm outline-none"/>
-              <span class="px-3 text-ink-400"><i data-lucide="search" class="w-4 h-4"></i></span>
-            </div>
-            <label class="flex items-center gap-2 text-sm text-ink-600">
-              <span class="text-ink-500">Sort By</span>
-              <select aria-label="Ordenar avaliações" onchange="setReviewSort(this.value)" class="border border-ink-200 rounded-lg px-2 py-1.5 text-sm font-semibold">
-                <option value="relevant" ${STATE.reviewSort==='relevant'?'selected':''}>Most relevant</option>
-                <option value="recent" ${STATE.reviewSort==='recent'?'selected':''}>Most recent</option>
-                <option value="rating_high" ${STATE.reviewSort==='rating_high'?'selected':''}>Highest rating</option>
-                <option value="rating_low" ${STATE.reviewSort==='rating_low'?'selected':''}>Lowest rating</option>
-              </select>
-            </label>
-            <label class="flex items-center gap-2 text-sm text-ink-600 cursor-pointer">
-              <input type="checkbox" ${STATE.reviewOnlyChain?'checked':''} onchange="toggleReviewOnlyChain()"/>
-              Only show reviews with on-chain proof (${s.reviews.filter(r=>r.txHash).length})
-            </label>
-          </div>
-
-          <div class="space-y-5">
-            ${visReviews.length===0 ? `<div class="text-sm text-ink-500 py-6 text-center">Nenhuma avaliação encontrada com esse filtro.</div>` :
-              visReviews.map(r=>{
-                const ru = getUser(r.userId);
-                const rco = getCountry(ru.country);
-                const help = baseHelpful(r.id);
-                const voted = (STATE.reviewVotes||{})[r.id];
-                const yesCount = help.yes + (voted==='yes'?1:0);
-                const noCount = help.no + (voted==='no'?1:0);
-                return `
-                <div class="pb-5 border-b border-ink-100 last:border-0">
-                  <div class="flex items-center gap-3 mb-2">
-                    <img src="${ru.avatar}" class="w-9 h-9 rounded-full" />
-                    <div>
-                      <div class="font-semibold text-sm">${escapeHtml(ru.name)}</div>
-                      <div class="text-xs text-ink-500">${rco.flag} ${rco.name}</div>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2 text-xs text-ink-500 mb-2">
-                    ${stars(r.stars,'w-3.5 h-3.5')}
-                    <span class="font-semibold text-ink-700">${r.stars}</span>
-                    <span>• ${timeAgo(r.ts)} atrás</span>
-                    ${r.txHash?`<a href="${explorerURL(r.txHash)}" target="_blank" class="chip bg-emerald-50 text-emerald-700 text-[10px]"><i data-lucide="link" class="w-2.5 h-2.5"></i>on-chain</a>`:''}
-                  </div>
-                  <p class="text-sm text-ink-700 leading-relaxed">${escapeHtml(r.text)}</p>
-                  <div class="flex items-center gap-4 mt-2 text-xs text-ink-500">
-                    <span class="font-semibold text-ink-700">${fmtITL(s.price)}</span>
-                    <span>${s.deliveryDays} dias de prazo</span>
-                  </div>
-                  <div class="flex items-center gap-3 mt-2 text-xs">
-                    <span class="text-ink-400">Helpful?</span>
-                    <button onclick="markReviewHelpful('${r.id}','yes')" class="flex items-center gap-1 ${voted==='yes'?'text-brand-600 font-bold':'text-ink-500 hover:text-brand-600'}"><i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i>Yes (${yesCount})</button>
-                    <button onclick="markReviewHelpful('${r.id}','no')" class="flex items-center gap-1 ${voted==='no'?'text-brand-600 font-bold':'text-ink-500 hover:text-brand-600'}"><i data-lucide="thumbs-down" class="w-3.5 h-3.5"></i>No (${noCount})</button>
-                  </div>
-                </div>`;
-              }).join('')}
-          </div>
+          <button onclick="openHireModal('${s.id}')" class="mt-5 w-full bg-[#8b7cff] hover:bg-[#7a6bf0] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition">
+            Continue <i class="ri-arrow-right-line"></i>
+          </button>
+          <button onclick="openChatPrep('${s.id}')" class="mt-2 w-full border border-slate-200 hover:bg-slate-50 py-3 rounded-lg font-bold text-slate-900 transition">Contact me</button>
         </div>
-      </div><!-- end LEFT -->
 
-      <!-- RIGHT: HIRE CARD (sticky) — Fiverr-style ~38% -->
-      <aside class="w-full lg:w-[38%] shrink-0" style="position:sticky;top:72px;align-self:flex-start">
-        <div class="space-y-4">
-          <div class="bg-white border border-ink-100 rounded-2xl shadow-card overflow-hidden">
-            <!-- Cabeçalho de preço -->
-            <div class="p-5 bg-gradient-to-br from-brand-50 to-white">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="text-[11px] font-bold uppercase tracking-wider text-ink-400 mb-1">Preço</div>
-                  <div class="text-3xl font-extrabold text-brand-700">${fmtITL(s.price)} <span class="text-sm font-semibold text-ink-400">ITL</span></div>
-                </div>
-                <div class="text-right">
-                  <div class="text-[11px] font-bold uppercase tracking-wider text-ink-400 mb-1">Prazo</div>
-                  <div class="flex items-center gap-1 text-sm font-bold text-ink-700">
-                    <i data-lucide="clock" class="w-3.5 h-3.5 text-brand-400"></i>${s.deliveryDays||s.deadline||7} dias
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- O que está incluído -->
-            <div class="px-5 pt-4 pb-2">
-              ${(s.includes&&s.includes.length) ? `
-              <ul class="space-y-2">
-                ${s.includes.map(inc=>`
-                <li class="flex items-start gap-2 text-[13px] text-ink-700">
-                  <i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0"></i>
-                  ${escapeHtml(inc)}
-                </li>`).join('')}
-              </ul>` : ''}
-
-              <!-- Revisões -->
-              <div class="flex items-center gap-2 mt-3 pt-3 border-t border-ink-100 text-[13px] text-ink-600">
-                <i data-lucide="refresh-cw" class="w-4 h-4 text-brand-400 shrink-0"></i>
-                <span>${(s.tiers&&s.tiers.standard)?s.tiers.standard.revisions:2} revisões inclusas</span>
-              </div>
-            </div>
-
-            <!-- Botões -->
-            <div class="p-5 pt-3 space-y-2">
-              <button class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-pop text-[15px]" onclick="openHireModal('${s.id}','standard')">
-                Contratar <i data-lucide="arrow-right" class="w-4 h-4"></i>
-              </button>
-              <button class="w-full border border-ink-200 hover:bg-ink-50 text-ink-700 font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm" onclick="openChatPrep('${s.id}')">
-                <i data-lucide="message-circle" class="w-4 h-4"></i> Conversar antes
-              </button>
-            </div>
+        <!-- Trust card -->
+        <div class="rounded-xl border border-slate-200 p-4 bg-white">
+          <div class="flex items-center gap-2 text-sm">
+            <i class="ri-shield-check-fill text-[#8b7cff] text-lg"></i>
+            <span class="font-bold text-slate-900">Pay in ITL · escrow protected</span>
           </div>
-
+          <p class="mt-2 text-xs text-slate-500 leading-relaxed">Your funds are held in escrow until you approve the delivery. Refund guarantee if the gig is not delivered as described.</p>
         </div>
-      </aside>
+      </div>
+    </aside>
+  </main>
+
+  <!-- RELATED GIGS -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 py-10 border-t border-slate-100 mt-6">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-xl font-extrabold text-slate-900">People also viewed</h2>
+      <a href="#/home" class="text-sm font-semibold text-[#5b4ee0] hover:underline">View all gigs →</a>
     </div>
-  </div>`;
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      ${recommended.slice(0, 4).map(r => `
+        <a href="#/service/${r.id}" class="bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-lg hover:border-[#c7c0ff] transition">
+          <div class="relative overflow-hidden">
+            <img src="${r.thumb}" class="w-full aspect-[3/2] object-cover" loading="lazy" />
+          </div>
+          <div class="p-4 flex-1 flex flex-col">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 text-sm">
+                <span class="font-semibold text-slate-700">${escapeHtml(getUserSafe(r.freelancerId).name)}</span>
+              </div>
+            </div>
+            <h3 class="mt-3 text-sm font-bold text-[#5b4ee0] leading-snug line-clamp-2">${escapeHtml(r.title)}</h3>
+            <div class="mt-2 flex items-center gap-1 text-xs text-slate-500">
+              <i class="ri-star-fill text-amber-400"></i><b class="text-slate-700">${r.rating.toFixed(1)}</b><span>(${r.reviewsCount})</span>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>${getCategory(r.category).label}</span>
+              <span>From <b class="font-extrabold text-slate-900">${r.price} ITL</b></span>
+            </div>
+          </div>
+        </a>
+      `).join('')}
+    </div>
+  </section>
+  `;
+}
+
+function setMainAlt(el) {
+  const main = document.getElementById('mainImg');
+  if (!main) return;
+  main.src = el.src;
+  document.querySelectorAll('.thumb-alt').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
 }
 /* ---------- VIEW: DASHBOARD ---------- */
 function viewAuthRequired(){
