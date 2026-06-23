@@ -3017,19 +3017,37 @@ function viewHeroPage(){
     <p class="mt-3 text-sm sm:text-base text-ink-500">Browse 20+ verified services from top Web3 professionals</p>
 
     <form id="searchForm" class="mt-6 sm:mt-7 mx-auto max-w-2xl" onsubmit="event.preventDefault();commitSearch($('#searchInput').value.trim());">
-      <div class="flex items-center gap-2 bg-white rounded-xl border border-ink-200 shadow-sm pl-3 pr-2 py-2 focus-within:border-brand-400 focus-within:shadow-md transition-all">
+      <div class="flex items-center gap-2 bg-white rounded-xl border border-ink-200 shadow-sm pl-3 pr-2 py-2 focus-within:border-[#8b7cff] focus-within:shadow-md transition-all">
         <i data-lucide="search" class="text-ink-400 text-lg shrink-0 w-5 h-5"></i>
         <input id="searchInput" value="${escapeHtml(STATE.query)}" oninput="handleSearchInput(this.value)" onkeydown="handleSearchKey(event)" class="flex-1 min-w-0 outline-none text-sm py-2 placeholder:text-ink-400 bg-transparent" placeholder="Search for any service..." />
         <button type="button" id="clearBtn" onclick="clearSearch()" class="${STATE.query ? '' : 'hidden'} text-ink-400 hover:text-ink-600 shrink-0 px-1 transition">
           <i data-lucide="x" class="text-lg w-5 h-5"></i>
         </button>
-        <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white shrink-0 px-3 sm:px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-all">
+        <button type="submit" class="bg-[#8b7cff] hover:bg-[#7a6cf0] text-white shrink-0 px-3 sm:px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-all">
           <i data-lucide="search" class="sm:hidden w-4 h-4"></i>
           <span class="hidden sm:inline">Search</span>
         </button>
       </div>
     </form>
 
+    <!-- Quick chips -->
+    <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+      <button onclick="pickTrendingTag('Web Development')" class="border border-slate-200 bg-white hover:border-[#8b7cff] hover:text-[#8b7cff] text-slate-600 transition-all rounded-full text-xs px-3.5 py-1.5 flex items-center gap-1.5 font-bold">
+        <i class="ri-code-line"></i> Web Development
+      </button>
+      <button onclick="pickTrendingTag('UI/UX Design')" class="border border-slate-200 bg-white hover:border-[#8b7cff] hover:text-[#8b7cff] text-slate-600 transition-all rounded-full text-xs px-3.5 py-1.5 flex items-center gap-1.5 font-bold">
+        <i class="ri-layout-line"></i> UI/UX Design
+      </button>
+      <button onclick="pickTrendingTag('Mobile Apps')" class="border border-slate-200 bg-white hover:border-[#8b7cff] hover:text-[#8b7cff] text-slate-600 transition-all rounded-full text-xs px-3.5 py-1.5 flex items-center gap-1.5 font-bold">
+        <i class="ri-smartphone-line"></i> Mobile Apps
+      </button>
+      <button onclick="pickTrendingTag('AI & Machine Learning')" class="border border-slate-200 bg-white hover:border-[#8b7cff] hover:text-[#8b7cff] text-slate-600 transition-all rounded-full text-xs px-3.5 py-1.5 flex items-center gap-1.5 font-bold">
+        <i class="ri-sparkling-line"></i> AI & Machine Learning
+      </button>
+      <button onclick="pickTrendingTag('Blockchain')" class="border border-slate-200 bg-white hover:border-[#8b7cff] hover:text-[#8b7cff] text-slate-600 transition-all rounded-full text-xs px-3.5 py-1.5 flex items-center gap-1.5 font-bold">
+        <i class="ri-link"></i> Blockchain
+      </button>
+    </div>
   </section>
 
   <!-- CATEGORY BAR (Restored with Fidelity) -->
@@ -3038,10 +3056,11 @@ function viewHeroPage(){
       <button onclick="STATE.category='all';STATE.query='';renderView()" class="px-4 py-2 rounded-full text-[13px] font-bold transition-all whitespace-nowrap ${STATE.category==='all'&&!STATE.query?'bg-[#8b7cff] text-white':'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}">
         All
       </button>
-      ${['dev','design','mobile','writing','video','ai','marketing','audit'].map(catId=>{
+      ${['dev','design','writing','video','ai','marketing','audit','business','data'].map(catId=>{
         const cat = getCategory(catId);
+        const label = catId==='dev'?'Web Dev':catId==='design'?'UI/UX':catId==='writing'?'Content':catId==='video'?'Video':catId==='ai'?'AI/ML':catId==='marketing'?'Marketing':catId==='audit'?'Blockchain':catId==='business'?'DevOps':'Data';
         const active = STATE.category===catId && !STATE.query;
-        return `<button onclick="STATE.category='${catId}';STATE.query='';renderView()" class="px-4 py-2 rounded-full text-[13px] font-bold transition-all whitespace-nowrap ${active?'bg-[#8b7cff] text-white':'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}">${cat.label}</button>`;
+        return `<button onclick="STATE.category='${catId}';STATE.query='';renderView()" class="px-4 py-2 rounded-full text-[13px] font-bold transition-all whitespace-nowrap ${active?'bg-[#8b7cff] text-white':'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}">${label}</button>`;
       }).join('')}
     </div>
   </section>
@@ -3053,14 +3072,14 @@ function viewHeroPage(){
       <div class="flex items-center gap-4">
         <button id="sortBtn" onclick="toggleSort(event)" class="flex items-center gap-1 hover:text-[#8b7cff] font-bold text-slate-900 transition">
           <i class="ri-arrow-up-down-line"></i>
-          <span id="sortLabel">Top Rated</span>
+          <span id="sortLabel">${STATE.sort==='rating'?'Top Rated':STATE.sort==='reviews'?'Most Reviews':STATE.sort==='price_asc'?'Lowest Price':STATE.sort==='price_desc'?'Highest Price':'Top Rated'}</span>
           <i class="ri-arrow-down-s-line"></i>
         </button>
         <div id="sortMenu" class="hidden absolute right-0 top-full mt-2 w-44 bg-white border border-slate-200 rounded-xl shadow-xl py-1 z-30 text-left">
-          <button onclick="setSort('rating','Top Rated')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-medium">Top Rated</button>
-          <button onclick="setSort('reviews','Most Reviews')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-medium">Most Reviews</button>
-          <button onclick="setSort('priceAsc','Lowest Price')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-medium">Lowest Price</button>
-          <button onclick="setSort('priceDesc','Highest Price')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-medium">Highest Price</button>
+          <button onclick="setSort('rating','Top Rated')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-bold">Top Rated</button>
+          <button onclick="setSort('reviews','Most Reviews')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-bold">Most Reviews</button>
+          <button onclick="setSort('price_asc','Lowest Price')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-bold">Lowest Price</button>
+          <button onclick="setSort('price_desc','Highest Price')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700 font-bold">Highest Price</button>
         </div>
       </div>
     </div>
@@ -3070,12 +3089,12 @@ function viewHeroPage(){
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
     ${filtered.length===0 ? `
       <div id="emptyState" class="text-center py-20">
-        <div class="mx-auto w-16 h-16 rounded-full bg-ink-100 grid place-items-center text-ink-400">
-          <i data-lucide="search" class="w-8 h-8"></i>
+        <div class="mx-auto w-16 h-16 rounded-full bg-slate-100 grid place-items-center text-slate-400">
+          <i class="ri-search-line text-2xl"></i>
         </div>
-        <h3 class="mt-4 text-lg font-bold text-ink-800">No gigs match your filters</h3>
-        <p class="mt-1 text-sm text-ink-500">Try different keywords or clear your filters.</p>
-        <button onclick="clearAllFilters()" class="mt-5 px-5 py-2 rounded-full bg-brand-50 text-brand-600 text-sm font-semibold hover:bg-brand-100 transition">Clear all filters</button>
+        <h3 class="mt-4 text-lg font-bold text-slate-900">No services match your filters</h3>
+        <p class="mt-1 text-sm text-slate-500">Try different keywords or clear your filters.</p>
+        <button onclick="clearAllFilters()" class="mt-5 px-6 py-2 rounded-full bg-[#8b7cff] text-white text-sm font-bold hover:bg-[#7a6cf0] transition">Clear all filters</button>
       </div>` : `
       <div id="gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         ${pageItems.map(serviceCard).join('')}
@@ -3128,13 +3147,13 @@ function viewExploreResults(){
   <div id="explore-section" class="max-w-7xl mx-auto px-4 py-6">
 
     <!-- Breadcrumb — Fiverr style -->
-    <div class="flex items-center gap-1.5 text-[12.5px] text-ink-400 mb-3">
-      <a href="#/home" onclick="clearAllFilters()" class="hover:text-ink-700">
-        <i data-lucide="home" class="w-3.5 h-3.5"></i>
+    <div class="flex items-center gap-1.5 text-[12.5px] text-slate-400 mb-3">
+      <a href="#/home" onclick="clearAllFilters()" class="hover:text-slate-900">
+        <i class="ri-home-4-line"></i>
       </a>
-      ${STATE.trendingActive ? `<i data-lucide="chevron-right" class="w-3 h-3"></i><span class="text-ink-600 font-medium">Em alta</span>` : ''}
-      ${catObj ? `<i data-lucide="chevron-right" class="w-3 h-3"></i><span class="text-ink-600 font-medium">${catObj.label}</span>` : ''}
-      ${STATE.query ? `<i data-lucide="chevron-right" class="w-3 h-3"></i><span class="text-ink-600 font-medium">"${escapeHtml(STATE.query)}"</span>` : ''}
+      ${STATE.trendingActive ? `<i class="ri-arrow-right-s-line"></i><span class="text-slate-900 font-bold">Trending</span>` : ''}
+      ${catObj ? `<i class="ri-arrow-right-s-line"></i><span class="text-slate-900 font-bold">${catObj.label}</span>` : ''}
+      ${STATE.query ? `<i class="ri-arrow-right-s-line"></i><span class="text-slate-900 font-bold">"${escapeHtml(STATE.query)}"</span>` : ''}
     </div>
 
     <!-- CATEGORY BAR (Restored in Explore) -->
@@ -3142,10 +3161,11 @@ function viewExploreResults(){
       <button onclick="STATE.category='all';STATE.query='';renderView()" class="px-4 py-2 rounded-full text-[13px] font-bold transition-all whitespace-nowrap ${STATE.category==='all'&&!STATE.query?'bg-[#8b7cff] text-white':'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}">
         All
       </button>
-      ${['dev','design','mobile','writing','video','ai','marketing','audit'].map(catId=>{
+      ${['dev','design','writing','video','ai','marketing','audit','business','data'].map(catId=>{
         const cat = getCategory(catId);
+        const label = catId==='dev'?'Web Dev':catId==='design'?'UI/UX':catId==='writing'?'Content':catId==='video'?'Video':catId==='ai'?'AI/ML':catId==='marketing'?'Marketing':catId==='audit'?'Blockchain':catId==='business'?'DevOps':'Data';
         const active = STATE.category===catId && !STATE.query;
-        return `<button onclick="STATE.category='${catId}';STATE.query='';renderView()" class="px-4 py-2 rounded-full text-[13px] font-bold transition-all whitespace-nowrap ${active?'bg-[#8b7cff] text-white':'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}">${cat.label}</button>`;
+        return `<button onclick="STATE.category='${catId}';STATE.query='';renderView()" class="px-4 py-2 rounded-full text-[13px] font-bold transition-all whitespace-nowrap ${active?'bg-[#8b7cff] text-white':'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}">${label}</button>`;
       }).join('')}
     </div>
 
