@@ -155,6 +155,11 @@
         <span class="w-4 h-4 rounded-full bg-slate-300 inline-block"></span> EN
       </button>
       <button id="walletBtn" onclick="openConnectWallet()" class="btn-primary px-3 sm:px-4 py-2 rounded-lg font-semibold whitespace-nowrap text-xs sm:text-sm"><i class="ri-wallet-line"></i> Connect Wallet</button>
+      <!-- Avatar do usuário logado (escondido até conectar) -->
+      <a href="#" id="headerProfileBtn" onclick="navigate('profile');return false;" class="hidden items-center gap-2 hover:opacity-80 transition" aria-label="Meu perfil">
+        <div id="headerAvatar" class="w-8 h-8 rounded-full grid place-items-center text-sm font-bold text-slate-700 shrink-0" style="background:#ddd6fe">?</div>
+        <span id="headerName" class="hidden sm:block text-sm font-semibold text-slate-700 max-w-[80px] truncate"></span>
+      </a>
       <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-700 text-xl" aria-label="Menu">
         <i class="ri-menu-line"></i>
       </button>
@@ -585,19 +590,18 @@
 <!-- PROFILE HEAD -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 -mt-14 sm:-mt-16 relative">
   <div class="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
-    <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-4 border-white shadow-lg grid place-items-center font-extrabold text-3xl sm:text-4xl text-slate-700" style="background:#fecaca">A</div>
+  <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-4 border-white shadow-lg grid place-items-center font-extrabold text-3xl sm:text-4xl text-slate-700" id="profileAvatar" style="background:#ddd6fe">?</div>
     <div class="flex-1 sm:pb-3">
       <div class="flex flex-wrap items-center gap-2">
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Andre Martins</h1>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="profileName">—</h1>
         <span class="badge-verified text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1"><i class="ri-shield-check-fill"></i>VERIFIED</span>
-        <span class="badge-top text-[10px] font-bold px-2 py-0.5 rounded-full">TOP RATED</span>
+        <span class="badge-top text-[10px] font-bold px-2 py-0.5 rounded-full" id="profileRole">Cliente</span>
       </div>
-      <p class="text-slate-600 font-medium mt-1">Senior Frontend Engineer · React &amp; Web3 Specialist</p>
+      <p class="text-slate-600 font-medium mt-1" id="profileBio">Conecte sua wallet para ver seu perfil.</p>
       <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-slate-500">
-        <span class="flex items-center gap-1"><i class="ri-map-pin-line"></i>São Paulo, Brazil</span>
-        <span class="flex items-center gap-1"><i class="ri-calendar-line"></i>Member since Jan 2024</span>
-        <span class="flex items-center gap-1"><i class="ri-time-line"></i>~1h response</span>
-        <span class="flex items-center gap-1 star-row"><i class="ri-star-fill"></i><b class="text-slate-900">4.9</b> (342 reviews)</span>
+        <span class="flex items-center gap-1"><i class="ri-at-line"></i><span id="profileHandle">@—</span></span>
+        <span class="flex items-center gap-1"><i class="ri-wallet-line"></i><span id="profileWallet">—</span></span>
+        <span class="flex items-center gap-1 star-row"><i class="ri-star-fill"></i><b class="text-slate-900" id="profileRating">—</b></span>
       </div>
     </div>
     <div class="sm:pb-3 flex gap-2">
@@ -612,19 +616,19 @@
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
     <div class="rounded-xl border border-slate-200 p-4">
       <div class="text-xs text-slate-500">Total orders</div>
-      <div class="mt-1 font-extrabold text-slate-900 text-xl">1,284</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl" id="profileJobs">—</div>
     </div>
     <div class="rounded-xl border border-slate-200 p-4">
       <div class="text-xs text-slate-500">In queue</div>
-      <div class="mt-1 font-extrabold text-slate-900 text-xl">12</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl">0</div>
     </div>
     <div class="rounded-xl border border-slate-200 p-4">
       <div class="text-xs text-slate-500">On time</div>
-      <div class="mt-1 font-extrabold text-slate-900 text-xl">99%</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl">—</div>
     </div>
     <div class="rounded-xl border border-slate-200 p-4">
       <div class="text-xs text-slate-500">Earned in ITL</div>
-      <div class="mt-1 font-extrabold text-slate-900 text-xl">128k</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl" id="profileBalance">—</div>
     </div>
   </div>
 </section>
@@ -1066,6 +1070,166 @@ function setMain(el){
    PROFILE — Init & Tabs
 ───────────────────────────────────────── */
 let _profileInited = false;
+
+/* ── Preenche a página de perfil com dados reais do walletState.sbProfile ── */
+function updateProfileUI() {
+  const p = walletState.sbProfile;
+  const addr = walletState.address || '';
+  const short = addr ? addr.slice(0,6)+'...'+addr.slice(-4) : '';
+
+  // Dados com fallback para placeholders
+  const name    = p?.name         || short || 'Usuário';
+  const handle  = p?.handle       || short;
+  const bio     = p?.bio          || 'Conectado via wallet na Interwork.';
+  const role    = p?.role         || 'client';
+  const rating  = p?.rating       || '—';
+  const jobs    = p?.total_jobs   || 0;
+  const balance = p?.balance_itl  || 0;
+  const initial = name.charAt(0).toUpperCase();
+  const colors  = ['#ddd6fe','#bae6fd','#fecaca','#fed7aa','#fde68a','#fbcfe8'];
+  const bg      = colors[name.charCodeAt(0) % colors.length];
+
+  // ── HEADER: avatar + nome ──
+  const headerProfileBtn = document.getElementById('headerProfileBtn');
+  const headerAvatar     = document.getElementById('headerAvatar');
+  const headerName       = document.getElementById('headerName');
+  if (walletState.connected) {
+    if (headerProfileBtn) headerProfileBtn.classList.replace('hidden','flex');
+    if (headerAvatar)     { headerAvatar.textContent = initial; headerAvatar.style.background = bg; }
+    if (headerName)       headerName.textContent = name;
+  } else {
+    if (headerProfileBtn) headerProfileBtn.classList.replace('flex','hidden');
+  }
+
+  // ── PROFILE PAGE: cabeçalho ──
+  const elName    = document.getElementById('profileName');
+  const elHandle  = document.getElementById('profileHandle');
+  const elBio     = document.getElementById('profileBio');
+  const elRole    = document.getElementById('profileRole');
+  const elAvatar  = document.getElementById('profileAvatar');
+  const elWallet  = document.getElementById('profileWallet');
+  const elRating  = document.getElementById('profileRating');
+  const elJobs    = document.getElementById('profileJobs');
+  const elBalance = document.getElementById('profileBalance');
+
+  if (elName)    elName.textContent    = name;
+  if (elHandle)  elHandle.textContent  = '@' + handle;
+  if (elBio)     elBio.textContent     = bio;
+  if (elRole)    elRole.textContent    = role === 'freelancer' ? 'Freelancer' : 'Cliente';
+  if (elAvatar)  { elAvatar.textContent = initial; elAvatar.style.background = bg; }
+  if (elWallet)  elWallet.textContent  = short || '—';
+  if (elRating)  elRating.textContent  = rating;
+  if (elJobs)    elJobs.textContent    = jobs;
+  if (elBalance) elBalance.textContent = balance + ' ITL';
+
+  // Reseta flag para o initProfilePage popular os gigs novamente se necessário
+  _profileInited = false;
+}
+
+/* ── Modal de onboarding: primeira vez que conecta e não tem perfil no banco ── */
+function openOnboardingModal(address) {
+  const short = address.slice(0,6)+'...'+address.slice(-4);
+  const existing = document.getElementById('onboarding-modal');
+  if (existing) existing.remove();
+
+  const el = document.createElement('div');
+  el.id = 'onboarding-modal';
+  Object.assign(el.style, {
+    position:'fixed', inset:'0', zIndex:'999999',
+    background:'rgba(15,23,42,0.7)', backdropFilter:'blur(4px)',
+    display:'flex', alignItems:'center', justifyContent:'center', padding:'16px',
+  });
+  el.innerHTML = `
+    <div style="background:#fff;border-radius:20px;width:100%;max-width:440px;padding:32px;box-shadow:0 24px 60px rgba(0,0,0,.2);font-family:inherit">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#8b7cff,#a99cff);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px">
+          <i class="ri-wallet-3-line" style="color:#fff;font-size:24px"></i>
+        </div>
+        <h2 style="font-size:20px;font-weight:800;color:#0f172a;margin:0 0 6px">Bem-vindo à InterWork!</h2>
+        <p style="font-size:13px;color:#64748b;margin:0">Wallet <code style="font-size:11px;background:#f1f5f9;padding:2px 6px;border-radius:4px">${short}</code> conectada.<br>Complete seu perfil para começar.</p>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <label style="font-size:12px;font-weight:600;color:#475569;display:block;margin-bottom:6px">Como você quer ser chamado?</label>
+        <input id="ob-name" type="text" placeholder="Ex: João Silva" maxlength="40"
+          style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:14px;outline:none;box-sizing:border-box;font-family:inherit"
+          onfocus="this.style.borderColor='#8b7cff'" onblur="this.style.borderColor='#e2e8f0'"/>
+      </div>
+
+      <div style="margin-bottom:24px">
+        <label style="font-size:12px;font-weight:600;color:#475569;display:block;margin-bottom:8px">Como você vai usar a InterWork?</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <button id="ob-client" onclick="selectRole('client')"
+            style="border:2px solid #e2e8f0;border-radius:12px;padding:14px 10px;cursor:pointer;background:#fff;transition:all .15s;font-family:inherit">
+            <div style="font-size:20px;margin-bottom:6px">🛒</div>
+            <div style="font-size:13px;font-weight:700;color:#0f172a">Cliente</div>
+            <div style="font-size:11px;color:#64748b;margin-top:2px">Contratar serviços</div>
+          </button>
+          <button id="ob-freelancer" onclick="selectRole('freelancer')"
+            style="border:2px solid #e2e8f0;border-radius:12px;padding:14px 10px;cursor:pointer;background:#fff;transition:all .15s;font-family:inherit">
+            <div style="font-size:20px;margin-bottom:6px">💼</div>
+            <div style="font-size:13px;font-weight:700;color:#0f172a">Freelancer</div>
+            <div style="font-size:11px;color:#64748b;margin-top:2px">Oferecer serviços</div>
+          </button>
+        </div>
+      </div>
+
+      <button onclick="submitOnboarding('${address}')"
+        style="width:100%;background:#8b7cff;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s"
+        onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+        Entrar na InterWork →
+      </button>
+    </div>`;
+
+  document.body.appendChild(el);
+
+  // Foca no input de nome
+  setTimeout(() => document.getElementById('ob-name')?.focus(), 100);
+}
+
+let _selectedRole = 'client';
+function selectRole(role) {
+  _selectedRole = role;
+  ['client','freelancer'].forEach(r => {
+    const btn = document.getElementById('ob-'+r);
+    if (!btn) return;
+    btn.style.borderColor  = r === role ? '#8b7cff' : '#e2e8f0';
+    btn.style.background   = r === role ? '#f5f3ff' : '#fff';
+  });
+}
+
+async function submitOnboarding(address) {
+  const nameInput = document.getElementById('ob-name');
+  const name = (nameInput?.value || '').trim();
+  if (!name) {
+    nameInput?.focus();
+    nameInput && (nameInput.style.borderColor = '#ef4444');
+    showToast('Insira seu nome para continuar.', 'warn');
+    return;
+  }
+
+  const short   = address.slice(0,6)+'...'+address.slice(-4);
+  const handle  = short.replace('...','_');
+  const role    = _selectedRole;
+
+  // Salva no Supabase se disponível
+  if (sb && walletState.sbProfile?.id) {
+    try {
+      await sb.from('profiles').update({ name, handle, role }).eq('id', walletState.sbProfile.id);
+      walletState.sbProfile = { ...walletState.sbProfile, name, handle, role };
+    } catch(e) {
+      console.warn('[Supabase] Erro ao salvar onboarding:', e);
+    }
+  } else {
+    // Fallback local
+    walletState.sbProfile = { ...walletState.sbProfile, name, handle, role, wallet_address: address };
+  }
+
+  document.getElementById('onboarding-modal')?.remove();
+  updateProfileUI();
+  showToast(`Bem-vindo, ${name}! 🎉`, 'success');
+}
+
 function initProfilePage() {
   if (_profileInited) return;
   _profileInited = true;
@@ -1215,13 +1379,19 @@ window._handleReownConnected = async function(address) {
   walletState.address   = address;
   console.log('✅ Carteira conectada:', shortW);
 
-  // Dispara notificação visual apenas UMA vez por carregamento (evita flood)
+  // Dispara notificação visual apenas UMA vez por carregamento
   if (!window._walletToastFired) {
     window._walletToastFired = true;
     showToast(`✓ Wallet conectada: ${shortW}`, 'success');
   }
 
   updateHeaderWallet();
+  updateProfileUI();
+
+  // Se não tem perfil salvo ou não tem nome → abre onboarding
+  if (!walletState.sbProfile?.name || walletState.sbProfile.name === 'Usuário') {
+    setTimeout(() => openOnboardingModal(address), 400);
+  }
 };
 
 window._handleReownDisconnected = function() {
@@ -1229,10 +1399,11 @@ window._handleReownDisconnected = function() {
   walletState.connected = false;
   walletState.address   = null;
   walletState.sbProfile = null;
-  window._walletToastFired = false; // reseta para próxima conexão
+  window._walletToastFired = false;
   console.log('❌ Carteira desconectada');
   showToast('Wallet desconectada.', 'warn');
   updateHeaderWallet();
+  updateProfileUI();
 };
 
 function disconnectWallet() {
@@ -1243,6 +1414,7 @@ function disconnectWallet() {
   window._walletToastFired = false;
   showToast('Wallet desconectada.', 'warn');
   updateHeaderWallet();
+  updateProfileUI();
 }
 
 async function sbLoadProfile(userId) {
