@@ -12,7 +12,6 @@
 <script src="./reown-bundle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- Reown Init -->
 <script>
 (function initReown() {
   const MAX = 50, DELAY = 100;
@@ -64,10 +63,6 @@
 </script>
 
 <style>
-  /* ═══════════════════════════════════════════════════════════════
-     ESTILOS DO NOVO TEMPLATE + ESTILOS NECESSÁRIOS DO V36
-     ═══════════════════════════════════════════════════════════════ */
-  
   :root{
     --primary:#8b7cff;
     --primary-600:#7a6bf0;
@@ -84,59 +79,33 @@
     --pro:#10b981;
     --pro-soft:#d1fae5;
     --pro-text:#047857;
-    /* Dark mode variables */
     --surf-950: #0f0f0f;
     --surf-900: #1c1c1c;
     --surf-800: #1e1e1e;
     --surf-700: #2a2a2a;
     --surf-600: #3a3a3a;
-    --neon-cyan: #22d3ee;
-    --neon-lime: #a3e635;
-    --neon-violet: #a78bfa;
-    --sonic: #7C3AED;
-    --brand-50: #f5f3ff;
-    --brand-100: #ede9fe;
-    --brand-500: #8b5cf6;
-    --brand-600: #7c3aed;
-    --brand-700: #6d28d9;
   }
 
   html,body{font-family:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
-  
-  /* ── Botões ── */
   .btn-primary{background:var(--primary);color:#fff;transition:background .15s}
   .btn-primary:hover{background:var(--primary-600)}
   .btn-outline{border:1px solid #e2e8f0;color:#0f172a;background:#fff;transition:all .15s}
   .btn-outline:hover{border-color:#c7c0ff;color:var(--primary-text)}
-  
-  /* ── Chips ── */
   .chip{border:1px solid var(--line);background:#fff;color:#475569;transition:all .15s}
   .chip:hover{border-color:#c7c0ff;color:var(--primary-text);background:#fafaff}
   .pill{border:1px solid var(--line);color:#334155;background:#fff;transition:all .15s}
   .pill:hover{border-color:#c7c0ff;color:var(--primary-text)}
   .pill-active{background:#a99cff;color:#fff;border-color:transparent}
   .pill-active:hover{background:var(--primary-600);color:#fff}
-  
-  /* ── Cards ── */
   .card{transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;border:1px solid var(--line)}
   .card:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(91,78,224,.18);border-color:#c7c0ff}
   .card .gig-img{transition:transform .4s ease}
   .card:hover .gig-img{transform:scale(1.06)}
   .badge{background:rgba(255,255,255,.94);backdrop-filter:blur(6px)}
-  
-  /* ── Footer ── */
-  .footer-link{color:#0f172a;transition:color .15s}
-  .footer-link:hover{color:#5b4ee0}
-  
-  /* ── Scroll ── */
   .scrollbar-hide::-webkit-scrollbar{display:none}
   .scrollbar-hide{scrollbar-width:none}
-  
-  /* ── Sort Menu ── */
   .sort-menu{display:none}
   .sort-menu.open{display:block}
-  
-  /* ── Service page ── */
   .tab{border-bottom:2px solid transparent;color:#64748b;transition:all .15s}
   .tab:hover{color:#0f172a}
   .tab-active{color:#0f172a;border-color:#8b7cff;font-weight:700}
@@ -150,8 +119,6 @@
   .accordion summary::-webkit-details-marker{display:none}
   .accordion summary .ic{transition:transform .2s}
   .accordion[open] summary .ic{transform:rotate(180deg)}
-  
-  /* ── Profile page ── */
   .cover{background:linear-gradient(120deg,#efeaff 0%,#dcd5ff 40%,#c8bcff 100%)}
   .card-gig{transition:transform .2s, box-shadow .2s, border-color .2s;border:1px solid #e5e7eb}
   .card-gig:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(91,78,224,.18);border-color:#c7c0ff}
@@ -161,121 +128,36 @@
   .lvl-fill{height:100%;background:#8b7cff;border-radius:9999px}
   .badge-verified{background:#dcfce7;color:#15803d}
   .badge-top{background:#fef3c7;color:#b45309}
-  
-  /* ── Page transitions ── */
   .page{display:none}
   .page.active{display:block}
 
-  /* ── ESTILOS DO V36 (necessários para modals, chat, etc.) ── */
-  
-  /* Chat drawer */
-  .chat-drawer {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    pointer-events: none;
-  }
-  .chat-drawer .overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    pointer-events: auto;
-  }
-  .chat-drawer .panel {
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    max-width: 420px;
-    background: #fff;
-    box-shadow: -4px 0 40px rgba(0,0,0,0.15);
-    pointer-events: auto;
-    display: flex;
-    flex-direction: column;
-    animation: slideIn .25s ease-out;
-  }
-  @keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-  
-  /* Typing indicator */
+  /* CHAT DRAWER */
+  .chat-drawer{position:fixed;inset:0;z-index:50;pointer-events:none}
+  .chat-drawer .overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);pointer-events:auto}
+  .chat-drawer .panel{position:absolute;right:0;top:0;height:100%;width:100%;max-width:420px;background:#fff;box-shadow:-4px 0 40px rgba(0,0,0,0.15);pointer-events:auto;display:flex;flex-direction:column;animation:slideIn .25s ease-out}
+  @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
   .typing-dot{width:6px;height:6px;border-radius:50%;background:#94a3b8;display:inline-block;animation:typingBlink 1.2s infinite ease-in-out}
   .typing-dot:nth-child(2){animation-delay:.2s}
   .typing-dot:nth-child(3){animation-delay:.4s}
   @keyframes typingBlink{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-2px)}}
-  
-  /* Modal overlay */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 60;
-    background: rgba(15,23,42,0.6);
-    backdrop-filter: blur(4px);
-    display: grid;
-    place-items: center;
-    padding: 1rem;
-    animation: fade .2s ease-out;
-  }
-  .modal-overlay .modal-box {
-    background: #fff;
-    width: 100%;
-    max-width: 560px;
-    border-radius: 1.5rem;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    max-height: 90vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  @keyframes fade {
-    from { opacity: 0; transform: scale(0.96) translateY(8px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-  
-  /* Toast */
-  #toast-root {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .toast {
-    padding: 0.75rem 1.25rem;
-    border-radius: 1rem;
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.875rem;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    animation: slideUp .25s ease-out;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .toast-info { background: #1e293b; }
-  .toast-success { background: #10b981; }
-  .toast-warn { background: #f59e0b; }
-  .toast-error { background: #ef4444; }
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  /* Skeleton loading */
-  .skel{position:relative;overflow:hidden;background:#e9edf3}
-  .skel::after{content:'';position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:skelShimmer 1.4s infinite}
-  @keyframes skelShimmer{100%{transform:translateX(100%)}}
-  
-  /* Dark mode overrides */
+
+  .modal-overlay{position:fixed;inset:0;z-index:60;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:grid;place-items:center;padding:1rem;animation:fade .2s ease-out}
+  .modal-overlay .modal-box{background:#fff;width:100%;max-width:560px;border-radius:1.5rem;box-shadow:0 20px 60px rgba(0,0,0,0.25);max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
+  @keyframes fade{from{opacity:0;transform:scale(0.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+  #toast-root{position:fixed;bottom:1.5rem;right:1.5rem;z-index:100;display:flex;flex-direction:column;gap:0.5rem}
+  .toast{padding:0.75rem 1.25rem;border-radius:1rem;color:#fff;font-weight:600;font-size:0.875rem;box-shadow:0 8px 32px rgba(0,0,0,0.2);animation:slideUp .25s ease-out;display:flex;align-items:center;gap:0.5rem}
+  .toast-info{background:#1e293b}
+  .toast-success{background:#10b981}
+  .toast-warn{background:#f59e0b}
+  .toast-error{background:#ef4444}
+  @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+  .scrollbar-thin::-webkit-scrollbar{width:6px;height:6px}
+  .scrollbar-thin::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
+
   html.dark body{background:var(--surf-950);color:#e2e8f0}
-  html.dark .card,
-  html.dark .card-gig,
-  html.dark .pkg-card,
-  html.dark .modal-box{background:var(--surf-900);border-color:rgba(255,255,255,.08)}
+  html.dark .card,html.dark .card-gig,html.dark .pkg-card,html.dark .modal-box,html.dark .bg-white{background:var(--surf-900);border-color:rgba(255,255,255,.08)}
   html.dark .btn-outline{background:var(--surf-800);border-color:rgba(255,255,255,.1);color:#e2e8f0}
   html.dark .btn-outline:hover{border-color:#8b7cff}
   html.dark .chip{background:var(--surf-800);border-color:rgba(255,255,255,.08);color:#cbd5e1}
@@ -288,53 +170,28 @@
   html.dark .accordion{background:var(--surf-800);border-color:rgba(255,255,255,.08)}
   html.dark .accordion summary{color:#e2e8f0}
   html.dark .accordion p{color:#94a3b8}
-  html.dark .star-row i{color:#f59e0b}
-  html.dark .badge-verified{background:rgba(16,185,129,.2);color:#34d399}
-  html.dark .badge-top{background:rgba(245,158,11,.2);color:#fbbf24}
-  
-  /* Scrollbar */
-  .scrollbar-thin::-webkit-scrollbar{width:6px;height:6px}
-  .scrollbar-thin::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
   html.dark .scrollbar-thin::-webkit-scrollbar-thumb{background:#475569}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     TOAST ROOT
-══════════════════════════════════════════════════════════════ -->
 <div id="toast-root"></div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     MODAL ROOT
-══════════════════════════════════════════════════════════════ -->
 <div id="modal-root"></div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     CHAT ROOT
-══════════════════════════════════════════════════════════════ -->
 <div id="chat-root"></div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     HEADER (novo template + integração v36)
-══════════════════════════════════════════════════════════════ -->
 <header id="app-header" class="border-b border-slate-100 sticky top-0 bg-white/90 backdrop-blur z-40">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
     <a href="#" onclick="navigate('home');return false;" class="flex items-center gap-2 shrink-0">
-      <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white">
-        <i class="ri-briefcase-4-fill text-base"></i>
-      </span>
+      <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white"><i class="ri-briefcase-4-fill text-base"></i></span>
       <span class="font-extrabold text-slate-900 tracking-tight">InterWork</span>
     </a>
     <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
       <a href="#" onclick="navigate('home');return false;" class="hover:text-slate-900">Find Work</a>
       <a href="#" onclick="navigate('dashboard');return false;" class="hover:text-slate-900">Dashboard</a>
       <a href="#" onclick="navigate('how');return false;" class="hover:text-slate-900">How It Works</a>
-      <a href="#" onclick="navigate('benefits');return false;" class="hover:text-slate-900">Benefits</a>
-      <a href="#" onclick="navigate('rewards');return false;" class="hover:text-slate-900">Rewards</a>
+      <a href="#" onclick="navigate('admin');return false;" class="hover:text-slate-900 text-xs text-[#5b4ee0] font-bold" id="adminLink" style="display:none;">⚙️ Admin</a>
     </nav>
     <div class="flex items-center gap-3 sm:gap-5 text-sm">
-      <!-- Language selector -->
       <button id="langBtn" onclick="toggleLangMenu()" class="flex items-center gap-1 text-slate-600 hover:text-slate-900">
         <span class="w-4 h-4 rounded-full bg-slate-300 inline-block"></span> <span id="langLabel">EN</span>
         <i class="ri-arrow-down-s-line text-xs"></i>
@@ -343,12 +200,7 @@
         <button onclick="setLang('en')" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-50">🇬🇧 English</button>
         <button onclick="setLang('pt')" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-50">🇧🇷 Português</button>
         <button onclick="setLang('es')" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-50">🇪🇸 Español</button>
-        <button onclick="setLang('de')" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-50">🇩🇪 Deutsch</button>
-        <button onclick="setLang('ja')" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-50">🇯🇵 日本語</button>
-        <button onclick="setLang('hi')" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-50">🇮🇳 हिन्दी</button>
       </div>
-      
-      <!-- Notifications -->
       <div id="notifWrapper" class="relative">
         <button onclick="toggleNotifs()" class="relative text-slate-600 hover:text-slate-900 text-xl">
           <i class="ri-notification-3-line"></i>
@@ -362,40 +214,24 @@
           <div id="notifList" class="divide-y divide-slate-100"></div>
         </div>
       </div>
-
-      <!-- Dark mode toggle -->
-      <button onclick="toggleDarkMode()" class="text-slate-600 hover:text-slate-900 text-xl">
-        <i id="darkIcon" class="ri-moon-line"></i>
-      </button>
-
-      <!-- Sell service -->
+      <button onclick="toggleDarkMode()" class="text-slate-600 hover:text-slate-900 text-xl"><i id="darkIcon" class="ri-moon-line"></i></button>
       <button onclick="openNewServiceModal()" class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-lg font-bold text-sm border border-slate-200 hover:border-[#c7c0ff] hover:bg-[#fafaff] transition">
         <i class="ri-add-line"></i> Sell
       </button>
-
-      <!-- Profile avatar / Connect wallet -->
       <div class="flex items-center gap-2">
         <a id="headerProfileLink" href="#" onclick="navigate('profile');return false;" class="hidden w-8 h-8 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-[#efeaff] transition shrink-0"></a>
         <button id="walletBtn" onclick="openConnectWallet()" class="btn-primary px-3 sm:px-4 py-2 rounded-lg font-semibold whitespace-nowrap text-xs sm:text-sm flex items-center gap-2">
           <i class="ri-wallet-line"></i> <span id="walletLabel">Connect Wallet</span>
         </button>
       </div>
-
-      <!-- Mobile menu toggle -->
-      <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-700 text-xl" aria-label="Menu">
-        <i class="ri-menu-line"></i>
-      </button>
+      <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-700 text-xl" aria-label="Menu"><i class="ri-menu-line"></i></button>
     </div>
   </div>
-  
-  <!-- Mobile menu -->
   <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-100 bg-white">
     <nav class="px-4 py-3 flex flex-col gap-1 text-sm font-medium text-slate-700">
       <a href="#" onclick="navigate('home');toggleMobileMenu();return false;" class="py-2 hover:text-slate-900">Find Work</a>
       <a href="#" onclick="navigate('dashboard');toggleMobileMenu();return false;" class="py-2 hover:text-slate-900">Dashboard</a>
-      <a href="#" onclick="navigate('how');toggleMobileMenu();return false;" class="py-2 hover:text-slate-900">How It Works</a>
-      <a href="#" onclick="navigate('benefits');toggleMobileMenu();return false;" class="py-2 hover:text-slate-900">Benefits</a>
-      <a href="#" onclick="navigate('rewards');toggleMobileMenu();return false;" class="py-2 hover:text-slate-900">Rewards</a>
+      <a href="#" onclick="navigate('admin');toggleMobileMenu();return false;" class="py-2 hover:text-slate-900 text-[#5b4ee0] font-bold" id="adminLinkMobile" style="display:none;">⚙️ Admin</a>
       <div class="border-t border-slate-100 mt-2 pt-2 flex flex-col gap-1">
         <button onclick="toggleMobileMenu();openNewServiceModal()" class="py-2 text-left flex items-center gap-2"><i class="ri-add-line"></i> Sell a service</button>
         <button onclick="toggleMobileMenu();openConnectWallet()" class="py-2 text-left flex items-center gap-2"><i class="ri-wallet-line"></i> Connect Wallet</button>
@@ -404,48 +240,36 @@
   </div>
 </header>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     PÁGINA: HOME
-══════════════════════════════════════════════════════════════ -->
+<!-- PÁGINAS -->
 <div id="page-home" class="page active">
-
-<!-- HERO + SEARCH -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-6 text-center">
   <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">Find the perfect freelance talent</h1>
   <p class="mt-3 text-sm sm:text-base text-slate-500">Browse verified services from top Web3 professionals</p>
-
   <form id="searchForm" class="mt-6 sm:mt-7 mx-auto max-w-2xl" onsubmit="event.preventDefault();applyFilters();">
     <div class="flex items-center gap-2 bg-white rounded-xl border border-slate-200 shadow-sm pl-3 pr-2 py-2 focus-within:border-[#a99cff]">
       <i class="ri-search-line text-slate-400 text-lg shrink-0"></i>
       <input id="searchInput" oninput="applyFilters()" class="flex-1 min-w-0 outline-none text-sm py-2 placeholder:text-slate-400 bg-transparent" placeholder="Search for any service..." />
       <button type="button" id="clearBtn" onclick="clearSearch()" class="hidden text-slate-400 hover:text-slate-600 shrink-0 px-1"><i class="ri-close-line text-lg"></i></button>
       <button type="submit" class="btn-primary shrink-0 px-3 sm:px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5">
-        <i class="ri-search-line sm:hidden"></i>
-        <span class="hidden sm:inline">Search</span>
+        <i class="ri-search-line sm:hidden"></i><span class="hidden sm:inline">Search</span>
       </button>
     </div>
   </form>
-
-  <!-- Quick chips -->
   <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
     <button onclick="quickSearch('Web Dev')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-code-s-slash-line"></i> Web Development</button>
     <button onclick="quickSearch('UI/UX')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-pencil-ruler-2-line"></i> UI/UX Design</button>
     <button onclick="quickSearch('Mobile')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-smartphone-line"></i> Mobile Apps</button>
-    <button onclick="quickSearch('AI/ML')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-sparkling-2-line"></i> AI &amp; Machine Learning</button>
+    <button onclick="quickSearch('AI/ML')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-sparkling-2-line"></i> AI & Machine Learning</button>
     <button onclick="quickSearch('Blockchain')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-link"></i> Blockchain</button>
   </div>
 </section>
-
-<!-- FILTER BAR -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 border-b border-slate-100 pb-3">
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
     <div id="catBar" class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-2 -mx-4 px-4 sm:mx-0 sm:px-0"></div>
     <div class="flex items-center justify-between sm:justify-end gap-4 text-sm text-slate-500 shrink-0 relative">
       <span id="resultCount">10 results</span>
       <button id="sortBtn" onclick="toggleSort(event)" class="flex items-center gap-1 hover:text-slate-700 font-medium">
-        <i class="ri-arrow-up-down-line"></i>
-        <span id="sortLabel">Top Rated</span>
-        <i class="ri-arrow-down-s-line"></i>
+        <i class="ri-arrow-up-down-line"></i><span id="sortLabel">Top Rated</span><i class="ri-arrow-down-s-line"></i>
       </button>
       <div id="sortMenu" class="sort-menu absolute right-0 top-full mt-2 w-44 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-30 text-left">
         <button onclick="setSort('rating','Top Rated')" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Top Rated</button>
@@ -456,14 +280,10 @@
     </div>
   </div>
 </section>
-
-<!-- GIGS GRID -->
 <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
   <div id="gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
   <div id="emptyState" class="hidden text-center py-20">
-    <div class="mx-auto w-16 h-16 rounded-full bg-slate-100 grid place-items-center text-slate-400">
-      <i class="ri-search-line text-2xl"></i>
-    </div>
+    <div class="mx-auto w-16 h-16 rounded-full bg-slate-100 grid place-items-center text-slate-400"><i class="ri-search-line text-2xl"></i></div>
     <h3 class="mt-4 text-lg font-bold text-slate-800">No gigs match your filters</h3>
     <p class="mt-1 text-sm text-slate-500">Try different keywords or clear your filters.</p>
     <button onclick="clearAll()" class="mt-5 px-5 py-2 rounded-full bg-[#efeaff] text-[#6b5ce7] text-sm font-semibold hover:bg-[#e3dcff]">Clear all filters</button>
@@ -472,86 +292,21 @@
     <button id="loadMoreBtn" onclick="loadMore()" class="px-6 py-2.5 rounded-full text-sm font-semibold bg-[#efeaff] text-[#6b5ce7] hover:bg-[#e3dcff]">Load more gigs</button>
   </div>
 </main>
+</div>
 
-<!-- FOOTER HOME -->
-<footer class="bg-white text-slate-600 mt-12 border-t border-slate-200">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
-    <div class="flex flex-col items-center text-center">
-      <div class="flex items-center gap-2">
-        <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white"><i class="ri-briefcase-4-fill"></i></span>
-        <span class="font-extrabold text-slate-900">InterWork</span>
-      </div>
-      <p class="mt-4 text-sm text-slate-500 leading-relaxed max-w-sm">The Web3 freelance marketplace. Hire verified talent, pay in ITL, zero middlemen.</p>
-      <div class="mt-5 flex gap-2">
-        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-twitter-x-fill"></i></a>
-        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-discord-fill"></i></a>
-        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-telegram-fill"></i></a>
-        <a href="#" class="w-9 h-9 grid place-items-center rounded-md bg-slate-100 hover:bg-slate-200 text-slate-600"><i class="ri-github-fill"></i></a>
-      </div>
-    </div>
-  </div>
-  <div class="border-t border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
-      <span>© 2026 InterWork. All rights reserved.</span>
-      <span>Powered by Interlink · ITL Token</span>
-    </div>
-  </div>
-</footer>
-
-</div><!-- /page-home -->
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PÁGINA: SERVICE (dinâmica - renderizada via JS)
-══════════════════════════════════════════════════════════════ -->
 <div id="page-service" class="page"></div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PÁGINA: PROFILE (dinâmica - renderizada via JS)
-══════════════════════════════════════════════════════════════ -->
 <div id="page-profile" class="page"></div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PÁGINA: DASHBOARD (dinâmica - renderizada via JS)
-══════════════════════════════════════════════════════════════ -->
 <div id="page-dashboard" class="page"></div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PÁGINA: WALLET (dinâmica - renderizada via JS)
-══════════════════════════════════════════════════════════════ -->
 <div id="page-wallet" class="page"></div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PÁGINA: ADMIN (dinâmica - renderizada via JS)
-══════════════════════════════════════════════════════════════ -->
 <div id="page-admin" class="page"></div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PÁGINA: HOW IT WORKS (dinâmica - renderizada via JS)
-══════════════════════════════════════════════════════════════ -->
 <div id="page-how" class="page"></div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PÁGINA: BENEFITS (dinâmica - renderizada via JS)
-══════════════════════════════════════════════════════════════ -->
 <div id="page-benefits" class="page"></div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PÁGINA: REWARDS (dinâmica - renderizada via JS)
-══════════════════════════════════════════════════════════════ -->
 <div id="page-rewards" class="page"></div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     PÁGINA: LEGAL (dinâmica - renderizada via JS)
-══════════════════════════════════════════════════════════════ -->
 <div id="page-legal" class="page"></div>
 
-
-<!-- ═══════════════════════════════════════════════════════════════
-     SCRIPTS - TODO O CÓDIGO DO V36
-══════════════════════════════════════════════════════════════ -->
 <script>
 // ============================================================
-// INTERWORK v36 — CÓDIGO COMPLETO TRANSPLANTADO
+// INTERWORK — CÓDIGO COMPLETO COM CHAT E ADMIN
 // ============================================================
 
 /* ---------- STATE ---------- */
@@ -559,13 +314,8 @@ const STATE = {
   route: 'home',
   currentUserId: 'u_me',
   query: '', category: 'all', country: 'all', sort: 'relevance', trendingActive: false,
-  page: 1,
-  ratingMin: 0, priceMax: 0, priceMin: 0,
+  page: 1, ratingMin: 0, priceMax: 0, priceMin: 0,
   verifiedOnly: false, availableOnly: false,
-  freelancerLevel: 'all',
-  deliveryFilter: 'all',
-  languageFilter: 'all',
-  availabilityFilter: 'all',
   selectedServiceId: null,
   orders: [],
   messages: {},
@@ -623,10 +373,7 @@ const STATE = {
 /* ---------- MOCK DATA ---------- */
 const DB = { users: [], services: [], reviews: [] };
 
-const TOKENS = [
-  { id:'ITL', label:'ITL', rateITL:1, color:'#7C3AED', icon:'coins' },
-];
-
+const TOKENS = [{ id:'ITL', label:'ITL', rateITL:1, color:'#7C3AED', icon:'coins' }];
 const LEVELS = [
   { id:'new', label:'New', min:0, color:'#94a3b8', icon:'sparkles' },
   { id:'level1', label:'Level 1', min:5, color:'#10b981', icon:'shield' },
@@ -634,27 +381,11 @@ const LEVELS = [
   { id:'top-rated', label:'Top Rated', min:80, color:'#f59e0b', icon:'award' },
   { id:'pro', label:'Pro', min:150, color:'#7C3AED', icon:'crown' },
 ];
-
-const SBT_BADGES = [
-  { id:'human', label:'Verified Human', desc:'Proof of personhood via Interlink ID', icon:'badge-check', color:'#1a73e8', test: u => u.verified },
-  { id:'linker', label:'Interlink Linker', desc:'Active member of the Interlink ecosystem', icon:'link-2', color:'#a78bfa', test: u => u.verified && (Date.now()-u.joinedTs) > 90*86400000 },
-  { id:'veterano', label:'Veterano', desc:'1+ ano no ecossistema', icon:'history', color:'#7C3AED', test: u => (Date.now()-u.joinedTs) > 365*86400000 },
-  { id:'cem', label:'100+ Entregas', desc:'Cem ou mais pedidos concluídos on-chain', icon:'package-check', color:'#10b981', test: u => (u.jobs||0) >= 100 },
-  { id:'top', label:'Top Rated', desc:'Rating ≥ 4.85 com 50+ avaliações', icon:'award', color:'#f59e0b', test: u => u.rating >= 4.85 && (u.jobs||0) >= 25 },
-  { id:'fast', label:'Express Pro', desc:'Responde em ≤ 3h em média', icon:'rocket', color:'#ef4444', test: u => (u.responseHours||99) <= 3 },
-  { id:'trust', label:'Zero Disputas', desc:'Nenhuma disputa em 20+ pedidos', icon:'shield-check', color:'#06b6d4', test: u => ((u.disputes||0)===0) && (u.jobs||0) >= 20 },
-  { id:'recur', label:'Cliente Fiel', desc:'90%+ de clientes recorrentes', icon:'repeat', color:'#0ea5e9', test: u => (u.repeatClientsPct||0) >= 90 },
-];
-
 const LANGUAGES_LIST = [
   { id:'pt', label:'Português', flag:'🇧🇷' },
   { id:'en', label:'English', flag:'🇬🇧' },
   { id:'es', label:'Español', flag:'🇪🇸' },
-  { id:'de', label:'Deutsch', flag:'🇩🇪' },
-  { id:'ja', label:'日本語', flag:'🇯🇵' },
-  { id:'hi', label:'हिन्दी', flag:'🇮🇳' },
 ];
-
 const CATEGORIES = [
   { id:'design', label:'Design', icon:'ri-palette-line', color:'#f97316' },
   { id:'dev', label:'Desenvolvimento', icon:'ri-code-s-slash-line', color:'#1a73e8' },
@@ -663,12 +394,10 @@ const CATEGORIES = [
   { id:'audit', label:'Auditoria Smart Contract', icon:'ri-shield-check-line', color:'#ef4444' },
   { id:'video', label:'Vídeo & Motion', icon:'ri-video-line', color:'#06b6d4' },
   { id:'ai', label:'AI Services', icon:'ri-sparkling-2-line', color:'#8b5cf6' },
-  { id:'music', label:'Música & Áudio', icon:'ri-music-2-line', color:'#ec4899' },
   { id:'business', label:'Business', icon:'ri-user-3-line', color:'#0ea5e9' },
   { id:'consulting', label:'Consultoria', icon:'ri-briefcase-line', color:'#14b8a6' },
   { id:'other', label:'Outros', icon:'ri-more-2-line', color:'#6b7280' },
 ];
-
 const COUNTRIES = [
   { id:'BR', flag:'🇧🇷', name:'Brasil' },
   { id:'PT', flag:'🇵🇹', name:'Portugal' },
@@ -680,150 +409,6 @@ const COUNTRIES = [
   { id:'IN', flag:'🇮🇳', name:'Índia' },
 ];
 
-/* ---------- i18n ---------- */
-const I18N = {
-  pt:{ nav_explore:'Explorar', nav_orders:'Meus pedidos', nav_sell:'Vender serviço', nav_how:'Como funciona',
-       net:'Interlink Network', connect:'Conectar wallet', search_ph:'O que você precisa hoje?',
-       hero_kicker:'O marketplace de trabalho do ecossistema Interlink', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'Contrate, trabalhe e receba em ITL — rápido, simples e protegido, tudo dentro do ecossistema InterLink.',
-       cta_browse:'Buscar', cta_sell:'Vender meu serviço', trending:'Em alta agora',
-       categories:'Categorias', top_services:'Serviços em destaque', view_all:'ver tudo',
-       light:'Claro', dark:'Escuro', notifications:'Notificações', mark_all:'Marcar tudo',
-       no_notif:'Sem notificações', live_market:'Marketplace ao vivo', escrow_audit:'Escrow auditado',
-       how_it_works:'Como funciona', filters:'Filtros', clear:'Limpar', category:'Categoria',
-       country:'País', all:'Todos', sort:'Ordenar por', sort_rel:'Relevância', sort_rating:'Melhor avaliados',
-       sort_low:'Menor preço', sort_high:'Maior preço', sort_new:'Mais recentes',
-       results:'resultados', no_results:'Nenhum serviço encontrado', try_other:'Tente outros filtros ou termos.',
-       footer_tag:'O marketplace de trabalho do ecossistema Interlink. Pagamentos em ITL, escrow on-chain e proteção real para ambos os lados.',
-       product:'Produto', explore:'Explorar', sell:'Vender', dashboard:'Painel',
-       legal:'Legal', terms:'Termos', privacy:'Privacidade', cookies:'Cookies',
-       social:'Comunidade', built_on:'Powered by Interlink',
-       cat_design:'Design', cat_dev:'Desenvolvimento', cat_marketing:'Marketing',
-       cat_writing:'Redação', cat_audit:'Auditoria Smart Contract', cat_video:'Vídeo & Motion',
-       starting_at:'a partir de', hire:'Contratar', message:'Conversar', share:'Compartilhar',
-       edit_profile:'Editar perfil', save:'Salvar', cancel:'Cancelar',
-       order_in_progress:'Em andamento', order_delivered:'Entregue', order_approved:'Aprovado', order_disputed:'Em disputa',
-       client:'Cliente', freelancer:'Freelancer', my_orders:'Meus pedidos', my_services:'Meus serviços',
-       wallet:'Carteira', balance:'Saldo', tx_history:'Histórico', single_token:'Saldo único · pagamento exclusivo em ITL' },
-  en:{ nav_explore:'Explore', nav_orders:'My orders', nav_sell:'Sell a service', nav_how:'How it works',
-       net:'Interlink Network', connect:'Connect wallet', search_ph:'What do you need today?',
-       hero_kicker:'The workforce marketplace for the Interlink ecosystem', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'Hire, work and get paid in ITL — fast, simple and protected, all within the InterLink ecosystem.',
-       cta_browse:'Search', cta_sell:'Sell my service', trending:'Trending now',
-       categories:'Categories', top_services:'Featured services', view_all:'view all',
-       light:'Light', dark:'Dark', notifications:'Notifications', mark_all:'Mark all',
-       no_notif:'No notifications', live_market:'Live marketplace', escrow_audit:'Audited escrow',
-       how_it_works:'How it works', filters:'Filters', clear:'Clear', category:'Category',
-       country:'Country', all:'All', sort:'Sort by', sort_rel:'Relevance', sort_rating:'Top rated',
-       sort_low:'Lowest price', sort_high:'Highest price', sort_new:'Newest',
-       results:'results', no_results:'No services found', try_other:'Try other filters or keywords.',
-       footer_tag:'The workforce marketplace for the Interlink ecosystem. ITL payments, on-chain escrow and real protection on both sides.',
-       product:'Product', explore:'Explore', sell:'Sell', dashboard:'Dashboard',
-       legal:'Legal', terms:'Terms', privacy:'Privacy', cookies:'Cookies',
-       social:'Community', built_on:'Powered by Interlink',
-       cat_design:'Design', cat_dev:'Development', cat_marketing:'Marketing',
-       cat_writing:'Writing', cat_audit:'Smart Contract Audit', cat_video:'Video & Motion',
-       starting_at:'starting at', hire:'Hire', message:'Message', share:'Share',
-       edit_profile:'Edit profile', save:'Save', cancel:'Cancel',
-       order_in_progress:'In progress', order_delivered:'Delivered', order_approved:'Approved', order_disputed:'In dispute',
-       client:'Client', freelancer:'Freelancer', my_orders:'My orders', my_services:'My services',
-       wallet:'Wallet', balance:'Balance', tx_history:'History', single_token:'Single balance · ITL-only payment' },
-  es:{ nav_explore:'Explorar', nav_orders:'Mis pedidos', nav_sell:'Vender servicio', nav_how:'Cómo funciona',
-       net:'Interlink Network', connect:'Conectar wallet', search_ph:'¿Qué necesitas hoy?',
-       hero_kicker:'El marketplace de trabajo del ecosistema Interlink', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'Contrata, trabaja y cobra en ITL — rápido, simple y protegido, todo dentro del ecosistema InterLink.',
-       cta_browse:'Buscar', cta_sell:'Vender mi servicio', trending:'Tendencia',
-       categories:'Categorías', top_services:'Servicios destacados', view_all:'ver todo',
-       light:'Claro', dark:'Oscuro', notifications:'Notificaciones', mark_all:'Marcar todo',
-       no_notif:'Sin notificaciones', live_market:'Marketplace en vivo', escrow_audit:'Escrow auditado',
-       how_it_works:'Cómo funciona', filters:'Filtros', clear:'Limpiar', category:'Categoría',
-       country:'País', all:'Todos', sort:'Ordenar por', sort_rel:'Relevancia', sort_rating:'Mejor valorados',
-       sort_low:'Precio bajo', sort_high:'Precio alto', sort_new:'Más recientes',
-       results:'resultados', no_results:'No se encontraron servicios', try_other:'Prueba otros filtros o palabras.',
-       footer_tag:'El marketplace de trabajo del ecosistema Interlink. Pagos en ITL, escrow on-chain y protección real para ambas partes.',
-       product:'Producto', explore:'Explorar', sell:'Vender', dashboard:'Panel',
-       legal:'Legal', terms:'Términos', privacy:'Privacidad', cookies:'Cookies',
-       social:'Comunidad', built_on:'Powered by Interlink',
-       cat_design:'Diseño', cat_dev:'Desarrollo', cat_marketing:'Marketing',
-       cat_writing:'Redacción', cat_audit:'Auditoría Smart Contract', cat_video:'Video & Motion',
-       starting_at:'desde', hire:'Contratar', message:'Mensaje', share:'Compartir',
-       edit_profile:'Editar perfil', save:'Guardar', cancel:'Cancelar',
-       order_in_progress:'En curso', order_delivered:'Entregado', order_approved:'Aprobado', order_disputed:'En disputa',
-       client:'Cliente', freelancer:'Freelancer', my_orders:'Mis pedidos', my_services:'Mis servicios',
-       wallet:'Billetera', balance:'Saldo', tx_history:'Historial', single_token:'Saldo único · pago exclusivo en ITL' },
-  de:{ nav_explore:'Entdecken', nav_orders:'Aufträge', nav_sell:'Service verkaufen', nav_how:'Funktionsweise',
-       net:'Interlink Network', connect:'Wallet verbinden', search_ph:'Was brauchst du heute?',
-       hero_kicker:'Der Workforce-Marktplatz des Interlink-Ökosystems', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'Heuere an, arbeite und werde in ITL bezahlt — schnell, einfach und geschützt, alles innerhalb des InterLink-Ökosystems.',
-       cta_browse:'Suchen', cta_sell:'Service anbieten', trending:'Im Trend',
-       categories:'Kategorien', top_services:'Empfohlene Services', view_all:'alle',
-       light:'Hell', dark:'Dunkel', notifications:'Benachrichtigungen', mark_all:'Alle markieren',
-       no_notif:'Keine Benachrichtigungen', live_market:'Live-Marktplatz', escrow_audit:'Geprüftes Escrow',
-       how_it_works:'Funktionsweise', filters:'Filter', clear:'Zurücksetzen', category:'Kategorie',
-       country:'Land', all:'Alle', sort:'Sortieren', sort_rel:'Relevanz', sort_rating:'Top bewertet',
-       sort_low:'Niedrigster Preis', sort_high:'Höchster Preis', sort_new:'Neueste',
-       results:'Ergebnisse', no_results:'Keine Services gefunden', try_other:'Andere Filter oder Begriffe versuchen.',
-       footer_tag:'Der Workforce-Marktplatz des Interlink-Ökosystems. ITL-Zahlungen, On-Chain-Escrow und echter Schutz für beide Seiten.',
-       product:'Produkt', explore:'Entdecken', sell:'Verkaufen', dashboard:'Dashboard',
-       legal:'Rechtliches', terms:'AGB', privacy:'Datenschutz', cookies:'Cookies',
-       social:'Community', built_on:'Powered by Interlink',
-       cat_design:'Design', cat_dev:'Entwicklung', cat_marketing:'Marketing',
-       cat_writing:'Texten', cat_audit:'Smart-Contract-Audit', cat_video:'Video & Motion',
-       starting_at:'ab', hire:'Beauftragen', message:'Nachricht', share:'Teilen',
-       edit_profile:'Profil bearbeiten', save:'Speichern', cancel:'Abbrechen',
-       order_in_progress:'Läuft', order_delivered:'Geliefert', order_approved:'Genehmigt', order_disputed:'Im Streit',
-       client:'Auftraggeber', freelancer:'Freelancer', my_orders:'Meine Aufträge', my_services:'Meine Services',
-       wallet:'Wallet', balance:'Guthaben', tx_history:'Verlauf', single_token:'Einziges Guthaben · nur ITL-Zahlung' },
-  ja:{ nav_explore:'探す', nav_orders:'注文', nav_sell:'出品', nav_how:'仕組み',
-       net:'Interlink Network', connect:'ウォレット接続', search_ph:'今日は何が必要？',
-       hero_kicker:'Interlinkエコシステムのワークフォース・マーケット', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'ITLで雇って、働いて、報酬を受け取る——速くて、シンプルで、安全。すべてInterLinkエコシステム内で。',
-       cta_browse:'検索', cta_sell:'出品する', trending:'人気急上昇',
-       categories:'カテゴリ', top_services:'おすすめ', view_all:'すべて',
-       light:'ライト', dark:'ダーク', notifications:'通知', mark_all:'すべて既読',
-       no_notif:'通知なし', live_market:'ライブマーケット', escrow_audit:'監査済みエスクロー',
-       how_it_works:'仕組み', filters:'フィルター', clear:'クリア', category:'カテゴリ',
-       country:'国', all:'すべて', sort:'並び替え', sort_rel:'関連度', sort_rating:'評価順',
-       sort_low:'価格が安い順', sort_high:'価格が高い順', sort_new:'新着順',
-       results:'件', no_results:'サービスが見つかりません', try_other:'他のキーワードでお試しください。',
-       footer_tag:'Interlinkエコシステムのためのワークフォース・マーケット。ITL決済、オンチェーンエスクロー、両者への確実な保護。',
-       product:'プロダクト', explore:'探す', sell:'出品', dashboard:'ダッシュボード',
-       legal:'リーガル', terms:'利用規約', privacy:'プライバシー', cookies:'クッキー',
-       social:'コミュニティ', built_on:'Powered by Interlink',
-       cat_design:'デザイン', cat_dev:'開発', cat_marketing:'マーケティング',
-       cat_writing:'ライティング', cat_audit:'スマートコントラクト監査', cat_video:'映像&モーション',
-       starting_at:'最低', hire:'依頼する', message:'メッセージ', share:'共有',
-       edit_profile:'プロフィール編集', save:'保存', cancel:'キャンセル',
-       order_in_progress:'進行中', order_delivered:'納品済み', order_approved:'承認済み', order_disputed:'紛争中',
-       client:'クライアント', freelancer:'フリーランサー', my_orders:'注文', my_services:'マイサービス',
-       wallet:'ウォレット', balance:'残高', tx_history:'履歴', single_token:'単一残高 · ITLのみで支払い' },
-  hi:{ nav_explore:'खोजें', nav_orders:'मेरे ऑर्डर', nav_sell:'सेवा बेचें', nav_how:'कैसे काम करता है',
-       net:'Interlink Network', connect:'वॉलेट कनेक्ट', search_ph:'आज आपको क्या चाहिए?',
-       hero_kicker:'Interlink इकोसिस्टम का वर्कफोर्स मार्केटप्लेस', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'ITL में नियुक्त करें, काम करें और भुगतान पाएं — तेज़, आसान और सुरक्षित, पूरी तरह InterLink इकोसिस्टम के भीतर।',
-       cta_browse:'खोज', cta_sell:'अपनी सेवा बेचें', trending:'ट्रेंडिंग',
-       categories:'श्रेणियाँ', top_services:'विशेष सेवाएँ', view_all:'सभी देखें',
-       light:'लाइट', dark:'डार्क', notifications:'सूचनाएँ', mark_all:'सभी पढ़ा हुआ',
-       no_notif:'कोई सूचना नहीं', live_market:'लाइव मार्केटप्लेस', escrow_audit:'ऑडिटेड एस्क्रो',
-       how_it_works:'कैसे काम करता है', filters:'फिल्टर', clear:'साफ करें', category:'श्रेणी',
-       country:'देश', all:'सभी', sort:'क्रमबद्ध करें', sort_rel:'प्रासंगिकता', sort_rating:'टॉप रेटेड',
-       sort_low:'कम कीमत', sort_high:'अधिक कीमत', sort_new:'नए',
-       results:'परिणाम', no_results:'कोई सेवा नहीं मिली', try_other:'अन्य फ़िल्टर या शब्द आज़माएँ.',
-       footer_tag:'Interlink इकोसिस्टम के लिए वर्कफोर्स मार्केटप्लेस। ITL भुगतान, ऑन-चेन एस्क्रो और दोनों पक्षों के लिए वास्तविक सुरक्षा।',
-       product:'उत्पाद', explore:'खोजें', sell:'बेचें', dashboard:'डैशबोर्ड',
-       legal:'कानूनी', terms:'शर्तें', privacy:'गोपनीयता', cookies:'कुकीज़',
-       social:'समुदाय', built_on:'Powered by Interlink',
-       cat_design:'डिज़ाइन', cat_dev:'विकास', cat_marketing:'मार्केटिंग',
-       cat_writing:'लेखन', cat_audit:'स्मार्ट कॉन्ट्रैक्ट ऑडिट', cat_video:'वीडियो और मोशन',
-       starting_at:'से शुरू', hire:'हायर करें', message:'संदेश', share:'शेयर',
-       edit_profile:'प्रोफ़ाइल संपादित करें', save:'सेव', cancel:'रद्द करें',
-       order_in_progress:'जारी', order_delivered:'डिलीवर', order_approved:'स्वीकृत', order_disputed:'विवाद',
-       client:'क्लाइंट', freelancer:'फ्रीलांसर', my_orders:'मेरे ऑर्डर', my_services:'मेरी सेवाएँ',
-       wallet:'वॉलेट', balance:'बैलेंस', tx_history:'इतिहास', single_token:'एकल बैलेंस · केवल ITL भुगतान' },
-};
-
-function t(k){ return (I18N[STATE.language]||I18N.en)[k] || I18N.en[k] || k; }
-
 /* ---------- HELPERS ---------- */
 const $ = (sel, el=document) => el.querySelector(sel);
 const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
@@ -833,16 +418,9 @@ const escapeHtml = s => (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;
 const fmtITL = n => (Math.round(n*100)/100).toLocaleString('en-US') + ' ITL';
 const shortAddr = a => a ? a.slice(0,6)+'…'+a.slice(-4) : '';
 const shortHash = h => h && h.length > 10 ? h.slice(0,10)+'…'+h.slice(-6) : h;
-const timeAgo = ts => {
-  const s = Math.floor((Date.now()-ts)/1000);
-  if (s<60) return s+'s';
-  if (s<3600) return Math.floor(s/60)+'m';
-  if (s<86400) return Math.floor(s/3600)+'h';
-  return Math.floor(s/86400)+'d';
-};
+const timeAgo = ts => { const s=Math.floor((Date.now()-ts)/1000); if(s<60)return s+'s'; if(s<3600)return Math.floor(s/60)+'m'; if(s<86400)return Math.floor(s/3600)+'h'; return Math.floor(s/86400)+'d'; };
 const txHash = () => '0x'+Array.from({length:64},()=>'0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
 const explorerURL = h => 'https://explorer.interlinklabs.ai/tx/'+h;
-const tokenInfo = id => TOKENS.find(t=>t.id===id) || TOKENS[0];
 const getUser = id => DB.users.find(u=>u.id===id);
 const getService = id => DB.services.find(s=>s.id===id);
 const getCategory = id => CATEGORIES.find(c=>c.id===id);
@@ -852,43 +430,65 @@ const isAuthed = () => !!(STATE.walletConnected && STATE.authenticated && STATE.
 const isFavorited = sid => STATE.favorites.includes(sid);
 const unreadCount = () => STATE.notifications.filter(n=>!n.read).length;
 
-/* ---------- AVATAR ---------- */
 function avatarSVG(letter, color){
-  const s = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
-    <defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'>
-      <stop offset='0' stop-color='${color}'/><stop offset='1' stop-color='#0b1220'/>
-    </linearGradient></defs>
-    <rect width='64' height='64' rx='16' fill='url(#g)'/>
-    <text x='32' y='40' text-anchor='middle' font-family='Inter,system-ui' font-size='28' font-weight='800' fill='white'>${letter}</text>
-  </svg>`;
+  const s = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'><stop offset='0' stop-color='${color}'/><stop offset='1' stop-color='#0b1220'/></linearGradient></defs><rect width='64' height='64' rx='16' fill='url(#g)'/><text x='32' y='40' text-anchor='middle' font-family='Inter,system-ui' font-size='28' font-weight='800' fill='white'>${letter}</text></svg>`;
   return 'data:image/svg+xml;utf8,'+encodeURIComponent(s);
 }
 
 function thumbSVG(title, color){
   const initials = title.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  const s = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'>
-    <defs>
-      <linearGradient id='bg' x1='0' x2='1' y1='0' y2='1'>
-        <stop offset='0' stop-color='${color}' stop-opacity='.18'/>
-        <stop offset='1' stop-color='#1a73e8' stop-opacity='.10'/>
-      </linearGradient>
-      <pattern id='p' width='24' height='24' patternUnits='userSpaceOnUse'>
-        <circle cx='2' cy='2' r='1.2' fill='${color}' opacity='.35'/>
-      </pattern>
-    </defs>
-    <rect width='400' height='240' fill='white'/>
-    <rect width='400' height='240' fill='url(#bg)'/>
-    <rect width='400' height='240' fill='url(#p)'/>
-    <g transform='translate(28,28)'>
-      <rect width='56' height='56' rx='14' fill='${color}'/>
-      <text x='28' y='37' text-anchor='middle' font-family='Inter,system-ui' font-size='22' font-weight='800' fill='white'>${initials}</text>
-    </g>
-    <g transform='translate(28,170)' fill='#0b1220' font-family='Inter,system-ui'>
-      <text font-size='14' font-weight='700' opacity='.55'>INTERWORK</text>
-      <text y='22' font-size='18' font-weight='800'>${escapeHtml(title.length>32?title.slice(0,30)+'…':title)}</text>
-    </g>
-  </svg>`;
+  const s = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'><defs><linearGradient id='bg' x1='0' x2='1' y1='0' y2='1'><stop offset='0' stop-color='${color}' stop-opacity='.18'/><stop offset='1' stop-color='#1a73e8' stop-opacity='.10'/></linearGradient><pattern id='p' width='24' height='24' patternUnits='userSpaceOnUse'><circle cx='2' cy='2' r='1.2' fill='${color}' opacity='.35'/></pattern></defs><rect width='400' height='240' fill='white'/><rect width='400' height='240' fill='url(#bg)'/><rect width='400' height='240' fill='url(#p)'/><g transform='translate(28,28)'><rect width='56' height='56' rx='14' fill='${color}'/><text x='28' y='37' text-anchor='middle' font-family='Inter,system-ui' font-size='22' font-weight='800' fill='white'>${initials}</text></g><g transform='translate(28,170)' fill='#0b1220' font-family='Inter,system-ui'><text font-size='14' font-weight='700' opacity='.55'>INTERWORK</text><text y='22' font-size='18' font-weight='800'>${escapeHtml(title.length>32?title.slice(0,30)+'…':title)}</text></g></svg>`;
   return 'data:image/svg+xml;utf8,'+encodeURIComponent(s);
+}
+
+function getUserSafe(id){
+  const local = getUser(id);
+  if (local) return local;
+  return { id, name: 'Usuário Interwork', handle: 'user', avatar: avatarSVG('U','#1a73e8'), verified: false, online: false, wallet: null, rating: 5, jobs: 0, iconColor: '#fecaca' };
+}
+
+function requireAuth(action='continuar'){
+  if (isAuthed()) return true;
+  openConnectWallet(`Para ${action}, conecte sua wallet e crie seu handle Interwork.`);
+  return false;
+}
+
+function toggleFavorite(serviceId, event){
+  event?.preventDefault(); event?.stopPropagation();
+  if (!requireAuth('salvar nos favoritos')) return;
+  const idx = STATE.favorites.indexOf(serviceId);
+  if (idx >= 0){ STATE.favorites.splice(idx, 1); toast('Removido dos favoritos.', 'info'); }
+  else { STATE.favorites.unshift(serviceId); toast('Salvo em favoritos.', 'success'); }
+  renderView();
+}
+
+function stars(n, size='w-4 h-4'){
+  const full = Math.floor(n), half = (n-full)>=0.5;
+  let html='';
+  for (let i=0;i<5;i++){
+    const cls = i<full ? 'text-amber-400 fill-amber-400' : (i===full && half ? 'text-amber-400' : 'text-slate-300');
+    html += `<i class="ri-star-fill ${size} ${cls}"></i>`;
+  }
+  return `<div class="flex items-center gap-0.5">${html}</div>`;
+}
+
+function statusChip(status){
+  const map = {
+    awaiting_requirements: ['Aguardando informações','bg-amber-100 text-amber-800','ri-information-line'],
+    in_progress: ['Em andamento','bg-amber-50 text-amber-700','ri-loader-2-line'],
+    awaiting_delivery: ['Em andamento','bg-violet-50 text-violet-700','ri-time-line'],
+    delivered: ['Entregue','bg-blue-50 text-blue-700','ri-package-line'],
+    approved: ['Aprovado','bg-emerald-50 text-emerald-700','ri-check-line'],
+    cancelled: ['Cancelado','bg-slate-100 text-slate-700','ri-close-line'],
+    disputed: ['Em disputa','bg-rose-50 text-rose-700','ri-alert-line'],
+  };
+  const [lbl,c,i] = map[status] || ['—','bg-slate-100 text-slate-700','ri-circle-line'];
+  return `<span class="chip text-xs px-2 py-1 rounded-full inline-flex items-center gap-1"><i class="${i}"></i>${lbl}</span>`;
+}
+
+function addNotification(n){
+  STATE.notifications.unshift({ id:uid('n'), read:false, ts:Date.now(), ...n });
+  if (STATE.notifications.length > 200) STATE.notifications = STATE.notifications.slice(0, 200);
 }
 
 /* ---------- TOAST ---------- */
@@ -903,10 +503,9 @@ function toast(msg, kind='info'){
   setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(8px)'; setTimeout(()=>el.remove(),300); }, 3500);
 }
 
-/* ---------- MODAL ---------- */
 function closeModal(){ document.getElementById('modal-root').innerHTML = ''; }
 
-/* ---------- TOGGLE FUNCTIONS ---------- */
+/* ---------- DARK MODE ---------- */
 function toggleDarkMode(){
   STATE.darkMode = !STATE.darkMode;
   document.documentElement.classList.toggle('dark', STATE.darkMode);
@@ -914,6 +513,7 @@ function toggleDarkMode(){
   renderHeader();
 }
 
+/* ---------- LANGUAGE ---------- */
 function toggleLangMenu(e){
   const menu = document.getElementById('langMenu');
   menu.classList.toggle('hidden');
@@ -929,6 +529,7 @@ function setLang(id){
   render();
 }
 
+/* ---------- NOTIFICATIONS ---------- */
 function toggleNotifs(e){
   const menu = document.getElementById('notifMenu');
   menu.classList.toggle('hidden');
@@ -937,80 +538,6 @@ function toggleNotifs(e){
   renderNotifications();
 }
 
-function toggleMobileMenu(){
-  document.getElementById('mobileMenu').classList.toggle('hidden');
-}
-
-/* ---------- NAVIGATION ---------- */
-function navigate(page, param) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const target = document.getElementById('page-' + page);
-  if (target) target.classList.add('active');
-  else {
-    // Fallback: se a página não existir como div, cria via renderView
-    window.location.hash = '#' + page + (param ? '/' + param : '');
-    return;
-  }
-  window.scrollTo(0, 0);
-  STATE.route = page;
-  if (page === 'service' && param) STATE.selectedServiceId = param;
-  if (page === 'dashboard') STATE.dashboardTab = param || 'client';
-  if (page === 'profile') STATE.selectedProfileHandle = param || null;
-  renderView();
-}
-
-/* ---------- RENDER HEADER ---------- */
-function renderHeader() {
-  const me = getUser(STATE.currentUserId);
-  const authed = isAuthed();
-  const langObj = LANGUAGES_LIST.find(l=>l.id===STATE.language);
-  const isDark = STATE.darkMode;
-  
-  // Update wallet button
-  const walletBtn = document.getElementById('walletBtn');
-  const walletLabel = document.getElementById('walletLabel');
-  if (authed && me) {
-    walletLabel.textContent = me.wallet ? shortAddr(me.wallet) : 'Connected';
-    walletBtn.style.background = '#22c55e';
-    walletBtn.onclick = disconnectWallet;
-  } else {
-    walletLabel.textContent = 'Connect Wallet';
-    walletBtn.style.background = 'var(--primary)';
-    walletBtn.onclick = openConnectWallet;
-  }
-  
-  // Update profile avatar link
-  const avatarLink = document.getElementById('headerProfileLink');
-  if (authed && me) {
-    avatarLink.classList.remove('hidden');
-    const letter = (me.name && me.name[0]) ? me.name[0].toUpperCase() : 'U';
-    const bg = me.avatar ? '' : '#'+['fecaca','bbf7d0','bae6fd','fed7aa','ddd6fe','fbcfe8','fde68a','c7d2fe'][(me.id || 'u').charCodeAt(0) % 8];
-    avatarLink.innerHTML = me.avatar 
-      ? `<img src="${me.avatar}" class="w-8 h-8 rounded-full object-cover" />`
-      : `<div class="w-8 h-8 rounded-full grid place-items-center font-extrabold text-sm text-slate-700" style="background:${bg}">${letter}</div>`;
-  } else {
-    avatarLink.classList.add('hidden');
-  }
-  
-  // Update notification badge
-  const badge = document.getElementById('notifBadge');
-  const count = unreadCount();
-  if (count > 0) {
-    badge.classList.remove('hidden');
-    badge.textContent = count > 9 ? '9+' : count;
-  } else {
-    badge.classList.add('hidden');
-  }
-  
-  // Update language label
-  document.getElementById('langLabel').textContent = langObj ? langObj.id.toUpperCase() : 'EN';
-  
-  // Update dark icon
-  document.getElementById('darkIcon').className = isDark ? 'ri-sun-line' : 'ri-moon-line';
-  document.documentElement.classList.toggle('dark', isDark);
-}
-
-/* ---------- RENDER NOTIFICATIONS ---------- */
 function renderNotifications() {
   const list = document.getElementById('notifList');
   if (!list) return;
@@ -1032,13 +559,17 @@ function markRead(id) {
   const n = STATE.notifications.find(x => x.id === id);
   if (n) n.read = true;
   renderHeader();
+  renderNotifications();
 }
 
 function markAllRead() {
   STATE.notifications.forEach(n => n.read = true);
   renderHeader();
+  renderNotifications();
   document.getElementById('notifMenu').classList.add('hidden');
 }
+
+function toggleMobileMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
 
 /* ---------- WALLET ---------- */
 function openConnectWallet(reason) {
@@ -1071,7 +602,6 @@ window._handleReownConnected = async function(address) {
   } catch (e) {
     console.warn('[Supabase] Falha ao sincronizar sessão da wallet:', e);
   }
-  
   const me = getUser(STATE.currentUserId) || DB.users[0];
   if (!STATE.onboardingComplete) {
     me.name = 'Usuário';
@@ -1107,15 +637,191 @@ window._handleReownDisconnected = function() {
 };
 
 function disconnectWallet() {
-  if (window._reownModal) {
-    try { window._reownModal.disconnect(); } catch(e) {}
-  }
+  if (window._reownModal) { try { window._reownModal.disconnect(); } catch(e) {} }
   STATE.walletConnected = false;
   STATE.authenticated = false;
   closeModal();
   toast('Wallet desconectada', 'info');
   renderHeader();
   renderView();
+}
+
+/* ---------- RENDER HEADER ---------- */
+function renderHeader() {
+  const me = getUser(STATE.currentUserId);
+  const authed = isAuthed();
+  const langObj = LANGUAGES_LIST.find(l=>l.id===STATE.language);
+  const isDark = STATE.darkMode;
+  
+  const walletBtn = document.getElementById('walletBtn');
+  const walletLabel = document.getElementById('walletLabel');
+  if (authed && me) {
+    walletLabel.textContent = me.wallet ? shortAddr(me.wallet) : 'Connected';
+    walletBtn.style.background = '#22c55e';
+    walletBtn.onclick = disconnectWallet;
+  } else {
+    walletLabel.textContent = 'Connect Wallet';
+    walletBtn.style.background = 'var(--primary)';
+    walletBtn.onclick = openConnectWallet;
+  }
+  
+  const avatarLink = document.getElementById('headerProfileLink');
+  if (authed && me) {
+    avatarLink.classList.remove('hidden');
+    const letter = (me.name && me.name[0]) ? me.name[0].toUpperCase() : 'U';
+    const bg = me.avatar ? '' : '#fecaca';
+    avatarLink.innerHTML = me.avatar ? `<img src="${me.avatar}" class="w-8 h-8 rounded-full object-cover" />` : `<div class="w-8 h-8 rounded-full grid place-items-center font-extrabold text-sm text-slate-700" style="background:${bg}">${letter}</div>`;
+  } else {
+    avatarLink.classList.add('hidden');
+  }
+  
+  const badge = document.getElementById('notifBadge');
+  const count = unreadCount();
+  if (count > 0) {
+    badge.classList.remove('hidden');
+    badge.textContent = count > 9 ? '9+' : count;
+  } else {
+    badge.classList.add('hidden');
+  }
+  
+  document.getElementById('langLabel').textContent = langObj ? langObj.id.toUpperCase() : 'EN';
+  document.getElementById('darkIcon').className = isDark ? 'ri-sun-line' : 'ri-moon-line';
+  document.documentElement.classList.toggle('dark', isDark);
+  
+  const adminLink = document.getElementById('adminLink');
+  const adminLinkMobile = document.getElementById('adminLinkMobile');
+  if (STATE.isAdmin) {
+    if (adminLink) adminLink.style.display = 'inline';
+    if (adminLinkMobile) adminLinkMobile.style.display = 'block';
+  } else {
+    if (adminLink) adminLink.style.display = 'none';
+    if (adminLinkMobile) adminLinkMobile.style.display = 'none';
+  }
+}
+
+/* ---------- NAVIGATION ---------- */
+function navigate(page, param) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo(0, 0);
+    STATE.route = page;
+    if (page === 'service' && param) STATE.selectedServiceId = param;
+    if (page === 'dashboard') STATE.dashboardTab = param || 'client';
+    if (page === 'profile') STATE.selectedProfileHandle = param || null;
+    renderView();
+  } else {
+    window.location.hash = '#' + page + (param ? '/' + param : '');
+  }
+}
+
+/* ---------- AUTO-APPROVE ---------- */
+const AUTO_APPROVE_DAYS = 3;
+const AUTO_APPROVE_MS = AUTO_APPROVE_DAYS * 24 * 60 * 60 * 1000;
+
+function runAutoApprove(){
+  let changed = false;
+  STATE.orders.forEach(o => {
+    if (o.status !== 'delivered') return;
+    const dl = o.deliveredAt + AUTO_APPROVE_MS;
+    if (o.dispute || Date.now() < dl) return;
+    const hash = txHash();
+    o.releaseTx = hash;
+    o.status = 'approved';
+    o.progress = 100;
+    o.approvedAt = Date.now();
+    o.autoApproved = true;
+    const fl = getUser(o.freelancerId);
+    if (fl){ fl.balanceITL = +((fl.balanceITL || 0) + (o.price || 0)).toFixed(2); fl.jobs = (fl.jobs || 0) + 1; }
+    STATE.txHistory.unshift({ hash, type:'escrow_release', amount: o.price, token:'ITL', ts: Date.now(), orderId: o.id, autoApproved: true });
+    addNotification({ type: 'tx', title: '⏰ Aprovação automática', body: `Pedido aprovado automaticamente após ${AUTO_APPROVE_DAYS} dias.`, link: '#/dashboard/client' });
+    STATE.messages[o.id] = STATE.messages[o.id] || [];
+    STATE.messages[o.id].push({ from: o.clientId, text: `⏰ Aprovação automática após ${AUTO_APPROVE_DAYS} dias.`, ts: nowTs() });
+    changed = true;
+  });
+  if (changed){ persistNow(); if (['dashboard','wallet'].includes(STATE.route)) renderView(); }
+}
+
+/* ---------- PERSISTÊNCIA ---------- */
+const STORAGE_KEY = 'interwork_demo_v1';
+const PERSIST_STATE_KEYS = [
+  'currentUserId','query','category','country','sort','ratingMin','priceMax','verifiedOnly','availableOnly',
+  'selectedServiceId','orders','messages','chatOpenOrderId','dashboardTab','clientOrdersTab','walletConnected',
+  'authenticated','onboardingComplete','userRole','walletProvider','network','recentlyViewed','favorites','notifications','txHistory','payouts','selectedProfileHandle',
+  'language','translateChat','selectedTier','selectedAddons','selectedToken','showQR','darkMode','onboardingDismissed',
+];
+
+let PERSIST = { ready:false, timer:null, lastJson:'', quotaWarned:false };
+
+function canUseLocalStorage(){
+  try { localStorage.setItem(STORAGE_KEY+':test','1'); localStorage.removeItem(STORAGE_KEY+':test'); return true; } catch(_){ return false; }
+}
+
+function stateSnapshot(){
+  return PERSIST_STATE_KEYS.reduce((out, key) => { out[key] = STATE[key]; return out; }, {});
+}
+
+function persistNow(){
+  if (!PERSIST.ready || !canUseLocalStorage()) return;
+  try {
+    const json = JSON.stringify({
+      version: 1, savedAt: Date.now(),
+      state: stateSnapshot(),
+      db: { users: DB.users, services: DB.services, reviews: DB.reviews }
+    });
+    if (json === PERSIST.lastJson) return;
+    localStorage.setItem(STORAGE_KEY, json);
+    PERSIST.lastJson = json;
+  } catch (err) {
+    if (!PERSIST.quotaWarned) { PERSIST.quotaWarned = true; toast('Não foi possível salvar tudo no localStorage.', 'warn'); }
+    console.warn('Interwork persistence failed:', err);
+  }
+}
+
+function schedulePersist(){
+  if (!PERSIST.ready) return;
+  clearTimeout(PERSIST.timer);
+  PERSIST.timer = setTimeout(persistNow, 120);
+}
+
+function restorePersistedData(){
+  if (!canUseLocalStorage()) return false;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const snap = JSON.parse(raw);
+    if (!snap || snap.version !== 1) return false;
+    if (snap.db && Array.isArray(snap.db.users) && Array.isArray(snap.db.services)) {
+      DB.users = snap.db.users;
+      DB.services = snap.db.services;
+      DB.reviews = Array.isArray(snap.db.reviews) ? snap.db.reviews : [];
+    }
+    if (snap.state && typeof snap.state === 'object') {
+      PERSIST_STATE_KEYS.forEach(key => {
+        if (Object.prototype.hasOwnProperty.call(snap.state, key)) STATE[key] = snap.state[key];
+      });
+    }
+    if (!getUser(STATE.currentUserId)) STATE.currentUserId = 'u_me';
+    if (!Array.isArray(STATE.orders)) STATE.orders = [];
+    if (!Array.isArray(STATE.favorites)) STATE.favorites = [];
+    if (!STATE.messages || typeof STATE.messages !== 'object') STATE.messages = {};
+    if (!Array.isArray(STATE.notifications)) STATE.notifications = [];
+    if (!Array.isArray(STATE.txHistory)) STATE.txHistory = [];
+    if (!Array.isArray(STATE.payouts)) STATE.payouts = [];
+    STATE.restoredFromStorage = true;
+    PERSIST.lastJson = raw;
+    return true;
+  } catch (err) {
+    console.warn('Interwork restore failed:', err);
+    return false;
+  }
+}
+
+function startPersistence(){
+  PERSIST.ready = true;
+  window.addEventListener('beforeunload', persistNow);
+  setInterval(persistNow, 1500);
 }
 
 /* ---------- SUPABASE ---------- */
@@ -1125,11 +831,8 @@ const SB_READY = SUPABASE_URL !== 'COLE_SUA_URL_AQUI' && SUPABASE_ANON !== 'COLE
 
 let sb = null;
 if (SB_READY) {
-  try {
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-  } catch(e) {
-    console.warn('[Supabase] Erro ao criar cliente:', e);
-  }
+  try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON); }
+  catch(e) { console.warn('[Supabase] Erro ao criar cliente:', e); }
 }
 
 async function sbLoadProfile(userId) {
@@ -1146,20 +849,14 @@ async function sbLoadProfile(userId) {
 
 async function sbLoadServices() {
   if (!sb) return;
-  const { data, error } = await sb
-    .from('services')
-    .select('*')
-    .order('created_at', { ascending: false });
+  const { data, error } = await sb.from('services').select('*').order('created_at', { ascending: false });
   if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
   const approvedReal = (data || []).filter(s => s.status === 'approved');
   if (approvedReal.length > 0) {
     DB.services = data.map(sbSvcToLocal);
   } else if (data && data.length > 0) {
     const dbIds = new Set(data.map(s => s.id));
-    DB.services = [
-      ...data.map(sbSvcToLocal),
-      ...DB.services.filter(s => s._mock && !dbIds.has(s.id)),
-    ];
+    DB.services = [...data.map(sbSvcToLocal), ...DB.services.filter(s => s._mock && !dbIds.has(s.id))];
   }
   renderView();
 }
@@ -1192,85 +889,1263 @@ function sbSvcToLocal(s) {
   };
 }
 
-/* ============================================================
-   O RESTANTE DO CÓDIGO V36 CONTINUA AQUI...
-   (Todas as funções: renderView, viewHome, viewService, 
-    viewProfile, viewDashboard, viewAdmin, viewWallet,
-    viewHow, viewBenefits, viewRewards, viewLegal,
-    viewNewServicePage, openNewServiceModal, confirmHire,
-    approveOrder, cancelOrder, openDisputeModal, openChat,
-    renderChat, closeChat, etc.)
-   
-   COMO ESTE ARQUIVO É EXTREMAMENTE LONGO, ESTOU INCLUINDO
-   TODAS AS FUNÇÕES COMPLETAS DO V36 AQUI.
-   
-   O CÓDIGO COMPLETO SERÁ FORNECIDO NA PRÓXIMA MENSAGEM.
-   ============================================================ */
+async function sbInitAuth() {
+  if (!sb) return;
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    STATE.sbUser = session.user;
+    STATE.isAdmin = session.user.email === 'interworkoficial@gmail.com';
+    STATE.sbProfile = await sbLoadProfile(session.user.id);
+  }
+  STATE.sbReady = true;
+}
 
-console.log('✅ InterWork v36 + Novo Template carregado!');
-console.log('📦 Serviços:', DB.services.length);
-console.log('👤 Usuários:', DB.users.length);
-console.log('🔗 Supabase:', SB_READY ? 'Conectado' : 'Não configurado');
+async function sbSignOut() {
+  if (!sb) return;
+  await sb.auth.signOut();
+  STATE.sbUser = null;
+  STATE.isAdmin = false;
+  STATE.sbProfile = null;
+  renderView();
+}
 
-/* ============================================================
-   INICIALIZAÇÃO
-   ============================================================ */
-document.addEventListener('DOMContentLoaded', function() {
-  // Inicializa dados mock
-  initMock();
-  DB.services.forEach(s => s._mock = true);
+function sbSubscribeServices() {
+  if (!sb) return;
+  sb.channel('services-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'services' }, payload => {
+      const changed = payload.new || payload.old;
+      if (!changed) return;
+      const idx = DB.services.findIndex(s => s.id === changed.id);
+      if (payload.eventType === 'DELETE') {
+        if (idx >= 0) DB.services.splice(idx, 1);
+      } else {
+        const local = sbSvcToLocal(changed);
+        if (idx >= 0) DB.services[idx] = local;
+        else DB.services.unshift(local);
+      }
+      renderView();
+    })
+    .subscribe();
+}
+
+/* ---------- RENDER VIEW ---------- */
+function renderView() {
+  const page = document.getElementById('page-' + STATE.route);
+  if (!page) return;
   
-  // Restaura dados persistidos
-  const restored = restorePersistedData();
-  if (restored) setTimeout(() => toast('Dados restaurados do localStorage.', 'success'), 250);
-  
-  // Inicia persistência
-  startPersistence();
-  
-  // Auto-approve engine
-  runAutoApprove();
-  setInterval(runAutoApprove, 60000);
-  
-  // Re-render countdowns
-  setInterval(() => {
-    const hasDelivered = STATE.orders.some(o => o.status === 'delivered');
-    if (hasDelivered && ['dashboard'].includes(STATE.route)) renderView();
-  }, 60000);
-  
-  // Carrega serviços do Supabase
-  if (SB_READY) {
-    sbInitAuth().then(() => {
-      sbLoadServices();
-      sbSubscribeServices();
-    });
+  let html = '';
+  switch(STATE.route){
+    case 'service': html = viewService(STATE.selectedServiceId); break;
+    case 'profile': html = viewProfile(STATE.selectedProfileHandle); break;
+    case 'dashboard': html = viewDashboard(); break;
+    case 'wallet': html = viewWallet(); break;
+    case 'admin': html = viewAdmin(); break;
+    case 'how': html = viewHow(); break;
+    case 'benefits': html = viewBenefits(); break;
+    case 'rewards': html = viewRewards(); break;
+    case 'legal': html = viewLegal(STATE.selectedLegalPage || 'faq'); break;
+    case 'new-service': html = viewNewServicePage(); break;
+    case 'home':
+    default: html = viewHome();
   }
   
-  // Renderiza
-  renderCats();
-  render();
+  page.innerHTML = html;
   renderHeader();
-  
-  console.log('✅ InterWork inicializado!');
-});
+  renderNotifications();
+  if (STATE.route === 'home') { renderCats(); render(); }
+  window.scrollTo(0, 0);
+}
 
-// Placeholder para funções que serão expandidas
-function initMock() { /* será preenchido */ }
-function restorePersistedData() { return false; }
-function startPersistence() { }
-function runAutoApprove() { }
-function renderCats() { }
-function render() { }
-function renderView() { }
-function renderServicePage() { }
-function renderProfilePage() { }
-function renderDashboardPage() { }
-function renderAdminPage() { }
-function renderWalletPage() { }
-function renderHowPage() { }
-function renderBenefitsPage() { }
-function renderRewardsPage() { }
-function renderLegalPage() { }
-function renderNewServicePage() { }
+/* ---------- VIEW HOME ---------- */
+function viewHome() {
+  const hasSearch = !!(STATE.query || STATE.category !== 'all' || STATE.trendingActive);
+  if (hasSearch) return viewExploreResults();
+  return viewHeroPage();
+}
+
+function viewHeroPage() {
+  return `
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-6 text-center">
+    <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">Find the perfect freelance talent</h1>
+    <p class="mt-3 text-sm sm:text-base text-slate-500">Browse verified services from top Web3 professionals</p>
+    <form id="searchForm" class="mt-6 sm:mt-7 mx-auto max-w-2xl" onsubmit="event.preventDefault();applyFilters();">
+      <div class="flex items-center gap-2 bg-white rounded-xl border border-slate-200 shadow-sm pl-3 pr-2 py-2 focus-within:border-[#a99cff]">
+        <i class="ri-search-line text-slate-400 text-lg shrink-0"></i>
+        <input id="searchInput" oninput="applyFilters()" class="flex-1 min-w-0 outline-none text-sm py-2 placeholder:text-slate-400 bg-transparent" placeholder="Search for any service..." />
+        <button type="button" id="clearBtn" onclick="clearSearch()" class="hidden text-slate-400 hover:text-slate-600 shrink-0 px-1"><i class="ri-close-line text-lg"></i></button>
+        <button type="submit" class="btn-primary shrink-0 px-3 sm:px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5">
+          <i class="ri-search-line sm:hidden"></i><span class="hidden sm:inline">Search</span>
+        </button>
+      </div>
+    </form>
+    <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+      <button onclick="quickSearch('Web Dev')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-code-s-slash-line"></i> Web Development</button>
+      <button onclick="quickSearch('UI/UX')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-pencil-ruler-2-line"></i> UI/UX Design</button>
+      <button onclick="quickSearch('Mobile')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-smartphone-line"></i> Mobile Apps</button>
+      <button onclick="quickSearch('AI/ML')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-sparkling-2-line"></i> AI & Machine Learning</button>
+      <button onclick="quickSearch('Blockchain')" class="chip rounded-full text-xs px-3 py-1.5 flex items-center gap-1.5"><i class="ri-link"></i> Blockchain</button>
+    </div>
+  </section>
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 border-b border-slate-100 pb-3">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+      <div id="catBar" class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-2 -mx-4 px-4 sm:mx-0 sm:px-0"></div>
+      <div class="flex items-center justify-between sm:justify-end gap-4 text-sm text-slate-500 shrink-0 relative">
+        <span id="resultCount">10 results</span>
+        <button id="sortBtn" onclick="toggleSort(event)" class="flex items-center gap-1 hover:text-slate-700 font-medium">
+          <i class="ri-arrow-up-down-line"></i><span id="sortLabel">Top Rated</span><i class="ri-arrow-down-s-line"></i>
+        </button>
+        <div id="sortMenu" class="sort-menu absolute right-0 top-full mt-2 w-44 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-30 text-left">
+          <button onclick="setSort('rating','Top Rated')" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Top Rated</button>
+          <button onclick="setSort('reviews','Most Reviews')" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Most Reviews</button>
+          <button onclick="setSort('priceAsc','Lowest Price')" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Lowest Price</button>
+          <button onclick="setSort('priceDesc','Highest Price')" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50">Highest Price</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    <div id="emptyState" class="hidden text-center py-20">
+      <div class="mx-auto w-16 h-16 rounded-full bg-slate-100 grid place-items-center text-slate-400"><i class="ri-search-line text-2xl"></i></div>
+      <h3 class="mt-4 text-lg font-bold text-slate-800">No gigs match your filters</h3>
+      <p class="mt-1 text-sm text-slate-500">Try different keywords or clear your filters.</p>
+      <button onclick="clearAll()" class="mt-5 px-5 py-2 rounded-full bg-[#efeaff] text-[#6b5ce7] text-sm font-semibold hover:bg-[#e3dcff]">Clear all filters</button>
+    </div>
+    <div id="loadMoreWrap" class="flex justify-center mt-10">
+      <button id="loadMoreBtn" onclick="loadMore()" class="px-6 py-2.5 rounded-full text-sm font-semibold bg-[#efeaff] text-[#6b5ce7] hover:bg-[#e3dcff]">Load more gigs</button>
+    </div>
+  </main>`;
+}
+
+function viewExploreResults() {
+  const filtered = filterServices();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const curPage = Math.min(Math.max(1, STATE.page||1), totalPages);
+  const pageItems = filtered.slice((curPage-1)*PAGE_SIZE, curPage*PAGE_SIZE);
+  
+  return `
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+    <div class="flex items-center gap-1.5 text-[12.5px] text-slate-400 mb-3">
+      <a href="#/home" onclick="clearAllFilters()" class="hover:text-slate-700"><i class="ri-home-line"></i></a>
+      ${STATE.query ? `<i class="ri-arrow-right-s-line"></i><span class="text-slate-600 font-medium">"${escapeHtml(STATE.query)}"</span>` : ''}
+    </div>
+    <div class="flex items-end justify-between mb-5 flex-wrap gap-3">
+      <h1 class="text-[26px] font-extrabold text-slate-900 leading-tight">
+        ${STATE.query ? `${escapeHtml(STATE.query)}` : (STATE.trendingActive ? 'Em alta agora' : 'Todos os serviços')}
+      </h1>
+      <div class="flex items-center gap-2">
+        <label class="text-[13px] text-slate-500 font-medium">Ordenar por:</label>
+        <select onchange="STATE.sort=this.value;renderView()" class="text-[13px] border-0 font-bold text-slate-900 bg-transparent outline-none cursor-pointer">
+          <option value="relevance" ${STATE.sort==='relevance'?'selected':''}>Relevância</option>
+          <option value="rating" ${STATE.sort==='rating'?'selected':''}>Melhor avaliado</option>
+          <option value="price_asc" ${STATE.sort==='price_asc'?'selected':''}>Menor preço</option>
+          <option value="price_desc" ${STATE.sort==='price_desc'?'selected':''}>Maior preço</option>
+          <option value="recent" ${STATE.sort==='recent'?'selected':''}>Mais recentes</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-7">
+      ${pageItems.map(serviceCard).join('')}
+    </div>
+    ${paginationBar(filtered.length)}
+  </div>`;
+}
+
+const PAGE_SIZE = 24;
+
+function paginationBar(totalItems) {
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+  if (totalPages <= 1) return '';
+  const cur = Math.min(Math.max(1, STATE.page||1), totalPages);
+  let pages = [];
+  if (totalPages <= 10) {
+    pages = Array.from({length:totalPages}, (_,i)=>i+1);
+  } else {
+    pages = [1];
+    if (cur > 3) pages.push('...');
+    for(let i=Math.max(2, cur-2); i<=Math.min(totalPages-1, cur+2); i++) pages.push(i);
+    if (cur < totalPages-2) pages.push('...');
+    pages.push(totalPages);
+  }
+  return `
+  <nav class="flex items-center justify-center gap-2 mt-8">
+    <button onclick="goToPage(${cur-1})" ${cur===1?'disabled':''} class="w-9 h-9 grid place-items-center rounded-full border border-slate-200 hover:bg-slate-100 disabled:opacity-30"><i class="ri-arrow-left-s-line"></i></button>
+    ${pages.map(p => p==='...' ? `<span class="w-9 h-9 grid place-items-center text-sm text-slate-400">…</span>` : `<button onclick="goToPage(${p})" class="w-9 h-9 grid place-items-center rounded-full text-sm font-semibold ${p===cur?'bg-[#8b7cff] text-white':'hover:bg-slate-100'}">${p}</button>`).join('')}
+    <button onclick="goToPage(${cur+1})" ${cur===totalPages?'disabled':''} class="w-9 h-9 grid place-items-center rounded-full border border-slate-200 hover:bg-slate-100 disabled:opacity-30"><i class="ri-arrow-right-s-line"></i></button>
+  </nav>`;
+}
+
+function goToPage(p) {
+  STATE.page = Math.max(1, p);
+  renderView();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function filterServices() {
+  const sig = [STATE.category,STATE.country,STATE.ratingMin,STATE.priceMax,STATE.priceMin,STATE.verifiedOnly,STATE.availableOnly,STATE.sort,STATE.query,STATE.trendingActive].join('|');
+  if (STATE._filterSig !== sig){ STATE._filterSig = sig; STATE.page = 1; }
+  let arr = DB.services.filter(sv=>!sv.status||sv.status==='approved');
+  if (STATE.category!=='all') arr = arr.filter(s=>s.category===STATE.category);
+  if (STATE.country!=='all')  arr = arr.filter(s=>s.country===STATE.country);
+  if (STATE.ratingMin>0)      arr = arr.filter(s=>s.rating>=STATE.ratingMin);
+  if (STATE.priceMax>0)       arr = arr.filter(s=>s.price<=STATE.priceMax);
+  if (STATE.priceMin>0)       arr = arr.filter(s=>s.price>=STATE.priceMin);
+  if (STATE.verifiedOnly)     arr = arr.filter(s=>{ const u=getUser(s.freelancerId); return u && u.verified; });
+  if (STATE.availableOnly)    arr = arr.filter(s=>{ const u=getUser(s.freelancerId); return u && u.online; });
+  if (STATE.query) {
+    const q = STATE.query.toLowerCase().trim();
+    arr = arr.filter(s => s.title.toLowerCase().includes(q) || s.description.toLowerCase().includes(q));
+  }
+  switch(STATE.trendingActive ? 'trending' : STATE.sort){
+    case 'rating':     arr.sort((a,b)=>b.rating-a.rating); break;
+    case 'price_asc':  arr.sort((a,b)=>a.price-b.price); break;
+    case 'price_desc': arr.sort((a,b)=>b.price-a.price); break;
+    case 'recent':     arr.sort((a,b)=>b.createdTs-a.createdTs); break;
+    default:           arr.sort((a,b)=>(b.rating*b.reviewsCount)-(a.rating*a.reviewsCount));
+  }
+  return arr;
+}
+
+function serviceCard(s) {
+  const u = getUserSafe(s.freelancerId);
+  const cat = getCategory(s.category);
+  const fav = isFavorited(s.id);
+  
+  return `
+  <a href="#" onclick="navigate('service','${s.id}');return false;" class="card bg-white rounded-xl overflow-hidden flex flex-col block">
+    <div class="relative overflow-hidden">
+      <img src="${s.thumb}" alt="" class="gig-img w-full aspect-[3/2] object-cover" loading="lazy" />
+      ${s.featured ? `<span class="badge absolute top-3 left-0 text-[10px] font-extrabold tracking-wide text-slate-700 px-2.5 py-1 rounded-r-md">BEST SELLER</span>` : ''}
+      <button onclick="toggleFavorite('${s.id}', event)" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 grid place-items-center shadow-sm hover:bg-white">
+        <i class="ri-heart-line ${fav ? 'text-rose-500 font-bold' : 'text-slate-500'}"></i>
+      </button>
+    </div>
+    <div class="p-4 flex-1 flex flex-col">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2 text-sm text-slate-700">
+          <span class="w-6 h-6 rounded-full grid place-items-center text-[11px] font-bold" style="background:${u.iconColor || '#fecaca'};color:#475569">${(u.name||'U')[0].toUpperCase()}</span>
+          <span class="font-semibold truncate max-w-[120px]">${escapeHtml(u.name)}</span>
+        </div>
+        ${u.verified ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">✓ Verified</span>` : ''}
+      </div>
+      <h3 class="mt-2 text-sm font-bold text-[#5b4ee0] leading-snug line-clamp-2">${escapeHtml(s.title)}</h3>
+      <div class="mt-2 flex items-center gap-1 text-xs text-slate-500">
+        <i class="ri-star-fill text-amber-400"></i><span class="font-bold text-slate-700">${s.rating.toFixed(1)}</span><span>(${s.reviewsCount})</span>
+      </div>
+      <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+        <span class="text-slate-500">${cat ? cat.label : s.category}</span>
+        <span class="text-slate-500">From <b class="font-extrabold text-slate-900">${fmtITL(s.price)}</b></span>
+      </div>
+    </div>
+  </a>`;
+}
+
+/* ---------- HOME FUNCTIONS ---------- */
+const CATS = ['All','Web Dev','UI/UX','Mobile','Content','Video','AI/ML','Marketing','Blockchain','DevOps','Data'];
+let homeState = { cat:'All', q:'', sort:'rating', visible:12, favs:new Set() };
+
+function renderCats(){
+  const bar = document.getElementById('catBar');
+  if (!bar) return;
+  bar.innerHTML = CATS.map(c => `<button onclick="setHomeCat('${c}')" class="pill ${homeState.cat===c?'pill-active':''} rounded-full text-sm px-4 py-1.5 font-medium whitespace-nowrap">${c}</button>`).join('');
+}
+
+function render() {
+  const list = getFilteredGigs();
+  const slice = list.slice(0, homeState.visible);
+  const countEl = document.getElementById('resultCount');
+  if (countEl) countEl.textContent = `${list.length} result${list.length===1?'':'s'}`;
+  const empty = document.getElementById('emptyState');
+  const grid = document.getElementById('gigs');
+  const loadWrap = document.getElementById('loadMoreWrap');
+  if (!grid) return;
+  if (list.length===0){ grid.innerHTML=''; if (empty) empty.classList.remove('hidden'); if (loadWrap) loadWrap.classList.add('hidden'); return; }
+  if (empty) empty.classList.add('hidden');
+  grid.innerHTML = slice.map((g,i) => serviceCard(g)).join('');
+  if (loadWrap) { if (homeState.visible >= list.length) loadWrap.classList.add('hidden'); else loadWrap.classList.remove('hidden'); }
+}
+
+function getFilteredGigs() {
+  let list = DB.services.filter(s => s.status === 'approved' || !s.status);
+  if (homeState.cat !== 'All') {
+    const catMap = {'Web Dev':'dev','UI/UX':'design','Mobile':'dev','Content':'writing','Video':'video','AI/ML':'ai','Marketing':'marketing','Blockchain':'dev','DevOps':'dev','Data':'dev'};
+    const catId = catMap[homeState.cat] || homeState.cat;
+    list = list.filter(g => g.category === catId);
+  }
+  if (homeState.q.trim()) {
+    const q = homeState.q.toLowerCase();
+    list = list.filter(g => g.title.toLowerCase().includes(q) || g.description.toLowerCase().includes(q));
+  }
+  if (homeState.sort === 'rating') list.sort((a,b)=>b.rating-a.rating);
+  else if (homeState.sort === 'reviews') list.sort((a,b)=>b.reviewsCount-a.reviewsCount);
+  else if (homeState.sort === 'priceAsc') list.sort((a,b)=>a.price-b.price);
+  else if (homeState.sort === 'priceDesc') list.sort((a,b)=>b.price-a.price);
+  return list;
+}
+
+function setHomeCat(c){ homeState.cat=c; homeState.visible=12; renderCats(); render(); }
+function applyFilters(){ const v=document.getElementById('searchInput'); if(!v)return; homeState.q=v.value; const btn=document.getElementById('clearBtn'); if(btn)btn.classList.toggle('hidden',!homeState.q); homeState.visible=12; render(); }
+function clearSearch(){ const el=document.getElementById('searchInput'); if(el)el.value=''; applyFilters(); }
+function clearAll(){ homeState={cat:'All',q:'',sort:'rating',visible:12,favs:homeState.favs}; const el=document.getElementById('searchInput'); if(el)el.value=''; const btn=document.getElementById('clearBtn'); if(btn)btn.classList.add('hidden'); const label=document.getElementById('sortLabel'); if(label)label.textContent='Top Rated'; renderCats(); render(); }
+function loadMore(){ homeState.visible += 8; render(); }
+function quickSearch(label){ const map={'Web Dev':'Web Dev','UI/UX':'UI/UX','Mobile':'Mobile','AI/ML':'AI/ML','Blockchain':'Blockchain'}; setHomeCat(map[label]||'All'); }
+function toggleSort(e){ e.stopPropagation(); document.getElementById('sortMenu').classList.toggle('open'); }
+function setSort(s,label){ homeState.sort=s; const el=document.getElementById('sortLabel'); if(el)el.textContent=label; document.getElementById('sortMenu').classList.remove('open'); render(); }
+
+/* ---------- VIEW SERVICE ---------- */
+function viewService(id) {
+  const s = getService(id);
+  if (!s) return `<div class="p-10 text-center text-slate-500">Serviço não encontrado. <a href="#" onclick="navigate('home');return false;" class="text-[#5b4ee0] font-semibold">Voltar</a></div>`;
+  const u = getUserSafe(s.freelancerId);
+  const cat = getCategory(s.category);
+  const co = getCountry(s.country);
+  const imgs = [s.thumb, ...(s.gallery||[])].filter(Boolean);
+  const reviews = s.reviews || [];
+  
+  return `
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-5">
+    <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-4">
+      <a href="#" onclick="navigate('home');return false;" class="hover:text-slate-900">Home</a>
+      <i class="ri-arrow-right-s-line"></i>
+      <a href="#" onclick="navigate('home');return false;" class="hover:text-slate-900">${cat ? cat.label : 'Serviços'}</a>
+      <i class="ri-arrow-right-s-line"></i>
+      <span class="text-slate-700 truncate">${escapeHtml(s.title)}</span>
+    </nav>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 space-y-8">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-snug">${escapeHtml(s.title)}</h1>
+          <div class="mt-4 flex flex-wrap items-center gap-3 sm:gap-4 text-sm">
+            <div class="flex items-center gap-2">
+              <div class="w-9 h-9 rounded-full grid place-items-center font-bold text-slate-600" style="background:${u.iconColor || '#fecaca'}">${(u.name||'U')[0].toUpperCase()}</div>
+              <div class="flex flex-col">
+                <a href="#" onclick="navigate('profile','${u.handle}');return false;" class="font-bold text-slate-900 hover:text-[#5b4ee0]">${escapeHtml(u.name)}</a>
+                <span class="text-xs text-slate-500">${u.verified ? '✓ Verified' : ''} · Member since ${new Date(u.joinedTs).getFullYear()}</span>
+              </div>
+            </div>
+            <span class="hidden sm:inline text-slate-300">|</span>
+            <div class="flex items-center gap-1 star-row"><i class="ri-star-fill"></i><span class="font-bold text-slate-900">${s.rating.toFixed(1)}</span><span class="text-slate-500">(${s.reviewsCount} reviews)</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 bg-slate-100"><img id="mainImg" src="${imgs[0]}" class="w-full h-full object-cover" /></div>
+          <div class="mt-3 grid grid-cols-5 gap-2 sm:gap-3">
+            ${imgs.map((src, i) => `<img class="thumb ${i===0?'active':''} rounded-lg aspect-[4/3] object-cover" onclick="setMainImg(this, '${s.id}')" src="${src}" />`).join('')}
+          </div>
+        </div>
+        <section>
+          <h2 class="text-xl font-extrabold text-slate-900">About this gig</h2>
+          <div class="mt-3 text-slate-600 leading-relaxed space-y-3 text-sm sm:text-base whitespace-pre-line">${escapeHtml(s.description)}</div>
+          <div class="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Delivery</div><div class="font-bold text-slate-900 text-sm mt-1">${s.deliveryDays} days</div></div>
+            <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Revisions</div><div class="font-bold text-slate-900 text-sm mt-1">2</div></div>
+            <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Source code</div><div class="font-bold text-slate-900 text-sm mt-1">Included</div></div>
+            <div class="rounded-lg border border-slate-200 p-3"><div class="text-xs text-slate-500">Languages</div><div class="font-bold text-slate-900 text-sm mt-1">${(u.languages||['EN']).join(' · ').toUpperCase()}</div></div>
+          </div>
+          <h3 class="mt-6 font-bold text-slate-900">What you get</h3>
+          <ul class="mt-3 space-y-2 text-sm text-slate-600">
+            ${(s.includes||[]).map(inc => `<li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i>${escapeHtml(inc)}</li>`).join('')}
+          </ul>
+        </section>
+        <section class="border-t border-slate-200 pt-8">
+          <h2 class="text-xl font-extrabold text-slate-900">About the seller</h2>
+          <div class="mt-4 flex flex-col sm:flex-row gap-5">
+            <div class="flex items-center gap-4 sm:flex-col sm:items-center">
+              <div class="w-20 h-20 rounded-full grid place-items-center text-2xl font-extrabold text-slate-700" style="background:${u.iconColor || '#fecaca'}">${(u.name||'U')[0].toUpperCase()}</div>
+              <div class="sm:text-center"><a href="#" onclick="navigate('profile','${u.handle}');return false;" class="font-bold text-slate-900 hover:text-[#5b4ee0]">${escapeHtml(u.name)}</a><div class="text-xs text-slate-500">${u.verified ? '✓ Verified' : ''}</div></div>
+            </div>
+            <div class="flex-1">
+              <div class="grid grid-cols-2 gap-y-3 gap-x-6 text-sm">
+                <div><span class="text-slate-500">From</span><div class="font-semibold text-slate-900">${co ? co.flag + ' ' + co.name : '—'}</div></div>
+                <div><span class="text-slate-500">Member since</span><div class="font-semibold text-slate-900">${new Date(u.joinedTs).toLocaleDateString('pt-BR',{month:'short',year:'numeric'})}</div></div>
+                <div><span class="text-slate-500">Avg. response</span><div class="font-semibold text-slate-900">~${u.responseHours || 1}h</div></div>
+                <div><span class="text-slate-500">Completed</span><div class="font-semibold text-slate-900">${u.jobs || 0} orders</div></div>
+              </div>
+              <p class="mt-4 text-sm text-slate-600 leading-relaxed">${escapeHtml(u.bio || '')}</p>
+              <div class="mt-4 flex flex-wrap gap-2">${(u.skills||[]).map(skill => `<span class="chip rounded-full text-xs px-3 py-1">${escapeHtml(skill)}</span>`).join('')}</div>
+            </div>
+          </div>
+        </section>
+        <section class="border-t border-slate-200 pt-8">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <h2 class="text-xl font-extrabold text-slate-900">Reviews</h2>
+            <div class="flex items-center gap-2 text-sm"><span class="star-row inline-flex items-center gap-1"><i class="ri-star-fill"></i><b class="text-slate-900">${s.rating.toFixed(1)}</b></span><span class="text-slate-500">(${s.reviewsCount} reviews)</span></div>
+          </div>
+          <div class="mt-5 space-y-4">
+            ${reviews.length === 0 ? `<div class="text-sm text-slate-500">No reviews yet.</div>` :
+              reviews.slice(0, 5).map(r => {
+                const ru = getUser(r.userId) || { name:'Usuário', avatar:avatarSVG('U','#1a73e8') };
+                return `
+                <div class="rounded-lg border border-slate-200 p-4">
+                  <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-full grid place-items-center font-bold text-xs" style="background:#fecaca">${(ru.name||'U')[0].toUpperCase()}</span>
+                    <div><div class="font-bold text-sm">${escapeHtml(ru.name)}</div><div class="flex items-center gap-2 text-xs text-slate-500">${stars(r.stars,'w-3 h-3')}<span>${timeAgo(r.ts)} ago</span></div></div>
+                  </div>
+                  <p class="mt-2 text-sm text-slate-600">${escapeHtml(r.text)}</p>
+                </div>`;
+              }).join('')}
+          </div>
+        </section>
+        <section class="border-t border-slate-200 pt-8">
+          <h2 class="text-xl font-extrabold text-slate-900">Frequently asked questions</h2>
+          <div class="mt-4 space-y-2">
+            ${((s.faqs && s.faqs.length) ? s.faqs : [{q:'Do you provide the source code?', a:'Yes — every package includes the full source code.'},{q:'Can you deploy the site for me?', a:'Absolutely. Deployment is included on Standard and Premium packages.'}]).map(f => `
+              <details class="accordion rounded-lg border border-slate-200 p-4">
+                <summary class="flex items-center justify-between font-semibold text-slate-900 text-sm"><span>${escapeHtml(f.q)}</span><i class="ic ri-arrow-down-s-line text-slate-500"></i></summary>
+                <p class="mt-3 text-sm text-slate-600">${escapeHtml(f.a)}</p>
+              </details>
+            `).join('')}
+          </div>
+        </section>
+      </div>
+      <aside class="lg:col-span-1">
+        <div class="lg:sticky lg:top-20 space-y-4">
+          <div class="pkg-card active rounded-xl bg-white p-5">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+              <span class="text-xs font-bold tracking-wide text-[#5b4ee0] bg-[#efeaff] px-2.5 py-1 rounded-full">STANDARD</span>
+              <div class="text-right"><div class="text-xs text-slate-500">From</div><div class="font-extrabold text-slate-900 text-xl">${fmtITL(s.price)}</div></div>
+            </div>
+            <div class="mt-4"><h3 class="font-extrabold text-slate-900">${cat ? cat.label : 'Service'}</h3><p class="mt-2 text-sm text-slate-600">${escapeHtml(s.title)}</p></div>
+            <ul class="mt-4 space-y-2 text-sm text-slate-700">${(s.includes||[]).slice(0,4).map(inc => `<li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i><span>${escapeHtml(inc)}</span></li>`).join('')}</ul>
+            <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+              <div class="flex items-center gap-2 text-slate-600"><i class="ri-time-line"></i><span>${s.deliveryDays}-day delivery</span></div>
+              <div class="flex items-center gap-2 text-slate-600"><i class="ri-refresh-line"></i><span>2 revisions</span></div>
+            </div>
+            <button onclick="openHireModal('${s.id}','standard')" class="mt-5 w-full btn-primary py-3 rounded-lg font-bold flex items-center justify-center gap-2">Continue <i class="ri-arrow-right-line"></i></button>
+            <button onclick="openChat(null, '${s.freelancerId}')" class="mt-2 w-full btn-outline py-3 rounded-lg font-bold">Contact me</button>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-4 bg-white">
+            <div class="flex items-center gap-2 text-sm"><i class="ri-shield-check-fill text-[#8b7cff] text-lg"></i><span class="font-bold text-slate-900">Pay in ITL · escrow protected</span></div>
+            <p class="mt-2 text-xs text-slate-500 leading-relaxed">Your funds are held in escrow until you approve the delivery.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>`;
+}
+
+function setMainImg(el, sid) {
+  document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const main = document.getElementById('mainImg');
+  if (main) main.src = el.src;
+}
+
+/* ---------- VIEW PROFILE ---------- */
+function viewProfile(handle) {
+  const u = DB.users.find(x => x.handle === handle) || getUser(STATE.currentUserId);
+  if (!u) return `<div class="p-10 text-center text-slate-500">Perfil não encontrado.</div>`;
+  const co = getCountry(u.country);
+  const services = DB.services.filter(s => s.freelancerId === u.id && s.status !== 'rejected');
+  const isOwn = u.id === STATE.currentUserId;
+  const lvl = u.level || levelOf(u.jobs);
+  
+  return `
+  <div class="cover h-40 sm:h-52 w-full relative"><div class="max-w-7xl mx-auto h-full px-4 sm:px-6 flex items-end justify-end pb-4"><button class="btn-outline rounded-lg text-sm font-semibold px-4 py-2 flex items-center gap-2"><i class="ri-share-line"></i><span class="hidden sm:inline">Share profile</span></button></div></div>
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 -mt-14 sm:-mt-16 relative">
+    <div class="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
+      <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-4 border-white shadow-lg overflow-hidden grid place-items-center font-extrabold text-3xl sm:text-4xl text-slate-700" style="background:${u.iconColor || '#fecaca'}">${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover" />` : (u.name||'U')[0].toUpperCase()}</div>
+      <div class="flex-1 sm:pb-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">${escapeHtml(u.name)}</h1>
+          ${u.verified ? `<span class="badge-verified text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1"><i class="ri-shield-check-fill"></i>VERIFIED</span>` : ''}
+          <span class="badge-top text-[10px] font-bold px-2 py-0.5 rounded-full">${lvl ? lvl.label : 'Level 1'}</span>
+        </div>
+        <p class="text-slate-600 font-medium mt-1">@${u.handle}</p>
+        <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-slate-500">
+          <span class="flex items-center gap-1"><i class="ri-map-pin-line"></i>${co ? co.flag + ' ' + co.name : '—'}</span>
+          <span class="flex items-center gap-1"><i class="ri-calendar-line"></i>Member since ${new Date(u.joinedTs).toLocaleDateString('pt-BR',{month:'short',year:'numeric'})}</span>
+          <span class="flex items-center gap-1"><i class="ri-time-line"></i>~${u.responseHours || 1}h response</span>
+          <span class="flex items-center gap-1 star-row"><i class="ri-star-fill"></i><b class="text-slate-900">${u.rating.toFixed(1)}</b> (${u.jobs} reviews)</span>
+        </div>
+      </div>
+      <div class="sm:pb-3 flex gap-2">
+        ${isOwn ? `<button onclick="openEditProfileModal()" class="btn-primary rounded-lg text-sm font-bold px-5 py-2 flex items-center gap-2"><i class="ri-pencil-line"></i>Edit profile</button>` : `<button onclick="openChat(null,'${u.id}')" class="btn-primary rounded-lg text-sm font-bold px-5 py-2 flex items-center gap-2"><i class="ri-message-3-line"></i>Contact me</button>`}
+      </div>
+    </div>
+  </section>
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+      <div class="rounded-xl border border-slate-200 p-4"><div class="text-xs text-slate-500">Total orders</div><div class="mt-1 font-extrabold text-slate-900 text-xl">${u.jobs || 0}</div></div>
+      <div class="rounded-xl border border-slate-200 p-4"><div class="text-xs text-slate-500">Rating</div><div class="mt-1 font-extrabold text-slate-900 text-xl">${u.rating.toFixed(1)} ★</div></div>
+      <div class="rounded-xl border border-slate-200 p-4"><div class="text-xs text-slate-500">On time</div><div class="mt-1 font-extrabold text-slate-900 text-xl">${u.approvalPct || 0}%</div></div>
+      <div class="rounded-xl border border-slate-200 p-4"><div class="text-xs text-slate-500">Repeat clients</div><div class="mt-1 font-extrabold text-slate-900 text-xl">${u.repeatClientsPct || 0}%</div></div>
+    </div>
+  </section>
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 border-b border-slate-200">
+    <div class="flex items-center gap-6 sm:gap-8 overflow-x-auto text-sm">
+      <button onclick="showProfileTab('gigs',this)" class="tab tab-active whitespace-nowrap">Active gigs <span class="text-slate-400 ml-1">(${services.length})</span></button>
+      <button onclick="showProfileTab('about',this)" class="tab whitespace-nowrap">About</button>
+      <button onclick="showProfileTab('skills',this)" class="tab whitespace-nowrap">Skills</button>
+    </div>
+  </section>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <aside class="lg:col-span-1 space-y-6 order-2 lg:order-1">
+      <div class="rounded-xl border border-slate-200 p-5"><h3 class="font-extrabold text-slate-900">About me</h3><p class="mt-3 text-sm text-slate-600 leading-relaxed">${escapeHtml(u.bio || 'Sem bio ainda.')}</p></div>
+      <div class="rounded-xl border border-slate-200 p-5"><h3 class="font-extrabold text-slate-900">Languages</h3><ul class="mt-3 space-y-3 text-sm">${(u.languages||['pt']).map(lang => { const l=LANGUAGES_LIST.find(x=>x.id===lang); return `<li class="flex items-center justify-between"><span class="text-slate-700">${l ? l.flag + ' ' + l.label : lang}</span><span class="text-xs text-slate-500">Fluent</span></li>`; }).join('')}</ul></div>
+      <div class="rounded-xl border border-slate-200 p-5"><h3 class="font-extrabold text-slate-900">Skills</h3><div class="mt-3 flex flex-wrap gap-2">${(u.skills||['React','Tailwind','TypeScript']).map(skill => `<span class="chip rounded-full text-xs px-3 py-1">${escapeHtml(skill)}</span>`).join('')}</div></div>
+      <div class="rounded-xl border border-slate-200 p-5"><h3 class="font-extrabold text-slate-900">On-chain</h3><div class="mt-3 flex items-center gap-2 text-sm"><i class="ri-wallet-3-line text-slate-500"></i><code class="font-mono text-xs text-slate-700 bg-slate-50 px-2 py-1 rounded">${u.wallet ? shortAddr(u.wallet) : '—'}</code><button class="ml-auto text-slate-400 hover:text-slate-700" onclick="navigator.clipboard.writeText('${u.wallet||''}');toast('Copiado!','success')"><i class="ri-file-copy-line"></i></button></div><p class="mt-3 text-xs text-slate-500">Verified ITL wallet. All payouts are settled on-chain.</p></div>
+    </aside>
+    <div class="lg:col-span-2 order-1 lg:order-2">
+      <section id="pane-gigs">
+        <div class="flex items-center justify-between mb-5"><h2 class="text-xl font-extrabold text-slate-900">Active gigs</h2><a href="#" onclick="navigate('home');return false;" class="text-sm font-semibold text-[#5b4ee0] hover:underline">View all →</a></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          ${services.map(s => `
+            <a href="#" onclick="navigate('service','${s.id}');return false;" class="card-gig bg-white rounded-xl overflow-hidden flex flex-col">
+              <div class="relative overflow-hidden"><img src="${s.thumb}" class="gig-img w-full aspect-[3/2] object-cover" loading="lazy" />${s.featured ? `<span class="absolute top-3 left-0 text-[10px] font-extrabold tracking-wide text-slate-700 px-2.5 py-1 rounded-r-md bg-white/95">BEST SELLER</span>` : ''}</div>
+              <div class="p-4 flex-1 flex flex-col"><h3 class="text-sm font-bold text-[#5b4ee0] leading-snug">${escapeHtml(s.title)}</h3><div class="mt-2 flex items-center gap-1 text-xs text-slate-500"><i class="ri-star-fill text-amber-400"></i><b class="text-slate-700">${s.rating.toFixed(1)}</b><span>(${s.reviewsCount})</span></div><div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-end text-xs text-slate-500"><span>From <b class="font-extrabold text-slate-900">${fmtITL(s.price)}</b></span></div></div>
+            </a>
+          `).join('')}
+          ${services.length === 0 ? `<div class="text-slate-500 text-sm">Nenhum serviço publicado ainda.</div>` : ''}
+        </div>
+      </section>
+    </div>
+  </main>`;
+}
+
+function showProfileTab(name, btn){
+  document.querySelectorAll('#page-profile .tab').forEach(t => t.classList.remove('tab-active'));
+  btn.classList.add('tab-active');
+  ['gigs','about','skills'].forEach(n => { const el=document.getElementById('pane-'+n); if(el)el.classList.add('hidden'); });
+  const el=document.getElementById('pane-'+name); if(el)el.classList.remove('hidden');
+}
+
+/* ---------- VIEW DASHBOARD ---------- */
+function viewDashboard() {
+  const tab = STATE.dashboardTab === 'freelancer' ? 'freelancer' : 'client';
+  if (!isAuthed()) {
+    return `<div class="max-w-4xl mx-auto px-5 py-16 text-center"><div class="w-16 h-16 rounded-full bg-[#efeaff] grid place-items-center mx-auto mb-4"><i class="ri-wallet-line text-2xl text-[#5b4ee0]"></i></div><h2 class="text-2xl font-extrabold">Connect your wallet</h2><p class="text-slate-500 mt-2">To access your dashboard, connect your wallet and create your Interwork profile.</p><button onclick="openConnectWallet()" class="mt-6 btn-primary px-6 py-3 rounded-lg font-bold">Connect Wallet</button></div>`;
+  }
+  return `
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div class="inline-flex bg-slate-100 p-1 rounded-xl mb-6 w-full">
+      <a href="#" onclick="STATE.dashboardTab='client';renderView();return false;" class="flex-1 text-center px-4 py-2 text-sm font-bold rounded-lg transition ${tab==='client'?'bg-white shadow-sm text-slate-900':'text-slate-500'}">Meus pedidos</a>
+      <a href="#" onclick="STATE.dashboardTab='freelancer';renderView();return false;" class="flex-1 text-center px-4 py-2 text-sm font-bold rounded-lg transition ${tab==='freelancer'?'bg-white shadow-sm text-slate-900':'text-slate-500'}">Meus serviços</a>
+    </div>
+    ${tab === 'client' ? viewClientDashboard() : viewFreelancerDashboard()}
+  </div>`;
+}
+
+function viewClientDashboard() {
+  const orders = STATE.orders.filter(o => o.clientId === STATE.currentUserId);
+  const active = orders.filter(o => !['approved','cancelled'].includes(o.status));
+  const done = orders.filter(o => o.status === 'approved');
+  const tab = STATE.clientOrdersTab === 'done' ? 'done' : 'active';
+  const listed = tab === 'done' ? done : active;
+  
+  return `
+  <div class="grid grid-cols-2 gap-3 mb-5">
+    <div class="bg-white border border-slate-200 rounded-2xl p-4"><div class="text-xs text-slate-500 font-semibold mb-1">Em andamento</div><div class="text-2xl font-extrabold">${active.length}</div></div>
+    <div class="bg-white border border-slate-200 rounded-2xl p-4"><div class="text-xs text-slate-500 font-semibold mb-1">Concluídos</div><div class="text-2xl font-extrabold">${done.length}</div></div>
+  </div>
+  <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+    <div class="flex border-b border-slate-200">
+      <button onclick="STATE.clientOrdersTab='active';renderView()" class="flex-1 py-3 text-sm font-bold border-b-2 transition ${tab==='active'?'border-slate-900 text-slate-900':'border-transparent text-slate-400'}">Em andamento${active.length ? ` (${active.length})` : ''}</button>
+      <button onclick="STATE.clientOrdersTab='done';renderView()" class="flex-1 py-3 text-sm font-bold border-b-2 transition ${tab==='done'?'border-slate-900 text-slate-900':'border-transparent text-slate-400'}">Concluídos${done.length ? ` (${done.length})` : ''}</button>
+    </div>
+    ${listed.length === 0 ? `<div class="py-14 text-center text-slate-400"><div class="text-4xl mb-3">📦</div><div class="font-semibold text-slate-600 mb-1">Nenhum pedido ${tab === 'done' ? 'concluído' : 'em andamento'}</div><a href="#" onclick="navigate('home');return false;" class="mt-3 inline-block text-sm font-bold text-[#5b4ee0]">Explorar serviços →</a></div>` : `<div class="divide-y divide-slate-100">${listed.map(o => orderRow(o,'client')).join('')}</div>`}
+  </div>`;
+}
+
+function viewFreelancerDashboard() {
+  const freelancerId = 'u_ana';
+  const u = getUser(freelancerId);
+  const me = getUser(STATE.currentUserId);
+  const mySvc = DB.services.filter(sv => sv.freelancerId === freelancerId);
+  const myOrders = STATE.orders.filter(o => o.freelancerId === freelancerId);
+  const pending = myOrders.filter(o => !['approved','cancelled'].includes(o.status));
+  const frTab = STATE._frTab || 'orders';
+  
+  return `
+  <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-4 flex items-center justify-between gap-4">
+    <div><div class="text-xs text-slate-400 font-semibold mb-0.5">Saldo disponível</div><div class="text-2xl font-extrabold text-[#5b4ee0]">${fmtITL(me ? me.balanceITL : 0)}</div></div>
+    <button onclick="navigate('wallet')" class="bg-[#8b7cff] hover:bg-[#7a6bf0] text-white font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2"><i class="ri-bank-card-line"></i> Ver carteira</button>
+  </div>
+  <div class="grid grid-cols-2 gap-3 mb-4">
+    <div class="bg-white border border-slate-200 rounded-2xl p-4"><div class="text-xs text-slate-500 font-semibold mb-1">Pedidos em aberto</div><div class="text-2xl font-extrabold">${pending.length}</div></div>
+    <div class="bg-white border border-slate-200 rounded-2xl p-4"><div class="text-xs text-slate-500 font-semibold mb-1">Avaliação</div><div class="text-2xl font-extrabold">${u ? u.rating.toFixed(1) : '5.0'} ★</div></div>
+  </div>
+  <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+    <div class="flex border-b border-slate-200">
+      <button onclick="STATE._frTab='orders';renderView()" class="flex-1 py-3 text-sm font-bold border-b-2 transition ${frTab==='orders'?'border-slate-900 text-slate-900':'border-transparent text-slate-400'}">Pedidos${pending.length ? ` (${pending.length})` : ''}</button>
+      <button onclick="STATE._frTab='services';renderView()" class="flex-1 py-3 text-sm font-bold border-b-2 transition ${frTab==='services'?'border-slate-900 text-slate-900':'border-transparent text-slate-400'}">Serviços${mySvc.length ? ` (${mySvc.length})` : ''}</button>
+    </div>
+    ${frTab === 'orders' ? (myOrders.length === 0 ? `<div class="py-14 text-center text-slate-400"><div class="text-4xl mb-3">📦</div><div class="font-semibold text-slate-600 mb-1">Nenhum pedido ainda</div></div>` : `<div class="divide-y divide-slate-100">${myOrders.map(o => orderRow(o,'freelancer')).join('')}</div>`) : `
+      <div class="p-4 flex items-center justify-between border-b border-slate-100"><span class="text-sm font-semibold text-slate-600">${mySvc.length} serviço${mySvc.length !== 1 ? 's' : ''}</span><button onclick="openNewServiceModal()" class="text-sm font-bold bg-[#8b7cff] hover:bg-[#7a6bf0] text-white px-4 py-2 rounded-xl">+ Novo serviço</button></div>
+      <div class="divide-y divide-slate-100">${mySvc.length === 0 ? `<div class="py-12 text-center text-slate-400"><div class="text-4xl mb-3">🛠</div><div class="font-semibold text-slate-600 mb-1">Nenhum serviço publicado</div><button onclick="openNewServiceModal()" class="mt-2 text-sm font-bold text-[#5b4ee0]">+ Criar o primeiro</button></div>` : mySvc.map(sv => `
+        <div class="flex items-center gap-3 p-4">
+          <img src="${sv.thumb}" class="w-14 h-14 rounded-xl object-cover shrink-0"/>
+          <div class="flex-1 min-w-0">
+            <a href="#" onclick="navigate('service','${sv.id}');return false;" class="text-sm font-bold text-slate-900 line-clamp-2 hover:text-[#5b4ee0]">${escapeHtml(sv.title)}</a>
+            <div class="flex items-center gap-2 mt-1">${stars(sv.rating,'w-3 h-3')}<span class="text-xs text-slate-500">${sv.rating.toFixed(1)} · ${fmtITL(sv.price)}</span></div>
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <button onclick="openEditServiceModal('${sv.id}')" class="w-9 h-9 grid place-items-center rounded-xl hover:bg-slate-100 text-slate-400"><i class="ri-pencil-line"></i></button>
+            <button onclick="deleteService('${sv.id}')" class="w-9 h-9 grid place-items-center rounded-xl hover:bg-rose-50 text-slate-300 hover:text-rose-500"><i class="ri-delete-bin-line"></i></button>
+          </div>
+        </div>`).join('')}</div>
+    `}
+  </div>`;
+}
+
+function orderRow(o, perspective) {
+  const s = getService(o.serviceId);
+  const other = perspective === 'client' ? getUser(o.freelancerId) : getUser(o.clientId);
+  if (!s || !other) return '';
+  
+  return `
+  <div class="p-5">
+    <div class="flex flex-wrap gap-3 items-center">
+      <div class="flex items-center gap-3 min-w-0 flex-1">
+        <img src="${s.thumb}" class="w-14 h-14 rounded-lg object-cover" />
+        <div class="min-w-0">
+          <a href="#" onclick="navigate('service','${s.id}');return false;" class="font-bold text-sm hover:text-[#5b4ee0] line-clamp-1">${escapeHtml(s.title)}</a>
+          <div class="text-xs text-slate-500 flex items-center gap-1 mt-0.5"><span class="w-4 h-4 rounded-full grid place-items-center text-[10px]" style="background:${other.iconColor||'#fecaca'}">${(other.name||'U')[0].toUpperCase()}</span>${other.name} · #${o.id.slice(-5)}</div>
+        </div>
+      </div>
+      <div>${statusChip(o.status)}<div class="text-[10px] text-slate-500 mt-1">prazo ${o.deliveryDays}d</div></div>
+      <div><div class="text-[10px] text-slate-500 uppercase font-bold tracking-wider flex items-center gap-1"><i class="ri-shield-check-fill text-emerald-500"></i>Protegido</div><div class="font-extrabold text-[#5b4ee0] text-sm">${fmtITL(o.total)}</div></div>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <button onclick="openChat('${o.id}')" class="chip text-xs px-2 py-1 rounded-full"><i class="ri-message-3-line"></i> Chat</button>
+        ${perspective === 'client' ? clientActions(o) : freelancerActions(o)}
+      </div>
+    </div>
+  </div>`;
+}
+
+function clientActions(o) {
+  if (o.status === 'cancelled') return `<span class="chip text-xs px-2 py-1 bg-slate-100 text-slate-700">Cancelado</span>`;
+  if (o.status === 'awaiting_requirements') return `<button onclick="openRequirementsModal('${o.id}')" class="chip text-xs px-2 py-1 bg-amber-500 text-white"><i class="ri-clipboard-line"></i> Preencher</button>`;
+  if (o.status === 'delivered') return `<button onclick="approveOrder('${o.id}')" class="chip text-xs px-2 py-1 bg-emerald-500 text-white"><i class="ri-check-line"></i> Aprovar</button>`;
+  if (o.status === 'approved') return `<span class="chip text-xs px-2 py-1 bg-emerald-50 text-emerald-700">Finalizado</span>`;
+  return `<span class="chip text-xs px-2 py-1 bg-slate-100 text-slate-500">Aguardando</span>`;
+}
+
+function freelancerActions(o) {
+  if (o.status === 'cancelled') return `<span class="chip text-xs px-2 py-1 bg-slate-100 text-slate-700">Cancelado</span>`;
+  if (o.status === 'awaiting_requirements') return `<span class="chip text-xs px-2 py-1 bg-amber-50 text-amber-700">Aguardando formulário</span>`;
+  if (o.status === 'in_progress' || o.status === 'awaiting_delivery') return `<button onclick="openDeliverModal('${o.id}')" class="chip text-xs px-2 py-1 bg-[#8b7cff] text-white"><i class="ri-upload-line"></i> Entregar</button>`;
+  if (o.status === 'delivered') return `<span class="chip text-xs px-2 py-1 bg-violet-50 text-violet-700">Aguardando aprovação</span>`;
+  if (o.status === 'approved') return `<span class="chip text-xs px-2 py-1 bg-emerald-50 text-emerald-700">Recebido</span>`;
+  return `<span class="chip text-xs px-2 py-1 bg-slate-100 text-slate-500">Aguardando</span>`;
+}
+
+/* ---------- VIEW WALLET ---------- */
+function viewWallet() {
+  const me = getUser(STATE.currentUserId);
+  if (!isAuthed()) return viewAuthRequired();
+  const history = STATE.txHistory || [];
+  const payouts = STATE.payouts || [];
+  
+  return `
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <div class="flex items-end justify-between mb-6 flex-wrap gap-3">
+      <div><h1 class="text-3xl font-extrabold tracking-tight">Carteira ITL</h1><p class="text-slate-500 text-sm">Saldo, saques e transações simuladas na Interlink Network.</p></div>
+      <button onclick="openWithdrawModal()" class="bg-[#8b7cff] hover:bg-[#7a6bf0] text-white font-bold px-4 py-2.5 rounded-xl flex items-center gap-2"><i class="ri-bank-card-line"></i> Sacar ITL</button>
+    </div>
+    <div class="grid lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-1 space-y-4">
+        <div class="rounded-3xl bg-gradient-to-br from-[#8b7cff] to-[#7a6bf0] text-white p-6">
+          <div class="text-xs font-semibold opacity-90 flex items-center gap-2"><i class="ri-wallet-line"></i> ${STATE.walletProvider} · Interlink Network</div>
+          <div class="mt-4 text-4xl font-extrabold">${fmtITL(me ? me.balanceITL : 0)}</div>
+          <div class="text-xs opacity-90 mt-1">Saldo disponível para escrow ou saque</div>
+          <div class="mt-4 pt-4 border-t border-white/20"><div class="text-[10px] uppercase tracking-wider opacity-75 font-bold">Wallet vinculada</div><div class="font-mono text-xs break-all mt-1">${me ? me.wallet : '—'}</div></div>
+        </div>
+      </div>
+      <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl overflow-hidden">
+        <div class="p-5 border-b border-slate-200 flex items-center justify-between"><div class="font-extrabold flex items-center gap-2"><i class="ri-history-line text-[#5b4ee0]"></i>Histórico de transações</div><span class="text-xs text-slate-500">${history.length} registros</span></div>
+        ${history.length ? `<div class="divide-y divide-slate-100">${history.map(tx => `
+          <div class="p-4 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-[#efeaff] grid place-items-center shrink-0"><i class="ri-${txIcon(tx.type)}-line text-[#5b4ee0]"></i></div>
+            <div class="flex-1 min-w-0"><div class="font-bold text-sm">${txLabel(tx.type)}</div><div class="text-xs text-slate-500">${timeAgo(tx.ts)} atrás</div><a href="${explorerURL(tx.hash)}" target="_blank" class="font-mono text-[10px] text-[#5b4ee0] hover:underline">${shortHash(tx.hash)}</a></div>
+            <div class="text-right"><div class="font-extrabold text-sm ${tx.type==='withdrawal'?'text-rose-600':'text-slate-900'}">${tx.amount ? (tx.type==='withdrawal' ? '-' : '') + fmtITL(tx.amount) : '—'}</div></div>
+          </div>`).join('')}</div>` : `<div class="p-10 text-center text-slate-500">Nenhuma transação ainda.</div>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+function txLabel(type){ const map={escrow_lock:'Escrow travado',escrow_release:'Pagamento liberado',milestone_release:'Milestone liberado',withdrawal:'Saque ITL',deposit:'Depósito',rating:'Avaliação',profile_update:'Perfil atualizado',dispute_open:'Disputa aberta',dispute_resolve:'Disputa resolvida',order_cancel_refund:'Reembolso'}; return map[type]||type; }
+function txIcon(type){ const map={escrow_lock:'lock',escrow_release:'unlock',milestone_release:'milestone',withdrawal:'bank-card',deposit:'arrow-down',rating:'star',profile_update:'user-3',dispute_open:'gavel',dispute_resolve:'shield-check',order_cancel_refund:'refresh'}; return map[type]||'arrow-left-right'; }
+
+function viewAuthRequired() {
+  return `<div class="max-w-4xl mx-auto px-5 py-16 text-center"><div class="w-16 h-16 rounded-full bg-[#efeaff] grid place-items-center mx-auto mb-4"><i class="ri-wallet-line text-2xl text-[#5b4ee0]"></i></div><h2 class="text-2xl font-extrabold">Connect your wallet</h2><p class="text-slate-500 mt-2">To access your wallet, connect your wallet and create your Interwork profile.</p><button onclick="openConnectWallet()" class="mt-6 btn-primary px-6 py-3 rounded-lg font-bold">Connect Wallet</button></div>`;
+}
+
+/* ---------- OPEN HIRE MODAL ---------- */
+function openHireModal(serviceId, tierKey) {
+  if (!requireAuth('contratar')) return;
+  const s = getService(serviceId);
+  const u = getUserSafe(s.freelancerId);
+  const me = getUser(STATE.currentUserId);
+  const total = +(s.price * 1.02).toFixed(2);
+  const insufficient = (me ? me.balanceITL : 0) < total;
+  
+  const modal = document.getElementById('modal-root');
+  modal.innerHTML = `
+  <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between"><span class="font-extrabold flex items-center gap-2"><i class="ri-shield-check-fill text-[#5b4ee0]"></i>Confirmar contratação</span><button onclick="closeModal()" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-slate-100"><i class="ri-close-line"></i></button></div>
+      <div class="p-5 space-y-4">
+        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200"><img src="${s.thumb}" class="w-12 h-12 rounded-xl object-cover shrink-0"/><div class="flex-1 min-w-0"><div class="font-semibold text-sm leading-snug line-clamp-2">${escapeHtml(s.title)}</div><div class="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5">${escapeHtml(u.name)} ${u.verified ? '<i class="ri-shield-check-fill text-emerald-500"></i>' : ''}</div></div></div>
+        <div class="rounded-xl bg-[#efeaff] border border-[#c7c0ff] px-4 py-3 flex items-center justify-between">
+          <div><div class="text-xs text-slate-500">Total em escrow</div><div class="font-extrabold text-xl text-[#5b4ee0]">${fmtITL(total)}</div><div class="text-[11px] text-slate-400">${fmtITL(s.price)} + 2% taxa</div></div>
+          <div class="text-right"><div class="text-xs text-slate-500">Saldo</div><div class="font-bold text-sm ${insufficient?'text-rose-600':'text-slate-700'}">${fmtITL(me ? me.balanceITL : 0)}</div>${insufficient ? '<div class="text-[11px] text-rose-500 font-semibold">Insuficiente</div>' : '<div class="text-[11px] text-emerald-600">OK</div>'}</div>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-600 bg-slate-50 rounded-xl px-3 py-2"><i class="ri-lock-fill text-[#5b4ee0]"></i> Pagamento protegido até você aprovar a entrega.</div>
+      </div>
+      <div class="p-5 border-t border-slate-200 flex gap-2">
+        <button onclick="closeModal()" class="flex-1 btn-outline rounded-lg font-semibold py-2.5 text-sm">Cancelar</button>
+        <button ${insufficient ? 'disabled' : ''} onclick="confirmHire('${s.id}','${tierKey||STATE.selectedTier}')" class="flex-[2] btn-primary rounded-lg font-bold py-2.5 flex items-center justify-center gap-2 text-sm ${insufficient ? 'opacity-50 cursor-not-allowed' : ''}"><i class="ri-shield-check-fill"></i> Travar ${fmtITL(total)} e contratar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function confirmHire(serviceId, tierKey) {
+  const s = getService(serviceId);
+  const me = getUser(STATE.currentUserId);
+  const total = +(s.price * 1.02).toFixed(2);
+  if ((me ? me.balanceITL : 0) < total) { toast('Saldo insuficiente.', 'error'); return; }
+  const hash = txHash();
+  me.balanceITL = +((me.balanceITL || 0) - total).toFixed(2);
+  const order = mkOrder(s, STATE.currentUserId, '', 'in_progress', 8);
+  order.tier = tierKey;
+  order.price = s.price;
+  order.fee = +(s.price * 0.02).toFixed(2);
+  order.total = total;
+  order.escrowTx = hash;
+  STATE.orders.unshift(order);
+  STATE.txHistory.unshift({ hash, type:'escrow_lock', amount: total, token:'ITL', ts: Date.now(), orderId: order.id });
+  STATE.messages[order.id] = [{ from: s.freelancerId, text: 'Olá! Acabei de receber o pedido. Vou começar agora 🚀', ts: nowTs() }];
+  addNotification({ type:'tx', title:'Escrow confirmado', body:`${fmtITL(total)} travados • ${shortHash(hash)}`, link:'#/dashboard/client' });
+  closeModal();
+  toast('Pedido criado e tx confirmada!', 'success');
+  renderView();
+  if (order.status === 'awaiting_requirements') { setTimeout(() => openRequirementsModal(order.id), 500); }
+}
+
+function mkOrder(service, clientId, brief, status='in_progress', progress=10){
+  const id = uid('o');
+  const fee = +(service.price*0.02).toFixed(2);
+  const createdTs = Date.now()-86400000*Math.floor(Math.random()*5+1);
+  const deliveryAt = createdTs + service.deliveryDays*86400000;
+  const hasReqs = Array.isArray(service.requirements) && service.requirements.length > 0;
+  const initialStatus = (status==='in_progress' && hasReqs) ? 'awaiting_requirements' : status;
+  return { id, serviceId: service.id, freelancerId: service.freelancerId, clientId, brief, status: initialStatus, progress, tier: 'standard', selectedAddons: [], token: 'ITL', price: service.price, fee, total: +(service.price+fee).toFixed(2), deliveryDays: service.deliveryDays, createdTs, deliveryAt, deliveredAt: null, deliverable: null, rated: false, clientRated: false, escrowTx: txHash(), milestones: null, dispute: null, cancelRequest: null, refundRequested: false, tipITL: 0, requirementsAnswers: null, requirementsSubmitted: initialStatus !== 'awaiting_requirements', requirementsSubmittedTs: initialStatus !== 'awaiting_requirements' ? createdTs : null };
+}
+
+/* ---------- OPEN DELIVER MODAL ---------- */
+function openDeliverModal(orderId) {
+  const o = STATE.orders.find(x => x.id === orderId);
+  const modal = document.getElementById('modal-root');
+  modal.innerHTML = `
+  <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between"><span class="font-extrabold flex items-center gap-2"><i class="ri-upload-2-line text-[#5b4ee0]"></i>Entregar trabalho</span><button onclick="closeModal()" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-slate-100"><i class="ri-close-line"></i></button></div>
+      <div class="p-5 space-y-3">
+        <label class="block text-sm font-bold">Mensagem para o cliente</label>
+        <textarea id="deliver-note" rows="3" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm" placeholder="Inclua links, instruções, próximos passos…"></textarea>
+        <label class="block text-sm font-bold">Arquivos</label>
+        <label class="block border-2 border-dashed border-slate-200 rounded-xl p-6 text-center cursor-pointer hover:bg-slate-50"><i class="ri-upload-line text-2xl text-slate-400"></i><div class="text-sm font-semibold mt-1">Clique para enviar arquivos</div><div class="text-xs text-slate-500">ZIP, PDF, PNG — até 100 MB</div><input id="deliver-file" type="file" multiple class="hidden" /></label>
+        <div id="deliver-list" class="text-xs text-slate-500"></div>
+      </div>
+      <div class="p-5 border-t border-slate-200 flex gap-2">
+        <button onclick="closeModal()" class="flex-1 btn-outline rounded-lg font-semibold py-2.5 text-sm">Cancelar</button>
+        <button onclick="submitDelivery('${orderId}')" class="flex-[2] btn-primary rounded-lg font-bold py-2.5 flex items-center justify-center gap-2"><i class="ri-send-plane-fill"></i>Enviar entrega</button>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('deliver-file').addEventListener('change', e => {
+    const files = Array.from(e.target.files);
+    document.getElementById('deliver-list').innerHTML = files.map(f => `<div class="flex items-center gap-2 py-1"><i class="ri-file-line"></i> ${escapeHtml(f.name)} <span class="text-slate-300">(${Math.round(f.size/1024)} KB)</span></div>`).join('');
+  });
+}
+
+function submitDelivery(orderId) {
+  const o = STATE.orders.find(x => x.id === orderId);
+  const note = document.getElementById('deliver-note').value.trim() || 'Entrega anexada.';
+  const fileEl = document.getElementById('deliver-file');
+  const files = fileEl.files.length ? Array.from(fileEl.files).map(f => ({name:f.name, size:(f.size/1024).toFixed(0)+' KB'})) : [{name:'entrega.zip', size:'2.1 MB'}];
+  o.status = 'delivered'; o.progress = 100; o.deliveredAt = Date.now(); o.deliverable = { files, note };
+  STATE.messages[o.id] = STATE.messages[o.id] || [];
+  STATE.messages[o.id].push({ from: o.freelancerId, text: '📦 Entrega enviada: ' + note, attachments: files, ts: nowTs() });
+  addNotification({ type:'delivery', title:'Entrega recebida', body:`${files.length} arquivo(s) anexado(s)`, link:'#/dashboard/client' });
+  closeModal();
+  toast('Entrega enviada ao cliente!', 'success');
+  renderView();
+}
+
+function approveOrder(orderId) {
+  const o = STATE.orders.find(x => x.id === orderId);
+  if (!o || o.status !== 'delivered') return;
+  const hash = txHash();
+  o.releaseTx = hash;
+  o.status = 'approved'; o.progress = 100; o.approvedAt = Date.now();
+  const fl = getUser(o.freelancerId);
+  if (fl) { fl.balanceITL = (fl.balanceITL || 0) + (o.price || 0); fl.jobs = (fl.jobs || 0) + 1; }
+  STATE.txHistory.unshift({ hash, type:'escrow_release', amount: o.price, token:'ITL', ts: Date.now(), orderId });
+  addNotification({ type:'tx', title:'Pagamento liberado', body:`${fmtITL(o.price)} liberados ao freelancer`, link:'#/dashboard/client' });
+  toast('Entrega aprovada. ITL liberado!', 'success');
+  renderView();
+}
+
+/* ---------- REQUIREMENTS MODAL ---------- */
+function openRequirementsModal(orderId) {
+  const o = STATE.orders.find(x => x.id === orderId);
+  const s = getService(o.serviceId);
+  const reqs = s.requirements || [];
+  const modal = document.getElementById('modal-root');
+  modal.innerHTML = `
+  <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between"><span class="font-extrabold flex items-center gap-2"><i class="ri-clipboard-line text-amber-500"></i>Formulário do pedido</span><button onclick="closeModal()" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-slate-100"><i class="ri-close-line"></i></button></div>
+      <div class="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+        <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 flex items-start gap-2"><i class="ri-information-line"></i><span>O prazo de entrega de <b>${s.deliveryDays} dias</b> começa a contar assim que você enviar.</span></div>
+        <form id="req-form" class="space-y-3" onsubmit="event.preventDefault();submitRequirements('${o.id}')">
+          ${reqs.map((r, i) => `
+            <div>
+              <label class="text-sm font-bold flex items-center gap-1.5"><span class="w-5 h-5 rounded-full bg-amber-100 text-amber-700 text-[10px] grid place-items-center font-extrabold">${i+1}</span>${escapeHtml(r.label)} ${r.required ? '<span class="text-rose-500">*</span>' : ''}</label>
+              ${r.type === 'textarea' ? `<textarea id="reqf-${r.id}" rows="3" class="w-full border border-slate-200 rounded-xl px-3 py-2 mt-1 text-sm" placeholder="${escapeHtml(r.placeholder||'')}"></textarea>` : r.type === 'select' ? `<select id="reqf-${r.id}" class="w-full border border-slate-200 rounded-xl px-3 py-2 mt-1 text-sm"><option value="">— Selecione —</option>${(r.options||[]).map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('')}</select>` : `<input id="reqf-${r.id}" type="${r.type === 'url' ? 'url' : 'text'}" class="w-full border border-slate-200 rounded-xl px-3 py-2 mt-1 text-sm" placeholder="${escapeHtml(r.placeholder||'')}"/>`}
+            </div>
+          `).join('')}
+        </form>
+      </div>
+      <div class="p-5 border-t border-slate-200 flex gap-2">
+        <button onclick="closeModal()" class="flex-1 btn-outline rounded-lg font-semibold py-2.5 text-sm">Mais tarde</button>
+        <button onclick="submitRequirements('${o.id}')" class="flex-[2] bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-lg flex items-center justify-center gap-2"><i class="ri-send-plane-fill"></i>Enviar formulário</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function submitRequirements(orderId) {
+  const o = STATE.orders.find(x => x.id === orderId);
+  const s = getService(o.serviceId);
+  const reqs = s.requirements || [];
+  const answers = {};
+  let missing = null;
+  for (const r of reqs) {
+    const el = document.getElementById('reqf-'+r.id);
+    if (!el) continue;
+    const val = (el.value || '').trim();
+    if (r.required && !val) { missing = r.label; break; }
+    answers[r.id] = val;
+  }
+  if (missing) { toast('Preencha o campo obrigatório: '+missing, 'warn'); return; }
+  o.requirementsAnswers = answers;
+  o.requirementsSubmitted = true;
+  o.requirementsSubmittedTs = Date.now();
+  o.status = 'in_progress';
+  o.deliveryAt = Date.now() + (o.deliveryDays || s.deliveryDays || 7) * 86400000;
+  o.progress = Math.max(o.progress || 0, 10);
+  STATE.messages[o.id] = STATE.messages[o.id] || [];
+  STATE.messages[o.id].push({ from: o.clientId, text: '📋 Formulário enviado! O prazo de entrega começou.', ts: nowTs() });
+  addNotification({ type:'message', title:'Formulário recebido', body:`Cliente enviou o formulário do pedido #${o.id.slice(-5)}`, link:'#/dashboard/freelancer' });
+  closeModal();
+  toast('Formulário enviado. Prazo iniciado!', 'success');
+  renderView();
+}
+
+/* ---------- CREATE SERVICE ---------- */
+function openNewServiceModal(editId) {
+  if (!requireAuth(editId ? 'editar serviços' : 'publicar serviços')) return;
+  STATE.route = 'new-service';
+  STATE._nsEdit = editId || null;
+  STATE._nsStep = 1;
+  if (editId) {
+    const existing = getService(editId);
+    if (existing) {
+      STATE._nsV = { title: existing.title, cat: existing.category, co: existing.country, price: existing.price, days: existing.deliveryDays, desc: existing.description, inc: (existing.includes||[]).join(', '), tags: (existing.tags||[]).join(', ') };
+      STATE.newServiceLogo = existing.thumb || null;
+      STATE.newServiceGallery = existing.gallery ? existing.gallery.slice() : [];
+      STATE.newServiceRequirements = (existing.requirements || []).map(r => ({...r}));
+      STATE.newServiceFaqs = (existing.faqs || []).map(f => ({...f}));
+    }
+  } else {
+    STATE._nsV = { title:'', cat:'design', co:'BR', price:250, days:7, desc:'', inc:'', tags:'' };
+    STATE.newServiceLogo = null;
+    STATE.newServiceGallery = [];
+    STATE.newServiceRequirements = [];
+    STATE.newServiceFaqs = [];
+  }
+  renderView();
+}
+
+function viewNewServicePage() {
+  return `
+  <div class="max-w-3xl mx-auto px-4 py-10">
+    <div class="flex items-center gap-2 text-xs text-slate-500 mb-6"><button onclick="navigate('dashboard');return false;" class="hover:text-slate-700">Dashboard</button><i class="ri-arrow-right-s-line"></i><span class="font-semibold text-slate-700">${STATE._nsEdit ? 'Editar Serviço' : 'Publicar Serviço'}</span></div>
+    <h1 class="text-2xl font-extrabold mb-6">${STATE._nsEdit ? 'Editar Serviço' : 'Publicar um Serviço'}</h1>
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 space-y-5">
+      <div><label class="text-xs font-bold uppercase tracking-wider text-slate-500">Título do Serviço *</label><input id="ns-title" value="${escapeHtml(STATE._nsV.title)}" maxlength="80" class="w-full mt-1.5 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:border-[#8b7cff] outline-none"/></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-xs font-bold uppercase tracking-wider text-slate-500">Categoria *</label><select id="ns-cat" class="w-full mt-1.5 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:border-[#8b7cff] outline-none">${CATEGORIES.map(c => `<option value="${c.id}" ${STATE._nsV.cat===c.id?'selected':''}>${c.label}</option>`).join('')}</select></div>
+        <div><label class="text-xs font-bold uppercase tracking-wider text-slate-500">País *</label><select id="ns-co" class="w-full mt-1.5 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:border-[#8b7cff] outline-none">${COUNTRIES.map(c => `<option value="${c.id}" ${STATE._nsV.co===c.id?'selected':''}>${c.flag} ${c.name}</option>`).join('')}</select></div>
+      </div>
+      <div><label class="text-xs font-bold uppercase tracking-wider text-slate-500">Descrição *</label><textarea id="ns-desc" rows="6" class="w-full mt-1.5 border border-slate-200 rounded-xl px-3 py-2.5 text-sm resize-none focus:border-[#8b7cff] outline-none">${escapeHtml(STATE._nsV.desc)}</textarea></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-xs font-bold uppercase tracking-wider text-slate-500">Preço (ITL) *</label><input id="ns-price" type="number" min="1" value="${STATE._nsV.price}" class="w-full mt-1.5 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:border-[#8b7cff] outline-none"/></div>
+        <div><label class="text-xs font-bold uppercase tracking-wider text-slate-500">Prazo (dias) *</label><input id="ns-days" type="number" min="1" max="90" value="${STATE._nsV.days}" class="w-full mt-1.5 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:border-[#8b7cff] outline-none"/></div>
+      </div>
+      <div><label class="text-xs font-bold uppercase tracking-wider text-slate-500">O que está incluído <span class="font-normal normal-case text-slate-400">(separe por vírgula)</span></label><input id="ns-inc" value="${escapeHtml(STATE._nsV.inc)}" class="w-full mt-1.5 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:border-[#8b7cff] outline-none" placeholder="ex: 3 propostas, revisões ilimitadas, arquivo editável"/></div>
+      <div><label class="text-xs font-bold uppercase tracking-wider text-slate-500">Tags <span class="font-normal normal-case text-slate-400">(separe por vírgula · até 10)</span></label><input id="ns-tags" value="${escapeHtml(STATE._nsV.tags)}" class="w-full mt-1.5 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:border-[#8b7cff] outline-none" placeholder="ex: logo, branding, web3"/></div>
+      <div class="flex gap-3 pt-4 border-t border-slate-200">
+        <button onclick="navigate('dashboard');return false;" class="flex-1 btn-outline rounded-xl font-semibold py-3 text-sm">Cancelar</button>
+        <button onclick="createService()" class="flex-[2] btn-primary rounded-xl font-bold py-3 text-sm flex items-center justify-center gap-2"><i class="ri-send-plane-fill"></i> ${STATE._nsEdit ? 'Salvar alterações' : 'Publicar serviço'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function createService() {
+  const title = document.getElementById('ns-title').value.trim();
+  const cat = document.getElementById('ns-cat').value;
+  const co = document.getElementById('ns-co').value;
+  const price = parseFloat(document.getElementById('ns-price').value) || 0;
+  const days = parseInt(document.getElementById('ns-days').value) || 7;
+  const desc = document.getElementById('ns-desc').value.trim();
+  const inc = document.getElementById('ns-inc').value.split(',').map(x => x.trim()).filter(Boolean);
+  const tags = document.getElementById('ns-tags').value.split(',').map(x => x.trim().toLowerCase()).filter(Boolean).slice(0,10);
+  if (!title || !desc || !price) { toast('Preencha título, descrição e preço.', 'warn'); return; }
+  const svc = { id: uid('s'), title, category: cat, freelancerId: STATE.currentUserId, price, deliveryDays: days, country: co, rating: 5, reviewsCount: 0, includes: inc.length ? inc : ['Pacote padrão'], description: desc, thumb: STATE.newServiceLogo || thumbSVG(title, getCategory(cat).color), gallery: STATE.newServiceGallery.slice(), tags, requirements: STATE.newServiceRequirements, faqs: STATE.newServiceFaqs, status: 'approved', createdTs: Date.now(), reviews: [], _mock: true };
+  DB.services.unshift(svc);
+  toast('Serviço publicado com sucesso!', 'success');
+  STATE.route = 'dashboard';
+  STATE.dashboardTab = 'freelancer';
+  renderView();
+}
+
+function deleteService(id) {
+  const s = getService(id);
+  if (!s) return;
+  if (!confirm(`Excluir o serviço "${s.title}"?`)) return;
+  const idx = DB.services.findIndex(x => x.id === id);
+  if (idx >= 0) DB.services.splice(idx, 1);
+  toast('Serviço excluído.', 'success');
+  renderView();
+}
+
+function openEditServiceModal(id) { openNewServiceModal(id); }
+
+/* ---------- ADMIN ---------- */
+function viewAdmin() {
+  if (!STATE.isAdmin) {
+    return `
+    <div class="max-w-sm mx-auto px-5 py-16 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-rose-50 grid place-items-center mx-auto mb-4"><i class="ri-shield-off-line text-2xl text-rose-500"></i></div>
+      <h2 class="text-2xl font-extrabold mb-2">Acesso restrito</h2>
+      <p class="text-slate-500 text-sm">Esta área é exclusiva para administradores.</p>
+      ${STATE.sbUser ? `<p class="text-xs text-slate-400 mt-4">Conectado como: <strong>${STATE.sbUser.email}</strong></p><button onclick="sbSignOut()" class="mt-4 px-5 py-2.5 bg-rose-500 text-white font-bold rounded-xl text-sm">Sair</button>` : `
+        <div class="mt-6 bg-white border border-slate-200 rounded-2xl p-6 space-y-3">
+          <input id="admin-email" type="email" placeholder="admin@interwork.xyz" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"/>
+          <input id="admin-pwd" type="password" placeholder="Senha" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"/>
+          <button onclick="adminLogin()" class="w-full bg-[#8b7cff] text-white font-bold py-3 rounded-xl text-sm">Entrar</button>
+        </div>
+      `}
+    </div>`;
+  }
+  const pending = DB.services.filter(s => s.status === 'pending');
+  const approved = DB.services.filter(s => s.status === 'approved');
+  const rejected = DB.services.filter(s => s.status === 'rejected');
+  const allSvcs = DB.services.filter(s => s._sb);
+  const activeTab = STATE.adminTab || 'pending';
+  let showSvcs = activeTab === 'pending' ? pending : activeTab === 'approved' ? approved : activeTab === 'rejected' ? rejected : allSvcs;
+  
+  return `
+  <div class="max-w-5xl mx-auto px-5 py-10">
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-8">
+      <div><h1 class="text-3xl font-extrabold tracking-tight">Moderação de Serviços</h1><p class="text-slate-500 text-sm mt-1">Conectado como <strong class="text-slate-700">${STATE.sbUser?.email}</strong></p></div>
+      <button onclick="sbLoadServices()" class="px-4 py-2.5 border border-slate-200 hover:bg-slate-50 rounded-xl text-sm font-bold flex items-center gap-2"><i class="ri-refresh-line"></i>Atualizar</button>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      ${[{key:'pending',label:'Aguardando',count:pending.length,color:'text-amber-600'},{key:'approved',label:'Aprovados',count:approved.length,color:'text-emerald-600'},{key:'rejected',label:'Rejeitados',count:rejected.length,color:'text-rose-600'},{key:'all',label:'Todos',count:allSvcs.length,color:'text-slate-600'}].map(t => `<button onclick="STATE.adminTab='${t.key}';renderView()" class="text-left p-5 rounded-2xl border ${activeTab===t.key?'border-[#8b7cff] bg-[#efeaff]':'border-slate-200 bg-white hover:bg-slate-50'} transition"><div class="font-extrabold text-3xl ${activeTab===t.key?t.color:'text-slate-900'}">${t.count}</div><div class="text-xs font-semibold text-slate-500 mt-1">${t.label}</div></button>`).join('')}
+    </div>
+    <div class="space-y-4">
+      ${showSvcs.length === 0 ? `<div class="text-center py-16 text-slate-400"><i class="ri-inbox-line text-4xl"></i><div class="font-semibold mt-3">Nenhum serviço nesta categoria.</div></div>` :
+        showSvcs.map(s => `
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col md:flex-row gap-4">
+            <div class="shrink-0 w-20 h-16 rounded-xl overflow-hidden bg-slate-100"><img src="${s.thumb}" class="w-full h-full object-cover"/></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start gap-2 flex-wrap mb-1"><span class="chip text-xs px-2 py-0.5 ${s.status==='pending'?'bg-amber-50 text-amber-700':s.status==='approved'?'bg-emerald-50 text-emerald-700':'bg-rose-50 text-rose-700'}">${s.status}</span></div>
+              <div class="font-extrabold text-base truncate">${escapeHtml(s.title)}</div>
+              <div class="text-xs text-slate-500 mt-0.5">${s.price} ITL · ${s.deliveryDays}d · Criado: ${new Date(s.createdTs).toLocaleDateString('pt-BR')}</div>
+            </div>
+            <div class="flex md:flex-col gap-2 shrink-0 items-start">
+              <button onclick="navigate('service','${s.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-200 hover:bg-slate-50 flex items-center gap-1"><i class="ri-eye-line"></i>Ver</button>
+              ${s.status !== 'approved' ? `<button onclick="adminApprove('${s.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500 hover:bg-emerald-600 text-white flex items-center gap-1"><i class="ri-check-line"></i>Aprovar</button>` : ''}
+              ${s.status !== 'rejected' ? `<button onclick="adminReject('${s.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-500 hover:bg-rose-600 text-white flex items-center gap-1"><i class="ri-close-line"></i>Rejeitar</button>` : ''}
+            </div>
+          </div>
+        `).join('')}
+    </div>
+  </div>`;
+}
+
+async function adminLogin() {
+  const email = document.getElementById('admin-email').value;
+  const pwd = document.getElementById('admin-pwd').value;
+  if (!email || !pwd) { toast('Preencha email e senha.', 'warn'); return; }
+  const { error } = await sb.auth.signInWithPassword({ email, password: pwd });
+  if (error) { toast('Erro: '+error.message, 'error'); return; }
+  STATE.isAdmin = true;
+  renderView();
+}
+
+async function adminApprove(id) {
+  if (SB_READY && sb) {
+    await sb.from('services').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', id);
+    const s = getService(id); if (s) s.status = 'approved';
+    toast('Serviço aprovado!', 'success');
+    renderView();
+  }
+}
+
+async function adminReject(id) {
+  const reason = prompt('Motivo da rejeição:');
+  if (reason === null) return;
+  if (SB_READY && sb) {
+    await sb.from('services').update({ status: 'rejected', rejected_reason: reason }).eq('id', id);
+    const s = getService(id); if (s) { s.status = 'rejected'; s.rejectedReason = reason; }
+    toast('Serviço rejeitado.', 'warn');
+    renderView();
+  }
+}
+
+/* ---------- CHAT ---------- */
+function openChat(orderId, otherUserId) {
+  if (!requireAuth('usar o chat')) return;
+  let order = orderId ? STATE.orders.find(o => o.id === orderId) : STATE.orders.find(o => o.freelancerId === otherUserId && o.clientId === STATE.currentUserId);
+  let ephemeral = false;
+  if (!order) {
+    order = { id: 'pre_'+otherUserId, clientId: STATE.currentUserId, freelancerId: otherUserId, serviceId: null, status: 'in_progress', progress: 0 };
+    ephemeral = true;
+    STATE.messages[order.id] = STATE.messages[order.id] || [{ id: uid('m'), from: otherUserId, text: 'Oi! Como posso ajudar?', ts: nowTs(), status: 'read' }];
+  }
+  STATE.chatOpenOrderId = order.id;
+  renderChat(order, ephemeral);
+}
+
+function closeChat() {
+  STATE.chatOpenOrderId = null;
+  document.getElementById('chat-root').innerHTML = '';
+}
+
+function renderChat(order, ephemeral) {
+  const other = getUser(order.clientId === STATE.currentUserId ? order.freelancerId : order.clientId);
+  const svc = order.serviceId ? getService(order.serviceId) : null;
+  const msgs = STATE.messages[order.id] || [];
+  
+  document.getElementById('chat-root').innerHTML = `
+  <div class="chat-drawer">
+    <div class="overlay" onclick="closeChat()"></div>
+    <div class="panel">
+      <div class="p-4 border-b border-slate-200 flex items-center gap-3 shrink-0">
+        <div class="w-10 h-10 rounded-full grid place-items-center font-bold text-slate-700" style="background:${other ? other.iconColor || '#fecaca' : '#fecaca'}">${other ? (other.name||'U')[0].toUpperCase() : 'U'}</div>
+        <div class="flex-1 min-w-0">
+          <div class="font-bold text-sm">${other ? escapeHtml(other.name) : 'Usuário'}</div>
+          <div class="text-[11px] text-slate-500 truncate">${svc ? escapeHtml(svc.title) : 'Conversa'}</div>
+        </div>
+        <button onclick="closeChat()" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-slate-100"><i class="ri-close-line"></i></button>
+      </div>
+      <div id="chat-stream" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
+        ${msgs.map(m => chatBubble(m)).join('') || '<div class="text-center text-slate-500 text-xs py-8">Inicie a conversa</div>'}
+      </div>
+      <form id="chat-form" class="p-3 border-t border-slate-200 flex gap-2 shrink-0" onsubmit="event.preventDefault();sendChatMessage('${order.id}')">
+        <input type="text" id="chat-input" placeholder="Digite uma mensagem…" class="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#8b7cff]"/>
+        <button type="submit" class="w-10 h-10 grid place-items-center rounded-xl bg-[#8b7cff] hover:bg-[#7a6bf0] text-white shrink-0"><i class="ri-send-plane-fill"></i></button>
+      </form>
+    </div>
+  </div>`;
+  
+  const stream = document.getElementById('chat-stream');
+  if (stream) stream.scrollTop = stream.scrollHeight;
+}
+
+function chatBubble(m) {
+  const mine = m.from === STATE.currentUserId;
+  const u = getUser(m.from);
+  return `
+  <div class="flex items-end gap-2 ${mine ? 'flex-row-reverse' : ''}">
+    <div class="w-7 h-7 rounded-full grid place-items-center text-[11px] font-bold shrink-0" style="background:${u ? u.iconColor || '#fecaca' : '#fecaca'}">${u ? (u.name||'U')[0].toUpperCase() : 'U'}</div>
+    <div class="max-w-[80%] px-3 py-2 rounded-2xl ${mine ? 'bg-[#8b7cff] text-white rounded-br-sm' : 'bg-white border border-slate-200 rounded-bl-sm'}">
+      <div class="text-sm leading-snug">${escapeHtml(m.text)}</div>
+      <div class="text-[10px] ${mine ? 'text-white/70' : 'text-slate-500'} mt-0.5">${timeAgo(m.ts)}</div>
+    </div>
+  </div>`;
+}
+
+function sendChatMessage(orderId) {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  const o = STATE.orders.find(x => x.id === orderId) || { id: orderId };
+  STATE.messages[orderId] = STATE.messages[orderId] || [];
+  const msg = { id: uid('m'), from: STATE.currentUserId, text, ts: nowTs(), status: 'sent' };
+  STATE.messages[orderId].push(msg);
+  renderChat(o, true);
+  // Simulate reply
+  setTimeout(() => {
+    if (STATE.chatOpenOrderId !== orderId) return;
+    const replies = ['Combinado!', 'Já estou nisso.', 'Pode me mandar mais detalhes?', 'Vou começar agora.'];
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+    STATE.messages[orderId].push({ id: uid('m'), from: o.freelancerId || 'u_ana', text: reply, ts: nowTs(), status: 'read' });
+    renderChat(o, true);
+  }, 1500);
+}
+
+/* ---------- VIEW PLACEHOLDERS ---------- */
+function viewHow() { return `<div class="max-w-4xl mx-auto px-5 py-14"><h1 class="text-3xl font-extrabold">How It Works</h1><p class="text-slate-500 mt-4">Coming soon...</p></div>`; }
+function viewBenefits() { return `<div class="max-w-4xl mx-auto px-5 py-14"><h1 class="text-3xl font-extrabold">Benefits</h1><p class="text-slate-500 mt-4">Coming soon...</p></div>`; }
+function viewRewards() { return `<div class="max-w-4xl mx-auto px-5 py-14"><h1 class="text-3xl font-extrabold">Rewards</h1><p class="text-slate-500 mt-4">Coming soon...</p></div>`; }
+function viewLegal(page) { return `<div class="max-w-4xl mx-auto px-5 py-14"><h1 class="text-3xl font-extrabold">Legal - ${page}</h1><p class="text-slate-500 mt-4">Coming soon...</p></div>`; }
+
+function openWithdrawModal() {
+  const me = getUser(STATE.currentUserId);
+  toast('Função de saque em desenvolvimento.', 'info');
+}
+
+/* ---------- INIT MOCK ---------- */
+function initMock() {
+  DB.users.push({
+    id:'u_me', name:'Você', handle:'you.interlink', country:'BR', verified:true,
+    wallet:'0x9b51E3Aa7c1f4d29F8e6b34bD7b9aF2c8a3c1c91',
+    avatar: avatarSVG('Y','#1a73e8'),
+    bio:'Cliente Web3 explorando serviços na Interwork.', rating:0, jobs:0, joinedTs: Date.now()-86400000*45,
+    balanceITL: 1250.50, languages:['en'], skills:[], portfolio:[], responseHours:1, repeatClientsPct:0, approvalPct:0,
+    online: true, referralCode:'INTERWORK-ME', pendingPayoutITL:0, iconColor:'#fecaca',
+  });
+
+  const seed = [
+    ['u_ana','Ana Marques','ana.web3','BR',true,4.9,132,'Designer de produto com foco em DApps e DeFi UX.',['pt','en','es'],['Figma','UX Research','Webflow','Notion'],'#f97316',2,78,94],
+    ['u_leo','Leo Tanaka','leo.dev','JP',true,5.0,87,'Solidity engineer • auditor • Interlink enthusiast.',['en','ja'],['Solidity','Foundry','Slither','Hardhat'],'#1a73e8',3,64,97],
+    ['u_kai','Kai Müller','kai.dao','DE',true,4.8,64,'Marketing growth para protocolos DeFi e NFT.',['de','en'],['Twitter Ads','Notion','Discord'],'#10b981',4,55,91],
+    ['u_sof','Sofia Pereira','sofia.tx','PT',true,4.9,51,'Copywriter especializada em whitepapers e tokenomics.',['pt','en'],['Token Design','Notion','Figma'],'#a855f7',6,40,95],
+    ['u_chi','Chinedu Okoro','chinedu.eth','NG',false,4.6,22,'Auditor júnior — relatórios em 72h.',['en'],['Solidity','Slither','Foundry'],'#ef4444',12,18,86],
+    ['u_riy','Riya Patel','riya.motion','IN',true,4.7,41,'Motion designer • animações 3D para launchpads.',['hi','en'],['After Effects','Figma'],'#06b6d4',5,38,89],
+    ['u_emi','Emilia Costa','emi.brand','AR',true,4.8,73,'Branding completo para projetos cripto.',['es','en','pt'],['Figma','Notion'],'#f97316',4,60,92],
+    ['u_max','Max Reuter','max.fullstack','US',true,4.9,110,'Fullstack Next.js + wagmi + Foundry.',['en','de'],['Next.js','wagmi','Foundry','Hardhat','Solidity'],'#1a73e8',2,82,96],
+  ];
+  seed.forEach(([id,name,handle,country,verified,rating,jobs,bio,langs,skills,color,responseHours,repeatPct,approvPct])=>{
+    DB.users.push({
+      id, name, handle, country, verified, rating, jobs, bio,
+      wallet:'0x'+id.padEnd(40,'a').slice(0,40),
+      avatar: avatarSVG(name[0],color),
+      joinedTs: Date.now()-86400000*Math.floor(Math.random()*600+120),
+      iconColor: color,
+      languages: langs,
+      skills,
+      portfolio: [1,2,3,4].map(k=>({ id:uid('p'), title: name.split(' ')[0]+' Work '+k, thumb: thumbSVG('Work '+k, color)})),
+      responseHours, repeatClientsPct: repeatPct, approvalPct: approvPct,
+      online: Math.random()>0.4,
+      referralCode:'INTERWORK-'+handle.toUpperCase().slice(0,8),
+      pendingPayoutITL: Math.floor(Math.random()*500),
+      level: levelOf(jobs),
+    });
+  });
+
+  const services = [
+    ['I will create a premium DeFi landing page in 7 days','design','u_ana',198,7,'BR',4.9,86,['Figma source','3 conceitos','Animações Lottie'],'Oi! 👋 Me contate antes de fazer o pedido para alinharmos os detalhes do seu protocolo.',true],
+    ['I will audit your Solidity smart contract for security vulnerabilities','audit','u_leo',280,14,'JP',5.0,54,['Relatório PDF','Fix recomendações','Re-audit grátis'],'Olá! Me contate antes para entender o tamanho do contrato.',true],
+    ['I will create a full growth marketing strategy for your token launch','marketing','u_kai',175,21,'DE',4.8,31,['KOL outreach','Estratégia 30d','Calendário X/Discord'],'Oi! Fale comigo antes de fechar o pedido.',false],
+    ['I will write a professional technical whitepaper up to 25 pages','writing','u_sof',240,12,'PT',4.9,47,['Estrutura','Tokenomics','Revisão jurídica leve'],'Olá! Me manda mensagem antes de pedir.',false],
+    ['I will design a crypto logo and brand identity for your Web3 project','design','u_emi',155,6,'AR',4.8,73,['3 propostas','Manual de marca PDF','Vetores SVG'],'Oi! Me contate antes para entendermos a personalidade da sua marca.',false],
+    ['I will build a fullstack DApp with Next.js and wagmi integration','dev','u_max',275,21,'US',4.9,110,['Frontend','Integração contrato','Deploy Vercel'],'Hey! Me manda mensagem antes de pedir.',true],
+    ['I will develop an ERC-20 smart contract with custom vesting schedule','dev','u_leo',210,9,'JP',5.0,26,['Contrato','Testes Foundry','Deploy Interlink network'],'Olá! Fale comigo antes para alinharmos as regras de vesting.',false],
+    ['I will create cinematic motion reels for your Twitter and X campaigns','video','u_riy',89,5,'IN',4.7,38,['3 reels 15s','Música licenciada','Versão vertical'],'Hi! Me contate antes para entender o estilo da sua marca.',false],
+    ['I will do an express security audit for mini smart contracts in 72h','audit','u_chi',95,3,'NG',4.6,22,['Relatório markdown','Severidade OWASP'],'Hey, me contate antes se seu contrato tiver mais de 400 linhas.',false],
+    ['I will design a pitch deck for investors in your crypto project','design','u_ana',168,8,'BR',4.9,18,['12-16 slides','Versão pt/en','Source Figma'],'Oi! Me chama antes para entendermos a rodada de investimento.',false],
+    ['I will translate your whitepaper between English and Portuguese','writing','u_sof',78,4,'PT',4.9,12,['Tradução técnica','Glossário'],'Olá! Me manda mensagem antes de pedir.',false],
+    ['I will manage your Discord community for 30 days professionally','marketing','u_kai',190,30,'DE',4.8,15,['Setup roles','Eventos AMA','Relatório semanal'],'Oi! Fale comigo antes para alinharmos as regras da comunidade.',false],
+  ];
+
+  services.forEach(s=>{
+    const [title,cat,fid,price,days,country,rating,reviews,inc,desc,featured] = s;
+    const tags = [cat, 'web3', 'interlink', 'crypto'].slice(0,4);
+    DB.services.push({
+      id: uid('s'), title, category:cat, freelancerId:fid, price, deliveryDays:days,
+      country, rating, reviewsCount:reviews, includes:inc, description:desc,
+      tags,
+      thumb: thumbSVG(title, CATEGORIES.find(c=>c.id===cat).color),
+      gallery: [2,3,4].map(n => gallerySVG(title, CATEGORIES.find(c=>c.id===cat).color, n)),
+      createdTs: Date.now()-86400000*Math.floor(Math.random()*120+5),
+      featured: !!featured,
+      acceptedTokens: ['ITL'],
+      qrPayMaxITL: 200,
+      requirements: [],
+      faqs: [],
+      reviews: [],
+    });
+  });
+
+  // Seed orders
+  const s1 = DB.services[0], s2 = DB.services[1], s3 = DB.services[5];
+  const o1 = mkOrder(s1, 'u_me', 'Quero uma landing para o nosso protocolo de yield.', 'in_progress', 55);
+  o1.status = 'in_progress'; o1.requirementsSubmitted = true;
+  STATE.orders.push(o1);
+  STATE.orders.push(mkOrder(s2, 'u_me', 'Auditoria do contrato de staking v2.', 'awaiting_delivery', 80));
+  const oDel = mkOrder(s3, 'u_me', 'DApp para mintar nosso NFT na rede Interlink.', 'delivered', 100);
+  oDel.deliveredAt = Date.now() - (AUTO_APPROVE_MS - 3 * 3600000);
+  STATE.orders.push(oDel);
+  
+  STATE.orders.forEach(o=>{
+    STATE.messages[o.id] = [
+      { from:o.freelancerId, text:'Olá! Recebi seu pedido, vou começar agora.', ts: o.createdTs+60000 },
+      { from:'u_me', text:'Perfeito, qualquer dúvida me chama por aqui.', ts: o.createdTs+120000 },
+    ];
+  });
+
+  STATE.notifications = [
+    { id:uid('n'), type:'delivery', title:'Entrega recebida', body:'Max enviou a entrega do DApp Next.js.', ts: Date.now()-3600000*2, read:false, link:'#/dashboard/client' },
+    { id:uid('n'), type:'message', title:'Nova mensagem', body:'Ana: "Subi o preview no Figma".', ts: Date.now()-3600000*5, read:false, link:'#/dashboard/client' },
+    { id:uid('n'), type:'tx', title:'Escrow confirmado', body:'1224 ITL travados na rede Interlink.', ts: Date.now()-86400000, read:true, link:'#/wallet' },
+  ];
+
+  STATE.txHistory = [
+    { hash: txHash(), type:'escrow_lock', amount: 285.60, token:'ITL', ts: Date.now()-86400000*3, orderId: STATE.orders[0].id },
+    { hash: txHash(), type:'escrow_lock', amount: 1224.00,token:'ITL', ts: Date.now()-86400000*5, orderId: STATE.orders[1].id },
+    { hash: txHash(), type:'escrow_release', amount: 1836.00,token:'ITL', ts: Date.now()-86400000*9, orderId: STATE.orders[2].id },
+    { hash: txHash(), type:'deposit', amount: 500.00, token:'ITL', ts: Date.now()-86400000*12 },
+  ];
+  STATE.payouts = [
+    { hash: txHash(), amount: 320, token:'ITL', ts: Date.now()-86400000*7 },
+    { hash: txHash(), amount: 540, token:'ITL', ts: Date.now()-86400000*21 },
+  ];
+}
+
+/* ---------- INIT ---------- */
+console.log('✅ InterWork v36 + Chat + Admin carregado!');
+
+initMock();
+DB.services.forEach(s => s._mock = true);
+const restored = restorePersistedData();
+if (restored) setTimeout(() => toast('Dados restaurados do localStorage.', 'success'), 250);
+
+startPersistence();
+runAutoApprove();
+setInterval(runAutoApprove, 60000);
+
+if (SB_READY) {
+  sbInitAuth().then(() => {
+    sbLoadServices();
+    sbSubscribeServices();
+  });
+}
+
+renderCats();
+render();
+renderHeader();
+renderNotifications();
+
+document.addEventListener('click', function(e) {
+  const sortMenu = document.getElementById('sortMenu');
+  if (sortMenu && !e.target.closest('#sortBtn') && !e.target.closest('#sortMenu')) { sortMenu.classList.remove('open'); }
+  const langMenu = document.getElementById('langMenu');
+  if (langMenu && !e.target.closest('#langBtn') && !e.target.closest('#langMenu')) { langMenu.classList.add('hidden'); }
+  const notifMenu = document.getElementById('notifMenu');
+  if (notifMenu && !e.target.closest('#notifWrapper') && !e.target.closest('#notifMenu')) { notifMenu.classList.add('hidden'); }
+});
 
 </script>
 </body>
