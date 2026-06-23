@@ -154,12 +154,9 @@
       <button class="hidden sm:flex items-center gap-1 text-slate-600 hover:text-slate-900">
         <span class="w-4 h-4 rounded-full bg-slate-300 inline-block"></span> EN
       </button>
+      <a href="#" class="hidden sm:inline text-slate-700 hover:text-slate-900 font-medium">Log In</a>
+      <a href="#" onclick="navigate('profile');return false;" id="headerProfileLink" class="hidden w-8 h-8 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-[#efeaff] transition shrink-0"></a>
       <button id="walletBtn" onclick="openConnectWallet()" class="btn-primary px-3 sm:px-4 py-2 rounded-lg font-semibold whitespace-nowrap text-xs sm:text-sm"><i class="ri-wallet-line"></i> Connect Wallet</button>
-      <!-- Avatar do usuário logado (escondido até conectar) -->
-      <a href="#" id="headerProfileBtn" onclick="navigate('profile');return false;" class="hidden items-center gap-2 hover:opacity-80 transition" aria-label="Meu perfil">
-        <div id="headerAvatar" class="w-8 h-8 rounded-full grid place-items-center text-sm font-bold text-slate-700 shrink-0" style="background:#ddd6fe">?</div>
-        <span id="headerName" class="hidden sm:block text-sm font-semibold text-slate-700 max-w-[80px] truncate"></span>
-      </a>
       <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-700 text-xl" aria-label="Menu">
         <i class="ri-menu-line"></i>
       </button>
@@ -173,6 +170,7 @@
       <a href="#" class="py-2 hover:text-slate-900">How It Works</a>
       <a href="#" class="py-2 hover:text-slate-900">Community</a>
       <div class="sm:hidden border-t border-slate-100 mt-2 pt-2 flex flex-col gap-1">
+        <a href="#" class="py-2">Log In</a>
         <button class="py-2 text-left flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-slate-300"></span> EN</button>
       </div>
     </nav>
@@ -590,23 +588,25 @@
 <!-- PROFILE HEAD -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 -mt-14 sm:-mt-16 relative">
   <div class="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
-  <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-4 border-white shadow-lg grid place-items-center font-extrabold text-3xl sm:text-4xl text-slate-700" id="profileAvatar" style="background:#ddd6fe">?</div>
+    <div id="profileAvatarWrap" class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-4 border-white shadow-lg overflow-hidden grid place-items-center font-extrabold text-3xl sm:text-4xl text-slate-700" style="background:#fecaca">A</div>
     <div class="flex-1 sm:pb-3">
       <div class="flex flex-wrap items-center gap-2">
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="profileName">—</h1>
-        <span class="badge-verified text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1"><i class="ri-shield-check-fill"></i>VERIFIED</span>
-        <span class="badge-top text-[10px] font-bold px-2 py-0.5 rounded-full" id="profileRole">Cliente</span>
+        <h1 id="profileName" class="text-2xl sm:text-3xl font-extrabold text-slate-900">Andre Martins</h1>
+        <span id="profileVerifiedBadge" class="badge-verified text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1 hidden"><i class="ri-shield-check-fill"></i>VERIFIED</span>
+        <span class="badge-top text-[10px] font-bold px-2 py-0.5 rounded-full">TOP RATED</span>
       </div>
-      <p class="text-slate-600 font-medium mt-1" id="profileBio">Conecte sua wallet para ver seu perfil.</p>
+      <p id="profileHandle" class="text-slate-600 font-medium mt-1">@andre.interlink</p>
       <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-slate-500">
-        <span class="flex items-center gap-1"><i class="ri-at-line"></i><span id="profileHandle">@—</span></span>
-        <span class="flex items-center gap-1"><i class="ri-wallet-line"></i><span id="profileWallet">—</span></span>
-        <span class="flex items-center gap-1 star-row"><i class="ri-star-fill"></i><b class="text-slate-900" id="profileRating">—</b></span>
+        <span class="flex items-center gap-1"><i class="ri-map-pin-line"></i>São Paulo, Brazil</span>
+        <span class="flex items-center gap-1"><i class="ri-calendar-line"></i>Member since Jan 2024</span>
+        <span class="flex items-center gap-1"><i class="ri-time-line"></i>~1h response</span>
+        <span class="flex items-center gap-1 star-row"><i class="ri-star-fill"></i><b class="text-slate-900">4.9</b> (342 reviews)</span>
       </div>
     </div>
     <div class="sm:pb-3 flex gap-2">
-      <button class="btn-outline rounded-lg text-sm font-semibold px-4 py-2 flex items-center gap-2"><i class="ri-heart-line"></i><span class="hidden sm:inline">Save</span></button>
-      <button class="btn-primary rounded-lg text-sm font-bold px-5 py-2 flex items-center gap-2"><i class="ri-message-3-line"></i>Contact me</button>
+      <button id="profileEditBtn" onclick="openEditProfileModal()" class="hidden btn-primary rounded-lg text-sm font-bold px-5 py-2 flex items-center gap-2"><i class="ri-pencil-line"></i>Edit profile</button>
+      <button id="profileSaveOtherBtn" class="btn-outline rounded-lg text-sm font-semibold px-4 py-2 flex items-center gap-2"><i class="ri-heart-line"></i><span class="hidden sm:inline">Save</span></button>
+      <button id="profileContactOtherBtn" class="btn-primary rounded-lg text-sm font-bold px-5 py-2 flex items-center gap-2"><i class="ri-message-3-line"></i>Contact me</button>
     </div>
   </div>
 </section>
@@ -616,19 +616,19 @@
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
     <div class="rounded-xl border border-slate-200 p-4">
       <div class="text-xs text-slate-500">Total orders</div>
-      <div class="mt-1 font-extrabold text-slate-900 text-xl" id="profileJobs">—</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl">1,284</div>
     </div>
     <div class="rounded-xl border border-slate-200 p-4">
       <div class="text-xs text-slate-500">In queue</div>
-      <div class="mt-1 font-extrabold text-slate-900 text-xl">0</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl">12</div>
     </div>
     <div class="rounded-xl border border-slate-200 p-4">
       <div class="text-xs text-slate-500">On time</div>
-      <div class="mt-1 font-extrabold text-slate-900 text-xl">—</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl">99%</div>
     </div>
     <div class="rounded-xl border border-slate-200 p-4">
       <div class="text-xs text-slate-500">Earned in ITL</div>
-      <div class="mt-1 font-extrabold text-slate-900 text-xl" id="profileBalance">—</div>
+      <div class="mt-1 font-extrabold text-slate-900 text-xl">128k</div>
     </div>
   </div>
 </section>
@@ -650,7 +650,7 @@
   <aside class="lg:col-span-1 space-y-6 order-2 lg:order-1">
     <div class="rounded-xl border border-slate-200 p-5">
       <h3 class="font-extrabold text-slate-900">About me</h3>
-      <p class="mt-3 text-sm text-slate-600 leading-relaxed">7+ years building production web apps. I lead frontend at a fintech and freelance on nights and weekends. I love clean code, fast UX and shipping on time. Available for long-term projects and quick landing pages alike.</p>
+      <p id="profileBioText" class="mt-3 text-sm text-slate-600 leading-relaxed">7+ years building production web apps. I lead frontend at a fintech and freelance on nights and weekends. I love clean code, fast UX and shipping on time. Available for long-term projects and quick landing pages alike.</p>
     </div>
     <div class="rounded-xl border border-slate-200 p-5">
       <h3 class="font-extrabold text-slate-900">Languages</h3>
@@ -1070,169 +1070,11 @@ function setMain(el){
    PROFILE — Init & Tabs
 ───────────────────────────────────────── */
 let _profileInited = false;
-
-/* ── Preenche a página de perfil com dados reais do walletState.sbProfile ── */
-function updateProfileUI() {
-  const p = walletState.sbProfile;
-  const addr = walletState.address || '';
-  const short = addr ? addr.slice(0,6)+'...'+addr.slice(-4) : '';
-
-  // Dados com fallback para placeholders
-  const name    = p?.name         || short || 'Usuário';
-  const handle  = p?.handle       || short;
-  const bio     = p?.bio          || 'Conectado via wallet na Interwork.';
-  const role    = p?.role         || 'client';
-  const rating  = p?.rating       || '—';
-  const jobs    = p?.total_jobs   || 0;
-  const balance = p?.balance_itl  || 0;
-  const initial = name.charAt(0).toUpperCase();
-  const colors  = ['#ddd6fe','#bae6fd','#fecaca','#fed7aa','#fde68a','#fbcfe8'];
-  const bg      = colors[name.charCodeAt(0) % colors.length];
-
-  // ── HEADER: avatar + nome ──
-  const headerProfileBtn = document.getElementById('headerProfileBtn');
-  const headerAvatar     = document.getElementById('headerAvatar');
-  const headerName       = document.getElementById('headerName');
-  if (walletState.connected) {
-    if (headerProfileBtn) headerProfileBtn.classList.replace('hidden','flex');
-    if (headerAvatar)     { headerAvatar.textContent = initial; headerAvatar.style.background = bg; }
-    if (headerName)       headerName.textContent = name;
-  } else {
-    if (headerProfileBtn) headerProfileBtn.classList.replace('flex','hidden');
-  }
-
-  // ── PROFILE PAGE: cabeçalho ──
-  const elName    = document.getElementById('profileName');
-  const elHandle  = document.getElementById('profileHandle');
-  const elBio     = document.getElementById('profileBio');
-  const elRole    = document.getElementById('profileRole');
-  const elAvatar  = document.getElementById('profileAvatar');
-  const elWallet  = document.getElementById('profileWallet');
-  const elRating  = document.getElementById('profileRating');
-  const elJobs    = document.getElementById('profileJobs');
-  const elBalance = document.getElementById('profileBalance');
-
-  if (elName)    elName.textContent    = name;
-  if (elHandle)  elHandle.textContent  = '@' + handle;
-  if (elBio)     elBio.textContent     = bio;
-  if (elRole)    elRole.textContent    = role === 'freelancer' ? 'Freelancer' : 'Cliente';
-  if (elAvatar)  { elAvatar.textContent = initial; elAvatar.style.background = bg; }
-  if (elWallet)  elWallet.textContent  = short || '—';
-  if (elRating)  elRating.textContent  = rating;
-  if (elJobs)    elJobs.textContent    = jobs;
-  if (elBalance) elBalance.textContent = balance + ' ITL';
-
-  // Reseta flag para o initProfilePage popular os gigs novamente se necessário
-  _profileInited = false;
-}
-
-/* ── Modal de onboarding: primeira vez que conecta e não tem perfil no banco ── */
-function openOnboardingModal(address) {
-  const short = address.slice(0,6)+'...'+address.slice(-4);
-  const existing = document.getElementById('onboarding-modal');
-  if (existing) existing.remove();
-
-  const el = document.createElement('div');
-  el.id = 'onboarding-modal';
-  Object.assign(el.style, {
-    position:'fixed', inset:'0', zIndex:'999999',
-    background:'rgba(15,23,42,0.7)', backdropFilter:'blur(4px)',
-    display:'flex', alignItems:'center', justifyContent:'center', padding:'16px',
-  });
-  el.innerHTML = `
-    <div style="background:#fff;border-radius:20px;width:100%;max-width:440px;padding:32px;box-shadow:0 24px 60px rgba(0,0,0,.2);font-family:inherit">
-      <div style="text-align:center;margin-bottom:24px">
-        <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#8b7cff,#a99cff);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px">
-          <i class="ri-wallet-3-line" style="color:#fff;font-size:24px"></i>
-        </div>
-        <h2 style="font-size:20px;font-weight:800;color:#0f172a;margin:0 0 6px">Bem-vindo à InterWork!</h2>
-        <p style="font-size:13px;color:#64748b;margin:0">Wallet <code style="font-size:11px;background:#f1f5f9;padding:2px 6px;border-radius:4px">${short}</code> conectada.<br>Complete seu perfil para começar.</p>
-      </div>
-
-      <div style="margin-bottom:16px">
-        <label style="font-size:12px;font-weight:600;color:#475569;display:block;margin-bottom:6px">Como você quer ser chamado?</label>
-        <input id="ob-name" type="text" placeholder="Ex: João Silva" maxlength="40"
-          style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:14px;outline:none;box-sizing:border-box;font-family:inherit"
-          onfocus="this.style.borderColor='#8b7cff'" onblur="this.style.borderColor='#e2e8f0'"/>
-      </div>
-
-      <div style="margin-bottom:24px">
-        <label style="font-size:12px;font-weight:600;color:#475569;display:block;margin-bottom:8px">Como você vai usar a InterWork?</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <button id="ob-client" onclick="selectRole('client')"
-            style="border:2px solid #e2e8f0;border-radius:12px;padding:14px 10px;cursor:pointer;background:#fff;transition:all .15s;font-family:inherit">
-            <div style="font-size:20px;margin-bottom:6px">🛒</div>
-            <div style="font-size:13px;font-weight:700;color:#0f172a">Cliente</div>
-            <div style="font-size:11px;color:#64748b;margin-top:2px">Contratar serviços</div>
-          </button>
-          <button id="ob-freelancer" onclick="selectRole('freelancer')"
-            style="border:2px solid #e2e8f0;border-radius:12px;padding:14px 10px;cursor:pointer;background:#fff;transition:all .15s;font-family:inherit">
-            <div style="font-size:20px;margin-bottom:6px">💼</div>
-            <div style="font-size:13px;font-weight:700;color:#0f172a">Freelancer</div>
-            <div style="font-size:11px;color:#64748b;margin-top:2px">Oferecer serviços</div>
-          </button>
-        </div>
-      </div>
-
-      <button onclick="submitOnboarding('${address}')"
-        style="width:100%;background:#8b7cff;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s"
-        onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
-        Entrar na InterWork →
-      </button>
-    </div>`;
-
-  document.body.appendChild(el);
-
-  // Foca no input de nome
-  setTimeout(() => document.getElementById('ob-name')?.focus(), 100);
-}
-
-let _selectedRole = 'client';
-function selectRole(role) {
-  _selectedRole = role;
-  ['client','freelancer'].forEach(r => {
-    const btn = document.getElementById('ob-'+r);
-    if (!btn) return;
-    btn.style.borderColor  = r === role ? '#8b7cff' : '#e2e8f0';
-    btn.style.background   = r === role ? '#f5f3ff' : '#fff';
-  });
-}
-
-async function submitOnboarding(address) {
-  const nameInput = document.getElementById('ob-name');
-  const name = (nameInput?.value || '').trim();
-  if (!name) {
-    nameInput?.focus();
-    nameInput && (nameInput.style.borderColor = '#ef4444');
-    showToast('Insira seu nome para continuar.', 'warn');
-    return;
-  }
-
-  const short   = address.slice(0,6)+'...'+address.slice(-4);
-  const handle  = short.replace('...','_');
-  const role    = _selectedRole;
-
-  // Salva no Supabase se disponível
-  if (sb && walletState.sbProfile?.id) {
-    try {
-      await sb.from('profiles').update({ name, handle, role }).eq('id', walletState.sbProfile.id);
-      walletState.sbProfile = { ...walletState.sbProfile, name, handle, role };
-    } catch(e) {
-      console.warn('[Supabase] Erro ao salvar onboarding:', e);
-    }
-  } else {
-    // Fallback local
-    walletState.sbProfile = { ...walletState.sbProfile, name, handle, role, wallet_address: address };
-  }
-
-  document.getElementById('onboarding-modal')?.remove();
-  updateProfileUI();
-  showToast(`Bem-vindo, ${name}! 🎉`, 'success');
-}
-
 function initProfilePage() {
   if (_profileInited) return;
   _profileInited = true;
+
+  applyRealProfileData(); // ADICIONADO — popula nome/handle/avatar/bio reais quando há sessão da wallet
 
   const PROF_GIGS = [
     {badge:'BEST SELLER', title:'I will build a modern responsive website with React & Tailwind', rating:4.9, reviews:342, price:120, img:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80'},
@@ -1309,52 +1151,22 @@ if (SB_READY) {
 }
 
 /* ─────────────────────────────────────────
-   TOAST — notificação não-bloqueante
-───────────────────────────────────────── */
-function showToast(msg, type = 'info') {
-  const colors = { success:'#22c55e', warn:'#f59e0b', error:'#ef4444', info:'#8b7cff' };
-  const t = document.createElement('div');
-  t.setAttribute('role', 'status');
-  t.setAttribute('aria-live', 'polite');
-  Object.assign(t.style, {
-    position:'fixed', bottom:'20px', right:'20px', zIndex:'99999',
-    background:'#1e293b', color:'#f8fafc',
-    padding:'10px 16px', borderRadius:'12px',
-    fontSize:'13px', fontWeight:'500',
-    display:'flex', alignItems:'center', gap:'8px',
-    boxShadow:'0 8px 24px rgba(0,0,0,.25)',
-    borderLeft:`3px solid ${colors[type]||colors.info}`,
-    opacity:'0', transform:'translateY(8px)',
-    transition:'opacity .2s, transform .2s',
-    maxWidth:'320px',
-  });
-  t.textContent = msg;
-  document.body.appendChild(t);
-  requestAnimationFrame(() => { t.style.opacity='1'; t.style.transform='translateY(0)'; });
-  setTimeout(() => {
-    t.style.opacity='0'; t.style.transform='translateY(8px)';
-    setTimeout(() => t.remove(), 250);
-  }, 3500);
-}
-
-/* ─────────────────────────────────────────
    WALLET
 ───────────────────────────────────────── */
 let walletState = { connected: false, address: null, sbProfile: null };
 
 function openConnectWallet(reason) {
   if (window._reownModal) { window._reownModal.open(); return; }
-  // SDK ainda carregando — aguarda silenciosamente (sem alert)
+  alert('Carregando carteiras...');
   let tries = 0;
   const poll = setInterval(() => {
     tries++;
     if (window._reownModal) { clearInterval(poll); window._reownModal.open(); return; }
-    if (tries > 30) { clearInterval(poll); console.warn('[Reown] SDK não carregou.'); }
+    if (tries > 20) { clearInterval(poll); alert('Erro ao carregar SDK de carteira. Recarregue a página.'); }
   }, 300);
 }
 
 window._handleReownConnected = async function(address) {
-  // ── Supabase: sessão anônima vinculada à wallet ──
   try {
     if (typeof sb !== 'undefined' && sb) {
       let { data: sessionData } = await sb.auth.getSession();
@@ -1373,48 +1185,30 @@ window._handleReownConnected = async function(address) {
   } catch (e) {
     console.warn('[Supabase] Falha ao sincronizar sessão da wallet:', e);
   }
-
   const shortW = address.slice(0, 6) + '...' + address.slice(-4);
   walletState.connected = true;
-  walletState.address   = address;
+  walletState.address = address;
   console.log('✅ Carteira conectada:', shortW);
-
-  // Dispara notificação visual apenas UMA vez por carregamento
-  if (!window._walletToastFired) {
-    window._walletToastFired = true;
-    showToast(`✓ Wallet conectada: ${shortW}`, 'success');
-  }
-
+  alert(`Carteira conectada: ${shortW}`);
   updateHeaderWallet();
-  updateProfileUI();
-
-  // Se não tem perfil salvo ou não tem nome → abre onboarding
-  if (!walletState.sbProfile?.name || walletState.sbProfile.name === 'Usuário') {
-    setTimeout(() => openOnboardingModal(address), 400);
-  }
+  applyRealProfileData(); // ADICIONADO — se a página de perfil já estiver visível, atualiza com os dados reais
 };
 
 window._handleReownDisconnected = function() {
   if (!walletState.connected) return;
   walletState.connected = false;
-  walletState.address   = null;
-  walletState.sbProfile = null;
-  window._walletToastFired = false;
+  walletState.address = null;
   console.log('❌ Carteira desconectada');
-  showToast('Wallet desconectada.', 'warn');
+  alert('Wallet desconectada');
   updateHeaderWallet();
-  updateProfileUI();
 };
 
 function disconnectWallet() {
   if (window._reownModal) { try { window._reownModal.disconnect(); } catch (e) {} }
   walletState.connected = false;
-  walletState.address   = null;
-  walletState.sbProfile = null;
-  window._walletToastFired = false;
-  showToast('Wallet desconectada.', 'warn');
+  walletState.address = null;
+  alert('Wallet desconectada');
   updateHeaderWallet();
-  updateProfileUI();
 }
 
 async function sbLoadProfile(userId) {
@@ -1432,86 +1226,174 @@ async function sbLoadProfile(userId) {
 
 function updateHeaderWallet() {
   const btn = document.getElementById('walletBtn');
+  const avatarLink = document.getElementById('headerProfileLink');
   if (!btn) return;
   if (walletState.connected) {
-    const short = walletState.address.slice(0,6)+'...'+walletState.address.slice(-4);
-    btn.innerHTML = `<i class="ri-checkbox-circle-line"></i> ${short} <i class="ri-arrow-down-s-line"></i>`;
+    btn.textContent = `✓ ${walletState.address.slice(0,6)}...${walletState.address.slice(-4)}`;
+    btn.onclick = disconnectWallet;
     btn.style.background = '#22c55e';
-    btn.onclick = toggleWalletDropdown;
+    if (avatarLink) {
+      avatarLink.classList.remove('hidden');
+      avatarLink.innerHTML = profileAvatarHTML(walletState.sbProfile, 'w-8 h-8 text-sm');
+    }
   } else {
     btn.innerHTML = '<i class="ri-wallet-line"></i> Connect Wallet';
-    btn.style.background = 'var(--primary)';
     btn.onclick = openConnectWallet;
-    // remove dropdown se existir
-    const old = document.getElementById('wallet-dropdown');
-    if (old) old.remove();
+    btn.style.background = 'var(--primary)';
+    if (avatarLink) avatarLink.classList.add('hidden');
   }
 }
 
-function toggleWalletDropdown() {
-  const existing = document.getElementById('wallet-dropdown');
-  if (existing) { existing.remove(); return; }
+/* ─────────────────────────────────────────
+   PERFIL — helpers compartilhados (avatar com inicial colorida,
+   reaproveitando o mesmo padrão visual já usado nos cards de gig)
+───────────────────────────────────────── */
+const PROFILE_AVATAR_COLORS = ['#fecaca','#bbf7d0','#bae6fd','#fed7aa','#ddd6fe','#fbcfe8','#fde68a','#c7d2fe'];
+function profileAvatarColor(seed){
+  const s = String(seed||'U');
+  let h = 0; for (let i=0;i<s.length;i++) h += s.charCodeAt(i);
+  return PROFILE_AVATAR_COLORS[h % PROFILE_AVATAR_COLORS.length];
+}
+function profileAvatarHTML(profile, sizeClasses){
+  const name = (profile && profile.name) || 'Usuário';
+  const avatarUrl = profile && profile.avatar_url;
+  const bg = profileAvatarColor(profile ? (profile.id||name) : 'U');
+  if (avatarUrl) return `<img src="${avatarUrl}" class="${sizeClasses} object-cover rounded-full" alt="${name}"/>`;
+  return `<div class="${sizeClasses} rounded-full grid place-items-center font-extrabold text-slate-700" style="background:${bg}">${name[0].toUpperCase()}</div>`;
+}
 
-  const btn = document.getElementById('walletBtn');
-  const rect = btn.getBoundingClientRect();
-  const short = walletState.address.slice(0,6)+'...'+walletState.address.slice(-4);
+/* ─────────────────────────────────────────
+   PERFIL — dados reais + edição
+   ADICIONADO: a página de perfil (page-profile) nasceu com conteúdo
+   100% fixo de exemplo. As funções abaixo plugam o que já existe
+   (walletState.sbProfile, vindo do Supabase) nos elementos com id,
+   sem alterar o restante da página (gigs/reviews de exemplo continuam).
+───────────────────────────────────────── */
+function applyRealProfileData(){
+  const p = walletState.sbProfile;
+  const nameEl    = document.getElementById('profileName');
+  const handleEl  = document.getElementById('profileHandle');
+  const avatarWrap= document.getElementById('profileAvatarWrap');
+  const bioEl     = document.getElementById('profileBioText');
+  const editBtn   = document.getElementById('profileEditBtn');
+  const verifBadge= document.getElementById('profileVerifiedBadge');
+  const saveBtn   = document.getElementById('profileSaveOtherBtn');
+  const contactBtn= document.getElementById('profileContactOtherBtn');
 
-  const dd = document.createElement('div');
-  dd.id = 'wallet-dropdown';
-  Object.assign(dd.style, {
-    position:'fixed',
-    top: (rect.bottom + 6) + 'px',
-    right: (window.innerWidth - rect.right) + 'px',
-    zIndex:'99999',
-    background:'#ffffff',
-    border:'1px solid #e2e8f0',
-    borderRadius:'12px',
-    boxShadow:'0 8px 24px rgba(0,0,0,.12)',
-    minWidth:'220px',
-    overflow:'hidden',
-    fontFamily:'inherit',
-  });
+  if (!p){
+    // Sem sessão real ainda — mantém o conteúdo de exemplo como estava, mas
+    // esconde as ações que só fazem sentido para o próprio dono do perfil.
+    if (editBtn) editBtn.classList.add('hidden');
+    return;
+  }
 
-  dd.innerHTML = `
-    <div style="padding:12px 14px;border-bottom:1px solid #f1f5f9;">
-      <div style="font-size:11px;color:#94a3b8;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Carteira conectada</div>
-      <div style="font-size:13px;font-weight:600;color:#0f172a;font-family:monospace">${walletState.address}</div>
+  if (nameEl)   nameEl.textContent = p.name || 'Usuário';
+  if (handleEl) handleEl.textContent = '@' + (p.handle || 'usuario');
+  if (bioEl && p.bio) bioEl.textContent = p.bio;
+  if (avatarWrap) avatarWrap.innerHTML = profileAvatarHTML(p, 'w-full h-full text-3xl sm:text-4xl');
+  if (verifBadge) verifBadge.classList.toggle('hidden', !p.verified);
+
+  // Esta tela é a do PRÓPRIO usuário logado (não há ainda perfil de terceiros
+  // nesta versão simples) — por isso mostramos "Edit profile" e escondemos
+  // "Save"/"Contact me", que só fariam sentido olhando o perfil de outra pessoa.
+  if (editBtn)    editBtn.classList.remove('hidden');
+  if (saveBtn)    saveBtn.classList.add('hidden');
+  if (contactBtn) contactBtn.classList.add('hidden');
+}
+
+let _editAvatarPreview = null; // data URL local (base64) escolhida no modal, antes de salvar
+function openEditProfileModal(){
+  const p = walletState.sbProfile;
+  if (!p){ alert('Conecte sua carteira para editar o perfil.'); return; }
+  _editAvatarPreview = null;
+
+  const modalHTML = `
+  <div id="editProfileOverlay" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onclick="if(event.target===this) closeEditProfileModal()">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden">
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div class="font-extrabold text-slate-900 flex items-center gap-2"><i class="ri-pencil-line text-[#5b4ee0]"></i>Edit profile</div>
+        <button onclick="closeEditProfileModal()" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-slate-100" aria-label="Close"><i class="ri-close-line"></i></button>
+      </div>
+      <div class="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+
+        <div class="flex items-center gap-4">
+          <div id="editAvatarPreview" class="w-16 h-16 rounded-full overflow-hidden shrink-0">${profileAvatarHTML(p, 'w-16 h-16 text-xl')}</div>
+          <div>
+            <input id="editAvatarInput" type="file" accept="image/*" class="hidden" onchange="handleEditAvatarUpload(event)"/>
+            <button type="button" onclick="document.getElementById('editAvatarInput').click()" class="btn-outline rounded-lg text-sm font-semibold px-3 py-1.5">Change photo</button>
+            <div class="text-[11px] text-slate-400 mt-1">PNG/JPG, até 2MB. Salvo só neste navegador por enquanto.</div>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-sm font-bold text-slate-700">Display name</label>
+          <input id="editProfileName" value="${(p.name||'').replace(/"/g,'&quot;')}" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"/>
+        </div>
+
+        <div>
+          <label class="text-sm font-bold text-slate-700">Bio</label>
+          <textarea id="editProfileBio" rows="3" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm">${(p.bio||'')}</textarea>
+        </div>
+
+        <div class="text-xs text-slate-400">
+          Handle: <span class="font-mono">@${p.handle||'usuario'}</span> · Wallet: <span class="font-mono">${(p.wallet_address||'').slice(0,6)}...${(p.wallet_address||'').slice(-4)}</span>
+          <div class="mt-0.5">Handle e wallet não são editáveis.</div>
+        </div>
+      </div>
+      <div class="p-5 border-t border-slate-100 flex gap-2">
+        <button onclick="closeEditProfileModal()" class="flex-1 btn-outline rounded-lg text-sm font-semibold py-2.5">Cancel</button>
+        <button onclick="saveProfileEdit()" class="flex-[2] btn-primary rounded-lg text-sm font-bold py-2.5 flex items-center justify-center gap-2"><i class="ri-check-line"></i>Save changes</button>
+      </div>
     </div>
-    <div style="padding:6px">
-      <button onclick="copyWalletAddress()" style="width:100%;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:none;background:none;cursor:pointer;font-size:13px;color:#334155;text-align:left" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='none'">
-        <i class="ri-file-copy-line"></i> Copiar endereço
-      </button>
-      <button onclick="confirmDisconnect()" style="width:100%;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:none;background:none;cursor:pointer;font-size:13px;color:#ef4444;text-align:left" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='none'">
-        <i class="ri-logout-box-r-line"></i> Desconectar carteira
-      </button>
-    </div>`;
-
-  document.body.appendChild(dd);
-
-  // Fecha ao clicar fora
-  setTimeout(() => {
-    document.addEventListener('click', function handler(e) {
-      if (!dd.contains(e.target) && e.target !== btn) {
-        dd.remove();
-        document.removeEventListener('click', handler);
-      }
-    });
-  }, 10);
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
-
-function copyWalletAddress() {
-  if (!walletState.address) return;
-  navigator.clipboard.writeText(walletState.address)
-    .then(() => showToast('Endereço copiado!', 'success'))
-    .catch(() => showToast('Não foi possível copiar.', 'warn'));
-  const dd = document.getElementById('wallet-dropdown');
-  if (dd) dd.remove();
+function closeEditProfileModal(){
+  const el = document.getElementById('editProfileOverlay');
+  if (el) el.remove();
+  _editAvatarPreview = null;
 }
+function handleEditAvatarUpload(e){
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')){ alert('Arquivo inválido. Use PNG ou JPG.'); return; }
+  if (file.size > 2*1024*1024){ alert('Imagem muito grande (máx 2MB).'); return; }
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    _editAvatarPreview = ev.target.result;
+    const prev = document.getElementById('editAvatarPreview');
+    if (prev) prev.innerHTML = `<img src="${ev.target.result}" class="w-16 h-16 object-cover rounded-full" alt="preview"/>`;
+  };
+  reader.readAsDataURL(file);
+}
+async function saveProfileEdit(){
+  const p = walletState.sbProfile;
+  if (!p) return;
+  const name = document.getElementById('editProfileName').value.trim();
+  const bio  = document.getElementById('editProfileBio').value.trim();
+  if (!name){ alert('Informe um nome.'); return; }
 
-function confirmDisconnect() {
-  const dd = document.getElementById('wallet-dropdown');
-  if (dd) dd.remove();
-  disconnectWallet();
+  const updates = { name, bio };
+  if (_editAvatarPreview) updates.avatar_url = _editAvatarPreview; // ainda local (base64) — ver nota acima
+
+  if (sb){
+    try {
+      const { data, error } = await sb.from('profiles').update(updates).eq('id', p.id).select().single();
+      if (error) { console.warn('[Supabase] Erro ao salvar perfil:', error.message); alert('Não foi possível salvar agora. Tente novamente.'); return; }
+      walletState.sbProfile = data;
+    } catch (e) {
+      console.warn('[Supabase] Falha ao salvar perfil:', e);
+      alert('Não foi possível salvar agora. Tente novamente.');
+      return;
+    }
+  } else {
+    // Sem Supabase configurado — aplica só localmente, igual o restante do app faz hoje.
+    Object.assign(walletState.sbProfile, updates);
+  }
+
+  closeEditProfileModal();
+  applyRealProfileData();
+  updateHeaderWallet();
 }
 
 /* ─────────────────────────────────────────
@@ -1521,6 +1403,5 @@ renderCats();
 render();
 
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
