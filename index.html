@@ -936,6 +936,35 @@ html.dark {
     border-color: rgba(139, 124, 255, 0.4);
   }
 
+
+  /* ============ PROFILE PAGE (origin design) ============ */
+  /* btn-primary / btn-outline (used inside profile page) */
+  .btn-primary{background:var(--primary);color:#fff;transition:background .15s}
+  .btn-primary:hover{background:var(--primary-600)}
+  .btn-outline{border:1px solid #e2e8f0;color:#0f172a;background:#fff;transition:all .15s}
+  .btn-outline:hover{border-color:#c7c0ff;color:var(--primary-text)}
+  /* tab / tab-active (profile tabs) */
+  .tab{border-bottom:2px solid transparent;color:#64748b;transition:all .15s;padding-bottom:.5rem;font-size:14px;background:none;cursor:pointer}
+  .tab:hover{color:#0f172a}
+  .tab-active{color:#0f172a;border-color:var(--primary);font-weight:700}
+  /* star-row (used in profile head and reviews) */
+  .star-row i{color:var(--warning)}
+  .cover{background:linear-gradient(120deg,#efeaff 0%,#dcd5ff 40%,#c8bcff 100%)}
+  .card-gig{transition:transform .2s, box-shadow .2s, border-color .2s;border:1px solid #e5e7eb}
+  .card-gig:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(91,78,224,.18);border-color:#c7c0ff}
+  .card-gig .gig-img{transition:transform .4s}
+  .card-gig:hover .gig-img{transform:scale(1.06)}
+  .lvl-bar{height:6px;background:#f1f5f9;border-radius:9999px;overflow:hidden}
+  .lvl-fill{height:100%;background:#8b7cff;border-radius:9999px}
+  .badge-verified{background:#dcfce7;color:#15803d}
+  .badge-top{background:#fef3c7;color:#b45309}
+  html.dark .cover{background:linear-gradient(120deg,rgba(91,78,224,.25) 0%,rgba(60,50,180,.2) 40%,rgba(40,30,140,.15) 100%)}
+  html.dark .card-gig{border-color:rgba(255,255,255,.07)}
+  html.dark .card-gig:hover{border-color:rgba(139,124,255,.4)}
+  html.dark .lvl-bar{background:var(--surf-700)}
+  html.dark .badge-verified{background:rgba(16,185,129,.15);color:#34d399}
+  html.dark .badge-top{background:rgba(245,158,11,.12);color:#fbbf24}
+
   </style>
 </head>
 <body class="bg-white text-ink-900">
@@ -6383,185 +6412,292 @@ function viewProfile(handle){
   const services = DB.services.filter(s=>s.freelancerId===u.id);
   const ordersDone = STATE.orders.filter(o=>o.freelancerId===u.id && o.status==='approved').length + (u.jobs||0);
   const lvl = u.level || levelOf(u.jobs);
-  // collect reviews about this freelancer from their services
   const allReviews = services.flatMap(s=>s.reviews.map(r=>({...r, serviceTitle:s.title})));
-  // reviews from this freelancer about clients (C6)
+  const avgRating = allReviews.length ? (allReviews.reduce((a,r)=>a+(r.stars||0),0)/allReviews.length).toFixed(1) : u.rating.toFixed(1);
+  const isMe = u.id === STATE.currentUserId;
   const clientReviewsFromMe = services.flatMap(s=>s.reviews.filter(r=>r.clientReview).map(r=>({...r.clientReview, ts:r.ts, serviceTitle:s.title})));
 
   return `
-  <!-- HERO -->
-  <section class="bg-gradient-to-br from-brand-50 via-white to-violet-50/40 border-b border-ink-100">
-    <div class="max-w-5xl mx-auto px-5 py-10">
-      <div class="flex items-start gap-6 flex-wrap">
-        <div class="relative group">
-          <img src="${u.avatar}" class="w-28 h-28 rounded-3xl shadow-pop object-cover" id="profile-avatar-img"/>
-          <button onclick="changeProfileAvatar('${u.id}')" class="absolute inset-0 rounded-3xl bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-white text-[11px] font-bold gap-1 cursor-pointer">
-            <i data-lucide="camera" class="w-3.5 h-3.5"></i>Trocar
-          </button>
-          ${u.online ? `<span class="absolute bottom-2 right-2 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white"></span>`:''}
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-3xl font-extrabold tracking-tight">${u.name}</h1>
-            ${u.verified ? `<i data-lucide="badge-check" class="w-6 h-6 text-brand-500"></i>` : ''}
-            ${levelChip(lvl)}
-          </div>
-          <div class="text-sm text-ink-500 font-mono mt-1">@${u.handle} • ${co.flag} ${co.name}</div>
-          <div class="text-xs text-ink-500 font-mono mt-0.5 flex items-center gap-1">
-            <i data-lucide="wallet" class="w-3 h-3"></i>${u.wallet}
-            <button onclick="navigator.clipboard.writeText('${u.wallet}');toast('Endereço copiado','info')" class="ml-1 hover:text-brand-500"><i data-lucide="copy" class="w-3 h-3"></i></button>
-          </div>
-          <p class="text-ink-700 mt-3 max-w-2xl">${escapeHtml(u.bio)}</p>
-
-          <div class="flex flex-wrap items-center gap-2 mt-4">
-            <span class="chip bg-white border border-ink-100 text-ink-700"><i data-lucide="clock-3" class="w-3 h-3 text-brand-500"></i>Responde em ~${u.responseHours}h</span>
-            ${u.online ? `<span class="chip bg-emerald-50 text-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Online agora</span>` : `<span class="chip bg-ink-100/60 text-ink-500">Offline</span>`}
-            <span class="chip bg-white border border-ink-100 text-ink-700"><i data-lucide="languages" class="w-3 h-3 text-brand-500"></i>${u.languages.map(l=>LANGUAGES_LIST.find(x=>x.id===l)?.flag||l).join(' ')}</span>
-            <span class="chip bg-white border border-ink-100 text-ink-700"><i data-lucide="calendar" class="w-3 h-3 text-brand-500"></i>Desde ${new Date(u.joinedTs).toLocaleDateString('pt-BR',{month:'short',year:'numeric'})}</span>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-2 min-w-[180px]">
-          ${u.id===STATE.currentUserId
-            ? `<button onclick="openEditProfileModal()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2"><i data-lucide="pencil" class="w-4 h-4"></i>Editar perfil</button>`
-            : `<button onclick="openChat(null,'${u.id}')" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2"><i data-lucide="message-circle" class="w-4 h-4"></i>Conversar</button>`}
-          <button onclick="navigator.clipboard.writeText(location.origin+'/#/u/${u.handle}');toast('Link do perfil copiado','info')" class="border border-ink-100 hover:bg-ink-100/40 font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm"><i data-lucide="share-2" class="w-4 h-4"></i>Compartilhar</button>
-        </div>
-      </div>
-
-      <!-- STATS -->
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mt-8">
-        ${[
-          ['Rating', u.rating.toFixed(2), 'star', '#f59e0b'],
-          ['Jobs entregues', ordersDone, 'package-check', '#1a73e8'],
-          ['Aprovação', (u.approvalPct||0)+'%', 'thumbs-up', '#10b981'],
-          ['Clientes recorrentes', (u.repeatClientsPct||0)+'%', 'repeat', '#7C3AED'],
-          ['Resposta', '~'+u.responseHours+'h', 'clock-3', '#06b6d4'],
-        ].map(([k,v,i,c])=>`
-          <div class="bg-white border border-ink-100 rounded-2xl p-4">
-            <div class="w-9 h-9 rounded-xl grid place-items-center mb-2" style="background:${c}15"><i data-lucide="${i}" class="w-4 h-4" style="color:${c}"></i></div>
-            <div class="text-xs text-ink-500 font-semibold">${k}</div>
-            <div class="text-xl font-extrabold mt-0.5">${v}</div>
-          </div>`).join('')}
-      </div>
-    </div>
-  </section>
-
-  <!-- NOTIFICATIONS — visível apenas para o próprio usuário -->
-  ${u.id===STATE.currentUserId && STATE.notifications.length > 0 ? `
-  <div class="max-w-5xl mx-auto px-5 mt-6">
-    <div class="bg-white border border-ink-100 rounded-2xl shadow-card overflow-hidden">
-      <div class="px-5 py-4 border-b border-ink-100 flex items-center justify-between">
-        <div class="font-extrabold flex items-center gap-2">
-          <i data-lucide="bell" class="w-4 h-4 text-brand-500"></i>
-          Notificações
-          ${unreadCount() ? `<span class="w-5 h-5 bg-rose-500 text-white text-[10px] font-extrabold rounded-full grid place-items-center">${unreadCount()}</span>` : ''}
-        </div>
-        <button onclick="markAllRead();renderView()" class="text-xs text-brand-500 font-semibold hover:text-brand-600">Marcar tudo como lido</button>
-      </div>
-      <div class="divide-y divide-ink-100 max-h-96 overflow-y-auto scrollbar-thin">
-        ${STATE.notifications.map(n => {
-          const icon = {delivery:'package',message:'message-circle',tx:'arrow-left-right',withdrawal:'banknote',dispute:'alert-octagon',rating:'star'}[n.type]||'bell';
-          return `<a href="${n.link||'#'}" onclick="markRead('${n.id}')" class="flex items-start gap-3 px-5 py-3.5 hover:bg-ink-100/40 transition ${n.read?'opacity-60':''}">
-            <div class="w-8 h-8 rounded-xl bg-brand-50 grid place-items-center shrink-0 mt-0.5">
-              <i data-lucide="${icon}" class="w-4 h-4 text-brand-500"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="text-sm font-semibold text-ink-900">${escapeHtml(n.title)}</div>
-              <div class="text-xs text-ink-500 mt-0.5 line-clamp-2">${escapeHtml(n.body)}</div>
-              <div class="text-[10px] text-ink-300 mt-1">${timeAgo(n.ts)} atrás</div>
-            </div>
-            ${!n.read ? '<span class="w-2 h-2 rounded-full bg-brand-500 shrink-0 mt-2"></span>' : ''}
-          </a>`;
-        }).join('')}
-      </div>
-    </div>
+  <!-- COVER BANNER -->
+  <div class="cover h-36 sm:h-44 w-full relative">
+    ${isMe ? `<button onclick="toast('Função de capa em breve!','info')" class="absolute top-3 right-3 bg-white/80 hover:bg-white text-ink-700 text-xs font-semibold px-3 py-1.5 rounded-lg shadow flex items-center gap-1.5"><i data-lucide="image" class="w-3.5 h-3.5"></i>Editar capa</button>` : ''}
   </div>
-  ` : ''}
 
-  <div class="max-w-5xl mx-auto px-5 py-8 grid lg:grid-cols-3 gap-6">
-    <!-- LEFT -->
-    <div class="lg:col-span-2 space-y-6">
-      <!-- SERVICES -->
-      <div class="bg-white border border-ink-100 rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="font-extrabold text-lg flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-brand-500"></i>See my services (${services.length})</h2>
+  <!-- PROFILE HEAD -->
+  <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <div class="flex flex-col sm:flex-row sm:items-end gap-4 -mt-14 sm:-mt-16 mb-5">
+      <!-- Avatar -->
+      <div class="relative shrink-0">
+        <div class="w-28 h-28 rounded-3xl shadow-lg border-4 border-white overflow-hidden bg-white">
+          <img src="${u.avatar}" class="w-full h-full object-cover" id="profile-avatar-img" alt="${escapeHtml(u.name)}"/>
         </div>
-        <div class="grid sm:grid-cols-2 gap-4">${services.map(serviceCard).join('')}</div>
+        ${isMe ? `<button onclick="changeProfileAvatar('${u.id}')" class="absolute bottom-1 right-1 bg-white border border-ink-100 rounded-full p-1.5 shadow hover:bg-ink-50 transition" title="Trocar foto"><i data-lucide="camera" class="w-3.5 h-3.5 text-ink-600"></i></button>` : ''}
+        <span class="absolute top-2 left-2 w-3.5 h-3.5 rounded-full border-2 border-white ${u.online ? 'bg-emerald-400' : 'bg-ink-300'}"></span>
       </div>
 
-      <!-- REVIEWS RECEIVED -->
-      <div class="bg-white border border-ink-100 rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="font-extrabold text-lg flex items-center gap-2"><i data-lucide="messages-square" class="w-5 h-5 text-brand-500"></i>Avaliações recebidas</h2>
-          <div class="flex items-center gap-2">${stars(u.rating)}<span class="font-bold">${u.rating.toFixed(2)}</span><span class="text-ink-500 text-sm">(${allReviews.length})</span></div>
+      <!-- Name + chips -->
+      <div class="flex-1 min-w-0 pt-2 sm:pt-0 sm:pb-1">
+        <div class="flex flex-wrap items-center gap-2 mb-1">
+          <h1 class="text-xl sm:text-2xl font-extrabold text-ink-900 leading-tight">${escapeHtml(u.name)}</h1>
+          ${u.verified ? `<span class="chip bg-emerald-50 text-emerald-700 badge-verified text-xs"><i data-lucide="badge-check" class="w-3.5 h-3.5"></i>Verificado</span>` : ''}
+          ${lvl ? levelChip(lvl) : ''}
+          ${u.jobs >= 50 && u.rating >= 4.8 ? `<span class="chip badge-top text-xs"><i data-lucide="award" class="w-3.5 h-3.5"></i>Top Rated</span>` : ''}
         </div>
-        <div class="space-y-4">
-          ${allReviews.length===0?`<div class="text-sm text-ink-500">Sem avaliações ainda.</div>`:
-            allReviews.slice(0,6).map(r=>{
-              const ru = getUser(r.userId);
-              return `
-              <div class="flex items-start gap-3 pb-4 border-b border-ink-100 last:border-0">
-                <img src="${ru.avatar}" class="w-9 h-9 rounded-lg"/>
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <span class="font-semibold text-sm">${ru.name}</span>
-                    <span class="text-xs text-ink-500">• ${timeAgo(r.ts)} atrás</span>
-                    <span class="text-xs text-ink-300">• ${escapeHtml(r.serviceTitle)}</span>
-                    ${r.txHash?`<a href="${explorerURL(r.txHash)}" target="_blank" class="chip bg-emerald-50 text-emerald-700 text-[10px]"><i data-lucide="link" class="w-2.5 h-2.5"></i>on-chain</a>`:''}
-                  </div>
-                  ${stars(r.stars,'w-3.5 h-3.5')}
-                  <p class="text-sm text-ink-700 mt-1">${escapeHtml(r.text)}</p>
+        <div class="text-sm text-ink-500 mb-2">@${escapeHtml(u.handle)}</div>
+        <div class="flex flex-wrap items-center gap-3 text-sm text-ink-500">
+          ${co ? `<span class="flex items-center gap-1"><span>${co.flag}</span>${co.name}</span>` : ''}
+          <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i>Membro desde ${new Date(u.joinedTs).getFullYear()}</span>
+          ${u.online ? `<span class="flex items-center gap-1 text-emerald-600 font-medium"><i data-lucide="circle" class="w-2.5 h-2.5 fill-emerald-400 text-emerald-400"></i>Online agora</span>` : ''}
+          ${u.responseHours ? `<span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5"></i>Responde em ~${u.responseHours}h</span>` : ''}
+          ${u.languages && u.languages.length ? `<span class="chip bg-white border border-ink-100 text-ink-700"><i data-lucide="languages" class="w-3 h-3 text-brand-500"></i>${u.languages.map(l=>LANGUAGES_LIST.find(x=>x.id===l)?.flag||l).join(' ')}</span>` : ''}
+        </div>
+      </div>
+
+      <!-- CTA buttons -->
+      <div class="flex gap-2 shrink-0 sm:pb-1">
+        ${isMe
+          ? `<button onclick="openEditProfileModal()" class="btn-outline rounded-xl px-4 py-2 text-sm font-bold flex items-center gap-2"><i data-lucide="pencil" class="w-4 h-4"></i>Editar perfil</button>`
+          : `<button onclick="openChat(null,'${u.id}')" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm transition"><i data-lucide="message-circle" class="w-4 h-4"></i>Conversar</button>`}
+      </div>
+    </div>
+
+    <!-- STATS STRIP -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div class="bg-white border border-ink-100 rounded-2xl p-4 text-center shadow-sm">
+        <div class="text-2xl font-extrabold text-ink-900">${avgRating}</div>
+        <div class="flex justify-center mt-1">${stars(parseFloat(avgRating),'w-3.5 h-3.5')}</div>
+        <div class="text-xs text-ink-500 mt-1">${allReviews.length} avaliações</div>
+      </div>
+      <div class="bg-white border border-ink-100 rounded-2xl p-4 text-center shadow-sm">
+        <div class="text-2xl font-extrabold text-ink-900">${ordersDone}</div>
+        <div class="text-xs text-ink-500 mt-1">Pedidos concluídos</div>
+      </div>
+      <div class="bg-white border border-ink-100 rounded-2xl p-4 text-center shadow-sm">
+        <div class="text-2xl font-extrabold text-ink-900">${u.approvalPct || 99}%</div>
+        <div class="text-xs text-ink-500 mt-1">Taxa de aprovação</div>
+      </div>
+      <div class="bg-white border border-ink-100 rounded-2xl p-4 text-center shadow-sm">
+        <div class="text-2xl font-extrabold text-ink-900">${u.repeatClientsPct || 0}%</div>
+        <div class="text-xs text-ink-500 mt-1">Clientes recorrentes</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="flex gap-6 border-b border-ink-100 mb-6" id="profile-tabs">
+      <button class="tab tab-active pb-2" onclick="showProfileTab('gigs',this)">Serviços (${services.length})</button>
+      <button class="tab pb-2" onclick="showProfileTab('about',this)">Sobre</button>
+      <button class="tab pb-2" onclick="showProfileTab('reviews',this)">Avaliações (${allReviews.length})</button>
+      ${u.portfolio && u.portfolio.length ? `<button class="tab pb-2" onclick="showProfileTab('portfolio',this)">Portfólio (${u.portfolio.length})</button>` : ''}
+    </div>
+
+    <!-- MAIN + SIDEBAR LAYOUT -->
+    <div class="flex flex-col lg:flex-row gap-8 pb-16">
+
+      <!-- MAIN CONTENT -->
+      <div class="flex-1 min-w-0">
+
+        <!-- PANE: GIGS -->
+        <div id="pane-gigs">
+          ${services.length === 0
+            ? `<div class="bg-white border border-ink-100 rounded-2xl p-10 text-center text-ink-500">
+                <i data-lucide="package-open" class="w-12 h-12 mx-auto mb-3 text-ink-300"></i>
+                <div class="font-semibold mb-1">Nenhum serviço publicado ainda.</div>
+                ${isMe ? `<a href="#/new-service" class="mt-3 inline-block bg-brand-500 hover:bg-brand-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition">+ Criar serviço</a>` : ''}
+              </div>`
+            : `<div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                ${services.map(s=>`
+                  <a href="#/service/${s.id}" class="card-gig bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition block">
+                    <div class="relative overflow-hidden h-40">
+                      <img src="${s.thumb}" alt="${escapeHtml(s.title)}" class="w-full h-full object-cover gig-img"/>
+                      ${s.reviewsCount >= 50 && s.rating >= 4.7 ? `<span class="absolute top-2 left-2 bg-white/95 text-ink-900 text-[10px] font-bold px-2 py-0.5 rounded-md shadow">BEST SELLER</span>` : ''}
+                    </div>
+                    <div class="p-4">
+                      <div class="font-semibold text-ink-900 text-sm leading-snug line-clamp-2 mb-2">${escapeHtml(s.title)}</div>
+                      <div class="flex items-center gap-1 text-xs text-amber-500 mb-2">
+                        <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+                        <span class="font-bold text-ink-900">${s.rating.toFixed(1)}</span>
+                        <span class="text-ink-400">(${s.reviewsCount})</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-xs text-ink-500">A partir de</span>
+                        <span class="font-extrabold text-brand-600">${s.tiers?.basic?.priceITL || s.priceITL || '—'} ITL</span>
+                      </div>
+                    </div>
+                  </a>`).join('')}
+              </div>`}
+        </div>
+
+        <!-- PANE: ABOUT -->
+        <div id="pane-about" class="hidden">
+          <div class="bg-white border border-ink-100 rounded-2xl p-6 space-y-5">
+            <!-- Bio -->
+            <div>
+              <h3 class="font-extrabold text-ink-900 mb-2 flex items-center gap-2"><i data-lucide="user" class="w-4 h-4 text-brand-500"></i>Sobre mim</h3>
+              <p class="text-sm text-ink-600 leading-relaxed">${escapeHtml(u.bio || 'Sem bio ainda.')}</p>
+            </div>
+            <!-- Languages -->
+            ${u.languages && u.languages.length ? `
+            <div>
+              <h3 class="font-extrabold text-ink-900 mb-2 flex items-center gap-2"><i data-lucide="languages" class="w-4 h-4 text-brand-500"></i>Idiomas</h3>
+              <div class="flex flex-col gap-1.5">
+                ${u.languages.map(id=>{ const l=LANGUAGES_LIST.find(x=>x.id===id)||{flag:'🌐',label:id}; return `<div class="flex items-center gap-2 text-sm"><span>${l.flag}</span><span class="text-ink-700">${l.label}</span></div>`; }).join('')}
+              </div>
+            </div>` : ''}
+            <!-- Skills -->
+            ${u.skills && u.skills.length ? `
+            <div>
+              <h3 class="font-extrabold text-ink-900 mb-2 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4 text-brand-500"></i>Habilidades</h3>
+              <div class="flex flex-wrap gap-2">
+                ${u.skills.map(s=>`<span class="chip bg-brand-50 text-brand-700 text-xs">${escapeHtml(s)}</span>`).join('')}
+              </div>
+            </div>` : ''}
+            <!-- Education -->
+            ${u.education && u.education.length ? `
+            <div>
+              <h3 class="font-extrabold text-ink-900 mb-2 flex items-center gap-2"><i data-lucide="graduation-cap" class="w-4 h-4 text-brand-500"></i>Educação</h3>
+              <div class="space-y-2">
+                ${u.education.map(e=>`<div class="text-sm"><div class="font-semibold text-ink-900">${escapeHtml(e.degree||e.title||'')}</div><div class="text-ink-500">${escapeHtml(e.institution||e.school||'')} ${e.year ? '· '+e.year : ''}</div></div>`).join('')}
+              </div>
+            </div>` : ''}
+            <!-- Certifications -->
+            ${u.certifications && u.certifications.length ? `
+            <div>
+              <h3 class="font-extrabold text-ink-900 mb-2 flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-brand-500"></i>Certificações</h3>
+              <div class="space-y-2">
+                ${u.certifications.map(c=>`<div class="text-sm"><div class="font-semibold text-ink-900">${escapeHtml(c.name||c.title||'')}</div><div class="text-ink-500">${escapeHtml(c.issuer||'')} ${c.year ? '· '+c.year : ''}</div></div>`).join('')}
+              </div>
+            </div>` : ''}
+          </div>
+        </div>
+
+        <!-- PANE: REVIEWS -->
+        <div id="pane-reviews" class="hidden">
+          ${allReviews.length === 0
+            ? `<div class="bg-white border border-ink-100 rounded-2xl p-10 text-center text-ink-500">
+                <i data-lucide="star" class="w-10 h-10 mx-auto mb-3 text-ink-300"></i>
+                <div class="font-semibold">Sem avaliações ainda.</div>
+              </div>`
+            : `<div class="space-y-4">
+                ${allReviews.slice(0,12).map(r=>{
+                  const ru = getUser(r.userId);
+                  return `
+                  <div class="bg-white border border-ink-100 rounded-2xl p-5">
+                    <div class="flex items-start gap-3 mb-3">
+                      <div class="w-9 h-9 rounded-lg overflow-hidden shrink-0 bg-ink-100">
+                        ${ru ? `<img src="${ru.avatar}" class="w-9 h-9 rounded-lg"/>` : '<div class="w-9 h-9 rounded-lg bg-ink-200 flex items-center justify-center text-ink-500 font-bold text-sm">?</div>'}
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <span class="font-semibold text-sm text-ink-900">${ru ? escapeHtml(ru.name) : 'Usuário'}</span>
+                          <span class="text-xs text-ink-400">${timeAgo(r.ts)}</span>
+                          ${r.txHash?`<a href="${explorerURL(r.txHash)}" target="_blank" class="chip bg-emerald-50 text-emerald-700 text-[10px]"><i data-lucide="link" class="w-2.5 h-2.5"></i>on-chain</a>`:''}
+                        </div>
+                        <div class="text-xs text-ink-400 truncate">${escapeHtml(r.serviceTitle||'')}</div>
+                      </div>
+                      <div class="shrink-0">${stars(r.stars,'w-3.5 h-3.5')}</div>
+                    </div>
+                    <p class="text-sm text-ink-600 leading-relaxed">${escapeHtml(r.text||'')}</p>
+                  </div>`;
+                }).join('')}
+              </div>`}
+        </div>
+
+        <!-- PANE: PORTFOLIO -->
+        ${u.portfolio && u.portfolio.length ? `
+        <div id="pane-portfolio" class="hidden">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            ${u.portfolio.map(p=>`
+              <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
+                <div class="h-32 overflow-hidden">
+                  <img src="${p.thumb}" alt="${escapeHtml(p.title)}" class="w-full h-full object-cover"/>
                 </div>
-              </div>`;
-            }).join('')}
+                <div class="p-3">
+                  <div class="text-sm font-semibold text-ink-900 line-clamp-1">${escapeHtml(p.title)}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>` : ''}
+
+      </div><!-- /MAIN CONTENT -->
+
+      <!-- SIDEBAR -->
+      <aside class="w-full lg:w-72 shrink-0 space-y-4">
+
+        <!-- About card -->
+        <div class="bg-white border border-ink-100 rounded-2xl p-5">
+          <h3 class="font-extrabold text-ink-900 mb-4 flex items-center gap-2"><i data-lucide="user" class="w-4 h-4 text-brand-500"></i>Sobre</h3>
+          <div class="space-y-3 text-sm">
+            ${co ? `<div class="flex items-center gap-2 text-ink-600"><span>${co.flag}</span><span>${co.name}</span></div>` : ''}
+            <div class="flex items-center gap-2 text-ink-600"><i data-lucide="calendar" class="w-4 h-4 text-ink-400"></i><span>Membro desde ${new Date(u.joinedTs).getFullYear()}</span></div>
+            ${u.responseHours ? `<div class="flex items-center gap-2 text-ink-600"><i data-lucide="clock" class="w-4 h-4 text-ink-400"></i><span>Responde em ~${u.responseHours}h</span></div>` : ''}
+            ${u.online ? `<div class="flex items-center gap-2 text-emerald-600 font-medium"><i data-lucide="wifi" class="w-4 h-4"></i><span>Online agora</span></div>` : ''}
+          </div>
         </div>
-      </div>
 
-    </div>
+        <!-- Languages -->
+        ${u.languages && u.languages.length ? `
+        <div class="bg-white border border-ink-100 rounded-2xl p-5">
+          <h3 class="font-extrabold text-ink-900 mb-3 flex items-center gap-2"><i data-lucide="languages" class="w-4 h-4 text-brand-500"></i>Idiomas</h3>
+          <div class="space-y-2">
+            ${u.languages.map(id=>{ const l=LANGUAGES_LIST.find(x=>x.id===id)||{flag:'🌐',label:id}; return `<div class="flex items-center gap-2 text-sm"><span>${l.flag}</span><span class="text-ink-700">${l.label}</span></div>`; }).join('')}
+          </div>
+        </div>` : ''}
 
-    <!-- RIGHT -->
-    <aside class="space-y-4">
-      <div class="bg-white border border-ink-100 rounded-2xl p-5">
-        <div class="font-extrabold mb-3 flex items-center gap-2"><i data-lucide="award" class="w-4 h-4" style="color:${lvl.color}"></i>Nível: ${lvl.label}</div>
-        <div class="text-xs text-ink-500 mb-3">Próximo nível em <b class="text-ink-700">${Math.max(0, (LEVELS[LEVELS.findIndex(l=>l.id===lvl.id)+1]?.min || lvl.min) - u.jobs)} jobs</b></div>
-        <div class="progress"><span style="width:${Math.min(100,(u.jobs/((LEVELS[LEVELS.findIndex(l=>l.id===lvl.id)+1]?.min||u.jobs))*100))}%;background:linear-gradient(90deg,${lvl.color},${lvl.color}cc)"></span></div>
-        <div class="grid grid-cols-5 gap-1 mt-4">
-          ${LEVELS.map(l=>`
-            <div class="text-center p-2 rounded-lg ${l.id===lvl.id?'bg-brand-50':''}" title="${l.label}">
-              <i data-lucide="${l.icon}" class="w-3.5 h-3.5 mx-auto" style="color:${u.jobs>=l.min?l.color:'#cbd5e1'}"></i>
-              <div class="text-[9px] font-bold mt-0.5 ${u.jobs>=l.min?'text-ink-700':'text-ink-300'}">${l.min}+</div>
-            </div>`).join('')}
+        <!-- Skills -->
+        ${u.skills && u.skills.length ? `
+        <div class="bg-white border border-ink-100 rounded-2xl p-5">
+          <h3 class="font-extrabold text-ink-900 mb-3 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4 text-brand-500"></i>Habilidades</h3>
+          <div class="flex flex-wrap gap-2">
+            ${u.skills.map(s=>`<span class="chip bg-brand-50 text-brand-700 text-xs">${escapeHtml(s)}</span>`).join('')}
+          </div>
+        </div>` : ''}
+
+        <!-- Level progress -->
+        <div class="bg-white border border-ink-100 rounded-2xl p-5">
+          <h3 class="font-extrabold text-ink-900 mb-3 flex items-center gap-2"><i data-lucide="trending-up" class="w-4 h-4 text-brand-500"></i>Nível</h3>
+          <div class="flex items-center gap-2 mb-2">
+            ${levelChip(lvl,'sm')}
+            <span class="text-xs text-ink-500">${u.jobs} pedidos</span>
+          </div>
+          ${(()=>{
+            const levels = LEVELS;
+            const nextLvl = levels.find(l=>l.min > u.jobs);
+            if (!nextLvl) return `<div class="text-xs text-ink-500">Nível máximo atingido!</div>`;
+            const pct = Math.min(100, Math.round((u.jobs / nextLvl.min)*100));
+            return `<div class="lvl-bar mt-2"><div class="lvl-fill" style="width:${pct}%"></div></div>
+                    <div class="flex justify-between text-[10px] text-ink-400 mt-1"><span>${u.jobs} pedidos</span><span>${nextLvl.label} em ${nextLvl.min}</span></div>`;
+          })()}
         </div>
-      </div>
 
-      <div class="bg-white border border-ink-100 rounded-2xl p-5">
-        <div class="font-extrabold mb-3 flex items-center gap-2"><i data-lucide="tag" class="w-4 h-4 text-brand-500"></i>Skills</div>
-        <div class="flex flex-wrap gap-1.5">
-          ${(u.skills||[]).map(s=>`<span class="chip bg-ink-100/60 text-ink-700">${escapeHtml(s)}</span>`).join('')}
+        <!-- SBT / On-chain -->
+        ${sbtCard(u)}
+
+        <!-- Trust checklist -->
+        <div class="bg-white border border-ink-100 rounded-2xl p-5">
+          <h3 class="font-extrabold text-ink-900 mb-3 flex items-center gap-2"><i data-lucide="shield-check" class="w-4 h-4 text-brand-500"></i>Confiança</h3>
+          <ul class="space-y-1.5 text-sm text-ink-600">
+            <li class="flex items-center gap-1.5"><i data-lucide="${u.verified ? 'check' : 'x'}" class="w-3 h-3 ${u.verified ? 'text-emerald-600' : 'text-ink-300'}"></i>Identidade verificada</li>
+            <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-600"></i>Escrow on-chain</li>
+            <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-600"></i>Reputação on-chain (${u.jobs} jobs)</li>
+          </ul>
         </div>
-      </div>
 
-      <div class="bg-white border border-ink-100 rounded-2xl p-5">
-        <div class="font-extrabold mb-3 flex items-center gap-2"><i data-lucide="languages" class="w-4 h-4 text-brand-500"></i>Idiomas</div>
-        <div class="space-y-1.5 text-sm">
-          ${u.languages.map(id=>{ const l=LANGUAGES_LIST.find(x=>x.id===id)||{flag:'🌐',label:id}; return `<div class="flex items-center gap-2"><span>${l.flag}</span><span class="text-ink-700">${l.label}</span></div>`; }).join('')}
-        </div>
-      </div>
-
-      <div class="rounded-2xl border border-ink-100 bg-gradient-to-br from-brand-50 to-violet-50/40 p-5 text-xs text-ink-700">
-        <div class="font-extrabold flex items-center gap-2 mb-2"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>Verificações</div>
-        <ul class="space-y-1">
-          <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-600"></i>Wallet conectada</li>
-          ${u.verified?`<li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-600"></i>Identidade verificada</li>`:`<li class="flex items-center gap-1.5 text-ink-500"><i data-lucide="x" class="w-3 h-3"></i>Identidade não verificada</li>`}
-          <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-600"></i>Reputação on-chain (${u.jobs} jobs)</li>
-        </ul>
-      </div>
-
-    </aside>
-  </div>
-
+      </aside>
+    </div><!-- /MAIN+SIDEBAR -->
+  </div><!-- /max-w-5xl -->
   `;
+}
+
+function showProfileTab(tab, btn){
+  // Hide all panes
+  ['gigs','about','reviews','portfolio'].forEach(function(p){
+    var el = document.getElementById('pane-'+p);
+    if(el) el.classList.toggle('hidden', p !== tab);
+  });
+  // Update tab buttons
+  var tabs = document.querySelectorAll('#profile-tabs .tab');
+  tabs.forEach(function(t){ t.classList.remove('tab-active'); });
+  if(btn) btn.classList.add('tab-active');
 }
 
 /* ============ SBT Card (sidebar) ============ */
