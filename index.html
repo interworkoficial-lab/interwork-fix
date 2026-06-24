@@ -5283,6 +5283,7 @@ function nsWizardNavPage(dir){
     if(step === 1){
       const title = (document.getElementById('ns-title')?.value||'').trim();
       if(!title){ toast('Informe um título para o serviço.','warn'); return; }
+      STATE._nsV = STATE._nsV || {};
       STATE._nsV.title = title;
       STATE._nsV.cat   = document.getElementById('ns-cat')?.value  || '';
       STATE._nsV.co    = document.getElementById('ns-co')?.value   || '';
@@ -5298,6 +5299,7 @@ function nsWizardNavPage(dir){
       const days  = parseInt(document.getElementById('ns-days')?.value||'0',10);
       if(!price || price < 1){ toast('Defina um preço válido.','warn'); return; }
       if(!days || days < 1){ toast('Defina um prazo válido.','warn'); return; }
+      if(!STATE.newServiceLogo){ toast('Envie uma foto principal.','warn'); return; }
       STATE._nsV.price = price;
       STATE._nsV.days  = days;
       STATE._nsV.inc   = (document.getElementById('ns-inc')?.value||'').trim();
