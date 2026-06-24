@@ -1033,7 +1033,6 @@ html.dark {
   html.dark .badge-top{background:rgba(245,158,11,.12);color:#fbbf24}
 
   </style>
-<base target="_blank">
 </head>
 <body class="bg-white text-ink-900">
   <!-- Skip to main content (keyboard users press Tab to reveal) -->
@@ -2628,11 +2627,7 @@ window._handleReownDisconnected = function() {
 function connectWallet(provider) { openConnectWallet(); }
 function showOtherWallets()      { openConnectWallet(); }
 function copyWCLink()            {}
-function generateQRDataUrl(payload){
-  if (!payload) return '';
-  const data = encodeURIComponent(payload);
-  return 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&qzone=2&data=' + data;
-}
+function generateQRDataUrl()     { return ''; }
 function demoWalletAddress()     { return '0x0000000000000000000000000000000000000000'; }
 function normalizeHandle(v){
   return (v||'').trim().toLowerCase()
@@ -3846,7 +3841,7 @@ function viewService(id){
       <!-- About this gig -->
       <section>
         <h2 class="text-xl font-extrabold text-slate-900">About this gig</h2>
-        <div class="mt-3 text-slate-600 leading-relaxed space-y-3 text-sm sm:text-base whitespace-pre-line break-words overflow-wrap-anywhere">
+        <div class="mt-3 text-slate-600 leading-relaxed space-y-3 text-sm sm:text-base whitespace-pre-line">
           ${escapeHtml(s.description)}
         </div>
 
@@ -5314,47 +5309,30 @@ function viewNewServicePage(){
 
 function nsWizardNavPage(dir){
   const step = STATE._nsStep || 1;
-
-  // Sempre persistir valores do step atual no STATE._nsV ANTES de navegar
-  if (step === 1) {
-    const titleEl = document.getElementById('ns-title');
-    if (titleEl) STATE._nsV.title = titleEl.value;
-    const catEl = document.getElementById('ns-cat');
-    if (catEl) STATE._nsV.cat = catEl.value;
-    const coEl = document.getElementById('ns-co');
-    if (coEl) STATE._nsV.co = coEl.value;
-    const tagsEl = document.getElementById('ns-tags');
-    if (tagsEl) STATE._nsV.tags = tagsEl.value;
-  }
-  if (step === 2) {
-    const descEl = document.getElementById('ns-desc');
-    if (descEl) STATE._nsV.desc = descEl.value;
-    collectFaqsFromBuilder();
-    collectRequirementsFromBuilder();
-  }
-  if (step === 3) {
-    const priceEl = document.getElementById('ns-price');
-    if (priceEl) STATE._nsV.price = parseFloat(priceEl.value) || STATE._nsV.price || 120;
-    const daysEl = document.getElementById('ns-days');
-    if (daysEl) STATE._nsV.days = parseInt(daysEl.value, 10) || STATE._nsV.days || 7;
-    const incEl = document.getElementById('ns-inc');
-    if (incEl) STATE._nsV.inc = incEl.value;
-  }
-
   if(dir===1){
     if(step===1){
-      const title = (STATE._nsV.title || '').trim();
+      const title = (document.getElementById('ns-title')?.value||'').trim();
       if(!title){ toast('Informe um título para o serviço.','warn'); return; }
+      STATE._nsV.title = title;
+      STATE._nsV.cat   = document.getElementById('ns-cat')?.value  || '';
+      STATE._nsV.co    = document.getElementById('ns-co')?.value   || '';
+      STATE._nsV.tags  = (document.getElementById('ns-tags')?.value||'').trim();
     }
     if(step===2){
-      const desc = (STATE._nsV.desc || '').trim();
+      const desc = (document.getElementById('ns-desc')?.value||'').trim();
       if(desc.length<20){ toast('Descrição muito curta — mínimo 20 caracteres.','warn'); return; }
+      STATE._nsV.desc = desc;
+      collectFaqsFromBuilder();
+      collectRequirementsFromBuilder();
     }
     if(step===3){
-      const price = parseFloat(STATE._nsV.price || '0');
-      const days  = parseInt(STATE._nsV.days || '0', 10);
+      const price = parseFloat(document.getElementById('ns-price')?.value||'0');
+      const days  = parseInt(document.getElementById('ns-days')?.value||'0',10);
       if(!price||price<1){ toast('Defina um preço válido.','warn'); return; }
       if(!days||days<1){   toast('Defina um prazo válido.','warn'); return; }
+      STATE._nsV.price = price;
+      STATE._nsV.days  = days;
+      STATE._nsV.inc   = (document.getElementById('ns-inc')?.value||'').trim();
     }
   }
   STATE._nsStep = Math.max(1, Math.min(4, step+dir));
@@ -10549,7 +10527,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const restored = restorePersistedData();
   startPersistence();
   bindRouter();
-  if (restored) console.log('[Persist] Dados restaurados do localStorage.');
+  if (restored) setTimeout(()=>toast('Dados restaurados do localStorage.', 'success'), 250);
   // Proteção extra: se Supabase não está configurado, admin só mostra tela de login (STATE.isAdmin = false por padrão)
 
   // ── Auto-approve engine: run once on boot, then every 60 s ──
