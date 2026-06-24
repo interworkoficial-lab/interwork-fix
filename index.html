@@ -2433,8 +2433,9 @@ function renderHeader(){
       <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
         <a href="#/earn" class="hover:text-slate-900 transition ${STATE.route==='earn'?'text-brand-600 font-bold':''}">Earn ITL</a>
         <a href="#/home" class="hover:text-slate-900 transition">Hire Talent</a>
-        <a href="#/home" class="hover:text-slate-900 transition">How It Works</a>
+        <a href="#/how" class="hover:text-slate-900 transition">How It Works</a>
         <a href="#/home" class="hover:text-slate-900 transition">Community</a>
+        <button onclick="openNewServiceModal()" class="hover:text-slate-900 transition ${STATE.route==='new-service'?'text-brand-600 font-bold':''}">Sell a Service</button>
       </nav>
 
       <!-- Right Actions -->
@@ -2473,8 +2474,9 @@ function renderHeader(){
       <nav class="px-4 py-4 flex flex-col gap-2 text-sm font-medium text-slate-700">
         <a href="#/earn" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='earn'?'bg-slate-50 text-brand-600 font-bold':''}">Earn ITL</a>
         <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Hire Talent</a>
-        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
+        <a href="#/how" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
         <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Community</a>
+        <button onclick="toggleMobileMenu();openNewServiceModal()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 text-left w-full ${STATE.route==='new-service'?'bg-slate-50 text-brand-600 font-bold':''}">Sell a Service</button>
         <div class="border-t border-slate-100 mt-2 pt-2">
            <button onclick="toggleLangMenu(event)" class="w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between">
               <span>Language: ${langObj.label}</span>
@@ -4346,7 +4348,7 @@ function dashFreelancer(){
                 ${stars(sv.rating,'w-3 h-3')}
                 <span class="text-xs text-ink-500">${sv.rating.toFixed(1)} · ${fmtITL(sv.price)}</span>
               </div>
-              ${sv.status==='pending'?`<span class="inline-flex items-center gap-1 mt-1 text-[11px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full"><i data-lucide="clock" class="w-3 h-3"></i>Em análise</span>`:''}
+              ${(sv.status==='pending'||sv.status==='pending_approval')?`<span class="inline-flex items-center gap-1 mt-1 text-[11px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full"><i data-lucide="clock" class="w-3 h-3"></i>Em análise</span>`:''}
               ${sv.status==='rejected'?`<span class="inline-flex items-center gap-1 mt-1 text-[11px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full"><i data-lucide="x-circle" class="w-3 h-3"></i>Rejeitado</span>`:''}
             </div>
             <div class="flex items-center gap-1 shrink-0">
@@ -5260,7 +5262,7 @@ function viewNewServicePage(){
     ? `<button onclick="nsWizardNavPage(1)" class="flex items-center gap-2 px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl transition">Próximo<i data-lucide="chevron-right" class="w-4 h-4"></i></button>`
     : `<button onclick="${STATE._nsEdit?`saveService('${STATE._nsEdit}')`:'createService()'}" class="flex items-center gap-2 px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl transition"><i data-lucide="send" class="w-4 h-4"></i>Enviar para Revisão</button>`;
 
-  return `
+  const _nsPageHtml = `
   <div class="min-h-screen" style="background:var(--home-bg)">
     <div class="max-w-xl mx-auto px-4 py-10">
 
@@ -5305,6 +5307,13 @@ function viewNewServicePage(){
       </div>
     </div>
   </div>`;
+
+  // Agenda inicialização dos builders após o HTML ser inserido no DOM
+  if (step === 2) {
+    requestAnimationFrame(() => { renderFaqBuilder(); renderRequirementsBuilder(); });
+  }
+
+  return _nsPageHtml;
 }
 
 function nsWizardNavPage(dir){
@@ -5334,9 +5343,33 @@ function nsWizardNavPage(dir){
       STATE._nsV.days  = days;
       STATE._nsV.inc   = (document.getElementById('ns-inc')?.value||'').trim();
     }
+  } else {
+    // Navegando para trás: salva os valores atuais sem validar
+    if(step===1){
+      STATE._nsV.title = (document.getElementById('ns-title')?.value||'').trim();
+      STATE._nsV.cat   = document.getElementById('ns-cat')?.value  || STATE._nsV.cat || '';
+      STATE._nsV.co    = document.getElementById('ns-co')?.value   || STATE._nsV.co  || '';
+      STATE._nsV.tags  = (document.getElementById('ns-tags')?.value||'').trim();
+    }
+    if(step===2){
+      STATE._nsV.desc = (document.getElementById('ns-desc')?.value||'').trim();
+      collectFaqsFromBuilder();
+      collectRequirementsFromBuilder();
+    }
+    if(step===3){
+      const price = parseFloat(document.getElementById('ns-price')?.value||'0');
+      const days  = parseInt(document.getElementById('ns-days')?.value||'0',10);
+      if(price) STATE._nsV.price = price;
+      if(days)  STATE._nsV.days  = days;
+      STATE._nsV.inc = (document.getElementById('ns-inc')?.value||'').trim();
+    }
   }
   STATE._nsStep = Math.max(1, Math.min(4, step+dir));
   renderView();
+  // Após renderizar, inicializa os builders se for o step 2
+  if((STATE._nsStep||1) === 2){
+    requestAnimationFrame(()=>{ renderFaqBuilder(); renderRequirementsBuilder(); });
+  }
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -5923,7 +5956,6 @@ function createService(){
   STATE.newServiceFaqs = [];
   STATE._nsV = null;
   STATE._nsStep = 1;
-  closeModal();
   // ── Salva no Supabase se configurado ──
   if (SB_READY && sb){
     sbCreateService(svc).then(({ error }) => {
@@ -5935,12 +5967,13 @@ function createService(){
   }
   addNotification({ type:'tx', title:'Serviço enviado para revisão', body:`"${title}" aguardando aprovação — aparecerá no marketplace em breve.`, link:'#/dashboard/freelancer' });
   persistNow();
+  // Exibe modal de confirmação e redireciona para o dashboard
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this){closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView();}">
     <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
       <div class="px-5 pt-4 pb-3 border-b border-ink-100 flex items-center gap-2">
         <div class="font-extrabold text-sm flex items-center gap-2 flex-1">Serviço enviado para revisão ✅</div>
-        <button onclick="closeModal()" aria-label="Fechar" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4 text-ink-500"></i></button>
+        <button onclick="closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView()" aria-label="Fechar" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4 text-ink-500"></i></button>
       </div>
       <div class="px-6 pb-6 pt-4 text-center space-y-4">
         <div class="w-16 h-16 rounded-full bg-amber-50 border-2 border-amber-200 flex items-center justify-center mx-auto">
@@ -5951,7 +5984,12 @@ function createService(){
           <strong class="text-amber-600">aguardando revisão</strong> da equipe Interwork.<br><br>
           Assim que aprovado, ele aparecerá automaticamente no marketplace.
         </p>
-        <button onclick="closeModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm">Entendido</button>
+        <div class="flex gap-2">
+          <button onclick="closeModal();render()" class="flex-1 border border-ink-200 hover:bg-ink-50 font-semibold py-2.5 rounded-xl text-sm">Fechar</button>
+          <button onclick="closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView()" class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>Ver dashboard
+          </button>
+        </div>
       </div>
     </div>
   </div>`;
@@ -5989,10 +6027,15 @@ function saveService(id){
   STATE.newServiceRequirements = [];
   STATE.newServiceFaqs = [];
   STATE._nsV = null;
+  STATE._nsEdit = null;
   STATE._nsStep = 1;
-  closeModal();
+  persistNow();
   toast('Serviço atualizado!', 'success');
-  render();
+  // Redireciona para o dashboard após salvar (funciona tanto na página quanto no modal)
+  closeModal();
+  STATE.route = 'dashboard';
+  STATE.dashboardTab = 'freelancer';
+  renderView();
 }
 
 function deleteService(id){
@@ -7649,6 +7692,15 @@ function bindViewEvents(){
     if (!e.target.closest('#search-wrap')) closeSearchDropdown();
   };
   document.addEventListener('click', window._docClickHandler, { capture: true });
+
+  // Inicializa os builders de FAQ e Requirements quando a página new-service é renderizada
+  if (STATE.route === 'new-service') {
+    const step = STATE._nsStep || 1;
+    if (step === 2) {
+      renderFaqBuilder();
+      renderRequirementsBuilder();
+    }
+  }
 }
 
 /* ---- SEARCH AUTOCOMPLETE ---- */
@@ -9597,10 +9649,28 @@ function bindRouter(){
 }
 function readRoute(){
   const h = location.hash.replace(/^#\/?/, '') || 'home';
-  const [route, param] = h.split('/');
+  const parts = h.split('/');
+  // Suporte a rotas com hífen (ex: new-service, earn-itl)
+  const route = parts[0] === 'new' && parts[1] === 'service' ? 'new-service' : parts[0];
+  const param = parts[0] === 'new' && parts[1] === 'service' ? parts[2] : parts[1];
   STATE.route = route;
   if (route === 'service' && param) STATE.selectedServiceId = param;
   if (route === 'earn') STATE.route = 'earn';
+  if (route === 'new-service') {
+    // Inicializa o wizard se ainda não foi iniciado
+    if (!STATE._nsV) {
+      STATE._nsStep = 1;
+      STATE._nsEdit = null;
+      STATE._nsV = {
+        title: '', cat: (CATEGORIES[0]?.id||''), co: (COUNTRIES[0]?.id||''),
+        price: 250, days: 7, desc: '', inc: '', tags: ''
+      };
+      STATE.newServiceLogo = null;
+      STATE.newServiceGallery = [];
+      STATE.newServiceRequirements = defaultRequirements ? defaultRequirements() : [];
+      STATE.newServiceFaqs = defaultFaqs ? defaultFaqs() : [];
+    }
+  }
   if (route === 'dashboard' && param) STATE.dashboardTab = param;
   if (route === 'u' && param) STATE.selectedProfileHandle = param;
   if (route === 'legal') STATE.selectedLegalPage = (param && ['faq','terms','privacy'].includes(param)) ? param : 'faq';
@@ -10240,7 +10310,7 @@ function viewAdmin(){
     </div>`;
   }
 
-  const pending  = DB.services.filter(s => s.status === 'pending');
+  const pending  = DB.services.filter(s => s.status === 'pending' || s.status === 'pending_approval');
   const approved = DB.services.filter(s => s.status === 'approved');
   const rejected = DB.services.filter(s => s.status === 'rejected');
   const allSvcs  = DB.services.filter(s => s._sb); // apenas os reais do Supabase
