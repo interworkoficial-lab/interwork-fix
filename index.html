@@ -2298,7 +2298,7 @@ function renderView(){
     case 'legal':    v.innerHTML = viewLegal(STATE.selectedLegalPage || 'faq'); break;
     case 'u':        v.innerHTML = viewProfile(STATE.selectedProfileHandle); break;
     case 'admin':    v.innerHTML = viewAdmin(); break;
-    case 'new-service': v.innerHTML = isAuthed() ? viewNewServicePage() : viewAuthRequired(); break;
+    case 'earn':     v.innerHTML = viewEarnITL(); break;
     case 'new-service': v.innerHTML = isAuthed() ? viewNewServicePage() : viewAuthRequired(); break;
     case 'home':
     default:         v.innerHTML = viewHome();
@@ -2428,7 +2428,7 @@ function renderHeader(){
 
       <!-- Desktop Navigation -->
       <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
-        <a href="#/home" class="hover:text-slate-900 transition">Find Work</a>
+        <a href="#/earn" class="hover:text-slate-900 transition ${STATE.route==='earn'?'text-brand-600 font-bold':''}">Earn ITL</a>
         <a href="#/home" class="hover:text-slate-900 transition">Hire Talent</a>
         <a href="#/home" class="hover:text-slate-900 transition">How It Works</a>
         <a href="#/home" class="hover:text-slate-900 transition">Community</a>
@@ -2468,7 +2468,7 @@ function renderHeader(){
     <!-- Mobile menu dropdown -->
     <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-100 bg-white overflow-hidden transition-all">
       <nav class="px-4 py-4 flex flex-col gap-2 text-sm font-medium text-slate-700">
-        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Find Work</a>
+        <a href="#/earn" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='earn'?'bg-slate-50 text-brand-600 font-bold':''}">Earn ITL</a>
         <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Hire Talent</a>
         <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
         <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Community</a>
@@ -9604,6 +9604,7 @@ function readRoute(){
   const [route, param] = h.split('/');
   STATE.route = route;
   if (route === 'service' && param) STATE.selectedServiceId = param;
+  if (route === 'earn') STATE.route = 'earn';
   if (route === 'dashboard' && param) STATE.dashboardTab = param;
   if (route === 'u' && param) STATE.selectedProfileHandle = param;
   if (route === 'legal') STATE.selectedLegalPage = (param && ['faq','terms','privacy'].includes(param)) ? param : 'faq';
@@ -10818,3 +10819,101 @@ window.viewProfile = function(handle){
 </script>
 </body>
 </html>
+
+/* ---------- VIEW: EARN ITL ---------- */
+function viewEarnITL(){
+  const fakeProducts = DB.services.filter(s => s._mock).slice(0, 5);
+  
+  return `
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <!-- Header / Hero Section -->
+    <div class="bg-gradient-to-br from-brand-600 to-sonic rounded-[2rem] p-8 md:p-12 text-white mb-10 shadow-xl relative overflow-hidden">
+      <div class="relative z-10 max-w-2xl">
+        <span class="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold mb-4 tracking-wider uppercase">Freelancer Hub</span>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">Earn ITL. <br/>Build your Web3 Legacy.</h1>
+        <p class="text-lg text-white/80 mb-8">Transforme suas habilidades em ganhos reais na Interlink Network. Crie serviços, ajude projetos e receba instantaneamente em ITL.</p>
+        
+        <div class="flex flex-wrap gap-4">
+          <button onclick="go('#/new-service')" class="bg-white text-brand-600 hover:bg-brand-50 font-extrabold px-8 py-4 rounded-2xl shadow-lg transition-all flex items-center gap-2">
+            <i class="ri-add-circle-line text-xl"></i> Create My Service
+          </button>
+          <a href="#/how" class="bg-brand-700/30 hover:bg-brand-700/50 backdrop-blur-md border border-white/20 text-white font-bold px-8 py-4 rounded-2xl transition-all">
+            How it works
+          </a>
+        </div>
+      </div>
+      
+      <!-- Abstract visual element -->
+      <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+      <div class="absolute right-10 top-10 w-32 h-32 bg-brand-400/20 rounded-full blur-2xl"></div>
+    </div>
+
+    <!-- Small Explanatory Menu -->
+    <div class="grid md:grid-cols-3 gap-6 mb-16">
+      <div class="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
+        <div class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 grid place-items-center mb-4">
+          <i class="ri-flashlight-line text-2xl"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2">Instant Payments</h3>
+        <p class="text-sm text-slate-500">Sem espera de 14 dias. Assim que o cliente aprova, o ITL cai direto na sua wallet vinculada.</p>
+      </div>
+      <div class="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 grid place-items-center mb-4">
+          <i class="ri-shield-check-line text-2xl"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2">Escrow Protection</h3>
+        <p class="text-sm text-slate-500">Trabalhe com segurança. O pagamento do cliente fica travado em contrato inteligente antes de você começar.</p>
+      </div>
+      <div class="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
+        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 grid place-items-center mb-4">
+          <i class="ri-global-line text-2xl"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2">Global Web3 Reach</h3>
+        <p class="text-sm text-slate-500">Conecte-se com os melhores projetos do ecossistema Interlink e expanda sua rede internacionalmente.</p>
+      </div>
+    </div>
+
+    <!-- Simple & Objective Creation Menu -->
+    <div class="bg-slate-50 rounded-3xl p-8 mb-16 border border-slate-200">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+        <div class="max-w-md">
+          <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Pronto para começar?</h2>
+          <p class="text-slate-600">Siga nosso guia simplificado e publique seu primeiro serviço em menos de 5 minutos.</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+          <div class="flex items-center gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex-1 md:w-48">
+            <span class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 font-bold flex items-center justify-center text-sm shrink-0">1</span>
+            <span class="text-sm font-bold text-slate-700">Defina o serviço</span>
+          </div>
+          <div class="flex items-center gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex-1 md:w-48">
+            <span class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 font-bold flex items-center justify-center text-sm shrink-0">2</span>
+            <span class="text-sm font-bold text-slate-700">Ajuste o preço</span>
+          </div>
+          <button onclick="go('#/new-service')" class="bg-brand-600 hover:bg-brand-700 text-white font-extrabold px-8 py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 flex-1 md:w-auto">
+            Get Started <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inspiration / Fake Products Section -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-extrabold text-slate-900">Precisa de inspiração?</h2>
+          <p class="text-slate-500">Veja o que outros freelancers estão oferecendo no ecossistema.</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        ${fakeProducts.map(p => serviceCard(p)).join('')}
+      </div>
+      
+      <div class="mt-10 p-6 rounded-2xl bg-brand-50 border border-brand-100 text-center">
+        <p class="text-brand-700 font-medium mb-4">Estes são apenas exemplos para te ajudar a começar. O seu talento é o limite!</p>
+        <button onclick="go('#/new-service')" class="text-brand-600 font-bold hover:underline">Clique aqui para criar o seu agora →</button>
+      </div>
+    </div>
+  </div>
+  `;
+}
