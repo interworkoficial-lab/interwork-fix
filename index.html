@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
 <title>Interwork — The Workforce Marketplace for the Interlink Ecosystem</title>
 <meta name="description" content="Hire verified humans using ITL. The decentralized workforce marketplace built for the Interlink ecosystem — on-chain escrow, DAO-based dispute resolution and zero middlemen." />
 <meta property="og:title" content="Interwork — The Workforce Marketplace for the Interlink Ecosystem" />
@@ -148,10 +148,12 @@
   .grid-gigs {
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 1.5rem;
+    gap: 1rem;
   }
-  @media (min-width: 640px) { .grid-gigs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 480px) { .grid-gigs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; } }
+  @media (min-width: 768px) { .grid-gigs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; } }
   @media (min-width: 1024px) { .grid-gigs { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (min-width: 1440px) { .grid-gigs { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 
   html,body{font-family:'Plus Jakarta Sans',ui-sans-serif,system-ui}
   body.modal-open-lock{overflow:hidden;height:100vh}
@@ -2418,46 +2420,51 @@ function renderHeader(){
   const langObj = LANGUAGES_LIST.find(l=>l.id===STATE.language);
 
   $('#app-header').innerHTML = `
-  <header class="bg-white border-b border-slate-100 sticky top-0 z-50">
+  <header class="bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
       
       <!-- Logo -->
       <a href="#/home" class="flex items-center gap-2 shrink-0">
-        <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white">
+        <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white shadow-sm">
           <i class="ri-briefcase-4-fill text-base"></i>
         </span>
-        <span class="font-extrabold text-slate-900 tracking-tight">InterWork</span>
+        <span class="font-extrabold text-slate-900 tracking-tight text-lg">InterWork</span>
       </a>
 
       <!-- Desktop Navigation -->
       <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
-        <a href="#/earn" class="hover:text-slate-900 transition ${STATE.route==='earn'?'text-brand-600 font-bold':''}">Earn ITL</a>
-        <a href="#/home" class="hover:text-slate-900 transition">Hire Talent</a>
-        <a href="#/home" class="hover:text-slate-900 transition">How It Works</a>
-        <a href="#/home" class="hover:text-slate-900 transition">Community</a>
+        <a href="#/earn" class="hover:text-slate-900 transition ${STATE.route==='earn'?'text-brand-700 font-bold':''}">Earn ITL</a>
+        <a href="#/home" class="hover:text-slate-900 transition ${STATE.route==='home'?'text-brand-700 font-bold':''}">Hire Talent</a>
+        <a href="#/how-it-works" class="hover:text-slate-900 transition">How It Works</a>
+        <a href="#/community" class="hover:text-slate-900 transition">Community</a>
       </nav>
 
       <!-- Right Actions -->
-      <div class="flex items-center gap-3 sm:gap-5">
+      <div class="flex items-center gap-3">
         
         <!-- Language (Desktop) -->
-        <button onclick="toggleLangMenu(event)" class="hidden sm:flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition">
+        <button onclick="toggleLangMenu(event)" class="hidden md:flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition">
           <span class="w-4 h-4 rounded-full bg-slate-200 grid place-items-center text-[10px] overflow-hidden">${langObj.flag}</span>
           <span>${langObj.id.toUpperCase()}</span>
           <i class="ri-arrow-down-s-line opacity-50"></i>
         </button>
 
         ${authed ? `
-          <!-- Profile Link -->
-          <a href="#/u/${me?.handle||''}" class="w-9 h-9 rounded-full overflow-hidden border border-slate-200 hover:ring-4 hover:ring-[#efeaff] transition shrink-0 relative">
-            ${me?.avatar && me.avatarType!=='initials'
-              ? `<img src="${me.avatar}" class="w-full h-full object-cover" />`
-              : `<div class="w-full h-full bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs"><span>${(me?.name||'U')[0].toUpperCase()}</span></div>`}
-            ${unreadCount() ? `<span class="absolute top-0 right-0 w-3 h-3 bg-rose-500 border-2 border-white rounded-full"></span>` : ''}
-          </a>
+          <div class="flex items-center gap-3">
+            <button onclick="go('#/wallet')" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 hover:bg-slate-100 transition">
+              <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+              <span class="text-xs font-bold text-slate-700">${fmtITL(STATE.itlBalance)}</span>
+            </button>
+            <a href="#/u/${me?.handle||''}" class="w-8 h-8 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-brand-200 transition shrink-0 relative">
+              ${me?.avatar && me.avatarType!=='initials'
+                ? `<img src="${me.avatar}" class="w-full h-full object-cover" />`
+                : `<div class="w-full h-full bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs"><span>${(me?.name||'U')[0].toUpperCase()}</span></div>`}
+              ${unreadCount() ? `<span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-rose-500 border-2 border-white rounded-full"></span>` : ''}
+            </a>
+          </div>
         ` : `
-          <button onclick="openConnectWallet()" class="btn-primary-alt px-4 py-2 rounded-lg font-bold text-xs sm:text-sm flex items-center gap-2 shadow-sm">
-            <i class="ri-wallet-line"></i> <span class="hidden xs:inline">Connect Wallet</span><span class="xs:hidden">Connect</span>
+          <button onclick="openConnectWallet()" class="btn-primary px-4 py-2 rounded-lg font-bold text-xs sm:text-sm flex items-center gap-2">
+            <i class="ri-wallet-line"></i> <span>Connect Wallet</span>
           </button>
         `}
 
@@ -2469,14 +2476,14 @@ function renderHeader(){
     </div>
 
     <!-- Mobile menu dropdown -->
-    <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-100 bg-white overflow-hidden transition-all">
-      <nav class="px-4 py-4 flex flex-col gap-2 text-sm font-medium text-slate-700">
-        <a href="#/earn" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='earn'?'bg-slate-50 text-brand-600 font-bold':''}">Earn ITL</a>
-        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Hire Talent</a>
-        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
-        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Community</a>
+    <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-100 bg-white">
+      <nav class="px-4 py-4 flex flex-col gap-1 text-sm font-medium text-slate-700">
+        <a href="#/earn" onclick="toggleMobileMenu()" class="py-3 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='earn'?'bg-slate-50 text-brand-700 font-bold':''}">Earn ITL</a>
+        <a href="#/home" onclick="toggleMobileMenu()" class="py-3 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='home'?'bg-slate-50 text-brand-700 font-bold':''}">Hire Talent</a>
+        <a href="#/how-it-works" onclick="toggleMobileMenu()" class="py-3 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
+        <a href="#/community" onclick="toggleMobileMenu()" class="py-3 px-3 rounded-lg hover:bg-slate-50">Community</a>
         <div class="border-t border-slate-100 mt-2 pt-2">
-           <button onclick="toggleLangMenu(event)" class="w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between">
+           <button onclick="toggleLangMenu(event)" class="w-full text-left py-3 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between">
               <span>Language: ${langObj.label}</span>
               <span class="text-lg">${langObj.flag}</span>
            </button>
@@ -2487,10 +2494,10 @@ function renderHeader(){
     <!-- Lang menu floating -->
     <div id="lang-menu" class="hidden absolute right-4 sm:right-20 mt-1 w-56 bg-white border border-slate-200 rounded-xl shadow-xl p-2 z-[60]">
       ${LANGUAGES_LIST.map(l=>`
-        <button onclick="setLang('${l.id}')" class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-3 ${STATE.language===l.id?'bg-slate-50 text-[#5b4ee0] font-bold':'hover:bg-slate-50 text-slate-700'}">
+        <button onclick="setLang('${l.id}')" class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-3 ${STATE.language===l.id?'bg-slate-50 text-brand-700 font-bold':'hover:bg-slate-50 text-slate-700'}">
           <span class="text-lg">${l.flag}</span>
           <span class="flex-1">${l.label}</span>
-          ${STATE.language===l.id?`<i class="ri-check-line"></i>`:''}
+          ${STATE.language===l.id?`<i class="ri-check-line text-brand-600"></i>`:''}
         </button>`).join('')}
     </div>
   </header>
@@ -3536,83 +3543,44 @@ function gigFaqsByCategory(cat){
 }
 function serviceCard(s){
   const u = getUserSafe(s.freelancerId);
-  const imgs = serviceCardImages(s);
-  const hasMulti = imgs.length > 1;
+  const isFav = isFavorited(s.id);
+  const initial = u.name.charAt(0).toUpperCase();
+  const initialBg = stringToColor(u.name);
+  const catObj = getCategory(s.category);
   
-  // Determinar o badge baseado em rating e reviews
   let badge = '';
-  if (s.reviewsCount >= 100 && s.rating >= 4.8) {
-    badge = 'BEST SELLER';
-  } else if (s.reviewsCount >= 50 && s.rating >= 4.7) {
-    badge = 'RISING STAR';
-  }
+  if (s.reviewsCount >= 100 && s.rating >= 4.8) badge = 'BEST SELLER';
+  else if (s.reviewsCount >= 50 && s.rating >= 4.7) badge = 'RISING STAR';
   
+  const tagLabel = u.level ? u.level.label : 'Level 1';
+  const tagClass = tagLabel === 'Pro' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700';
+
   return `
-  <a href="#/service/${s.id}" class="gig-card group block min-w-0">
-    <!-- IMAGEM COM BADGE E FAVORITO -->
-    <div class="gig-thumb gig-carousel relative rounded-xl overflow-hidden bg-white border border-ink-100 mb-3 shadow-sm group-hover:shadow-lg transition-all" data-imgcount="${imgs.length}" data-idx="0">
-      ${imgs.map((src,i) => `<img src="${src}" loading="lazy" alt="" data-slide="${i}" class="absolute inset-0 w-full h-full object-cover transition duration-300 ${i===0 ? 'opacity-100' : 'opacity-0'}" />`).join('')}
-      
-      <!-- BADGE (BEST SELLER / RISING STAR) -->
-      ${badge ? `
-      <div class="absolute top-3 left-3 z-10 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-md shadow-sm">
-        <span class="text-[10px] font-bold text-ink-900 tracking-wide">${badge}</span>
-      </div>
-      ` : ''}
-      
-      <!-- BOTÃO FAVORITO (CORAÇÃO) -->
-      <button onclick="toggleFavorite('${s.id}', event)" aria-label="${isFavorited(s.id) ? 'Remover dos favoritos' : 'Salvar nos favoritos'}" aria-pressed="${isFavorited(s.id)}" class="absolute top-3 right-3 z-10 w-8 h-8 grid place-items-center rounded-full bg-white/95 hover:bg-white shadow ring-1 ring-black/5 transition-all">
-        <i data-lucide="heart" class="w-4 h-4 ${isFavorited(s.id) ? 'fill-rose-500 text-rose-500' : 'text-ink-400'}" aria-hidden="true"></i>
+  <a href="#/service/${s.id}" class="card bg-white rounded-xl overflow-hidden flex flex-col block group border border-slate-200 transition-all hover:shadow-lg hover:-translate-y-1">
+    <div class="relative overflow-hidden">
+      <img src="${s.thumb}" alt="" class="gig-img w-full aspect-[3/2] object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+      ${badge ? `<span class="badge absolute top-3 left-0 text-[10px] font-extrabold tracking-wide text-slate-700 px-2.5 py-1 rounded-r-md bg-white/95 backdrop-blur-sm shadow-sm">${badge}</span>` : ''}
+      <button onclick="toggleFavorite('${s.id}', event)" class="heart-btn ${isFav?'active':''} absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 grid place-items-center shadow-sm hover:bg-white transition-all">
+        <i class="ri-heart-line ${isFav?'text-rose-500 font-bold':'text-slate-500'}"></i>
       </button>
-      
-      <!-- CARROSSEL (setas e pontos) -->
-      ${hasMulti ? `
-        <button onclick="gigCarouselStep(event,'${s.id}',-1)" aria-label="Imagem anterior" class="gig-carousel-arrow gig-carousel-prev absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 grid place-items-center rounded-full bg-white/90 hover:bg-white shadow opacity-0 group-hover:opacity-100 transition">
-          <i data-lucide="chevron-left" class="w-4 h-4 text-ink-700"></i>
-        </button>
-        <button onclick="gigCarouselStep(event,'${s.id}',1)" aria-label="Próxima imagem" class="gig-carousel-arrow gig-carousel-next absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 grid place-items-center rounded-full bg-white/90 hover:bg-white shadow opacity-0 group-hover:opacity-100 transition">
-          <i data-lucide="chevron-right" class="w-4 h-4 text-ink-700"></i>
-        </button>
-        <div class="gig-carousel-dots absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition">
-          ${imgs.map((_,i) => `<span data-dot="${i}" class="w-1.5 h-1.5 rounded-full ${i===0 ? 'bg-white' : 'bg-white/50'} shadow"></span>`).join('')}
+    </div>
+    <div class="p-4 flex-1 flex flex-col">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2 text-sm text-slate-700">
+          <span class="w-6 h-6 rounded-full grid place-items-center text-[11px] font-bold text-white shadow-sm" style="background:${initialBg}">${initial}</span>
+          <span class="font-semibold truncate max-w-[100px]">${u.name}</span>
         </div>
-      ` : ''}
-    </div>
-    
-    <!-- INFORMAÇÕES DO FREELANCER -->
-    <div class="flex items-center gap-2 mb-2 min-w-0">
-      <img src="${u.avatar}" alt="" class="w-6 h-6 rounded-full shrink-0 border border-ink-100" />
-      <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-1.5">
-          <span class="text-[13px] font-semibold text-ink-900 truncate">${escapeHtml(u.name)}</span>
-          ${u.verified ? `<i data-lucide="badge-check" class="w-3.5 h-3.5 text-brand-500 shrink-0"></i>` : ''}
-        </div>
-        <span class="text-[11px] text-ink-500">${u.level ? u.level.label : 'Level 1'}</span>
+        <span class="text-[10px] font-bold px-2 py-0.5 rounded ${tagClass}">${tagLabel}</span>
       </div>
-    </div>
-    
-    <!-- TÍTULO DO SERVIÇO -->
-    <h3 class="gig-title text-[13px] text-ink-900 leading-snug group-hover:underline font-medium mb-2">${
-      s.title.toLowerCase().startsWith('i will ')
-        ? '<span class="font-semibold text-ink-500">I will </span>' + escapeHtml(s.title.slice(7))
-        : escapeHtml(s.title)
-    }</h3>
-    
-    <!-- RATING E REVIEWS -->
-    <div class="flex items-center gap-1.5 mb-3">
-      <div class="flex items-center gap-0.5">
-        <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
-        <span class="text-[13px] font-bold text-ink-900">${s.rating.toFixed(1)}</span>
+      <h3 class="mt-3 text-sm font-bold text-[#5b4ee0] leading-snug group-hover:underline min-h-[40px] line-clamp-2">${s.title}</h3>
+      <div class="mt-2 flex items-center gap-1 text-xs text-slate-500">
+        <i class="ri-star-fill text-amber-400"></i>
+        <span class="font-bold text-slate-700">${s.rating.toFixed(1)}</span>
+        <span>(${s.reviewsCount})</span>
       </div>
-      <span class="text-[12px] text-ink-500">(${s.reviewsCount})</span>
-    </div>
-    
-    <!-- CATEGORIA E PREÇO -->
-    <div class="pt-2 border-t border-ink-100 flex items-center justify-between">
-      <span class="text-[11px] text-ink-500 font-medium">${getCategory(s.category)?.label || s.category}</span>
-      <div class="text-right">
-        <div class="text-[10px] text-ink-400 font-medium">From</div>
-        <div class="font-extrabold text-[15px] text-brand-500">${fmtITL(s.price)}</div>
+      <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+        <span class="text-slate-500">${catObj?.label || s.category}</span>
+        <span class="text-slate-500">From <b class="font-extrabold text-slate-900">${fmtITL(s.price)}</b></span>
       </div>
     </div>
   </a>`;
@@ -5309,35 +5277,48 @@ function viewNewServicePage(){
 
 function nsWizardNavPage(dir){
   const step = STATE._nsStep || 1;
-  if(dir===1){
-    if(step===1){
+  
+  // Próximo
+  if(dir === 1){
+    if(step === 1){
       const title = (document.getElementById('ns-title')?.value||'').trim();
       if(!title){ toast('Informe um título para o serviço.','warn'); return; }
       STATE._nsV.title = title;
       STATE._nsV.cat   = document.getElementById('ns-cat')?.value  || '';
       STATE._nsV.co    = document.getElementById('ns-co')?.value   || '';
       STATE._nsV.tags  = (document.getElementById('ns-tags')?.value||'').trim();
-    }
-    if(step===2){
+    } else if(step === 2){
       const desc = (document.getElementById('ns-desc')?.value||'').trim();
-      if(desc.length<20){ toast('Descrição muito curta — mínimo 20 caracteres.','warn'); return; }
+      if(desc.length < 20){ toast('Descrição muito curta — mínimo 20 caracteres.','warn'); return; }
       STATE._nsV.desc = desc;
       collectFaqsFromBuilder();
       collectRequirementsFromBuilder();
-    }
-    if(step===3){
+    } else if(step === 3){
       const price = parseFloat(document.getElementById('ns-price')?.value||'0');
       const days  = parseInt(document.getElementById('ns-days')?.value||'0',10);
-      if(!price||price<1){ toast('Defina um preço válido.','warn'); return; }
-      if(!days||days<1){   toast('Defina um prazo válido.','warn'); return; }
+      if(!price || price < 1){ toast('Defina um preço válido.','warn'); return; }
+      if(!days || days < 1){ toast('Defina um prazo válido.','warn'); return; }
       STATE._nsV.price = price;
       STATE._nsV.days  = days;
       STATE._nsV.inc   = (document.getElementById('ns-inc')?.value||'').trim();
     }
+    
+    if(step < 4){
+      STATE._nsStep = step + 1;
+      renderView();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+  } 
+  // Voltar / Cancelar
+  else {
+    if(step > 1){
+      STATE._nsStep = step - 1;
+      renderView();
+      window.scrollTo({top:0, behavior:'smooth'});
+    } else {
+      go('#/earn');
+    }
   }
-  STATE._nsStep = Math.max(1, Math.min(4, step+dir));
-  renderView();
-  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 
@@ -8569,10 +8550,12 @@ function printReceipt(){
   .grid-gigs {
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 1.5rem;
+    gap: 1rem;
   }
-  @media (min-width: 640px) { .grid-gigs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 480px) { .grid-gigs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; } }
+  @media (min-width: 768px) { .grid-gigs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; } }
   @media (min-width: 1024px) { .grid-gigs { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (min-width: 1440px) { .grid-gigs { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Inter',sans-serif;background:#f1f5f9;padding:24px;}
