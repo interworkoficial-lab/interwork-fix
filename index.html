@@ -1458,7 +1458,7 @@ function renderHeader(){
         <span class="font-medium">Ver meu perfil</span>
       </a>
 
-      <button onclick="closeProfileMenu();go('#/dashboard/client')"
+      <button onclick="go('#/dashboard/client');closeProfileMenu()"
   class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
   <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0">
     <i class="ri-briefcase-line text-slate-500"></i>
@@ -1477,7 +1477,7 @@ function renderHeader(){
   </div>
 </button>
 
-<button onclick="closeProfileMenu();setTimeout(toggleNotifPanel,50)"
+<button onclick="setTimeout(toggleNotifPanel,50);closeProfileMenu()"
   class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
   <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0 relative">
     <i class="ri-notification-3-line text-slate-500"></i>
@@ -1574,8 +1574,10 @@ function closeMenus(){
 }
 function toggleLangMenu(e){ e.stopPropagation(); $('#lang-menu')?.classList.toggle('hidden'); }
 function closeMenusOnOutside(){
-  closeMenus();
-  closeProfileMenu();
+  setTimeout(()=>{
+    closeMenus();
+    closeProfileMenu();
+  }, 150);
 }
 function setLang(id){ STATE.language=id; toast('🌐 '+LANGUAGES_LIST.find(l=>l.id===id).label,'info'); render(); }
 
