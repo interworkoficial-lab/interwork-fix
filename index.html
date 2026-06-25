@@ -107,8 +107,9 @@
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
   }
-  .max-w-7xl { max-width: 80rem !important; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
-  @media (min-width: 640px) { .max-w-7xl { padding-left: 1.5rem; padding-right: 1.5rem; } }
+  .max-w-6xl { max-width: 72rem !important; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+@media (min-width: 640px) { .max-w-6xl { padding-left: 1.5rem; padding-right: 1.5rem; } }
+
   
   .btn-primary, .btn-primary-alt { 
     background: var(--primary) !important; 
@@ -248,7 +249,7 @@
 
   /* ============ GIG CARD (Fiverr-style, bulletproof) ============ */
   .gig-card{display:flex;flex-direction:column;min-width:0;width:100%}
-  .gig-thumb{position:relative;width:100%;padding-bottom:75%;background:#f1f5f9}
+  .gig-thumb{position:relative;width:100%;padding-bottom:60%;background:#f1f5f9}
   .gig-thumb>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
   .gig-title{
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
@@ -937,7 +938,7 @@ html.dark {
   .gig-thumb {
     position: relative;
     width: 100%;
-    padding-bottom: 75%;
+    padding-bottom: 60%;
     background: #f1f5f9;
     border: 1px solid #e5e7eb;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -2419,11 +2420,13 @@ function renderHeader(){
 
   $('#app-header').innerHTML = `
   <header class="bg-white border-b border-slate-100 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
+
       
       <!-- Logo -->
       <a href="#/home" class="flex items-center gap-2 shrink-0">
-        <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white">
+        <span class="w-7 h-7 rounded-lg bg-[#8b7cff] grid place-items-center text-white">
+
           <i class="ri-briefcase-4-fill text-base"></i>
         </span>
         <span class="font-extrabold text-slate-900 tracking-tight">InterWork</span>
@@ -2642,7 +2645,7 @@ function openWalletOnboarding(provider){
   const me = getUser(STATE.currentUserId) || DB.users[0];
   const suggested = normalizeHandle(me.handle || 'you') || 'you';
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-xl rounded-2xl shadow-pop overflow-hidden">
       <div class="p-5 border-b border-ink-100 flex items-center justify-between">
         <div>
@@ -2665,7 +2668,7 @@ function openWalletOnboarding(provider){
             </div>`).join('')}
         </div>
 
-        <div class="flex items-start gap-4">
+        <div class="flex items-start gap-3">
           <div class="flex flex-col items-center">
             <div id="avatar-preview" class="avatar-circle" onclick="pickAvatarFile()">
               <div class="avatar-letter">${(me.name && me.name !== 'Você' ? me.name[0] : 'U').toUpperCase()}</div>
@@ -2713,14 +2716,14 @@ function openWalletOnboarding(provider){
         <div>
           <div class="text-sm font-bold mb-2">Como você quer começar?</div>
           <div class="grid sm:grid-cols-2 gap-2">
-            <label class="cursor-pointer rounded-2xl border border-brand-300 bg-brand-50/50 p-4 flex items-start gap-3">
+            <label class="cursor-pointer rounded-2xl border border-brand-300 bg-brand-50/50 p-3 flex items-start gap-3">
               <input type="radio" name="ob-role" value="client" checked class="mt-1"/>
               <span>
                 <span class="font-extrabold flex items-center gap-1.5"><i data-lucide="shopping-bag" class="w-4 h-4 text-brand-500"></i>Cliente</span>
                 <span class="block text-xs text-ink-500 mt-1">Contratar serviços com escrow em ITL.</span>
               </span>
             </label>
-            <label class="cursor-pointer rounded-2xl border border-ink-100 hover:border-sonic p-4 flex items-start gap-3">
+            <label class="cursor-pointer rounded-2xl border border-ink-100 hover:border-sonic p-3 flex items-start gap-3">
               <input type="radio" name="ob-role" value="freelancer" class="mt-1"/>
               <span>
                 <span class="font-extrabold flex items-center gap-1.5"><i data-lucide="briefcase" class="w-4 h-4 text-sonic"></i>Freelancer</span>
@@ -2786,7 +2789,7 @@ function openWalletMenu(e){
   e.stopPropagation();
   const me = getUser(STATE.currentUserId);
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/40 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/40 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
       <div class="p-5 bg-gradient-to-br from-brand-500 to-sonic text-white">
         <div class="flex items-center gap-2 text-xs font-semibold opacity-90"><i data-lucide="wallet" class="w-3.5 h-3.5"></i>${STATE.walletProvider} • Interlink Network</div>
@@ -2843,7 +2846,7 @@ function openWithdrawModal(){
   const available = +(me.balanceITL || 0).toFixed(4);
   const suggested = Math.max(0, +(available - withdrawFee(available)).toFixed(4));
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-pop overflow-hidden">
       <div class="p-5 border-b border-ink-100 flex items-center justify-between">
         <div>
@@ -2853,7 +2856,7 @@ function openWithdrawModal(){
         <button onclick="closeModal()" aria-label="Fechar" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4" aria-hidden="true"></i></button>
       </div>
       <div class="p-5 space-y-4">
-        <div class="rounded-2xl bg-gradient-to-br from-brand-500 to-sonic text-white p-4">
+        <div class="rounded-2xl bg-gradient-to-br from-brand-500 to-sonic text-white p-3">
           <div class="text-xs font-semibold opacity-90">Saldo disponível</div>
           <div class="text-3xl font-extrabold mt-1 text-sonic">${fmtITL(available)}</div>
           <div class="text-[11px] opacity-90 mt-1">Provider: ${STATE.walletProvider} • ${shortAddr(me.wallet)}</div>
@@ -2873,7 +2876,7 @@ function openWithdrawModal(){
           <button onclick="setWithdrawMax()" class="border border-ink-100 hover:bg-ink-100/50 font-semibold px-3 py-2 rounded-xl text-sm">Máx</button>
         </div>
 
-        <div class="rounded-2xl border border-ink-100 bg-ink-100/40 p-4 text-sm space-y-2">
+        <div class="rounded-2xl border border-ink-100 bg-ink-100/40 p-3 text-sm space-y-2">
           <div class="flex justify-between"><span class="text-ink-500">Taxa de rede estimada</span><span id="wd-fee" class="font-semibold">0 ITL</span></div>
           <div class="flex justify-between"><span class="text-ink-500">Total debitado</span><span id="wd-total" class="font-semibold">0 ITL</span></div>
           <div class="flex justify-between pt-2 border-t border-ink-100"><span class="font-bold">Você recebe</span><span id="wd-receive" class="font-extrabold text-brand-700">0 ITL</span></div>
@@ -2925,7 +2928,7 @@ function confirmWithdraw(){
   const hash = txHash();
   const url = explorerURL(hash);
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in">
     <div class="bg-white w-full max-w-md rounded-2xl shadow-pop overflow-hidden">
       <div class="p-6 text-center">
         <div class="w-14 h-14 rounded-full bg-brand-50 grid place-items-center mx-auto">
@@ -2951,7 +2954,7 @@ function confirmWithdraw(){
     addNotification({ type:'withdrawal', title:'Saque confirmado', body:`${fmtITL(amount)} enviados para ${shortAddr(dest)} • taxa ${fmtITL(fee)}`, link:'#/wallet' });
     persistNow();
     $('#modal-root').innerHTML = `
-    <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+    <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
       <div class="bg-white w-full max-w-md rounded-2xl shadow-pop overflow-hidden">
         <div class="p-6 text-center">
           <div class="w-14 h-14 rounded-full bg-emerald-50 grid place-items-center mx-auto">
@@ -2984,7 +2987,7 @@ function confirmWithdraw(){
 function renderFooter(){
   $('#app-footer').innerHTML = `
   <footer class="bg-white text-slate-600 mt-12 border-t border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-14">
       <div class="flex flex-col items-center text-center">
         <div class="flex items-center gap-2">
           <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white"><i class="ri-briefcase-4-fill"></i></span>
@@ -3000,7 +3003,7 @@ function renderFooter(){
       </div>
     </div>
     <div class="border-t border-slate-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
         <span>© 2026 InterWork. All rights reserved.</span>
         <span>Powered by Interlink · ITL Token</span>
       </div>
@@ -3113,7 +3116,7 @@ function viewHeroPage(){
   const pageItems = filtered.slice((curPage-1)*PAGE_SIZE, curPage*PAGE_SIZE);
 
   return `
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-6 text-center">
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-6 text-center">
     <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-ink-900">Find the perfect freelance talent</h1>
     <p class="mt-3 text-sm sm:text-base text-ink-500">Browse 20+ verified services from top Web3 professionals</p>
 
@@ -3152,7 +3155,7 @@ function viewHeroPage(){
   </section>
 
   <!-- CATEGORY BAR (Restored with Fidelity) -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 border-b border-slate-100">
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 border-b border-slate-100">
     <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide py-4">
       <button onclick="STATE.category='all';STATE.query='';renderView()" class="px-4 py-2 rounded-full text-[13px] font-bold transition-all whitespace-nowrap ${STATE.category==='all'&&!STATE.query?'bg-[#8b7cff] text-white':'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}">
         All
@@ -3167,10 +3170,10 @@ function viewHeroPage(){
   </section>
 
   <!-- FILTER BAR (Refined) -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-3 mt-6">
-    <div class="flex items-center justify-between gap-4 text-sm text-ink-500 relative border-b border-slate-100 pb-4">
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-3 mt-6">
+    <div class="flex items-center justify-between gap-3 text-sm text-ink-500 relative border-b border-slate-100 pb-4">
       <span id="resultCount" class="font-bold text-slate-900">${filtered.length} services available</span>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3">
         <button id="sortBtn" onclick="toggleSort(event)" class="flex items-center gap-1 hover:text-[#8b7cff] font-bold text-slate-900 transition">
           <i class="ri-arrow-up-down-line"></i>
           <span id="sortLabel">${STATE.sort==='rating'?'Top Rated':STATE.sort==='reviews'?'Most Reviews':STATE.sort==='price_asc'?'Lowest Price':STATE.sort==='price_desc'?'Highest Price':'Top Rated'}</span>
@@ -3187,7 +3190,7 @@ function viewHeroPage(){
   </section>
 
   <!-- GIGS GRID -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
     ${filtered.length===0 ? `
       <div id="emptyState" class="text-center py-20">
         <div class="mx-auto w-16 h-16 rounded-full bg-slate-100 grid place-items-center text-slate-400">
@@ -3197,7 +3200,7 @@ function viewHeroPage(){
         <p class="mt-1 text-sm text-slate-500">Try different keywords or clear your filters.</p>
         <button onclick="clearAllFilters()" class="mt-5 px-6 py-2 rounded-full bg-[#8b7cff] text-white text-sm font-bold hover:bg-[#7a6cf0] transition">Clear all filters</button>
       </div>` : `
-      <div id="gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div id="gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         ${pageItems.map(serviceCard).join('')}
       </div>
       ${paginationBar(filtered.length)}`}
@@ -3245,7 +3248,7 @@ function viewExploreResults(){
   const catObj = STATE.category!=='all' ? getCategory(STATE.category) : null;
 
   return `
-  <div id="explore-section" class="max-w-7xl mx-auto px-4 py-6">
+  <div id="explore-section" class="max-w-6xl mx-auto px-4 py-6">
 
     <!-- Breadcrumb — Fiverr style -->
     <div class="flex items-center gap-1.5 text-[12.5px] text-slate-400 mb-3">
@@ -3300,7 +3303,7 @@ function viewExploreResults(){
             : 'Budget'}
           <i class="ri-arrow-down-s-line opacity-50"></i>
         </button>
-        <div id="fm-budget" data-fmenu class="hidden absolute left-0 mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-4 z-50" onclick="event.stopPropagation()">
+        <div id="fm-budget" data-fmenu class="hidden absolute left-0 mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-3 z-50" onclick="event.stopPropagation()">
           <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2">Price Range (ITL)</div>
           <div class="flex items-center gap-2">
             <input aria-label="Min" id="budget-min-input" type="number" placeholder="Min" value="${STATE.priceMin||''}" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-sm outline-none focus:border-[#8b7cff]"/>
@@ -3737,7 +3740,7 @@ function markReviewHelpful(reviewId, val){
 function viewFavorites(){
   const favServices = STATE.favorites.map(id=>getService(id)).filter(Boolean);
   return `
-  <div class="max-w-7xl mx-auto px-5 py-8">
+  <div class="max-w-6xl mx-auto px-5 py-8">
     <div class="flex items-center gap-2 mb-1">
       <i data-lucide="heart" class="w-5 h-5 text-rose-500" aria-hidden="true"></i>
       <h1 class="font-extrabold text-2xl">Favoritos</h1>
@@ -3776,7 +3779,7 @@ function viewService(id){
 
   return `
   <!-- BREADCRUMB -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-5">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-5">
     <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500">
       <a href="#/home" class="hover:text-slate-900">Home</a>
       <i class="ri-arrow-right-s-line"></i>
@@ -3787,7 +3790,7 @@ function viewService(id){
   </div>
 
   <!-- MAIN SERVICE -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
     <!-- LEFT (2 cols) -->
     <div class="lg:col-span-2 space-y-8">
@@ -3797,7 +3800,7 @@ function viewService(id){
         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-snug">
           ${titleHtml}
         </h1>
-        <div class="mt-4 flex flex-wrap items-center gap-3 sm:gap-4 text-sm">
+        <div class="mt-4 flex flex-wrap items-center gap-3 sm:gap-3 text-sm">
           <div class="flex items-center gap-2">
             <a href="#/u/${u.handle}" class="w-9 h-9 rounded-full grid place-items-center font-bold text-slate-600 hover:ring-4 hover:ring-[#efeaff] transition overflow-hidden" style="background:${u.avatar ? 'transparent' : '#fecaca'}">
                ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover"/>` : u.name[0]}
@@ -3867,7 +3870,7 @@ function viewService(id){
       <section class="border-t border-slate-200 pt-8">
         <h2 class="text-xl font-extrabold text-slate-900">About the seller</h2>
         <div class="mt-4 flex flex-col sm:flex-row gap-5">
-          <div class="flex items-center gap-4 sm:flex-col sm:items-center">
+          <div class="flex items-center gap-3 sm:flex-col sm:items-center">
             <a href="#/u/${u.handle}" class="w-20 h-20 rounded-full grid place-items-center text-2xl font-extrabold text-slate-700 hover:ring-4 hover:ring-[#efeaff] transition overflow-hidden" style="background:${u.avatar ? 'transparent' : '#fecaca'}">
                ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover"/>` : u.name[0]}
             </a>
@@ -3903,7 +3906,7 @@ function viewService(id){
         </div>
 
         <!-- Rating breakdown -->
-        <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div class="space-y-2">
             ${[5, 4, 3, 2, 1].map(star => {
               const count = dist[star - 1] || 0;
@@ -3929,7 +3932,7 @@ function viewService(id){
         <!-- Review items -->
         <div class="mt-6 space-y-5">
           ${visReviews.map(r => `
-            <article class="rounded-lg border border-slate-200 p-4">
+            <article class="rounded-lg border border-slate-200 p-3">
               <header class="flex items-center justify-between flex-wrap gap-2">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-full bg-slate-100 grid place-items-center font-bold text-slate-700 overflow-hidden" style="background:${getUserSafe(r.userId).avatar ? 'transparent' : '#e2e8f0'}">
@@ -3958,7 +3961,7 @@ function viewService(id){
         <h2 class="text-xl font-extrabold text-slate-900">Frequently asked questions</h2>
         <div class="mt-4 space-y-2">
           ${s.faqs.map(f => `
-            <details class="accordion-alt rounded-lg border border-slate-200 p-4">
+            <details class="accordion-alt rounded-lg border border-slate-200 p-3">
               <summary class="flex items-center justify-between font-semibold text-slate-900 text-sm">
                 <span>${escapeHtml(f.q)}</span>
                 <i class="ic ri-arrow-down-s-line text-slate-500"></i>
@@ -4002,7 +4005,7 @@ function viewService(id){
         </div>
 
         <!-- Trust card -->
-        <div class="rounded-xl border border-slate-200 p-4 bg-white">
+        <div class="rounded-xl border border-slate-200 p-3 bg-white">
           <div class="flex items-center gap-2 text-sm">
             <i class="ri-shield-check-fill text-[#8b7cff] text-lg"></i>
             <span class="font-bold text-slate-900">Pay in ITL · escrow protected</span>
@@ -4014,18 +4017,18 @@ function viewService(id){
   </main>
 
   <!-- RELATED GIGS -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 py-10 border-t border-slate-100 mt-6">
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 py-10 border-t border-slate-100 mt-6">
     <div class="flex items-center justify-between mb-5">
       <h2 class="text-xl font-extrabold text-slate-900">People also viewed</h2>
       <a href="#/home" class="text-sm font-semibold text-[#5b4ee0] hover:underline">View all gigs →</a>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
       ${recommended.slice(0, 4).map(r => `
         <a href="#/service/${r.id}" class="bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-lg hover:border-[#c7c0ff] transition">
           <div class="relative overflow-hidden">
             <img src="${r.thumb}" class="w-full aspect-[3/2] object-cover" loading="lazy" />
           </div>
-          <div class="p-4 flex-1 flex flex-col">
+          <div class="p-3 flex-1 flex flex-col">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2 text-sm">
                 <span class="font-semibold text-slate-700">${escapeHtml(getUserSafe(r.freelancerId).name)}</span>
@@ -4075,7 +4078,7 @@ function viewAuthRequired(){
           ['2','Criar handle','Defina seu nome público e @handle.interlink.','at-sign'],
           ['3','Escolher perfil','Use como cliente, freelancer ou alterne depois.','users']
         ].map(([n,title,desc,ic])=>`
-          <div class="rounded-2xl border border-ink-100 p-4">
+          <div class="rounded-2xl border border-ink-100 p-3">
             <div class="flex items-center gap-2 font-extrabold"><span class="w-7 h-7 rounded-lg bg-brand-50 text-brand-700 grid place-items-center text-xs">${n}</span><i data-lucide="${ic}" class="w-4 h-4 text-brand-500"></i>${title}</div>
             <p class="text-xs text-ink-500 mt-2">${desc}</p>
           </div>`).join('')}
@@ -4123,7 +4126,7 @@ function viewWallet(){
   const history = STATE.txHistory || [];
   const payouts = STATE.payouts || [];
   return `
-  <div class="max-w-7xl mx-auto px-5 py-10">
+  <div class="max-w-6xl mx-auto px-5 py-10">
     <div class="flex items-end justify-between mb-6 flex-wrap gap-3">
       <div>
         <h1 class="text-3xl font-extrabold tracking-tight">Carteira ITL</h1>
@@ -4134,7 +4137,7 @@ function viewWallet(){
       </button>
     </div>
 
-    <div class="grid lg:grid-cols-3 gap-6">
+    <div class="grid lg:grid-cols-3 gap-3">
       <div class="lg:col-span-1 space-y-4">
         <div class="rounded-3xl bg-gradient-to-br from-brand-500 to-sonic text-white p-6 shadow-pop">
           <div class="text-xs font-semibold opacity-90 flex items-center gap-2"><i data-lucide="wallet" class="w-3.5 h-3.5"></i>${STATE.walletProvider} • Interlink Network</div>
@@ -4155,7 +4158,7 @@ function viewWallet(){
                 <div class="text-[11px] text-ink-500 mt-1">Taxa ${fmtITL(p.networkFee||0)} • ${timeAgo(p.ts)} atrás</div>
                 <div class="font-mono text-[10px] text-brand-500 mt-1">${shortHash(p.hash)}</div>
               </div>`).join('')}
-          </div>` : `<div class="text-sm text-ink-500 border border-dashed border-ink-100 rounded-xl p-4 text-center">Nenhum saque realizado ainda.</div>`}
+          </div>` : `<div class="text-sm text-ink-500 border border-dashed border-ink-100 rounded-xl p-3 text-center">Nenhum saque realizado ainda.</div>`}
         </div>
       </div>
 
@@ -4166,7 +4169,7 @@ function viewWallet(){
         </div>
         ${history.length ? `<div class="divide-y divide-ink-100">
           ${history.map(tx=>`
-            <div class="p-4 flex items-center gap-3">
+            <div class="p-3 flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-brand-50 grid place-items-center shrink-0"><i data-lucide="${txIcon(tx.type)}" class="w-4 h-4 text-brand-500"></i></div>
               <div class="flex-1 min-w-0">
                 <div class="font-bold text-sm">${txLabel(tx.type)}</div>
@@ -4217,11 +4220,11 @@ function dashClient(){
   return `
   <!-- 2 stats apenas — o que importa no celular -->
   <div class="grid grid-cols-2 gap-3 mb-5">
-    <div class="bg-white border border-ink-100 rounded-2xl p-4">
+    <div class="bg-white border border-ink-100 rounded-2xl p-3">
       <div class="text-xs text-ink-500 font-semibold mb-1">Em andamento</div>
       <div class="text-2xl font-extrabold">${active.length}</div>
     </div>
-    <div class="bg-white border border-ink-100 rounded-2xl p-4">
+    <div class="bg-white border border-ink-100 rounded-2xl p-3">
       <div class="text-xs text-ink-500 font-semibold mb-1">Concluídos</div>
       <div class="text-2xl font-extrabold">${done.length}</div>
     </div>
@@ -4275,7 +4278,7 @@ function dashFreelancer(){
   const frTab    = STATE._frTab || 'orders';
   return `
   <!-- Saldo + Sacar — destaque principal -->
-  <div class="bg-white border border-ink-100 rounded-2xl p-5 mb-4 flex items-center justify-between gap-4">
+  <div class="bg-white border border-ink-100 rounded-2xl p-5 mb-4 flex items-center justify-between gap-3">
     <div>
       <div class="text-xs text-ink-400 font-semibold mb-0.5">Saldo disponível</div>
       <div class="text-2xl font-extrabold text-brand-600">${fmtITL(me.balanceITL||0)}</div>
@@ -4288,11 +4291,11 @@ function dashFreelancer(){
 
   <!-- 2 stats principais -->
   <div class="grid grid-cols-2 gap-3 mb-4">
-    <div class="bg-white border border-ink-100 rounded-2xl p-4">
+    <div class="bg-white border border-ink-100 rounded-2xl p-3">
       <div class="text-xs text-ink-500 font-semibold mb-1">Pedidos em aberto</div>
       <div class="text-2xl font-extrabold">${pending.length}</div>
     </div>
-    <div class="bg-white border border-ink-100 rounded-2xl p-4">
+    <div class="bg-white border border-ink-100 rounded-2xl p-3">
       <div class="text-xs text-ink-500 font-semibold mb-1">Avaliação</div>
       <div class="text-2xl font-extrabold">${u.rating.toFixed(1)} ★</div>
     </div>
@@ -4325,7 +4328,7 @@ function dashFreelancer(){
 
     <!-- SERVIÇOS -->
     ${frTab==='services' ? `
-      <div class="p-4 flex items-center justify-between border-b border-ink-100">
+      <div class="p-3 flex items-center justify-between border-b border-ink-100">
         <span class="text-sm font-semibold text-ink-600">${mySvc.length} serviço${mySvc.length!==1?'s':''}</span>
         <button onclick="openNewServiceModal()"
           class="text-sm font-bold bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-xl">
@@ -4340,7 +4343,7 @@ function dashFreelancer(){
             <button onclick="openNewServiceModal()" class="mt-2 text-sm font-bold text-brand-500">+ Criar o primeiro</button>
           </div>` :
           mySvc.map(sv=>`
-          <div class="flex items-center gap-3 p-4">
+          <div class="flex items-center gap-3 p-3">
             <img src="${sv.thumb}" class="w-14 h-14 rounded-xl object-cover shrink-0"/>
             <div class="flex-1 min-w-0">
               <a href="#/service/${sv.id}" class="text-sm font-bold text-ink-900 line-clamp-2 hover:text-brand-600">${escapeHtml(sv.title)}</a>
@@ -4674,7 +4677,7 @@ function openRateModal(orderId){
   const labels = ['','Péssimo','Ruim','Regular','Bom','Excelente'];
 
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
 
       <!-- Header -->
@@ -4901,7 +4904,7 @@ function maybeOfferATV(orderId){
 function openDeliverModal(orderId){
   const o = STATE.orders.find(x=>x.id===orderId);
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-pop overflow-hidden">
       <div class="p-5 border-b border-ink-100 flex items-center justify-between">
         <div class="font-extrabold flex items-center gap-2"><i data-lucide="upload-cloud" class="w-5 h-5 text-brand-500"></i>Entregar trabalho</div>
@@ -5053,7 +5056,7 @@ function viewNewServicePage(){
         <span class="text-[11px] text-ink-400"><span id="ns-tc">${titleLen}</span>/80</span>
       </div>
     </div>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-2 gap-3">
       <div>
         <label class="text-xs font-bold uppercase tracking-wider text-ink-500">CATEGORIA *</label>
         <select id="ns-cat" class="w-full mt-1.5 border border-ink-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-400 transition bg-white">
@@ -5129,7 +5132,7 @@ function viewNewServicePage(){
       <i data-lucide="lightbulb" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5"></i>
       <span>Serviços entre <strong>48 e 280 ITL</strong> têm maior taxa de conversão na plataforma.</span>
     </div>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-2 gap-3">
       <div>
         <label class="text-xs font-bold uppercase tracking-wider text-ink-500">PREÇO (ITL) *</label>
         <div class="relative mt-1.5">
@@ -5167,7 +5170,7 @@ function viewNewServicePage(){
     </div>
     <div>
       <label class="text-xs font-bold uppercase tracking-wider text-ink-500">FOTO PRINCIPAL *</label>
-      <div class="flex items-center gap-4 mt-2">
+      <div class="flex items-center gap-3 mt-2">
         <div id="ns-logo-preview" class="w-20 h-20 rounded-xl border-2 border-dashed border-ink-200 bg-ink-50 grid place-items-center overflow-hidden shrink-0">
           ${STATE.newServiceLogo ? `<img src="${STATE.newServiceLogo}" class="w-full h-full object-cover"/>` : `<i data-lucide="image-plus" class="w-7 h-7 text-ink-300"></i>`}
         </div>
@@ -5223,7 +5226,7 @@ function viewNewServicePage(){
         : `<div class="w-full h-36 flex items-center justify-center" style="background:${catObj?.color||'#e5e7eb'}15">
             <i data-lucide="${catObj?.icon||'briefcase'}" class="w-10 h-10 opacity-20" style="color:${catObj?.color||'#9ca3af'}"></i>
            </div>`}
-      <div class="p-4">
+      <div class="p-3">
         <span class="chip text-[10px]" style="background:${catObj?.color||'#e5e7eb'}18;color:${catObj?.color||'#6b7280'}">${catObj?.label||'—'}</span>
         <div class="font-extrabold text-sm mt-1.5 leading-snug">${escapeHtml(v.title||'—')}</div>
         <div class="flex items-center justify-between mt-2">
@@ -5233,7 +5236,7 @@ function viewNewServicePage(){
         ${tagList.length ? `<div class="flex flex-wrap gap-1 mt-2">${tagList.map(t=>`<span class="chip bg-ink-100/70 text-ink-500 text-[10px]">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
       </div>
     </div>
-    <div class="rounded-2xl border border-ink-100 p-4">
+    <div class="rounded-2xl border border-ink-100 p-3">
       ${rowItem('map-pin','País',`${coObj?.flag||''} ${coObj?.name||'—'}`)}
       ${rowItem('package','Incluso',incList.length?incList.join(', '):'—')}
       ${rowItem('coins','Pagamento','ITL · Token InterLink','text-brand-600')}
@@ -5516,7 +5519,7 @@ function renderNewServiceWizard(){
 
       <div class="border-t border-ink-100 pt-4">
         <label class="text-xs font-bold uppercase tracking-wider text-ink-500">Foto Principal / Logo *</label>
-        <div class="mt-2 flex items-center gap-4">
+        <div class="mt-2 flex items-center gap-3">
           <div id="ns-logo-preview" class="w-24 h-24 rounded-2xl border-2 border-dashed border-ink-200 grid place-items-center bg-ink-100/20 overflow-hidden shrink-0">
             ${STATE.newServiceLogo ? `<img src="${STATE.newServiceLogo}" class="w-full h-full object-cover"/>` : `<i data-lucide="image-plus" class="w-7 h-7 text-ink-300"></i>`}
           </div>
@@ -5562,7 +5565,7 @@ function renderNewServiceWizard(){
         ${STATE.newServiceLogo
           ? `<img src="${STATE.newServiceLogo}" class="w-full h-32 object-cover"/>`
           : `<div class="w-full h-32 bg-gradient-to-br from-brand-100 to-sonic/20 flex items-center justify-center"><i data-lucide="image" class="w-9 h-9 text-brand-300"></i></div>`}
-        <div class="p-4">
+        <div class="p-3">
           <span class="chip bg-brand-50 text-brand-700 text-[11px]">${escapeHtml(catLabel)}</span>
           <div class="font-extrabold text-base mt-1.5 leading-snug">${escapeHtml(v.title||'—')}</div>
           <div class="text-xs text-ink-500 mt-1 line-clamp-2">${escapeHtml(v.desc||'—')}</div>
@@ -5581,14 +5584,14 @@ function renderNewServiceWizard(){
           ['Tags',       tagList.length ? tagList.map(tg=>'#'+tg).join(' ') : '—'],
           ['Fotos',      STATE.newServiceGallery.length ? `${STATE.newServiceGallery.length} imagem${STATE.newServiceGallery.length>1?'ns':''} na galeria` : 'Nenhuma'],
         ].map(([label,value])=>`
-          <div class="flex items-start justify-between gap-4 px-4 py-3">
+          <div class="flex items-start justify-between gap-3 px-4 py-3">
             <span class="text-[11px] font-bold uppercase tracking-wider text-ink-400 shrink-0 pt-0.5">${label}</span>
             <span class="text-sm text-ink-800 text-right">${escapeHtml(String(value))}</span>
           </div>`).join('')}
       </div>
 
       ${faqPreview.length ? `
-      <div class="rounded-2xl border border-ink-100 p-4">
+      <div class="rounded-2xl border border-ink-100 p-3">
         <div class="font-bold text-sm mb-2 flex items-center gap-1.5"><i data-lucide="help-circle" class="w-3.5 h-3.5 text-brand-500"></i>FAQ (${faqPreview.length})</div>
         <div class="space-y-1.5">
           ${faqPreview.slice(0,3).map(f=>`<div class="text-xs text-ink-600"><span class="font-semibold text-ink-800">${escapeHtml(f.q)}</span></div>`).join('')}
@@ -5597,7 +5600,7 @@ function renderNewServiceWizard(){
       </div>` : ''}
 
       ${reqPreview.length ? `
-      <div class="rounded-2xl border border-ink-100 p-4">
+      <div class="rounded-2xl border border-ink-100 p-3">
         <div class="font-bold text-sm mb-2 flex items-center gap-1.5"><i data-lucide="clipboard-list" class="w-3.5 h-3.5 text-brand-500"></i>Formulário do cliente (${reqPreview.length})</div>
         <div class="space-y-1.5">
           ${reqPreview.slice(0,3).map(r=>`<div class="text-xs text-ink-600">${escapeHtml(r.label)}${r.required?` <span class="text-amber-500 font-bold">*</span>`:''}</div>`).join('')}
@@ -5627,7 +5630,7 @@ function renderNewServiceWizard(){
     : `<button onclick="${STATE._nsEdit?`saveService('${STATE._nsEdit}')`:'createService()'}" class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 text-sm"><i data-lucide="send" class="w-4 h-4"></i>${STATE._nsEdit?'Salvar alterações':'Publicar serviço'}</button>`;
 
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="w-full max-w-lg flex flex-col" style="max-height:80vh" onclick="event.stopPropagation()">
 
       <!-- Step bar — fora do card, estilo wizard externo -->
@@ -5891,7 +5894,7 @@ function renderGalleryPreview(){
 }
 function showPendingApprovalScreen(){
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in">
     <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop">
       <div class="p-7 text-center">
         <div class="w-14 h-14 rounded-full bg-amber-100 grid place-items-center mx-auto mb-4">
@@ -5901,7 +5904,7 @@ function showPendingApprovalScreen(){
         <p class="text-sm text-ink-500 mb-5 leading-relaxed">
           Seu serviço foi enviado. A equipe Interwork revisa em até <strong>24h</strong> — você será notificado quando aparecer no marketplace.
         </p>
-        <div class="rounded-xl bg-amber-50 border border-amber-100 p-4 mb-5 text-left space-y-2.5">
+        <div class="rounded-xl bg-amber-50 border border-amber-100 p-3 mb-5 text-left space-y-2.5">
           <div class="flex items-center gap-2 text-xs text-emerald-700 font-semibold">
             <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-500"></i>Serviço salvo com sucesso
           </div>
@@ -5969,7 +5972,7 @@ function createService(){
   persistNow();
   // Exibe modal de confirmação e redireciona para o dashboard
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this){closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView();}">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this){closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView();}">
     <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
       <div class="px-5 pt-4 pb-3 border-b border-ink-100 flex items-center gap-2">
         <div class="font-extrabold text-sm flex items-center gap-2 flex-1">Serviço enviado para revisão ✅</div>
@@ -6219,7 +6222,7 @@ function openRequirementsModal(orderId){
   const reqs = s.requirements || [];
 
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-pop overflow-hidden">
       <div class="p-5 border-b border-ink-100 flex items-center justify-between">
         <div class="flex items-center gap-2 font-extrabold">
@@ -6364,7 +6367,7 @@ function showAtvRewardsOffer(){
   }
 
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 backdrop-blur-sm grid place-items-center p-4 fade-in"
+  <div class="fixed inset-0 z-50 backdrop-blur-sm grid place-items-center p-3 fade-in"
        style="background:rgba(8,5,18,.78)">
 
     <div class="w-full max-w-sm rounded-3xl overflow-hidden"
@@ -6536,7 +6539,7 @@ function viewProfile(handle){
 
   <!-- PROFILE HEAD -->
   <div class="max-w-5xl mx-auto px-4 sm:px-6">
-    <div class="flex flex-col sm:flex-row sm:items-end gap-4 -mt-14 sm:-mt-16 mb-5">
+    <div class="flex flex-col sm:flex-row sm:items-end gap-3 -mt-14 sm:-mt-16 mb-5">
       <!-- Avatar -->
       <div class="relative shrink-0">
         <div class="w-28 h-28 rounded-3xl shadow-lg border-4 border-white overflow-hidden bg-white">
@@ -6574,27 +6577,27 @@ function viewProfile(handle){
 
     <!-- STATS STRIP -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-      <div class="bg-white border border-ink-100 rounded-2xl p-4 text-center shadow-sm">
+      <div class="bg-white border border-ink-100 rounded-2xl p-3 text-center shadow-sm">
         <div class="text-2xl font-extrabold text-ink-900">${avgRating}</div>
         <div class="flex justify-center mt-1">${stars(parseFloat(avgRating),'w-3.5 h-3.5')}</div>
         <div class="text-xs text-ink-500 mt-1">${allReviews.length} avaliações</div>
       </div>
-      <div class="bg-white border border-ink-100 rounded-2xl p-4 text-center shadow-sm">
+      <div class="bg-white border border-ink-100 rounded-2xl p-3 text-center shadow-sm">
         <div class="text-2xl font-extrabold text-ink-900">${ordersDone}</div>
         <div class="text-xs text-ink-500 mt-1">Pedidos concluídos</div>
       </div>
-      <div class="bg-white border border-ink-100 rounded-2xl p-4 text-center shadow-sm">
+      <div class="bg-white border border-ink-100 rounded-2xl p-3 text-center shadow-sm">
         <div class="text-2xl font-extrabold text-ink-900">${u.approvalPct || 99}%</div>
         <div class="text-xs text-ink-500 mt-1">Taxa de aprovação</div>
       </div>
-      <div class="bg-white border border-ink-100 rounded-2xl p-4 text-center shadow-sm">
+      <div class="bg-white border border-ink-100 rounded-2xl p-3 text-center shadow-sm">
         <div class="text-2xl font-extrabold text-ink-900">${u.repeatClientsPct || 0}%</div>
         <div class="text-xs text-ink-500 mt-1">Clientes recorrentes</div>
       </div>
     </div>
 
     <!-- TABS -->
-    <div class="flex gap-6 border-b border-ink-100 mb-6" id="profile-tabs">
+    <div class="flex gap-3 border-b border-ink-100 mb-6" id="profile-tabs">
       <button class="tab tab-active pb-2" onclick="showProfileTab('gigs',this)">Serviços (${services.length})</button>
       <button class="tab pb-2" onclick="showProfileTab('about',this)">Sobre</button>
       <button class="tab pb-2" onclick="showProfileTab('reviews',this)">Avaliações (${allReviews.length})</button>
@@ -6622,7 +6625,7 @@ function viewProfile(handle){
                       <img src="${s.thumb}" alt="${escapeHtml(s.title)}" class="w-full h-full object-cover gig-img"/>
                       ${s.reviewsCount >= 50 && s.rating >= 4.7 ? `<span class="absolute top-2 left-2 bg-white/95 text-ink-900 text-[10px] font-bold px-2 py-0.5 rounded-md shadow">BEST SELLER</span>` : ''}
                     </div>
-                    <div class="p-4">
+                    <div class="p-3">
                       <div class="font-semibold text-ink-900 text-sm leading-snug line-clamp-2 mb-2">${escapeHtml(s.title)}</div>
                       <div class="flex items-center gap-1 text-xs text-amber-500 mb-2">
                         <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
@@ -6716,7 +6719,7 @@ function viewProfile(handle){
         <!-- PANE: PORTFOLIO -->
         ${u.portfolio && u.portfolio.length ? `
         <div id="pane-portfolio" class="hidden">
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             ${u.portfolio.map(p=>`
               <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
                 <div class="h-32 overflow-hidden">
@@ -6859,7 +6862,7 @@ function openDisputeModal(orderId, perspective){
   const o = STATE.orders.find(x=>x.id===orderId);
   const s = getService(o.serviceId);
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-pop overflow-hidden">
       <div class="p-5 border-b border-ink-100 flex items-center justify-between bg-rose-50">
         <div class="font-extrabold flex items-center gap-2 text-rose-700"><i data-lucide="gavel" class="w-5 h-5"></i>Abrir disputa on-chain</div>
@@ -7022,7 +7025,7 @@ function renderDisputeView(o){
   const opener = getUser(o.dispute.openedBy);
   const totalVotes = o.dispute.arbiters.filter(a=>a.vote).length;
   $('#modal-root').innerHTML = `
-  <div id="dispute-modal" class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div id="dispute-modal" class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-xl rounded-2xl shadow-pop overflow-hidden">
       <div class="p-5 border-b border-ink-100 flex items-center justify-between bg-rose-50">
         <div class="font-extrabold flex items-center gap-2 text-rose-700"><i data-lucide="gavel" class="w-5 h-5"></i>Disputa do pedido #${o.id.slice(-5)}</div>
@@ -7071,7 +7074,7 @@ function renderDisputeView(o){
         </div>
 
         ${o.dispute.status==='resolved' ? `
-          <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
+          <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-3">
             <div class="font-extrabold text-emerald-700 flex items-center gap-2"><i data-lucide="check-circle-2" class="w-5 h-5"></i>Resolução: ${o.dispute.resolution.winner==='refund'?'Reembolso total ao cliente':o.dispute.resolution.winner==='split'?'Divisão 50/50':'Liberar para o freelancer'}</div>
             <div class="text-xs text-ink-700 mt-1">Votação: ${o.dispute.votes.refund} reembolso • ${o.dispute.votes.split} divisão • ${o.dispute.votes.release} liberar</div>
             <a href="${explorerURL(o.dispute.resolution.txHash)}" target="_blank" class="mt-2 inline-flex items-center gap-1 text-brand-500 text-xs font-semibold">Tx da resolução <i data-lucide="external-link" class="w-3 h-3"></i></a>
@@ -7093,7 +7096,7 @@ function openEditProfileModal(){
   if (!u){ toast('Usuário não encontrado','warn'); return; }
   const langOpts = LANGUAGES_LIST.map(l=>`<option value="${l.id}" ${u.languages.includes(l.id)?'selected':''}>${l.flag} ${l.label}</option>`).join('');
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-pop overflow-hidden">
       <div class="p-5 border-b border-ink-100 flex items-center justify-between">
         <div class="font-extrabold flex items-center gap-2"><i data-lucide="pencil" class="w-5 h-5 text-brand-500"></i>Editar perfil</div>
@@ -7196,7 +7199,7 @@ function viewLegal(page){
       <span class="text-ink-700">${cfg.title}</span>
     </div>
 
-    <div class="grid lg:grid-cols-4 gap-6">
+    <div class="grid lg:grid-cols-4 gap-3">
       <aside class="lg:col-span-1 bg-white border border-ink-100 rounded-2xl p-3 h-fit">
         <div class="text-[10px] uppercase font-bold tracking-wider text-ink-500 px-3 py-2">Documentos</div>
         ${navLinks}
@@ -7462,7 +7465,7 @@ function viewOverview(){
     </div>
 
     <!-- Stats bar -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-14">
       ${stats.map(s=>`
       <div class="rounded-2xl bg-ink-100/40 text-center p-5">
         <div class="font-extrabold text-2xl text-brand-500">${s.n}</div>
@@ -7471,7 +7474,7 @@ function viewOverview(){
     </div>
 
     <!-- Ecosystem note -->
-    <div class="rounded-2xl border border-brand-100 bg-brand-50/40 p-6 flex items-start gap-4">
+    <div class="rounded-2xl border border-brand-100 bg-brand-50/40 p-6 flex items-start gap-3">
       <div class="w-10 h-10 rounded-xl bg-brand-100 grid place-items-center shrink-0">
         <i data-lucide="link-2" class="w-5 h-5 text-brand-600"></i>
       </div>
@@ -7632,7 +7635,7 @@ function viewRewards(){
     </div>
 
     <!-- ATV explainer banner -->
-    <div class="rounded-2xl bg-gradient-to-r from-cyan-500 to-brand-500 p-6 text-white mb-10 flex items-start gap-4">
+    <div class="rounded-2xl bg-gradient-to-r from-cyan-500 to-brand-500 p-6 text-white mb-10 flex items-start gap-3">
       <div class="w-12 h-12 rounded-xl bg-white/20 grid place-items-center shrink-0">
         <i data-lucide="activity" class="w-6 h-6 text-white"></i>
       </div>
@@ -8087,7 +8090,7 @@ function openHireModal(serviceId, tierKey){
   const isBigProject = tier.priceITL >= 150; // só projetos grandes ganham a sugestão de negociar etapas no chat
 
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
 
       <!-- Header compacto -->
@@ -8316,7 +8319,7 @@ function openReceiptModal(orderId){
   </div>`;
 
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-2xl rounded-2xl shadow-pop overflow-hidden flex flex-col max-h-[92vh]">
 
       <!-- Modal header -->
@@ -8346,7 +8349,7 @@ function openReceiptModal(orderId){
       </div>
 
       <!-- Footer actions -->
-      <div class="p-4 border-t border-ink-100 flex flex-wrap gap-2 shrink-0 bg-white">
+      <div class="p-3 border-t border-ink-100 flex flex-wrap gap-2 shrink-0 bg-white">
         <button onclick="copyReceiptHash('${escrowTx}')" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
           <i data-lucide="copy" class="w-4 h-4"></i>Copiar tx hash
         </button>
@@ -8491,7 +8494,7 @@ function openATVSubmitModal(orderId){
   ];
 
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-pop overflow-hidden flex flex-col max-h-[90vh]">
       <div class="p-5 border-b border-ink-100 flex items-center justify-between bg-amber-50 shrink-0">
         <div class="flex items-center gap-3">
@@ -8523,7 +8526,7 @@ function openATVSubmitModal(orderId){
         </div>
       </div>
 
-      <div class="p-4 border-t border-ink-100 flex gap-2 shrink-0 bg-white">
+      <div class="p-3 border-t border-ink-100 flex gap-2 shrink-0 bg-white">
         <button onclick="copyAllATVFields()" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
           <i data-lucide="copy" class="w-4 h-4"></i>Copiar tudo
         </button>
@@ -8580,8 +8583,8 @@ function printReceipt(){
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
   }
-  .max-w-7xl { max-width: 80rem !important; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
-  @media (min-width: 640px) { .max-w-7xl { padding-left: 1.5rem; padding-right: 1.5rem; } }
+  .max-w-6xl { max-width: 80rem !important; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+  @media (min-width: 640px) { .max-w-6xl { padding-left: 1.5rem; padding-right: 1.5rem; } }
   
   .btn-primary, .btn-primary-alt { 
     background: var(--primary) !important; 
@@ -8719,8 +8722,8 @@ function openLightbox(sid, idx){
   if (!imgs.length) return;
   const i = Math.max(0, Math.min(idx, imgs.length-1));
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-[60] bg-black/90 grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
-    <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 grid place-items-center rounded-full bg-white/10 hover:bg-white/20 text-white">
+  <div class="fixed inset-0 z-[60] bg-black/90 grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
+    <button onclick="closeModal()" class="absolute top-3 right-4 w-10 h-10 grid place-items-center rounded-full bg-white/10 hover:bg-white/20 text-white">
       <i data-lucide="x" class="w-5 h-5"></i>
     </button>
     ${imgs.length>1 ? `
@@ -8786,7 +8789,7 @@ function confirmHire(serviceId, tierKey){
   const qrUrl     = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&qzone=2&data=${qrPayload}`;
 
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in">
     <div id="tx-card" class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
 
       <!-- Header -->
@@ -8907,7 +8910,7 @@ function qrConfirmPayment(serviceId, tierKey, brief, total, hash, tier, mileston
 
     // success card
     $('#modal-root').innerHTML = `
-    <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+    <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
       <div class="bg-white w-full max-w-md rounded-2xl shadow-pop overflow-hidden">
         <div class="p-6 text-center">
           <div class="w-14 h-14 rounded-full bg-emerald-50 grid place-items-center mx-auto">
@@ -9026,7 +9029,7 @@ function renderChat(order, ephemeral){
     <aside class="absolute right-0 top-0 h-full w-full sm:w-[420px] bg-white shadow-2xl pointer-events-auto flex flex-col fade-in">
 
       <!-- Header -->
-      <div class="p-4 border-b border-ink-100 flex items-center gap-3">
+      <div class="p-3 border-b border-ink-100 flex items-center gap-3">
         <img src="${other.avatar}" class="w-10 h-10 rounded-xl"/>
         <div class="flex-1 min-w-0">
           <div class="font-bold text-sm flex items-center gap-1">${other.name} ${other.verified?'<i data-lucide="badge-check" class="w-4 h-4 text-brand-500"></i>':''}</div>
@@ -9045,7 +9048,7 @@ function renderChat(order, ephemeral){
       </div>` : ''}
 
       <!-- Messages stream -->
-      <div id="chat-stream" class="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-3 bg-gradient-to-b from-white to-ink-100/30">
+      <div id="chat-stream" class="flex-1 overflow-y-auto scrollbar-thin p-3 space-y-3 bg-gradient-to-b from-white to-ink-100/30">
         ${msgs.map(m=>chatBubble(m)).join('') || `<div class="text-center text-ink-500 text-xs py-8">Inicie a conversa</div>`}
       </div>
 
@@ -9403,8 +9406,8 @@ function chatTypingBubble(user){
 /* Full-screen image preview from chat */
 function chatImagePreview(dataURL, name){
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-[60] bg-black/92 flex flex-col items-center justify-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
-    <div class="absolute top-4 right-4 flex items-center gap-2">
+  <div class="fixed inset-0 z-[60] bg-black/92 flex flex-col items-center justify-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
+    <div class="absolute top-3 right-4 flex items-center gap-2">
       <div class="text-white/70 text-sm font-medium">${escapeHtml(name)}</div>
       <button onclick="closeModal()" aria-label="Fechar preview" class="w-10 h-10 grid place-items-center rounded-full bg-white/10 hover:bg-white/20 text-white">
         <i data-lucide="x" class="w-5 h-5"></i>
@@ -10338,7 +10341,7 @@ function viewAdmin(){
     }[s.status] || `<span class="chip bg-ink-100 text-ink-600">${s.status}</span>`;
 
     return `
-    <div class="bg-white border border-ink-100 rounded-2xl p-5 hover:shadow-card transition flex flex-col md:flex-row gap-4" id="admin-svc-${s.id}">
+    <div class="bg-white border border-ink-100 rounded-2xl p-5 hover:shadow-card transition flex flex-col md:flex-row gap-3" id="admin-svc-${s.id}">
       <!-- Thumb -->
       <div class="shrink-0 w-20 h-16 rounded-xl overflow-hidden bg-ink-100">
         <img src="${s.thumb}" class="w-full h-full object-cover" alt=""/>
@@ -10418,13 +10421,13 @@ function viewAdmin(){
         </div>
       </div>
     </div>` : `
-    <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 mb-8 flex items-center gap-3">
+    <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-3 mb-8 flex items-center gap-3">
       <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0"></i>
       <div class="text-sm text-emerald-800"><strong>Supabase conectado.</strong> Dados sincronizados em tempo real.</div>
     </div>`}
 
     <!-- Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
       ${tabData.map(t=>`
       <button onclick="STATE.adminTab='${t.key}';render()"
         class="text-left p-5 rounded-2xl border ${activeTab===t.key ? t.bg+' border-current' : 'bg-white border-ink-100 hover:bg-ink-100/30'} transition">
@@ -10450,7 +10453,7 @@ function viewAdmin(){
         <div class="font-extrabold text-lg">SQL para criar as tabelas no Supabase</div>
       </div>
       <p class="text-sm text-white/70 mb-4">Execute este SQL no painel Supabase → SQL Editor → New query:</p>
-      <pre class="text-xs text-emerald-300 overflow-x-auto leading-relaxed bg-black/30 rounded-xl p-4 select-all">${escapeHtml(`-- 1. Tabela de serviços
+      <pre class="text-xs text-emerald-300 overflow-x-auto leading-relaxed bg-black/30 rounded-xl p-3 select-all">${escapeHtml(`-- 1. Tabela de serviços
 create table if not exists public.services (
   id              text primary key,
   title           text not null,
@@ -10544,7 +10547,7 @@ function adminRejectPrompt(id){
   const svc = getService(id);
   if (!svc) return;
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-4 fade-in" onclick="if(event.target===this)closeModal()">
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
       <div class="px-5 pt-4 pb-3 border-b border-ink-100 flex items-center gap-2">
         <div class="font-extrabold text-sm flex items-center gap-2 flex-1">❌ Rejeitar serviço</div>
@@ -10842,13 +10845,13 @@ window.viewProfile = function(handle){
   return `
   <div id="page-profile" class="page active bg-white min-h-screen">
     <div class="cover h-40 sm:h-52 w-full relative z-0" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-bottom: 1px solid #e2e8f0;">
-      <div class="max-w-7xl mx-auto h-full px-4 sm:px-6 flex items-end justify-end pb-4">
+      <div class="max-w-6xl mx-auto h-full px-4 sm:px-6 flex items-end justify-end pb-4">
         ${isMe ? `<button onclick="toast('Em breve','info')" class="btn-outline rounded-lg text-xs font-bold px-3 py-1.5 bg-white shadow-sm hover:bg-slate-50 transition border border-slate-200"><i data-lucide="image" class="w-3.5 h-3.5 mr-1"></i>Edit cover</button>` : ''}
       </div>
     </div>
 
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 -mt-14 sm:-mt-16 relative z-10">
-      <div class="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 -mt-14 sm:-mt-16 relative z-10">
+      <div class="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-3">
         <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-4 border-white shadow-lg overflow-hidden bg-white shrink-0">
           <img src="${u.avatar}" class="w-full h-full object-cover"/>
         </div>
@@ -10873,43 +10876,43 @@ window.viewProfile = function(handle){
       </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <div class="rounded-xl border border-slate-200 p-4 bg-white shadow-sm">
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 mt-8">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-3">
+        <div class="rounded-xl border border-slate-200 p-3 bg-white shadow-sm">
           <div class="text-xs text-slate-500 uppercase font-bold tracking-wider">Total orders</div>
           <div class="mt-1 font-extrabold text-slate-900 text-xl">${ordersDone}</div>
         </div>
-        <div class="rounded-xl border border-slate-200 p-4 bg-white shadow-sm">
+        <div class="rounded-xl border border-slate-200 p-3 bg-white shadow-sm">
           <div class="text-xs text-slate-500 uppercase font-bold tracking-wider">In queue</div>
           <div class="mt-1 font-extrabold text-slate-900 text-xl">0</div>
         </div>
-        <div class="rounded-xl border border-slate-200 p-4 bg-white shadow-sm">
+        <div class="rounded-xl border border-slate-200 p-3 bg-white shadow-sm">
           <div class="text-xs text-slate-500 uppercase font-bold tracking-wider">On time</div>
           <div class="mt-1 font-extrabold text-slate-900 text-xl">${u.approvalPct || 99}%</div>
         </div>
-        <div class="rounded-xl border border-slate-200 p-4 bg-white shadow-sm">
+        <div class="rounded-xl border border-slate-200 p-3 bg-white shadow-sm">
           <div class="text-xs text-slate-500 uppercase font-bold tracking-wider">Earned in ITL</div>
           <div class="mt-1 font-extrabold text-slate-900 text-xl">${u.earnedITL || 0}k</div>
         </div>
       </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 border-b border-slate-200">
-      <div class="flex items-center gap-6 sm:gap-8 overflow-x-auto text-sm">
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 mt-8 border-b border-slate-200">
+      <div class="flex items-center gap-3 sm:gap-8 overflow-x-auto text-sm">
         <button onclick="showProfileTab('gigs',this)" class="tab tab-active whitespace-nowrap pb-3 border-b-2 border-brand-500 font-bold">Active gigs <span class="text-slate-400 ml-1">(${services.length})</span></button>
         <button onclick="showProfileTab('about',this)" class="tab whitespace-nowrap pb-3 text-slate-500 font-medium">About</button>
         <button onclick="showProfileTab('reviews',this)" class="tab whitespace-nowrap pb-3 text-slate-500 font-medium">Reviews <span class="text-slate-400 ml-1">(${allReviews.length})</span></button>
       </div>
     </section>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <div id="pane-gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      <div id="pane-gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         ${services.map(s=>`
           <a href="#/service/${s.id}" class="card bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col hover:shadow-lg transition-all duration-300">
             <div class="relative overflow-hidden aspect-[3/2]">
               <img src="${s.thumb}" class="gig-img w-full h-full object-cover" loading="lazy" />
             </div>
-            <div class="p-4 flex-1 flex flex-col">
+            <div class="p-3 flex-1 flex flex-col">
               <h3 class="text-sm font-bold text-slate-900 leading-snug line-clamp-2 min-h-[40px]">${escapeHtml(s.title)}</h3>
               <div class="mt-2 flex items-center gap-1 text-xs text-slate-500">
                 <i data-lucide="star" class="w-3 h-3 fill-amber-400 text-amber-400"></i><b class="text-slate-700">${s.rating.toFixed(1)}</b><span>(${s.reviewsCount})</span>
@@ -10933,7 +10936,7 @@ function viewEarnITL(){
   <div class="bg-white min-h-screen">
     <!-- Hero Section -->
     <section class="bg-slate-900 text-white py-10 md:py-14 overflow-hidden relative">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
         <div class="max-w-2xl">
           <span class="inline-block px-2.5 py-0.5 rounded-full bg-brand-500/20 border border-brand-500/30 text-brand-400 text-[9px] font-bold uppercase tracking-widest mb-3">Freelance on Interlink</span>
           <h1 class="text-3xl md:text-4xl font-extrabold mb-3 tracking-tight">Earn ITL. <br/><span class="text-brand-500 text-2xl md:text-3xl">Your skills, your rules.</span></h1>
@@ -10957,13 +10960,13 @@ function viewEarnITL(){
 
     <!-- Explanatory Menu / Features -->
     <section id="how-it-works-earn" class="py-12 border-b border-slate-100">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
         <div class="text-center max-w-xl mx-auto mb-10">
           <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Por que vender na Interwork?</h2>
           <p class="text-xs text-slate-500">Construímos a plataforma pensando na liberdade e segurança do freelancer moderno.</p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-6">
+        <div class="grid md:grid-cols-3 gap-3">
           <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:border-brand-200 transition-all group">
             <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-600 grid place-items-center mb-4 group-hover:scale-110 transition-transform">
               <i class="ri-flashlight-line text-xl"></i>
@@ -10993,8 +10996,8 @@ function viewEarnITL(){
 
     <!-- Simple Creation Menu -->
     <section class="py-10 bg-brand-600">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="bg-white rounded-2xl p-6 md:p-8 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-lg">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="bg-white rounded-2xl p-6 md:p-8 flex flex-col lg:flex-row items-center justify-between gap-3 shadow-lg">
           <div class="max-w-lg">
             <h2 class="text-xl font-extrabold text-slate-900 mb-3 leading-tight">Pronto para publicar seu primeiro serviço?</h2>
             <div class="space-y-3">
@@ -11027,8 +11030,8 @@ function viewEarnITL(){
 
     <!-- Inspiration Section -->
     <section class="py-14 bg-slate-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-3">
           <div>
             <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Precisa de inspiração?</h2>
             <p class="text-slate-500 text-sm">Veja exemplos de serviços que fazem sucesso na nossa rede.</p>
@@ -11038,7 +11041,7 @@ function viewEarnITL(){
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           ${inspirationGigs.map(p => serviceCard(p)).join('')}
         </div>
         
