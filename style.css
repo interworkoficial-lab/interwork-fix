@@ -1048,3 +1048,104 @@ html.dark {
   html.dark .avatar-option { background: var(--surf-800); border-color: rgba(255,255,255,.1); }
   html.dark .avatar-option.on { border-color: var(--neon-cyan); background: rgba(34,211,238,.08); }
 
+/* ══════════════════════════════════════════════════════════
+   GIG CARD CAROUSEL — setas e dots (Item 3)
+   ══════════════════════════════════════════════════════════ */
+
+.gig-thumb {
+  position: relative !important;
+  width: 100%;
+  aspect-ratio: 4/3;
+  padding-bottom: 0 !important;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.gig-thumb img[data-slide] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.gig-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.92);
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.gig-carousel-arrow:hover {
+  background: #ffffff;
+}
+
+.gig-carousel-prev { left: 8px; }
+.gig-carousel-next { right: 8px; }
+
+.gig-carousel-dots {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.gig-carousel-dots span[data-dot] {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  transition: background 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+
+.gig-carousel-dots span[data-dot].bg-white {
+  background: #ffffff;
+  transform: scale(1.3);
+}
+
+/* Mostrar no hover do card */
+.gig-card:hover .gig-carousel-arrow,
+.gig-card:hover .gig-carousel-dots {
+  opacity: 1;
+}
+
+/* Mobile — sempre visível */
+@media (max-width: 640px) {
+  .gig-carousel-arrow {
+    opacity: 1 !important;
+    width: 24px;
+    height: 24px;
+  }
+  .gig-carousel-dots {
+    opacity: 1 !important;
+  }
+}
+
+html.dark .gig-carousel-arrow {
+  background: rgba(30,41,59,0.92);
+}
+html.dark .gig-carousel-arrow:hover {
+  background: #1e293b;
+}
