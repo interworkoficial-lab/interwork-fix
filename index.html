@@ -249,7 +249,7 @@
 
   /* ============ GIG CARD (Fiverr-style, bulletproof) ============ */
   .gig-card{display:flex;flex-direction:column;min-width:0;width:100%}
-  .gig-thumb{position:relative;width:100%;padding-bottom:60%;background:#f1f5f9}
+  .gig-thumb{position:relative;width:100%;padding-bottom:53%;background:#f1f5f9}
   .gig-thumb>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
   .gig-title{
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
@@ -938,7 +938,7 @@ html.dark {
   .gig-thumb {
     position: relative;
     width: 100%;
-    padding-bottom: 60%;
+    padding-bottom: 53%;
     background: #f1f5f9;
     border: 1px solid #e5e7eb;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -5012,7 +5012,7 @@ function viewNewServicePage(){
     <button onclick="if(${s.n}<${step+1}){STATE._nsStep=${s.n};renderView()}"
       class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all
         ${active ? 'bg-brand-50 border border-brand-200' : done ? 'hover:bg-ink-100/40' : 'opacity-40 cursor-default'}">
-      <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 shrink-0 transition-all
+      <div class="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold border-2 shrink-0 transition-all
         ${done ? 'bg-brand-500 border-brand-500 text-white' : active ? 'border-brand-500 text-brand-600 bg-white' : 'border-ink-200 text-ink-400 bg-white'}">
         ${done ? `<i data-lucide="check" class="w-4 h-4"></i>` : s.n}
       </div>
@@ -5231,7 +5231,7 @@ function viewNewServicePage(){
         <div class="font-extrabold text-sm mt-1.5 leading-snug">${escapeHtml(v.title||'—')}</div>
         <div class="flex items-center justify-between mt-2">
           <span class="text-xs text-ink-500">${v.days||'?'} dias</span>
-          <span class="text-base font-extrabold text-brand-600">${fmtITL(+(v.price||0))}</span>
+          <span class="text-[13px] font-extrabold text-brand-600">${fmtITL(+(v.price||0))}</span>
         </div>
         ${tagList.length ? `<div class="flex flex-wrap gap-1 mt-2">${tagList.map(t=>`<span class="chip bg-ink-100/70 text-ink-500 text-[10px]">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
       </div>
@@ -7199,7 +7199,7 @@ function viewLegal(page){
       <span class="text-ink-700">${cfg.title}</span>
     </div>
 
-    <div class="grid lg:grid-cols-4 gap-3">
+    <div class="grid lg:grid-cols-5 gap-2.5">
       <aside class="lg:col-span-1 bg-white border border-ink-100 rounded-2xl p-3 h-fit">
         <div class="text-[10px] uppercase font-bold tracking-wider text-ink-500 px-3 py-2">Documentos</div>
         ${navLinks}
