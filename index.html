@@ -1458,37 +1458,36 @@ function renderHeader(){
         <span class="font-medium">Ver meu perfil</span>
       </a>
 
-      <a href="#/dashboard/client" onclick="closeProfileMenu()"
-        class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition">
-        <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0">
-          <i class="ri-briefcase-line text-slate-500"></i>
-        </div>
-        <span class="font-medium">Meus pedidos</span>
-      </a>
+      <button onclick="closeProfileMenu();go('#/dashboard/client')"
+  class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
+  <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0">
+    <i class="ri-briefcase-line text-slate-500"></i>
+  </div>
+  <span class="font-medium">Meus pedidos</span>
+</button>
 
-      <a href="#/wallet" onclick="closeProfileMenu()"
-        class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition">
-        <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0">
-          <i class="ri-wallet-3-line text-slate-500"></i>
-        </div>
-        <div class="flex-1 flex items-center justify-between">
-          <span class="font-medium">Carteira</span>
-          <span class="text-xs font-bold text-[#8b7cff]">${me?.balanceITL ? (me.balanceITL).toLocaleString('en-US',{maximumFractionDigits:0})+' ITL' : '0 ITL'}</span>
-        </div>
-      </a>
+<button onclick="closeProfileMenu();go('#/wallet')"
+  class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
+  <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0">
+    <i class="ri-wallet-3-line text-slate-500"></i>
+  </div>
+  <div class="flex-1 flex items-center justify-between">
+    <span class="font-medium">Carteira</span>
+    <span class="text-xs font-bold text-[#8b7cff]">${me?.balanceITL ? (me.balanceITL).toLocaleString('en-US',{maximumFractionDigits:0})+' ITL' : '0 ITL'}</span>
+  </div>
+</button>
 
-      <!-- Notificações -->
-      <button onclick="closeProfileMenu();toggleNotifPanel()"
-        class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
-        <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0 relative">
-          <i class="ri-notification-3-line text-slate-500"></i>
-          ${unreadCount() ? `<span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full text-[8px] text-white font-bold grid place-items-center">${unreadCount()}</span>` : ''}
-        </div>
-        <div class="flex-1 flex items-center justify-between">
-          <span class="font-medium">Notificações</span>
-          ${unreadCount() ? `<span class="text-xs font-bold text-rose-500">${unreadCount()} nova${unreadCount()>1?'s':''}</span>` : ''}
-        </div>
-      </button>
+<button onclick="closeProfileMenu();setTimeout(toggleNotifPanel,50)"
+  class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
+  <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0 relative">
+    <i class="ri-notification-3-line text-slate-500"></i>
+    ${unreadCount() ? `<span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full text-[8px] text-white font-bold grid place-items-center">${unreadCount()}</span>` : ''}
+  </div>
+  <div class="flex-1 flex items-center justify-between">
+    <span class="font-medium">Notificações</span>
+    ${unreadCount() ? `<span class="text-xs font-bold text-rose-500">${unreadCount()} nova${unreadCount()>1?'s':''}</span>` : ''}
+  </div>
+</button>
 
       <button onclick="closeProfileMenu();changeProfileAvatar('${me?.id||STATE.currentUserId}')"
         class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
