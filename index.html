@@ -1678,7 +1678,6 @@ window._handleReownDisconnected = function() {
   if (!STATE.walletConnected) return;
   STATE.walletConnected = false;
   STATE.authenticated   = false;
-  toast('Wallet desconectada.', 'warn');
   render();
 };
 
@@ -1884,7 +1883,6 @@ function disconnectWallet(){
   STATE.walletConnected = false;
   STATE.authenticated   = false;
   closeModal();
-  toast('Wallet desconectada', 'info');
   render();
 }
 
@@ -2865,7 +2863,7 @@ function viewService(id){
       <!-- About this gig -->
       <section>
         <h2 class="text-xl font-extrabold text-slate-900">About this gig</h2>
-        <div class="mt-3 text-slate-600 leading-relaxed space-y-3 text-sm sm:text-base whitespace-pre-line">
+        <div class="mt-3 text-slate-600 leading-relaxed space-y-3 text-sm sm:text-base whitespace-pre-line break-words [overflow-wrap:anywhere]">
           ${escapeHtml(s.description)}
         </div>
 
@@ -3289,8 +3287,8 @@ function downloadAllApproved(){
 
 function dashFreelancer(){
   const freelancerId = 'u_ana';
-  const u  = getUser(freelancerId);
-  const me = getUser(STATE.currentUserId);
+  const u  = getUserSafe(freelancerId);
+  const me = getUserSafe(STATE.currentUserId);
   const mySvc    = DB.services.filter(sv=>sv.freelancerId===freelancerId);
   const myOrders = STATE.orders.filter(o=>o.freelancerId===freelancerId);
   const pending  = myOrders.filter(o=>!['approved','cancelled'].includes(o.status));
@@ -8147,7 +8145,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const restored = restorePersistedData();
   startPersistence();
   bindRouter();
-  if (restored) setTimeout(()=>toast('Dados restaurados do localStorage.', 'success'), 250);
   // Proteção extra: se Supabase não está configurado, admin só mostra tela de login (STATE.isAdmin = false por padrão)
 
   // ── Auto-approve engine: run once on boot, then every 60 s ──
