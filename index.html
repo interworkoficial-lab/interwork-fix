@@ -1203,21 +1203,28 @@ function updateAvatarLetter(name){
 
 /* ---------- TROCAR FOTO DO PERFIL ---------- */
 function changeProfileAvatar(userId){
-  var input = document.createElement('input');
-  input.type = 'file'; input.accept = 'image/*'; input.capture = 'user';
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
   input.onchange = function(e){
-    var file = e.target.files[0];
-    if(!file) return;
-    if(!file.type.startsWith('image/')){ toast('Selecione uma imagem','warn'); return; }
-    if(file.size > 3*1024*1024){ toast('Máx 3MB','warn'); return; }
-    var reader = new FileReader();
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')){ toast('Selecione uma imagem','warn'); return; }
+    if (file.size > 3*1024*1024){ toast('Máximo 3MB','warn'); return; }
+    const reader = new FileReader();
     reader.onload = function(ev){
-      var u = getUser(userId);
-      if(u){ u.avatar = ev.target.result; u.avatarType = 'upload'; }
-      var img = document.getElementById('profile-avatar-img');
-      if(img) img.src = ev.target.result;
-      toast('Foto atualizada!','success');
+      const u = DB.users.find(x=>x.id===userId);
+      if (u){
+        u.avatar = ev.target.result;
+        u.avatarType = 'upload';
+      }
+      // Atualiza avatar em qualquer img na tela
+      document.querySelectorAll('img[data-profile-avatar]').forEach(img=>{
+        img.src = ev.target.result;
+      });
+      persistNow();
       renderHeader();
+      toast('Foto atualizada!','success');
     };
     reader.readAsDataURL(file);
   };
