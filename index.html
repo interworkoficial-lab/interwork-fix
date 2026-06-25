@@ -1,24 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Interwork — The Workforce Marketplace for the Interlink Ecosystem</title>
-<meta name="description" content="Hire verified humans using ITL. The decentralized workforce marketplace built for the Interlink ecosystem — on-chain escrow, DAO-based dispute resolution and zero middlemen." />
-<meta property="og:title" content="Interwork — The Workforce Marketplace for the Interlink Ecosystem" />
-<meta property="og:description" content="Hire verified humans using ITL. On-chain escrow. Built for Interlink." />
-<meta property="og:type" content="website" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- Reown AppKit — WalletConnect real com 530+ carteiras (bundle local) -->
-<script src="./reown-bundle.js"></script>
-<script>
-(function initReown() {
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Interwork — The Workforce Marketplace for the Interlink Ecosystem</title><meta content="Hire verified humans using ITL. The decentralized workforce marketplace built for the Interlink ecosystem — on-chain escrow, DAO-based dispute resolution and zero middlemen." name="description"/><meta content="Interwork — The Workforce Marketplace for the Interlink Ecosystem" property="og:title"/><meta content="Hire verified humans using ITL. On-chain escrow. Built for Interlink." property="og:description"/><meta content="website" property="og:type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script><link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><!-- Reown AppKit — WalletConnect real com 530+ carteiras (bundle local) --><script src="./reown-bundle.js"></script><script>(function initReown() {
   const MAX = 50, DELAY = 100;
   let tries = 0;
   function tryInit() {
@@ -39,8 +19,8 @@
         metadata: {
           name: 'Interwork',
           description: 'The workforce marketplace for the Interlink ecosystem',
-          url: 'https://interwork.online',
-          icons: ['https://interwork.online/favicon.png'],
+          url: 'https:
+          icons: ['https:
         },
         themeMode: 'dark',
         features: { analytics: false, email: false, socials: false },
@@ -64,10 +44,7 @@
   } else {
     tryInit();
   }
-})();
-</script>
-<script>
-  tailwind.config = {
+})();</script><script>tailwind.config = {
     darkMode: 'class',
     theme: {
       extend: {
@@ -85,371 +62,837 @@
         },
       }
     }
-  }
-</script>
-<style>
-  :root {
-    --primary: #8b7cff;
+  }</script><style>:root {
+    --sonic: #8b7cff;
     --primary-600: #7a6bf0;
     --primary-soft: #efeaff;
     --primary-text: #5b4ee0;
-    --ink: #0f172a;
+    --banner-dark: #0f172a;
     --muted: #64748b;
-    --line: #e5e7eb;
-    --bg: #ffffff;
-    --bg-soft: #f8fafc;
+    --hw-tl-line-light: #e5e7eb;
+    --home-bg: #fff;
+    --cat-tile-icon-wrap-bg-light: #f8fafc;
     --warning: #f59e0b;
-  }
-  html, body { 
-    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif !important; 
-    color: var(--ink) !important; 
-    background: #fff !important; 
+    --cat-tile-border-light: #f1f5f9;
+    --home-border: #e2e8f0;
+    --scrollbar-thumb-light: #cbd5e1;
+    --powered-text-color-light: #94a3b8;
+    --partner-sub-color-light: #475569;
+    --surf-700: #334155;
+    --surf-800: #1e293b;
+    --surf-950: #020617;
+    --neon-cyan: #22d3ee;
+    --neon-violet: #8b5cf6;
+    --text-dark-general: #111827;
+    --text-gray-700: #6b7280;
+    --border-gray-300: #d1d5db;
+    --border-primary-hover: #c7c0ff;
+    --bg-chip-hover-light: #fafaff;
+    --bg-partner-badge-light: #f5f0ff;
+    --partner-btn-bg-hover-light: #7C3AED;
+    --text-cat-tile-icon-light: #57606b;
+    --text-cat-tile-label-light: #374151;
+    --partner-btn-bg-light: #0b1220;
+    --text-dark-ink-111: #111;
+    --brand-blue: #1a73e8;
+    --bg-skeleton-light: #e9edf3;
+    --shadow-card-1: rgba(0, 0, 0, 0.05);
+    --hero-outline-btn-bg-hover-light: rgba(0, 0, 0, 0.06);
+    --shadow-pop: rgba(91, 78, 224, 0.18);
+    --hero-dropdown-border-light: rgba(0, 0, 0, 0.1);
+    --shadow-xl-2: rgba(0, 0, 0, 0.04);
+    --ring-brand-shadow: rgba(26, 115, 232, 0.18);
+    --shadow-filters-sticky-light: rgba(15, 23, 42, 0.04);
+    --shadow-pkg-card-active: rgba(139, 124, 255, 0.35);
+    --shadow-gig-thumb-drag-over: rgba(26, 115, 232, 0.45);
+    --shadow-dropdown-1: rgba(0, 0, 0, 0.08);
+    --shadow-dropdown-2: rgba(0, 0, 0, 0.18);
+    --hero-badge-bg-light: rgba(0, 0, 0, 0.03);
+    --hero-tag-color-light: rgba(0, 0, 0, 0.5);
+    --hero-partner-label-color-light: rgba(0, 0, 0, 0.4);
+    --hero-subtitle-color-light: rgba(0, 0, 0, 0.55);
+    --hero-outline-btn-border-light: rgba(0, 0, 0, 0.15);
+    --hero-search-submit-border-left-light: rgba(0, 0, 0, 0.12);
+    --hero-tag-bg-light: rgba(0, 0, 0, 0.02);
+    --hero-search-input-placeholder-light: rgba(0, 0, 0, 0.35);
+    --hero-search-submit-color-light: rgba(0, 0, 0, 0.45);
+    --hero-dropdown-bg-light: #fff;
+    --hero-tag-border-light: rgba(0, 0, 0, 0.08);
+    --hw-tl-dot-bg-light: #fafafa;
+    --hw-tl-dot-color-light: #6d28d9
+    }
+html.dark {
+    --home-bg-dark: #0f172a;
+    --text-dark-mode: #e2e8f0;
+    --surface-alt-dark: #1e293b;
+    --surf-700-dark: #334155;
+    --grad-dark-start: #06080f;
+    --grad-dark-end: #0a0f1e;
+    --grad-dark-cyan: rgba(34, 211, 238, 0.12);
+    --grad-dark-purple: rgba(167, 139, 250, 0.14);
+    --border-dark-mode-alt: rgba(255, 255, 255, 0.07);
+    --shadow-filters-sticky-dark: rgba(0, 0, 0, 0.4);
+    --border-dark-mode-light: rgba(255, 255, 255, 0.1);
+    --cat-tile-border-dark: rgba(255, 255, 255, 0.08);
+    --border-dark-mode-medium: rgba(255, 255, 255, 0.15);
+    --border-dark-mode-strong: rgba(255, 255, 255, 0.4);
+    --hw-card-sub-color-dark: #9ca3af;
+    --hw-tl-title-color-dark: #f9fafb;
+    --text-dark-mode-gray: #4b5563;
+    --bg-dark-dropdown: #1c1c1c;
+    --home-border-dark: rgba(255, 255, 255, 0.1);
+    --bg-dark-tag-border: rgba(255, 255, 255, 0.08);
+    --bg-dark-tag: rgba(255, 255, 255, 0.03);
+    --text-dark-tag-hover: rgba(255, 255, 255, 0.7);
+    --hero-search-submit-color-dark: rgba(255, 255, 255, 0.4);
+    --text-dark-partner-item: rgba(255, 255, 255, 0.8);
+    --divider-dark: rgba(255, 255, 255, 0.25);
+    --partner-btn-bg-dark: #a78bfa;
+    --partner-btn-bg-hover-dark: #c4b5fd;
+    --partner-badge-bg-dark: rgba(99, 102, 241, 0.15);
+    --partner-badge-text-dark: #a5b4fc;
+    --powered-border-dark: rgba(255, 255, 255, 0.06);
+    --cat-tile-icon-color-dark: rgba(255, 255, 255, 0.55);
+    --hw-tl-dot-bg-dark: #0d0d0d;
+    --hw-tl-dot-border-dark: rgba(255, 255, 255, 0.12);
+    --hw-tl-line-dark: rgba(255, 255, 255, 0.1);
+    --cat-tile-icon-wrap-bg-dark: rgba(255, 255, 255, 0.05);
+    --cat-tile-label-color-dark: rgba(255, 255, 255, 0.6);
+    --cat-tile-icon-wrap-hover-dark: rgba(139, 92, 246, 0.12);
+    --ink-text-dark: #e7ecf5;
+    --ink-muted-dark: #94a3b8;
+    --surface-dark: #131c2e;
+    --banner-cta-bg-dark: #fff;
+    --hero-search-input-placeholder-dark: rgba(255, 255, 255, 0.3);
+    --hero-search-input-color-dark: #fff;
+    --banner-sub-color-dark: rgba(255, 255, 255, 0.6);
+    --banner-cta-bg-hover-dark: #eef5ff;
+    --banner-cta-color-hover-dark: #1a73e8;
+    --ow-stat-sub-color-dark: #6b7280
+    }
+:root {
+    --primary: var(--sonic);
+    --primary-600: var(--primary-600);
+    --primary-soft: var(--primary-soft);
+    --primary-text: var(--primary-text);
+    --ink: var(--home-bg-dark);
+    --muted: var(--muted);
+    --line: var(--hw-tl-line-light);
+    --bg: var(--banner-cta-bg-dark);
+    --bg-soft: var(--cat-tile-icon-wrap-bg-light);
+    --warning: var(--warning)
+    }
+html, body {
+    font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif !important;
+    color: var(--ink) !important;
+    background: var(--hero-search-input-color-dark) !important;
     -webkit-font-smoothing: antialiased;
-    scroll-behavior: smooth;
-  }
-  .max-w-6xl { max-width: 72rem !important; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
-@media (min-width: 640px) { .max-w-6xl { padding-left: 1.5rem; padding-right: 1.5rem; } }
-
-  
-  .btn-primary, .btn-primary-alt { 
-    background: var(--primary) !important; 
-    color: #fff !important; 
-    border-radius: 0.5rem !important; 
-    font-weight: 700 !important; 
+    scroll-behavior: smooth
+    }
+.max-w-6xl {
+    max-width: 72rem !important;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem
+    }
+@media (min-width: 640px) {
+    .max-w-6xl {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem
+        }
+    }
+.btn-primary, .btn-primary-alt {
+    background: var(--primary) !important;
+    color: var(--hero-search-input-color-dark) !important;
+    border-radius: 0.5rem !important;
+    font-weight: 700 !important;
     transition: all 0.2s;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem 1rem;
-  }
-  .btn-primary:hover { background: var(--primary-600) !important; transform: translateY(-1px); }
-  
-  .btn-outline, .btn-outline-alt { 
-    border: 1px solid #e2e8f0 !important; 
-    background: #fff !important; 
-    border-radius: 0.5rem !important; 
+    padding: 0.5rem 1rem
+    }
+.btn-primary:hover {
+    background: var(--primary-600) !important;
+    transform: translatey(-1px)
+    }
+.btn-outline, .btn-outline-alt {
+    border: 1px solid var(--text-dark-mode) !important;
+    background: var(--hero-search-input-color-dark) !important;
+    border-radius: 0.5rem !important;
     font-weight: 700 !important;
     transition: all 0.2s;
-    padding: 0.5rem 1rem;
-  }
-  
-  .card, .card-alt, .gig-card {
+    padding: 0.5rem 1rem
+    }
+.card, .card-alt, .gig-card {
     border-radius: 0.75rem !important;
-    border: 1px solid #e5e7eb !important;
+    border: 1px solid var(--hw-tl-line-light) !important;
     overflow: hidden !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    background: #fff;
-  }
-  .card:hover { transform: translateY(-4px) !important; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1) !important; }
-
-  .hero-title { font-size: 2.5rem; line-height: 1.2; font-weight: 800; color: #0f172a; }
-  @media (max-width: 640px) { .hero-title { font-size: 1.75rem; } }
-  
-  /* Garantir que o grid seja responsivo */
-  .grid-gigs {
+    background: var(--hero-search-input-color-dark)
+    }
+.card:hover {
+    transform: translatey(-4px) !important;
+    box-shadow: 0 20px 25px -5px var(--hero-dropdown-border-light) !important
+    }
+.hero-title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    font-weight: 800;
+    color: var(--home-bg-dark)
+    }
+@media (max-width: 640px) {
+    .hero-title {
+        font-size: 1.75rem
+        }
+    }
+/* Garantir que o grid seja responsivo */
+.grid-gigs {
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 1.5rem;
-  }
-  @media (min-width: 640px) { .grid-gigs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (min-width: 1024px) { .grid-gigs { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-
-  html,body{font-family:'Plus Jakarta Sans',ui-sans-serif,system-ui}
-  body.modal-open-lock{overflow:hidden;height:100vh}
-  .scrollbar-thin::-webkit-scrollbar{width:6px;height:6px}
-  .scrollbar-thin::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
-  .grad-hero{background:radial-gradient(1200px 500px at 20% 0%, #d9e8ff 0%, transparent 60%),radial-gradient(800px 400px at 90% 10%, #efe7ff 0%, transparent 60%),linear-gradient(180deg,#fafbff 0%,#ffffff 100%)}
-  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600}
-  .star-btn{transition:transform .15s}
-  .star-btn:hover{transform:scale(1.15)}
-  .fade-in{animation:fade .25s ease-out}
-  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-  .ring-brand{box-shadow:0 0 0 3px rgba(26,115,232,.18)}
-  details>summary{list-style:none;cursor:pointer}
-  details>summary::-webkit-details-marker{display:none}
-  .progress{height:6px;background:#e2e8f0;border-radius:999px;overflow:hidden}
-  .progress>span{display:block;height:100%;background:linear-gradient(90deg,#1a73e8,#7C3AED);border-radius:999px;transition:width .4s}
-
-  /* ============ CHAT — typing indicator ============ */
-  .typing-dot{width:6px;height:6px;border-radius:50%;background:#94a3b8;display:inline-block;animation:typingBlink 1.2s infinite ease-in-out}
-  .typing-dot:nth-child(2){animation-delay:.2s}
-  .typing-dot:nth-child(3){animation-delay:.4s}
-  @keyframes typingBlink{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-2px)}}
-
-  /* ============ SKELETON LOADING ============ */
-  .skel{position:relative;overflow:hidden;background:#e9edf3}
-  .skel::after{content:'';position:absolute;inset:0;transform:translateX(-100%);
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
-    animation:skelShimmer 1.4s infinite}
-  @keyframes skelShimmer{100%{transform:translateX(100%)}}
-  html.dark .skel{background:var(--surf-800)}
-  html.dark .skel::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)}
-
-  /* ============ FILTER BAR (now static — no longer follows scroll) ============ */
-  .filters-sticky{
-    position:static !important;top:auto;z-index:auto;
-    margin-left:-1.25rem;margin-right:-1.25rem;padding:.75rem 1.25rem;margin-bottom:1.5rem;
-    background:#ffffff;border-bottom:1px solid #e2e8f0;
-    box-shadow:0 2px 8px rgba(15,23,42,.04);
-  }
-  html.dark .filters-sticky{background:var(--surf-900);border-bottom-color:rgba(255,255,255,.07);box-shadow:0 2px 12px rgba(0,0,0,.4)}
-  /* Pin fallback disabled: keep bar in its natural position even if JS adds the class */
-  .filters-sticky.is-pinned{
-    position:static !important;top:auto;left:auto;right:auto;margin:0 -1.25rem 1.5rem;padding:.75rem 1.25rem;
-    border-radius:0;box-shadow:0 2px 8px rgba(15,23,42,.04);
-  }
-  html.dark .filters-sticky.is-pinned{box-shadow:0 2px 12px rgba(0,0,0,.4)}
-  .filters-sticky-spacer,.filters-sticky-spacer.is-active{display:none !important;height:0 !important}
-
-  /* Kill old sticky helpers on filter bar only — aside sidebar now uses inline sticky */
-  .no-stick,.no-stick.sticky{position:static !important;top:auto !important}
-
-  /* ============ GLOBAL & SERVICE PAGE (100% SOURCE FIDELITY) ============ */
-  :root {
-    --primary: #8b7cff;
-    --primary-600: #7a6bf0;
-    --primary-soft: #efeaff;
-    --primary-text: #5b4ee0;
-    --ink: #0f172a;
-    --muted: #64748b;
-    --line: #e5e7eb;
-    --bg: #ffffff;
-    --bg-soft: #f8fafc;
-    --warning: #f59e0b;
-  }
-  body { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; color: var(--ink); background: #fff; -webkit-font-smoothing: antialiased; }
-  .btn-primary-alt { background: var(--primary); color: #fff; transition: background .15s; border-radius: 0.5rem; font-weight: 700; }
-  .btn-primary-alt:hover { background: var(--primary-600); }
-  .btn-outline-alt { border: 1px solid #e2e8f0; color: #0f172a; background: #fff; transition: all .15s; border-radius: 0.5rem; font-weight: 700; }
-  .btn-outline-alt:hover { border-color: #c7c0ff; color: var(--primary-text); }
-  .tab-alt { border-bottom: 2px solid transparent; color: #64748b; transition: all .15s; font-size: 14px; }
-  .tab-alt:hover { color: #0f172a; }
-  .tab-alt-active { color: #0f172a; border-color: var(--primary); font-weight: 700; }
-  .pkg-card-alt { transition: all .2s ease; border: 1px solid #e5e7eb; background: #fff; border-radius: 0.75rem; overflow: hidden; }
-  .pkg-card-alt.active { border-color: var(--primary); box-shadow: 0 8px 24px -10px rgba(139,124,255,.35); }
-  .thumb-alt { border: 2px solid transparent; cursor: pointer; transition: all .15s; border-radius: 0.5rem; }
-  .thumb-alt.active { border-color: var(--primary); }
-  .thumb-alt:hover { opacity: .85; }
-  .accordion-alt { border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem; transition: all .2s; }
-  .accordion-alt summary { cursor: pointer; list-style: none; font-weight: 600; color: var(--ink); font-size: 14px; }
-  .accordion-alt summary::-webkit-details-marker { display: none; }
-  .accordion-alt summary .ic { transition: transform .2s; color: #64748b; }
-  .accordion-alt[open] summary .ic { transform: rotate(180deg); }
-  .star-row-alt i { color: var(--warning); }
-  .chip-alt { border: 1px solid var(--line); background: #fff; color: #475569; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; }
-  .chip-alt:hover { border-color: #c7c0ff; color: var(--primary-text); background: #fafaff; }
-  .glass { backdrop-filter: blur(8px); background: rgba(255,255,255,0.8); }
-  .card-alt { transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; border: 1px solid var(--line); border-radius: 0.75rem; overflow: hidden; background: #fff; }
-  .card-alt:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -12px rgba(91,78,224,0.18); border-color: #c7c0ff; }
-  .card-alt .gig-img { transition: transform .4s ease; }
-  .card-alt:hover .gig-img { transform: scale(1.06); }
-  
-  /* Hide old category strip styles */
-  .cat-strip-inner, .cat-strip-arrow, .cat-strip-wrap { display: none !important; }
-
-  /* ============ GIG CARD (Fiverr-style, bulletproof) ============ */
-  .gig-card{display:flex;flex-direction:column;min-width:0;width:100%}
-  .gig-thumb{position:relative;width:100%;padding-bottom:53%;background:#f1f5f9}
-  .gig-thumb>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-  .gig-title{
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-    overflow:hidden;text-overflow:ellipsis;min-height:40px;word-break:break-word;
-  }
-  html.dark .gig-thumb{background:var(--surf-800)}
-
-  /* ============ GALLERY DRAG-DROP (owner only) ============ */
-  .gig-thumb-drag{cursor:grab;transition:transform .15s, box-shadow .15s, opacity .15s}
-  .gig-thumb-drag:active{cursor:grabbing}
-  .gig-thumb-drag.dragging{opacity:.35;transform:scale(.92)}
-  .gig-thumb-drag.drag-over{transform:scale(1.06);box-shadow:0 0 0 3px rgba(26,115,232,.45);border-radius:.5rem}
-
-  /* ============ DARK MODE — Interlink dApp vibe ============ */
-  html.dark{color-scheme:dark}
-  html.dark body{background:var(--surf-950);color:#e2e8f0}
+    gap: 1.5rem
+    }
+@media (min-width: 640px) {
+    .grid-gigs {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+        }
+    }
+@media (min-width: 1024px) {
+    .grid-gigs {
+        grid-template-columns: repeat(4, minmax(0, 1fr))
+        }
+    }
+html, body {
+    font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui
+    }
+body.modal-open-lock {
+    overflow: hidden;
+    height: 100vh
+    }
+.scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px
+    }
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb-light);
+    border-radius: 999px
+    }
+.grad-hero {
+    background: radial-gradient(1200px 500px at 20% 0%, #d9e8ff 0%, transparent 60%), radial-gradient(800px 400px at 90% 10%, #efe7ff 0%, transparent 60%), linear-gradient(180deg, #fafbff 0%, var(--banner-cta-bg-dark) 100%)
+    }
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600
+    }
+.star-btn {
+    transition: transform 0.15s
+    }
+.star-btn:hover {
+    transform: scale(1.15)
+    }
+.fade-in {
+    animation: fade 0.25s ease-out
+    }
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: translateY(4px)
+        } to {
+        opacity: 1;
+        transform: none
+        }
+    }
+.ring-brand {
+    box-shadow: 0 0 0 3px var(--ring-brand-shadow)
+    }
+details > summary {
+    list-style: none;
+    cursor: pointer
+    }
+details > summary::-webkit-details-marker {
+    display: none
+    }
+.progress {
+    height: 6px;
+    background: var(--text-dark-mode);
+    border-radius: 999px;
+    overflow: hidden
+    }
+.progress > span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--banner-cta-color-hover-dark), var(--partner-btn-bg-hover-light));
+    border-radius: 999px;
+    transition: width 0.4s
+    }
+/* ============ CHAT — typing indicator ============ */
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-muted-dark);
+    display: inline-block;
+    animation: typingBlink 1.2s infinite ease-in-out
+    }
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s
+    }
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s
+    }
+@keyframes typingBlink {
+    0%, 80%, 100% {
+        opacity: .3;
+        transform: translateY(0)
+        } 40% {
+        opacity: 1;
+        transform: translateY(-2px)
+        }
+    }
+/* ============ SKELETON LOADING ============ */
+.skel {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-skeleton-light)
+    }
+.skel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translatex(-100%);
+    background: linear-gradient(90deg, transparent, var(--cat-tile-icon-color-dark), transparent);
+    animation: skelShimmer 1.4s infinite
+    }
+@keyframes skelShimmer {
+    100% {
+        transform: translateX(100%)
+        }
+    }
+html.dark .skel {
+    background: var(--surf-800)
+    }
+html.dark .skel::after {
+    background: linear-gradient(90deg, transparent, var(--cat-tile-border-dark), transparent)
+    }
+/* ============ FILTER BAR (now static — no longer follows scroll) ============ */
+.filters-sticky {
+    position: static !important;
+    top: auto;
+    z-index: auto;
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1.5rem;
+    background: var(--banner-cta-bg-dark);
+    border-bottom: 1px solid var(--text-dark-mode);
+    box-shadow: 0 2px 8px var(--shadow-filters-sticky-light)
+    }
+html.dark .filters-sticky {
+    background: var(--surf-900);
+    border-bottom-color: var(--border-dark-mode-alt);
+    box-shadow: 0 2px 12px var(--shadow-filters-sticky-dark)
+    }
+/* Pin fallback disabled: keep bar in its natural position even if JS adds the class */
+.filters-sticky.is-pinned {
+    position: static !important;
+    top: auto;
+    left: auto;
+    right: auto;
+    margin: 0 -1.25rem 1.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0;
+    box-shadow: 0 2px 8px var(--shadow-filters-sticky-light)
+    }
+html.dark .filters-sticky.is-pinned {
+    box-shadow: 0 2px 12px var(--shadow-filters-sticky-dark)
+    }
+.filters-sticky-spacer, .filters-sticky-spacer.is-active {
+    display: none !important;
+    height: 0 !important
+    }
+/* Kill old sticky helpers on filter bar only — aside sidebar now uses inline sticky */
+.no-stick, .no-stick.sticky {
+    position: static !important;
+    top: auto !important
+    }
+/* ============ GLOBAL & SERVICE PAGE (100% SOURCE FIDELITY) ============ */
+body {
+    font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--hero-search-input-color-dark);
+    -webkit-font-smoothing: antialiased
+    }
+.btn-primary-alt {
+    background: var(--primary);
+    color: var(--hero-search-input-color-dark);
+    transition: background 0.15s;
+    border-radius: 0.5rem;
+    font-weight: 700
+    }
+.btn-primary-alt:hover {
+    background: var(--primary-600)
+    }
+.btn-outline-alt {
+    border: 1px solid var(--text-dark-mode);
+    color: var(--home-bg-dark);
+    background: var(--hero-search-input-color-dark);
+    transition: all 0.15s;
+    border-radius: 0.5rem;
+    font-weight: 700
+    }
+.btn-outline-alt:hover {
+    border-color: var(--border-primary-hover);
+    color: var(--primary-text)
+    }
+.tab-alt {
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    transition: all 0.15s;
+    font-size: 14px
+    }
+.tab-alt:hover {
+    color: var(--home-bg-dark)
+    }
+.tab-alt-active {
+    color: var(--home-bg-dark);
+    border-color: var(--primary);
+    font-weight: 700
+    }
+.pkg-card-alt {
+    transition: all 0.2s ease;
+    border: 1px solid var(--hw-tl-line-light);
+    background: var(--hero-search-input-color-dark);
+    border-radius: 0.75rem;
+    overflow: hidden
+    }
+.pkg-card-alt.active {
+    border-color: var(--primary);
+    box-shadow: 0 8px 24px -10px var(--shadow-pkg-card-active)
+    }
+.thumb-alt {
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 0.5rem
+    }
+.thumb-alt.active {
+    border-color: var(--primary)
+    }
+.thumb-alt:hover {
+    opacity: 0.85
+    }
+.accordion-alt {
+    border: 1px solid var(--text-dark-mode);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    transition: all 0.2s
+    }
+.accordion-alt summary {
+    cursor: pointer;
+    list-style: none;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 14px
+    }
+.accordion-alt summary::-webkit-details-marker {
+    display: none
+    }
+.accordion-alt summary .ic {
+    transition: transform 0.2s;
+    color: var(--muted)
+    }
+.accordion-alt[open] summary .ic {
+    transform: rotate(180deg)
+    }
+.star-row-alt i {
+    color: var(--warning)
+    }
+.chip-alt {
+    border: 1px solid var(--line);
+    background: var(--hero-search-input-color-dark);
+    color: var(--partner-sub-color-light);
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600
+    }
+.chip-alt:hover {
+    border-color: var(--border-primary-hover);
+    color: var(--primary-text);
+    background: var(--bg-chip-hover-light)
+    }
+.glass {
+    backdrop-filter: blur(8px);
+    background: var(--text-dark-partner-item)
+    }
+.card-alt {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: var(--hero-search-input-color-dark)
+    }
+.card-alt:hover {
+    transform: translatey(-3px);
+    box-shadow: 0 14px 30px -12px var(--shadow-pop);
+    border-color: var(--border-primary-hover)
+    }
+.card-alt .gig-img {
+    transition: transform 0.4s ease
+    }
+.card-alt:hover .gig-img {
+    transform: scale(1.06)
+    }
+/* Hide old category strip styles */
+.cat-strip-inner, .cat-strip-arrow, .cat-strip-wrap {
+    display: none !important
+    }
+/* ============ GIG CARD (Fiverr-style, bulletproof) ============ */
+.gig-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    width: 100%
+    }
+.gig-thumb {
+    position: relative;
+    width: 100%;
+    padding-bottom: 53%;
+    background: var(--cat-tile-border-light)
+    }
+.gig-thumb > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block
+    }
+.gig-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 40px;
+    word-break: break-word
+    }
+html.dark .gig-thumb {
+    background: var(--surf-800)
+    }
+/* ============ GALLERY DRAG-DROP (owner only) ============ */
+.gig-thumb-drag {
+    cursor: grab;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s
+    }
+.gig-thumb-drag:active {
+    cursor: grabbing
+    }
+.gig-thumb-drag.dragging {
+    opacity: 0.35;
+    transform: scale(0.92)
+    }
+.gig-thumb-drag.drag-over {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 3px var(--shadow-gig-thumb-drag-over);
+    border-radius: 0.5rem
+    }
+/* ============ DARK MODE — Interlink dApp vibe ============ */
 html.dark {
-  --ink-50:  #1e293b;
-  --ink-100: #1e293b;
-  --ink-200: #334155;
-  --ink-300: #475569;
-  --ink-400: #64748b;
-  --ink-500: #94a3b8;
-  --ink-600: #cbd5e1;
-  --ink-700: #e2e8f0;
-  --ink-800: #f1f5f9;
-  --ink-900: #f8fafc;
-  --ink-text: #e7ecf5;
-  --ink-muted: #94a3b8;
-  --surface: #131c2e;
-  --surface-alt: #1e293b;
-}
-  html.dark .scrollbar-thin::-webkit-scrollbar-thumb{background:var(--surf-600)}
-  html.dark .grad-hero{
-    background:
-      radial-gradient(900px 420px at 18% 0%, rgba(34,211,238,.12) 0%, transparent 60%),
-      radial-gradient(700px 360px at 88% 10%, rgba(167,139,250,.14) 0%, transparent 60%),
-      linear-gradient(180deg,#06080f 0%, #0a0f1e 100%);
-  }
-  html.dark .progress{background:var(--surf-700)}
-  html.dark .progress>span{background:linear-gradient(90deg,var(--neon-cyan),var(--neon-violet))}
-
-  /* Map common Tailwind utilities to dark surfaces */
-  html.dark .bg-white{background-color:var(--surf-900) !important}
-  #ns-days::-webkit-outer-spin-button,#ns-days::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-  #ns-days{-moz-appearance:textfield}
-  html.dark .bg-white\/85{background-color:var(--surf-900)C7 !important}
-  html.dark .bg-white\/95{background-color:var(--surf-900) !important}
-  html.dark .bg-white\/60{background-color:var(--surf-900)99 !important}
-  html.dark .text-ink-900{color:#e7ecf5 !important}
-  html.dark .text-ink-700{color:#cbd5e1 !important}
-  html.dark .text-ink-500{color:#94a3b8 !important}
-  html.dark .text-ink-300{color:#64748b !important}
-  html.dark .border-ink-100{border-color:rgba(255,255,255,.07) !important}
-  html.dark .bg-ink-100\/60,html.dark .bg-ink-100\/40,html.dark .bg-ink-100\/30,html.dark .hover\:bg-ink-100\/40:hover,html.dark .hover\:bg-ink-100\/50:hover,html.dark .hover\:bg-ink-100\/70:hover{background-color:rgba(255,255,255,.04) !important}
-  html.dark .bg-ink-100{background-color:var(--surf-700) !important}
-  html.dark .bg-brand-50,html.dark .bg-brand-50\/50,html.dark .bg-brand-50\/40{background-color:var(--brand-500)15 !important}
-  html.dark .bg-brand-100,html.dark .hover\:bg-brand-100:hover{background-color:rgba(34,211,238,.16) !important}
-  html.dark .text-brand-700,html.dark .text-brand-500{color:var(--neon-cyan) !important}
-  html.dark .border-brand-100,html.dark .border-brand-300,html.dark .hover\:border-brand-300:hover{border-color:var(--brand-500)55 !important}
-  html.dark .bg-amber-50{background-color:rgba(245,158,11,.10) !important}
-  html.dark .text-amber-700,html.dark .text-amber-800{color:#fbbf24 !important}
-  html.dark .border-amber-100{border-color:rgba(245,158,11,.25) !important}
-  html.dark .bg-emerald-50,html.dark .bg-emerald-50\/40{background-color:rgba(16,185,129,.10) !important}
-  html.dark .text-emerald-700,html.dark .text-emerald-600{color:#34d399 !important}
-  html.dark .border-emerald-100{border-color:rgba(16,185,129,.25) !important}
-  html.dark .bg-rose-50,html.dark .hover\:bg-rose-100:hover{background-color:rgba(244,63,94,.12) !important}
-  html.dark .text-rose-700,html.dark .text-rose-600{color:#fb7185 !important}
-  html.dark .border-rose-100{border-color:rgba(244,63,94,.25) !important}
-  html.dark .bg-violet-50,html.dark .bg-violet-50\/40{background-color:rgba(167,139,250,.10) !important}
-  html.dark .text-violet-700,html.dark .text-violet-500{color:#a78bfa !important}
-  html.dark .border-violet-100{border-color:rgba(167,139,250,.25) !important}
-  html.dark .bg-gradient-to-b.from-white,html.dark .from-white{--tw-gradient-from:var(--surf-900) !important}
-  html.dark .from-brand-50,html.dark .via-white{--tw-gradient-from:var(--surf-900) !important;--tw-gradient-via:var(--surf-900) !important}
-  html.dark .to-violet-50\/40,html.dark .to-violet-50{--tw-gradient-to:var(--neon-violet)0D !important}
-  html.dark input,html.dark select,html.dark textarea{background-color:var(--surf-900);color:#e2e8f0;border-color:rgba(255,255,255,.08)}
-  html.dark .shadow-card{box-shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
-  html.dark .shadow-pop{box-shadow:0 14px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04)}
-
-  /* Glow on primary CTA */
-  .cta-glow{box-shadow:0 0 0 1px rgba(34,211,238,.45), 0 8px 28px rgba(34,211,238,.28);transition:box-shadow .25s}
-  .cta-glow:hover{box-shadow:0 0 0 1px rgba(34,211,238,.7), 0 12px 38px rgba(34,211,238,.45)}
-
-  
+    color-scheme: dark
+    }
+html.dark body {
+    background: var(--surf-950);
+    color: var(--text-dark-mode)
+    }
+html.dark {
+    --ink-50: var(--surface-alt-dark);
+    --ink-100: var(--surface-alt-dark);
+    --ink-200: var(--surf-700-dark);
+    --ink-300: var(--partner-sub-color-light);
+    --ink-400: var(--muted);
+    --ink-500: var(--ink-muted-dark);
+    --ink-600: var(--scrollbar-thumb-light);
+    --ink-700: var(--text-dark-mode);
+    --ink-800: var(--cat-tile-border-light);
+    --ink-900: var(--cat-tile-icon-wrap-bg-light);
+    --ink-text: var(--ink-text-dark);
+    --ink-muted: var(--ink-muted-dark);
+    --surface: var(--surface-dark);
+    --surface-alt: var(--surface-alt-dark)
+    }
+html.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--surf-600)
+    }
+html.dark .grad-hero {
+    background: radial-gradient(900px 420px at 18% 0%, var(--grad-dark-cyan) 0%, transparent 60%), radial-gradient(700px 360px at 88% 10%, var(--grad-dark-purple) 0%, transparent 60%), linear-gradient(180deg, var(--grad-dark-start) 0%, var(--grad-dark-end) 100%)
+    }
+html.dark .progress {
+    background: var(--surf-700)
+    }
+html.dark .progress > span {
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-violet))
+    }
+/* Map common Tailwind utilities to dark surfaces */
+html.dark .bg-white {
+    background-color: var(--surf-900) !important
+    }
+#ns-days::-webkit-outer-spin-button, #ns-days::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0
+    }
+#ns-days {
+    -moz-appearance: textfield
+    }
+html.dark .bg-white\/85 {
+    background-color: var(--surf-900) C7 !important
+    }
+html.dark .bg-white\/95 {
+    background-color: var(--surf-900) !important
+    }
+html.dark .bg-white\/60 {
+    background-color: var(--surf-900) 99 !important
+    }
+html.dark .text-ink-900 {
+    color: var(--ink-text-dark) !important
+    }
+html.dark .text-ink-700 {
+    color: var(--scrollbar-thumb-light) !important
+    }
+html.dark .text-ink-500 {
+    color: var(--ink-muted-dark) !important
+    }
+html.dark .text-ink-300 {
+    color: var(--muted) !important
+    }
+html.dark .border-ink-100 {
+    border-color: var(--border-dark-mode-alt) !important
+    }
+html.dark .bg-ink-100\/60, html.dark .bg-ink-100\/40, html.dark .bg-ink-100\/30, html.dark .hover\:bg-ink-100\/40:hover, html.dark .hover\:bg-ink-100\/50:hover, html.dark .hover\:bg-ink-100\/70:hover {
+    background-color: rgba(255, 255, 255, 0.04) !important
+    }
+html.dark .bg-ink-100 {
+    background-color: var(--surf-700) !important
+    }
+html.dark .bg-brand-50, html.dark .bg-brand-50\/50, html.dark .bg-brand-50\/40 {
+    background-color: var(--brand-500) 15 !important
+    }
+html.dark .bg-brand-100, html.dark .hover\:bg-brand-100:hover {
+    background-color: rgba(34, 211, 238, 0.16) !important
+    }
+html.dark .text-brand-700, html.dark .text-brand-500 {
+    color: var(--neon-cyan) !important
+    }
+html.dark .border-brand-100, html.dark .border-brand-300, html.dark .hover\:border-brand-300:hover {
+    border-color: var(--brand-500) 55 !important
+    }
+html.dark .bg-amber-50 {
+    background-color: rgba(245, 158, 11, 0.1) !important
+    }
+html.dark .text-amber-700, html.dark .text-amber-800 {
+    color: #fbbf24 !important
+    }
+html.dark .border-amber-100 {
+    border-color: rgba(245, 158, 11, 0.25) !important
+    }
+html.dark .bg-emerald-50, html.dark .bg-emerald-50\/40 {
+    background-color: rgba(16, 185, 129, 0.1) !important
+    }
+html.dark .text-emerald-700, html.dark .text-emerald-600 {
+    color: #34d399 !important
+    }
+html.dark .border-emerald-100 {
+    border-color: rgba(16, 185, 129, 0.25) !important
+    }
+html.dark .bg-rose-50, html.dark .hover\:bg-rose-100:hover {
+    background-color: rgba(244, 63, 94, 0.12) !important
+    }
+html.dark .text-rose-700, html.dark .text-rose-600 {
+    color: #fb7185 !important
+    }
+html.dark .border-rose-100 {
+    border-color: rgba(244, 63, 94, 0.25) !important
+    }
+html.dark .bg-violet-50, html.dark .bg-violet-50\/40 {
+    background-color: rgba(167, 139, 250, 0.1) !important
+    }
+html.dark .text-violet-700, html.dark .text-violet-500 {
+    color: var(--partner-btn-bg-dark) !important
+    }
+html.dark .border-violet-100 {
+    border-color: rgba(167, 139, 250, 0.25) !important
+    }
+html.dark .bg-gradient-to-b.from-white, html.dark .from-white {
+    --tw-gradient-from: var(--surf-900) !important
+    }
+html.dark .from-brand-50, html.dark .via-white {
+    --tw-gradient-from: var(--surf-900) !important;
+    --tw-gradient-via: var(--surf-900) !important
+    }
+html.dark .to-violet-50\/40, html.dark .to-violet-50 {
+    --tw-gradient-to: var(--neon-violet) 0d !important
+    }
+html.dark input, html.dark select, html.dark textarea {
+    background-color: var(--surf-900);
+    color: var(--text-dark-mode);
+    border-color: var(--cat-tile-border-dark)
+    }
+html.dark .shadow-card {
+    box-shadow: 0 1px 2px var(--shadow-filters-sticky-dark), 0 8px 24px rgba(0, 0, 0, 0.35)
+    }
+html.dark .shadow-pop {
+    box-shadow: 0 14px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04)
+    }
+/* Glow on primary CTA */
+.cta-glow {
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.45), 0 8px 28px rgba(34, 211, 238, 0.28);
+    transition: box-shadow 0.25s
+    }
+.cta-glow:hover {
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.7), 0 12px 38px rgba(34, 211, 238, 0.45)
+    }
 /* ══════════════════════════════════════════════════════════
    THEME SYSTEM — CSS Custom Properties
    ══════════════════════════════════════════════════════════ */
 :root {
-  --brand-50: #f5f3ff;
-  --brand-100: #ede9fe;
-  --brand-200: #ddd6fe;
-  --brand-300: #c4b5fd;
-  --brand-400: #a78bfa;
-  --brand-500: #8b5cf6;
-  --brand-600: #7c3aed;
-  --brand-700: #6d28d9;
-  --brand-800: #5b21b6;
-  --brand-900: #4c1d95;
-  --sonic: #7C3AED;
-  --gold-accent: #c9962e;
-  --neon-cyan: #22d3ee;
-  --neon-lime: #a3e635;
-  --neon-violet: #a78bfa;
-  --surf-950: #0f0f0f;
-  --surf-900: #1c1c1c;
-  --surf-800: #1e1e1e;
-  --surf-700: #2a2a2a;
-  --surf-600: #3a3a3a;
-  --hero-light: radial-gradient(1200px 500px at 20% 0%, #d9e8ff 0%, transparent 60%),radial-gradient(800px 400px at 90% 10%, #efe7ff 0%, transparent 60%),linear-gradient(180deg,#fafbff 0%,#ffffff 100%);
-  --hero-dark: linear-gradient(135deg,#0f0f0f 0%,#1c1c1c 45%,#1e1e1e 100%);
-  --banner-dark: linear-gradient(135deg,#1c1c1c 0%,#1e1e1e 50%,#2a2a2a 100%);
-  --banner-light: linear-gradient(135deg,#eef5ff 0%,#f5f0ff 50%,#dbeafe 100%);
-  /* Cor única pra toda a homepage — estilo Obsidian, sem variação entre seções */
-  --home-bg: #ffffff;
-  --home-border: #f1f5f9;
-}
+    --brand-50: #f5f3ff;
+    --brand-100: #ede9fe;
+    --brand-200: #ddd6fe;
+    --brand-300: var(--partner-btn-bg-hover-dark);
+    --brand-400: var(--partner-btn-bg-dark);
+    --brand-500: var(--neon-violet);
+    --brand-600: var(--partner-btn-bg-hover-light);
+    --brand-700: var(--hw-tl-dot-color-light);
+    --brand-800: #5b21b6;
+    --brand-900: #4c1d95;
+    --sonic: var(--partner-btn-bg-hover-light);
+    --gold-accent: #c9962e;
+    --neon-cyan: var(--neon-cyan);
+    --neon-lime: #a3e635;
+    --neon-violet: var(--partner-btn-bg-dark);
+    --surf-950: #0f0f0f;
+    --surf-900: var(--bg-dark-dropdown);
+    --surf-800: #1e1e1e;
+    --surf-700: #2a2a2a;
+    --surf-600: #3a3a3a;
+    --hero-light: radial-gradient(1200px 500px at 20% 0%, #d9e8ff 0%, transparent 60%), radial-gradient(800px 400px at 90% 10%, #efe7ff 0%, transparent 60%), linear-gradient(180deg, #fafbff 0%, var(--banner-cta-bg-dark) 100%);
+    --hero-dark: linear-gradient(135deg, #0f0f0f 0%, var(--bg-dark-dropdown) 45%, #1e1e1e 100%);
+    --banner-dark: linear-gradient(135deg, var(--bg-dark-dropdown) 0%, #1e1e1e 50%, #2a2a2a 100%);
+    --banner-light: linear-gradient(135deg, var(--banner-cta-bg-hover-dark) 0%, var(--bg-partner-badge-light) 50%, #dbeafe 100%);
+    /* Cor única pra toda a homepage — estilo Obsidian, sem variação entre seções */
+    --home-bg: var(--banner-cta-bg-dark);
+    --home-border: var(--cat-tile-border-light)
+    }
 html.dark {
-  --home-bg: #080808;
-  --home-border: rgba(255,255,255,.08);
-}
+    --home-bg: #080808;
+    --home-border: var(--cat-tile-border-dark)
+    }
 :root {
-  /* Ink scale — light mode */
-  --ink-50:  #f8fafc;
-  --ink-100: #f1f5f9;
-  --ink-200: #e2e8f0;
-  --ink-300: #cbd5e1;
-  --ink-400: #94a3b8;
-  --ink-500: #64748b;
-  --ink-600: #475569;
-  --ink-700: #334155;
-  --ink-800: #1e293b;
-  --ink-900: #0f172a;
-  --surface:     #ffffff;
-  --surface-alt: #f8fafc;
-}
-
-
-
-
-
-
-
+    /* Ink scale — light mode */
+    --ink-50: var(--cat-tile-icon-wrap-bg-light);
+    --ink-100: var(--cat-tile-border-light);
+    --ink-200: var(--text-dark-mode);
+    --ink-300: var(--scrollbar-thumb-light);
+    --ink-400: var(--ink-muted-dark);
+    --ink-500: var(--muted);
+    --ink-600: var(--partner-sub-color-light);
+    --ink-700: var(--surf-700-dark);
+    --ink-800: var(--surface-alt-dark);
+    --ink-900: var(--home-bg-dark);
+    --surface: var(--banner-cta-bg-dark);
+    --surface-alt: var(--cat-tile-icon-wrap-bg-light)
+    }
 /* Glass header */
-  .glass{backdrop-filter: blur(14px) saturate(160%);}
-  html.dark .glass{background:rgba(10,15,30,.55) !important;border-color:rgba(255,255,255,.06) !important}
-  /* ============ ACCESSIBILITY ============ */
-  /* Skip-to-content link — visible only when focused via Tab */
-  .skip-link{
-    position:fixed;top:-100px;left:1rem;z-index:200;
-    background:#1a73e8;color:#fff;font-weight:700;
-    padding:.65rem 1rem;border-radius:.75rem;
-    box-shadow:0 8px 24px rgba(26,115,232,.35);
-    transition:top .15s ease-out;text-decoration:none;font-size:.875rem;
-  }
-  .skip-link:focus,.skip-link:focus-visible{top:.75rem;outline:none}
-  /* Strong focus ring for every interactive element */
-  :focus-visible{outline:none}
-  a:focus-visible,button:focus-visible,
-  input:focus-visible,select:focus-visible,textarea:focus-visible,
-  [role="button"]:focus-visible,[tabindex="0"]:focus-visible,
-  summary:focus-visible{
-    outline:2px solid #1a73e8;outline-offset:2px;
-    border-radius:.5rem;box-shadow:0 0 0 4px rgba(26,115,232,.18);
-  }
-  html.dark a:focus-visible,html.dark button:focus-visible,
-  html.dark input:focus-visible,html.dark select:focus-visible,html.dark textarea:focus-visible,
-  html.dark [role="button"]:focus-visible,html.dark [tabindex="0"]:focus-visible,
-  html.dark summary:focus-visible{
-    outline-color:#5c91ff;box-shadow:0 0 0 4px rgba(92,145,255,.28);
-  }
-  /* Card focus — used when a card is wrapped by an <a> or has tabindex */
-  .gig-card a:focus-visible,
-  .gig-card:focus-within{box-shadow:0 0 0 2px #1a73e8,0 0 0 6px rgba(26,115,232,.18)}
-  /* Respect reduced-motion users */
-  @media (prefers-reduced-motion: reduce){
-    *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
-  }
-  /* Screen-reader-only utility */
-  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-
-  /* ============ DROPDOWN MENUS — legibilidade garantida ============ */
-  [data-fmenu],
-  #lang-menu, #wallet-menu {
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,.08), 0 12px 40px -4px rgba(0,0,0,.16) !important;
-    border: 1px solid #d1d5db !important;
-  }
-
-
-
-
-
-
-  /* ══════════════════════════════════════════════════════════
+.glass {
+    backdrop-filter: blur(14px) saturate(160%)
+    }
+html.dark .glass {
+    background: rgba(10, 15, 30, 0.55) !important;
+    border-color: rgba(255, 255, 255, 0.06) !important
+    }
+/* ============ ACCESSIBILITY ============ */
+/* Skip-to-content link — visible only when focused via Tab */
+.skip-link {
+    position: fixed;
+    top: -100px;
+    left: 1rem;
+    z-index: 200;
+    background: var(--banner-cta-color-hover-dark);
+    color: var(--hero-search-input-color-dark);
+    font-weight: 700;
+    padding: 0.65rem 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 24px rgba(26, 115, 232, 0.35);
+    transition: top 0.15s ease-out;
+    text-decoration: none;
+    font-size: 0.875rem
+    }
+.skip-link:focus, .skip-link:focus-visible {
+    top: 0.75rem;
+    outline: none
+    }
+/* Strong focus ring for every interactive element */
+:focus-visible {
+    outline: none
+    }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [role="button"]:focus-visible, [tabindex="0"]:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--banner-cta-color-hover-dark);
+    outline-offset: 2px;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 4px var(--ring-brand-shadow)
+    }
+html.dark a:focus-visible, html.dark button:focus-visible, html.dark input:focus-visible, html.dark select:focus-visible, html.dark textarea:focus-visible, html.dark [role="button"]:focus-visible, html.dark [tabindex="0"]:focus-visible, html.dark summary:focus-visible {
+    outline-color: #5c91ff;
+    box-shadow: 0 0 0 4px rgba(92, 145, 255, 0.28)
+    }
+/* Card focus — used when a card is wrapped by an <a> or has tabindex */
+.gig-card a:focus-visible, .gig-card:focus-within {
+    box-shadow: 0 0 0 2px var(--banner-cta-color-hover-dark), 0 0 0 6px var(--ring-brand-shadow)
+    }
+/* Respect reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important
+        }
+    }
+/* Screen-reader-only utility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0
+    }
+/* ============ DROPDOWN MENUS — legibilidade garantida ============ */
+[data-fmenu], #lang-menu, #wallet-menu {
+    box-shadow: 0 4px 6px -1px var(--shadow-dropdown-1), 0 12px 40px -4px rgba(0, 0, 0, 0.16) !important;
+    border: 1px solid var(--border-gray-300) !important
+    }
+/* ══════════════════════════════════════════════════════════
      CATEGORY STRIP — Fiverr-exact: no scrollbar, gradient arrows
      ══════════════════════════════════════════════════════════ */
-  #cat-strip-wrap {
+#cat-strip-wrap {
     position: relative;
-    overflow: hidden;
-  }
-  .cat-strip-inner {
+    overflow: hidden
+    }
+.cat-strip-inner {
     display: flex;
     align-items: center;
     max-width: 1280px;
@@ -460,1671 +903,1219 @@ html.dark {
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
     /* Sem scroll-behavior:smooth aqui — evita pulos indesejados no re-render */
-    overscroll-behavior-x: contain;
-  }
-  .cat-strip-inner::-webkit-scrollbar { display: none; }
-
-  .cat-strip-btn {
+    overscroll-behavior-x: contain
+    }
+.cat-strip-inner::-webkit-scrollbar {
+    display: none
+    }
+.cat-strip-btn {
     flex-shrink: 0;
     padding: 0 1rem;
     height: 42px;
     font-size: 13px;
     font-weight: 600;
     border-bottom: 2px solid transparent;
-    color: #6b7280;
-    transition: color .15s, border-color .15s;
+    color: var(--ow-stat-sub-color-dark);
+    transition: color 0.15s, border-color 0.15s;
     background: none;
-    white-space: nowrap;
-  }
-  .cat-strip-btn:hover { color: #111827; }
-  .cat-strip-btn--active {
-    color: #111827 !important;
-    border-bottom-color: #111827 !important;
-    font-weight: 700;
-  }
-
-  /* Arrow buttons — small, with gradient fade (Fiverr style) */
-  .cat-strip-arrow {
+    white-space: nowrap
+    }
+.cat-strip-btn:hover {
+    color: var(--text-dark-general)
+    }
+.cat-strip-btn--active {
+    color: var(--text-dark-general) !important;
+    border-bottom-color: var(--text-dark-general) !important;
+    font-weight: 700
+    }
+/* Arrow buttons — small, with gradient fade (Fiverr style) */
+.cat-strip-arrow {
     position: absolute;
-    top: 0; bottom: 0;
+    top: 0;
+    bottom: 0;
     width: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 10;
-    color: #374151;
+    color: var(--text-cat-tile-label-light);
     cursor: pointer;
     background: transparent;
     border: none;
     padding: 0;
-    transition: color .15s;
-  }
-  .cat-strip-arrow:hover { color: #111827; }
-  .cat-strip-arrow-l {
+    transition: color 0.15s
+    }
+.cat-strip-arrow:hover {
+    color: var(--text-dark-general)
+    }
+.cat-strip-arrow-l {
     left: 0;
-    background: linear-gradient(to right, #ffffff 60%, transparent);
-  }
-  .cat-strip-arrow-r {
+    background: linear-gradient(to right, var(--banner-cta-bg-dark) 60%, transparent)
+    }
+.cat-strip-arrow-r {
     right: 0;
-    background: linear-gradient(to left, #ffffff 60%, transparent);
-  }
-  .cat-strip-arrow.hidden { display: none !important; }
-
-  /* Dark mode overrides */
-  html.dark .cat-strip-btn { color: #9ca3af; }
-  html.dark .cat-strip-btn:hover { color: #f9fafb; }
-  html.dark .cat-strip-btn--active { color: #f9fafb !important; border-bottom-color: #f9fafb !important; }
-  html.dark .cat-strip-arrow { color: #9ca3af; }
-  html.dark .cat-strip-arrow:hover { color: #f9fafb; }
-  html.dark .cat-strip-arrow-l { background: linear-gradient(to right, var(--surf-950) 60%, transparent); }
-  html.dark .cat-strip-arrow-r { background: linear-gradient(to left, var(--surf-950) 60%, transparent); }
-  html.dark #cat-strip-wrap { border-top-color: rgba(255,255,255,.07); }
-
-  /* ══════════════════════════════════════════════════════════
+    background: linear-gradient(to left, var(--banner-cta-bg-dark) 60%, transparent)
+    }
+.cat-strip-arrow.hidden {
+    display: none !important
+    }
+/* Dark mode overrides */
+html.dark .cat-strip-btn {
+    color: var(--hw-card-sub-color-dark)
+    }
+html.dark .cat-strip-btn:hover {
+    color: var(--hw-tl-title-color-dark)
+    }
+html.dark .cat-strip-btn--active {
+    color: var(--hw-tl-title-color-dark) !important;
+    border-bottom-color: var(--hw-tl-title-color-dark) !important
+    }
+html.dark .cat-strip-arrow {
+    color: var(--hw-card-sub-color-dark)
+    }
+html.dark .cat-strip-arrow:hover {
+    color: var(--hw-tl-title-color-dark)
+    }
+html.dark .cat-strip-arrow-l {
+    background: linear-gradient(to right, var(--surf-950) 60%, transparent)
+    }
+html.dark .cat-strip-arrow-r {
+    background: linear-gradient(to left, var(--surf-950) 60%, transparent)
+    }
+html.dark #cat-strip-wrap {
+    border-top-color: var(--border-dark-mode-alt)
+    }
+/* ══════════════════════════════════════════════════════════
      PAGINATION — Fiverr-exact: plain numbers, underline active
      ══════════════════════════════════════════════════════════ */
-  .pgn-wrap {
+.pgn-wrap {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 2px;
     margin-top: 2.5rem;
-    padding-bottom: 1rem;
-  }
-  .pgn-btn {
-    width: 2.25rem; height: 2.25rem;
-    display: grid; place-items: center;
-    font-size: 14px; font-weight: 500;
-    color: #6b7280;
-    background: none; border: none;
+    padding-bottom: 1rem
+    }
+.pgn-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ow-stat-sub-color-dark);
+    background: none;
+    border: none;
     cursor: pointer;
     border-bottom: 2px solid transparent;
-    transition: color .12s;
+    transition: color 0.12s;
     border-radius: 0;
-    padding-bottom: 1px;
-  }
-  .pgn-btn:hover { color: #111827; }
-  .pgn-btn--active {
-    color: #111827 !important;
-    border-bottom-color: #111827 !important;
-    font-weight: 700;
-  }
-  .pgn-dots {
-    width: 2rem; height: 2.25rem;
-    display: grid; place-items: center;
-    color: #9ca3af; font-size: 13px;
-    user-select: none;
-  }
-  .pgn-arrow {
-    width: 2rem; height: 2rem;
-    display: grid; place-items: center;
-    border: 1px solid #d1d5db;
+    padding-bottom: 1px
+    }
+.pgn-btn:hover {
+    color: var(--text-dark-general)
+    }
+.pgn-btn--active {
+    color: var(--text-dark-general) !important;
+    border-bottom-color: var(--text-dark-general) !important;
+    font-weight: 700
+    }
+.pgn-dots {
+    width: 2rem;
+    height: 2.25rem;
+    display: grid;
+    place-items: center;
+    color: var(--hw-card-sub-color-dark);
+    font-size: 13px;
+    user-select: none
+    }
+.pgn-arrow {
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border-gray-300);
     border-radius: 50%;
-    color: #6b7280;
-    background: none; cursor: pointer;
-    transition: border-color .12s, color .12s;
-    margin: 0 4px;
-  }
-  .pgn-arrow:hover { border-color: #6b7280; color: #111827; }
-  .pgn-arrow:disabled { opacity: .3; cursor: not-allowed; }
-
-  html.dark .pgn-btn { color: #9ca3af; }
-  html.dark .pgn-btn:hover { color: #f9fafb; }
-  html.dark .pgn-btn--active { color: #f9fafb !important; border-bottom-color: #f9fafb !important; }
-  html.dark .pgn-arrow { border-color: rgba(255,255,255,.15); color: #9ca3af; }
-  html.dark .pgn-arrow:hover { border-color: rgba(255,255,255,.4); color: #f9fafb; }
-  html.dark .pgn-dots { color: #4b5563; }
-
-  /* ══════════════════════════════════════════════════════════
+    color: var(--ow-stat-sub-color-dark);
+    background: none;
+    cursor: pointer;
+    transition: border-color 0.12s, color 0.12s;
+    margin: 0 4px
+    }
+.pgn-arrow:hover {
+    border-color: var(--ow-stat-sub-color-dark);
+    color: var(--text-dark-general)
+    }
+.pgn-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed
+    }
+html.dark .pgn-btn {
+    color: var(--hw-card-sub-color-dark)
+    }
+html.dark .pgn-btn:hover {
+    color: var(--hw-tl-title-color-dark)
+    }
+html.dark .pgn-btn--active {
+    color: var(--hw-tl-title-color-dark) !important;
+    border-bottom-color: var(--hw-tl-title-color-dark) !important
+    }
+html.dark .pgn-arrow {
+    border-color: var(--border-dark-mode-medium);
+    color: var(--hw-card-sub-color-dark)
+    }
+html.dark .pgn-arrow:hover {
+    border-color: var(--border-dark-mode-strong);
+    color: var(--hw-tl-title-color-dark)
+    }
+html.dark .pgn-dots {
+    color: var(--text-dark-mode-gray)
+    }
+/* ══════════════════════════════════════════════════════════
      DROPDOWN MENUS — strong shadow + border so they lift off
      ══════════════════════════════════════════════════════════ */
-  [data-fmenu], #lang-menu, #wallet-menu {
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,.08),
-                0 16px 48px -4px rgba(0,0,0,.18) !important;
-    border: 1px solid #d1d5db !important;
-  }
-
-
-  /* Header bg — white in light, dark surface in dark */
-  .bg-header { background: #ffffff; }
-  html.dark .bg-header { background: var(--surf-900); }
-  /* Header search in dark mode */
-  #header-search, form.header-search-form { position: relative; }
-  html.dark #header-search,
-  html.dark form.header-search-form {
+[data-fmenu], #lang-menu, #wallet-menu {
+    box-shadow: 0 4px 6px -1px var(--shadow-dropdown-1), 0 16px 48px -4px var(--shadow-dropdown-2) !important;
+    border: 1px solid var(--border-gray-300) !important
+    }
+/* Header bg — white in light, dark surface in dark */
+.bg-header {
+    background: var(--banner-cta-bg-dark)
+    }
+html.dark .bg-header {
+    background: var(--surf-900)
+    }
+/* Header search in dark mode */
+#header-search, form.header-search-form {
+    position: relative
+    }
+html.dark #header-search, html.dark form.header-search-form {
     background: var(--surf-700) !important;
-    border-color: rgba(255,255,255,.1) !important;
-  }
-  html.dark #header-search input,
-  html.dark form.header-search-form input {
-    color: #e2e8f0;
-  }
-  /* Mobile search bar dark */
-  html.dark .mobile-search-form {
+    border-color: var(--border-dark-mode-light) !important
+    }
+html.dark #header-search input, html.dark form.header-search-form input {
+    color: var(--text-dark-mode)
+    }
+/* Mobile search bar dark */
+html.dark .mobile-search-form {
     background: var(--surf-700) !important;
-    border-color: rgba(255,255,255,.1) !important;
-  }
-
-
-  /* ═══ HERO — estilo V1 Obsidian: preto absoluto, badge, busca minimal, stats em vez de partner strip ═══ */
-  html.dark #hero-section { background: var(--home-bg); }
-  html:not(.dark) #hero-section { background: var(--home-bg); }
-  html.dark .hero-title-text { color:#ffffff; }
-  html:not(.dark) .hero-title-text { color: var(--surf-950); }
-  html.dark .hero-badge { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); }
-  html:not(.dark) .hero-badge { border-color: rgba(0,0,0,0.1); background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.5); }
-  html.dark .hero-stat-num { color:#ffffff; }
-  html:not(.dark) .hero-stat-num { color: var(--surf-950); }
-  html.dark .hero-stat-label { color: rgba(255,255,255,0.35); }
-  html:not(.dark) .hero-stat-label { color: rgba(0,0,0,0.4); }
-  html.dark .hero-subtitle { color: rgba(255,255,255,0.5); }
-  html:not(.dark) .hero-subtitle { color: rgba(0,0,0,0.55); }
-  html.dark .hero-outline-btn { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); color: #ffffff; }
-  html.dark .hero-outline-btn:hover { background: rgba(255,255,255,0.08); }
-  html:not(.dark) .hero-outline-btn { border-color: rgba(0,0,0,0.15); background: rgba(0,0,0,0.03); color: var(--surf-950); }
-  html:not(.dark) .hero-outline-btn:hover { background: rgba(0,0,0,0.06); }
-  html.dark .hero-glow { background: radial-gradient(ellipse 80% 50% at 50% -10%,rgba(124,58,237,0.18) 0%,transparent 70%); }
-  html:not(.dark) .hero-glow { background: radial-gradient(ellipse 80% 50% at 50% -10%,rgba(124,58,237,0.10) 0%,transparent 70%); }
-  html.dark .hero-search-bar { border-color: rgba(255,255,255,0.10); background: rgba(255,255,255,0.05); }
-  html:not(.dark) .hero-search-bar { border-color: rgba(0,0,0,0.12); background: rgba(0,0,0,0.02); }
-  html.dark .hero-search-icon { color: rgba(255,255,255,0.3); }
-  html:not(.dark) .hero-search-icon { color: rgba(0,0,0,0.35); }
-  html.dark .hero-search-input { color:#fff; }
-  html.dark .hero-search-input::placeholder { color: rgba(255,255,255,0.3); }
-  html:not(.dark) .hero-search-input { color: var(--surf-950); }
-  html:not(.dark) .hero-search-input::placeholder { color: rgba(0,0,0,0.35); }
-  html.dark .hero-search-submit { color: rgba(255,255,255,0.4); border-left:1px solid rgba(255,255,255,0.10); }
-  html.dark .hero-search-submit:hover { color:#fff; }
-  html:not(.dark) .hero-search-submit { color: rgba(0,0,0,0.45); border-left:1px solid rgba(0,0,0,0.12); }
-  html:not(.dark) .hero-search-submit:hover { color: var(--surf-950); }
-  html.dark .hero-dropdown { background:#1c1c1c; border-color: rgba(255,255,255,0.1); }
-  html:not(.dark) .hero-dropdown { background:#fff; border-color: rgba(0,0,0,0.1); }
-  html.dark .hero-tag { color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
-  html.dark .hero-tag:hover { color: rgba(255,255,255,0.7); }
-  html:not(.dark) .hero-tag { color: rgba(0,0,0,0.5); border-color: rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); }
-  html:not(.dark) .hero-tag:hover { color: var(--surf-950); }
-  html.dark .hero-partner-label,html.dark .hero-partner-item { color: rgba(255,255,255,0.3); }
-  html:not(.dark) .hero-partner-label,html:not(.dark) .hero-partner-item { color: rgba(0,0,0,0.4); }
-  html.dark .hero-divider { background: rgba(255,255,255,0.10); }
-  html:not(.dark) .hero-divider { background: rgba(0,0,0,0.12); }
-  .hero-search-btn { background:#0b1220; }
-  .hero-search-btn:hover { background:#1f2937; }
-  .hero-tag { color:#ffffff; border:1.5px solid rgba(255,255,255,0.55); background:transparent; }
-  .hero-tag:hover { border-color:#ffffff; background:rgba(255,255,255,0.1); }
-  .hero-partner-label { color: rgba(255,255,255,0.5); }
-  .hero-partner-item { color: rgba(255,255,255,0.8); }
-  .hero-divider { background: rgba(255,255,255,0.25); }
-
-  /* ═══ BANNER FREELANCER ADAPTATIVO ═══ */
-  html.dark .freelancer-banner { background: var(--banner-dark); }
-  html.dark .banner-badge { background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.20); color: rgba(255,255,255,0.70); }
-  html.dark .banner-title { color: #ffffff; }
-  html.dark .banner-sub { color: rgba(255,255,255,0.60); }
-  html.dark .banner-cta { background: #ffffff; color: var(--surf-950); }
-  html.dark .banner-cta:hover { background: #eef5ff; color: #1a73e8; }
-
-  html:not(.dark) .freelancer-banner { background: var(--banner-light); border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
-  html:not(.dark) .banner-badge { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.20); color: #7C3AED; }
-  html:not(.dark) .banner-title { color: #0b1220; }
-  html:not(.dark) .banner-sub { color: #475569; }
-  html:not(.dark) .banner-cta { background: #7C3AED; color: #ffffff; }
-  html:not(.dark) .banner-cta:hover { background: #6d28d9; color: #ffffff; }
-
-  /* Header search dropdown — dark mode */
-  html.dark #header-search-dropdown { background: #1e293b !important; border-color: rgba(255,255,255,.08) !important; }
-
-
-  /* ═══ WHY INTERWORK ═══ */
-  html:not(.dark) .why-iw-section { background: var(--home-bg); }
-  html.dark .why-iw-section { background: var(--home-bg); }
-  html:not(.dark) .why-iw-title { color: #0b1220; }
-  html.dark .why-iw-title { color: #f9fafb; }
-  html:not(.dark) .why-iw-card { background: #ffffff; border-color: #e2e8f0; }
-  html.dark .why-iw-card { background: var(--surf-900); border-color: rgba(255,255,255,0.07); }
-  html:not(.dark) .why-iw-label { color: #0b1220; }
-  html.dark .why-iw-label { color: #f9fafb; }
-  html:not(.dark) .why-iw-sub { color: #475569; }
-  html.dark .why-iw-sub { color: #9ca3af; }
-
-  /* ═══ STRATEGIC PARTNER ═══ */
-  html:not(.dark) .partner-section { background: var(--home-bg); border-color: var(--home-border); }
-  html.dark .partner-section { background: var(--home-bg); border-color: var(--home-border); }
-  html:not(.dark) .partner-badge { background: #f5f0ff; color: #7C3AED; }
-  html.dark .partner-badge { background: rgba(99,102,241,0.15); color: #a5b4fc; }
-  html:not(.dark) .partner-logo-wrap { background: #f1f5f9; border-color: #e2e8f0; }
-  html.dark .partner-logo-wrap { background: var(--surf-800); border-color: rgba(255,255,255,0.08); }
-  html:not(.dark) .partner-logo-icon { color: #7C3AED; }
-  html.dark .partner-logo-icon { color: #a78bfa; }
-  html:not(.dark) .partner-title { color: #0b1220; }
-  html.dark .partner-title { color: #f9fafb; }
-  html:not(.dark) .partner-sub { color: #475569; }
-  html.dark .partner-sub { color: #9ca3af; }
-  html:not(.dark) .partner-btn { background: #0b1220; color: #ffffff; }
-  html:not(.dark) .partner-btn:hover { background: #7C3AED; }
-  html.dark .partner-btn { background: #a78bfa; color: var(--surf-950); }
-  html.dark .partner-btn:hover { background: #c4b5fd; }
-
-  /* ═══ POWERED BY INTERLINK ═══ */
-  html:not(.dark) .powered-section { background: #f8fafc; border-top: 1px solid #e2e8f0; }
-  html.dark .powered-section { background: var(--surf-950); border-top: 1px solid rgba(255,255,255,0.06); }
-  html:not(.dark) .powered-text { color: #94a3b8; }
-  html.dark .powered-text { color: #4b5563; }
-
-  /* ═══ OVERVIEW ═══ */
-  html:not(.dark) .ow-section{background:var(--home-bg)}
-  html.dark .ow-section{background:var(--home-bg)}
-  html:not(.dark) .ow-kicker{color:var(--brand-500)}
-  html.dark .ow-kicker{color:var(--sonic)}
-  html:not(.dark) .ow-line{background:var(--brand-500)}
-  html.dark .ow-line{background:var(--sonic)}
-  html:not(.dark) .ow-title{color:#0b1220}
-  html.dark .ow-title{color:#f9fafb}
-  html:not(.dark) .ow-accent{color:var(--brand-500)}
-  html.dark .ow-accent{color:var(--sonic)}
-  html:not(.dark) .ow-sub{color:#475569}
-  html.dark .ow-sub{color:#9ca3af}
-  html:not(.dark) .ow-stat-card{background:#fff;border-color:#e2e8f0}
-  html.dark .ow-stat-card{background:var(--surf-900);border-color:rgba(255,255,255,.07)}
-  html:not(.dark) .ow-stat-num{color:var(--brand-500)}
-  html.dark .ow-stat-num{color:var(--sonic)}
-  html:not(.dark) .ow-stat-label{color:#0b1220}
-  html.dark .ow-stat-label{color:#f9fafb}
-  html:not(.dark) .ow-stat-sub{color:#64748b}
-  html.dark .ow-stat-sub{color:#6b7280}
-
-  /* ═══ HOW IT WORKS ═══ */
-  html:not(.dark) .hw-section{background:var(--home-bg)}
-  html.dark .hw-section{background:var(--home-bg)}
-  html:not(.dark) .hw-kicker{color:var(--brand-500)}
-  html.dark .hw-kicker{color:var(--sonic)}
-  html:not(.dark) .hw-line{background:var(--brand-500)}
-  html.dark .hw-line{background:var(--sonic)}
-  html:not(.dark) .hw-title{color:#0b1220}
-  html.dark .hw-title{color:#f9fafb}
-  html:not(.dark) .hw-sub{color:#475569}
-  html.dark .hw-sub{color:#9ca3af}
-  html:not(.dark) .hw-card{background:#f8fafc;border-color:#e2e8f0}
-  html.dark .hw-card{background:var(--surf-900);border-color:rgba(255,255,255,.07)}
-  html:not(.dark) .hw-num{color:var(--sonic)}
-  html.dark .hw-num{color:var(--sonic)}
-  html:not(.dark) .hw-card-title{color:#0b1220}
-  html.dark .hw-card-title{color:#f9fafb}
-  html:not(.dark) .hw-card-sub{color:#475569}
-  html.dark .hw-card-sub{color:#9ca3af}
-  html:not(.dark) .hw-arrow-bg{background:var(--brand-100)}
-  html.dark .hw-arrow-bg{background:rgba(255,255,255,.06)}
-  html:not(.dark) .hw-arrow-icon{color:var(--brand-500)}
-  html.dark .hw-arrow-icon{color:#9ca3af}
-  html:not(.dark) .hw-tl-line{background:#e5e7eb}
-  html.dark .hw-tl-line{background:rgba(255,255,255,.10)}
-  html:not(.dark) .hw-tl-dot{background:#fafafa;border-color:#e5e7eb;color:#6d28d9}
-  html.dark .hw-tl-dot{background:#0d0d0d;border-color:rgba(255,255,255,.12);color:var(--sonic)}
-  html:not(.dark) .hw-tl-title{color:#111}
-  html.dark .hw-tl-title{color:#f9fafb}
-  html:not(.dark) .hw-tl-sub{color:#9ca3af}
-  html.dark .hw-tl-sub{color:rgba(255,255,255,.4)}
-
-  /* Category tiles — Obsidian: monocromático, vira roxo no hover */
-  html:not(.dark) .cat-tiles-section { background: var(--home-bg); border-color: var(--home-border); }
-  html.dark .cat-tiles-section { background: var(--home-bg); border-color: var(--home-border); }
-  html:not(.dark) .cat-tile { background:#fff; border-color:#f1f5f9; }
-  html.dark .cat-tile { background:rgba(255,255,255,.03); border-color:rgba(255,255,255,.08); }
-  .cat-tile:hover { border-color:#8b5cf6 !important; }
-  html:not(.dark) .cat-tile-icon-wrap { background:#f8fafc; }
-  html.dark .cat-tile-icon-wrap { background:rgba(255,255,255,.05); }
-  .cat-tile:hover .cat-tile-icon-wrap { background:rgba(139,92,246,.12); }
-  html:not(.dark) .cat-tile-icon { color:#57606b; }
-  html.dark .cat-tile-icon { color:rgba(255,255,255,.55); }
-  .cat-tile:hover .cat-tile-icon { color:#8b5cf6; }
-  html:not(.dark) .cat-tile-label { color:#374151; }
-  html.dark .cat-tile-label { color:rgba(255,255,255,.6); }
-  .cat-tile:hover .cat-tile-label { color:#8b5cf6; }
-
-  /* ═══ BENEFITS ═══ */
-  html:not(.dark) .bn-section{background:var(--home-bg)}
-  html.dark .bn-section{background:var(--home-bg)}
-  html:not(.dark) .bn-kicker{color:var(--brand-500)}
-  html.dark .bn-kicker{color:var(--sonic)}
-  html:not(.dark) .bn-line{background:var(--brand-500)}
-  html.dark .bn-line{background:var(--sonic)}
-  html:not(.dark) .bn-title{color:#0b1220}
-  html.dark .bn-title{color:#f9fafb}
-  html:not(.dark) .bn-sub{color:#475569}
-  html.dark .bn-sub{color:#9ca3af}
-  html:not(.dark) .bn-card{background:#fff;border-color:#e2e8f0}
-  html.dark .bn-card{background:var(--surf-900);border-color:rgba(255,255,255,.07)}
-  html:not(.dark) .bn-tag{background:var(--brand-50);color:var(--brand-600)}
-  html.dark .bn-tag{background:rgba(255,255,255,.06);color:var(--sonic)}
-  html:not(.dark) .bn-card-title{color:#0b1220}
-  html.dark .bn-card-title{color:#f9fafb}
-  html:not(.dark) .bn-card-sub{color:#475569}
-  html.dark .bn-card-sub{color:#9ca3af}
-
-  /* ═══ COMMUNITY & REWARDS ═══ */
-  html:not(.dark) .rw-section{background:#fff}
-  html.dark .rw-section{background:var(--surf-950)}
-  html:not(.dark) .rw-kicker{color:var(--brand-500)}
-  html.dark .rw-kicker{color:var(--sonic)}
-  html:not(.dark) .rw-line{background:var(--brand-500)}
-  html.dark .rw-line{background:var(--sonic)}
-  html:not(.dark) .rw-title{color:#0b1220}
-  html.dark .rw-title{color:#f9fafb}
-  html:not(.dark) .rw-sub{color:#475569}
-  html.dark .rw-sub{color:#9ca3af}
-  html:not(.dark) .rw-card{background:#f8fafc;border-color:#e2e8f0}
-  html.dark .rw-card{background:var(--surf-900);border-color:rgba(255,255,255,.07)}
-  html:not(.dark) .rw-icon{background:var(--brand-50)}
-  html.dark .rw-icon{background:rgba(255,255,255,.06)}
-  html:not(.dark) .rw-icon-color{color:var(--brand-500)}
-  html.dark .rw-icon-color{color:var(--sonic)}
-  html:not(.dark) .rw-card-title{color:#0b1220}
-  html.dark .rw-card-title{color:#f9fafb}
-  html:not(.dark) .rw-card-sub{color:#475569}
-  html.dark .rw-card-sub{color:#9ca3af}
-  html:not(.dark) .rw-cta{background:linear-gradient(135deg,var(--brand-50) 0%,#f5f0ff 100%);border-color:var(--brand-100)}
-  html.dark .rw-cta{background:linear-gradient(135deg,var(--surf-900) 0%,rgba(124,58,237,.15) 100%);border-color:rgba(255,255,255,.07)}
-  html:not(.dark) .rw-cta-title{color:#0b1220}
-  html.dark .rw-cta-title{color:#f9fafb}
-  html:not(.dark) .rw-cta-sub{color:#475569}
-  html.dark .rw-cta-sub{color:#9ca3af}
-  html:not(.dark) .rw-cta-btn{background:var(--brand-500);color:#fff}
-  html:not(.dark) .rw-cta-btn:hover{background:var(--brand-600)}
-  html.dark .rw-cta-btn{background:var(--sonic);color:#fff}
-  html.dark .rw-cta-btn:hover{opacity:.9}
-
-  /* ═══ ATV-INSPIRED SECTION TITLES (serif + gold underline) ═══ */
-  .atv-title{
-    font-family:'Playfair Display',Georgia,serif;
-    font-weight:800;
-    display:block;
-    position:relative;
-    padding-bottom:.45em;
-    margin-bottom:.3em;
-  }
-  .atv-title::after{
-    content:'';
-    position:absolute;
-    left:0; bottom:0;
-    width:84px; height:3px;
-    background:linear-gradient(90deg,var(--gold-accent) 0%, var(--gold-accent) 70%, transparent 100%);
-    border-radius:2px;
-  }
-  .atv-title.atv-title-center::after{
-    left:50%; transform:translateX(-50%);
-  }
-  .atv-num{
-    font-family:'Playfair Display',Georgia,serif;
-    font-weight:800;
-  }
-  .atv-connector{
-    width:22px;height:22px;border-radius:9999px;
-    display:flex;align-items:center;justify-content:center;
-    transition:transform .25s ease;
-  }
-  .atv-card{ transition:transform .25s ease, box-shadow .25s ease; }
-  .atv-card:hover{ transform:translateY(-4px); }
-  html:not(.dark) .atv-card:hover{ box-shadow:0 12px 28px rgba(15,23,42,.08); }
-  html.dark .atv-card:hover{ box-shadow:0 12px 28px rgba(0,0,0,.35); }
-  .atv-icon-float{ animation:atvFloat 5s ease-in-out infinite; }
-  @keyframes atvFloat{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
-
-  /* Estilos para fidelidade visual ao print */
-  .bg-brand-500 { background-color: #9b87f5 !important; } /* Roxo do print */
-  .text-brand-500 { color: #9b87f5 !important; }
-  .border-brand-500 { border-color: #9b87f5 !important; }
-  .shadow-brand-500\/20 { box-shadow: 0 10px 15px -3px rgba(155, 135, 245, 0.2), 0 4px 6px -2px rgba(155, 135, 245, 0.1); }
-  .ring-brand-500\/20 { --tw-ring-color: rgba(155, 135, 245, 0.2); }
-  .hover\:bg-brand-600:hover { background-color: #7e69f2 !important; }
-  .text-sonic { color: #000000 !important; font-weight: 800; } /* Preço em preto negrito no print */
-
-  /* ═══ TEMPLATE REFINEMENTS ═══ */
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { scrollbar-width: none; }
-  
-  /* Melhorias de cards com efeito hover */
-  .gig-card { transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
-  .gig-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -12px rgba(139, 124, 255, 0.18); }
-  .gig-card:hover .gig-thumb { border-color: #c7c0ff; }
-  .gig-card .gig-img { transition: transform 0.4s ease; }
-  .gig-card:hover .gig-img { transform: scale(1.06); }
-  
-  /* Badges de status */
-  .badge-best { background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(6px); }
-  .badge-rising { background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(6px); }
-  
-  /* Chips e Pills */
-  .chip { border: 1px solid #e5e7eb; background: #fff; color: #475569; transition: all 0.15s; }
-  .chip:hover { border-color: #c7c0ff; color: #5b4ee0; background: #fafaff; }
-  .pill { border: 1px solid #e5e7eb; color: #334155; background: #fff; transition: all 0.15s; }
-  .pill:hover { border-color: #c7c0ff; color: #5b4ee0; }
-  .pill-active { background: #a99cff; color: #fff; border-color: transparent; }
-  
-  /* Focus states melhorados */
-  input:focus { outline: none; }
-  .focus-within\:border-brand-400:focus-within { border-color: #a99cff; }
-  
-  /* Animações suaves */
-  .transition-all { transition: all 0.15s ease; }
-  
-  /* Brand colors refinadas */
-  :root {
-    --brand-500: #8b7cff;
-    --brand-600: #7a6bf0;
-    --brand-50: #efeaff;
-  }
-  
-  .bg-brand-500 { background-color: #8b7cff; }
-  .hover\:bg-brand-600:hover { background-color: #7a6bf0; }
-  .text-brand-500 { color: #8b7cff; }
-  .border-brand-400 { border-color: #a99cff; }
-  .bg-brand-50 { background-color: #efeaff; }
-  .text-brand-600 { color: #6b5ce7; }
-
-  
-  /* ═══ CARD REFINEMENTS — Fidelidade ao Print ═══ */
-  .gig-card {
+    border-color: var(--border-dark-mode-light) !important
+    }
+/* ═══ HERO — estilo V1 Obsidian: preto absoluto, badge, busca minimal, stats em vez de partner strip ═══ */
+html.dark #hero-section {
+    background: var(--home-bg)
+    }
+html:not(.dark) #hero-section {
+    background: var(--home-bg)
+    }
+html.dark .hero-title-text {
+    color: var(--banner-cta-bg-dark)
+    }
+html:not(.dark) .hero-title-text {
+    color: var(--surf-950)
+    }
+html.dark .hero-badge {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.5)
+    }
+html:not(.dark) .hero-badge {
+    border-color: var(--hero-dropdown-border-light);
+    background: var(--hero-badge-bg-light);
+    color: var(--hero-tag-color-light)
+    }
+html.dark .hero-stat-num {
+    color: var(--banner-cta-bg-dark)
+    }
+html:not(.dark) .hero-stat-num {
+    color: var(--surf-950)
+    }
+html.dark .hero-stat-label {
+    color: rgba(255, 255, 255, 0.35)
+    }
+html:not(.dark) .hero-stat-label {
+    color: var(--hero-partner-label-color-light)
+    }
+html.dark .hero-subtitle {
+    color: rgba(255, 255, 255, 0.5)
+    }
+html:not(.dark) .hero-subtitle {
+    color: var(--hero-subtitle-color-light)
+    }
+html.dark .hero-outline-btn {
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--banner-cta-bg-dark)
+    }
+html.dark .hero-outline-btn:hover {
+    background: var(--bg-dark-tag-border)
+    }
+html:not(.dark) .hero-outline-btn {
+    border-color: var(--hero-outline-btn-border-light);
+    background: var(--hero-badge-bg-light);
+    color: var(--surf-950)
+    }
+html:not(.dark) .hero-outline-btn:hover {
+    background: var(--hero-outline-btn-bg-hover-light)
+    }
+html.dark .hero-glow {
+    background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124, 58, 237, 0.18) 0%, transparent 70%)
+    }
+html:not(.dark) .hero-glow {
+    background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124, 58, 237, 0.1) 0%, transparent 70%)
+    }
+html.dark .hero-search-bar {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05)
+    }
+html:not(.dark) .hero-search-bar {
+    border-color: var(--hero-search-submit-border-left-light);
+    background: var(--hero-tag-bg-light)
+    }
+html.dark .hero-search-icon {
+    color: var(--hero-search-input-placeholder-dark)
+    }
+html:not(.dark) .hero-search-icon {
+    color: var(--hero-search-input-placeholder-light)
+    }
+html.dark .hero-search-input {
+    color: var(--hero-search-input-color-dark)
+    }
+html.dark .hero-search-input::placeholder {
+    color: var(--hero-search-input-placeholder-dark)
+    }
+html:not(.dark) .hero-search-input {
+    color: var(--surf-950)
+    }
+html:not(.dark) .hero-search-input::placeholder {
+    color: var(--hero-search-input-placeholder-light)
+    }
+html.dark .hero-search-submit {
+    color: var(--hero-search-submit-color-dark);
+    border-left: 1px solid rgba(255, 255, 255, 0.1)
+    }
+html.dark .hero-search-submit:hover {
+    color: var(--hero-search-input-color-dark)
+    }
+html:not(.dark) .hero-search-submit {
+    color: var(--hero-search-submit-color-light);
+    border-left: 1px solid var(--hero-search-submit-border-left-light)
+    }
+html:not(.dark) .hero-search-submit:hover {
+    color: var(--surf-950)
+    }
+html.dark .hero-dropdown {
+    background: var(--bg-dark-dropdown);
+    border-color: var(--home-border-dark)
+    }
+html:not(.dark) .hero-dropdown {
+    background: var(--hero-search-input-color-dark);
+    border-color: var(--hero-dropdown-border-light)
+    }
+html.dark .hero-tag {
+    color: var(--hero-search-submit-color-dark);
+    border-color: var(--bg-dark-tag-border);
+    background: var(--bg-dark-tag)
+    }
+html.dark .hero-tag:hover {
+    color: var(--text-dark-tag-hover)
+    }
+html:not(.dark) .hero-tag {
+    color: var(--hero-tag-color-light);
+    border-color: var(--hero-tag-border-light);
+    background: var(--hero-tag-bg-light)
+    }
+html:not(.dark) .hero-tag:hover {
+    color: var(--surf-950)
+    }
+html.dark .hero-partner-label, html.dark .hero-partner-item {
+    color: var(--hero-search-input-placeholder-dark)
+    }
+html:not(.dark) .hero-partner-label, html:not(.dark) .hero-partner-item {
+    color: var(--hero-partner-label-color-light)
+    }
+html.dark .hero-divider {
+    background: rgba(255, 255, 255, 0.1)
+    }
+html:not(.dark) .hero-divider {
+    background: var(--hero-search-submit-border-left-light)
+    }
+.hero-search-btn {
+    background: var(--partner-btn-bg-light)
+    }
+.hero-search-btn:hover {
+    background: #1f2937
+    }
+.hero-tag {
+    color: var(--banner-cta-bg-dark);
+    border: 1.5px solid rgba(255, 255, 255, 0.55);
+    background: transparent
+    }
+.hero-tag:hover {
+    border-color: var(--banner-cta-bg-dark);
+    background: var(--home-border-dark)
+    }
+.hero-partner-label {
+    color: rgba(255, 255, 255, 0.5)
+    }
+.hero-partner-item {
+    color: var(--text-dark-partner-item)
+    }
+.hero-divider {
+    background: var(--divider-dark)
+    }
+/* ═══ BANNER FREELANCER ADAPTATIVO ═══ */
+html.dark .freelancer-banner {
+    background: var(--banner-dark)
+    }
+html.dark .banner-badge {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7)
+    }
+html.dark .banner-title {
+    color: var(--banner-cta-bg-dark)
+    }
+html.dark .banner-sub {
+    color: var(--banner-sub-color-dark)
+    }
+html.dark .banner-cta {
+    background: var(--banner-cta-bg-dark);
+    color: var(--surf-950)
+    }
+html.dark .banner-cta:hover {
+    background: var(--banner-cta-bg-hover-dark);
+    color: var(--banner-cta-color-hover-dark)
+    }
+html:not(.dark) .freelancer-banner {
+    background: var(--banner-light);
+    border-top: 1px solid var(--text-dark-mode);
+    border-bottom: 1px solid var(--text-dark-mode)
+    }
+html:not(.dark) .banner-badge {
+    background: rgba(139, 92, 246, 0.08);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    color: var(--partner-btn-bg-hover-light)
+    }
+html:not(.dark) .banner-title {
+    color: var(--partner-btn-bg-light)
+    }
+html:not(.dark) .banner-sub {
+    color: var(--partner-sub-color-light)
+    }
+html:not(.dark) .banner-cta {
+    background: var(--partner-btn-bg-hover-light);
+    color: var(--banner-cta-bg-dark)
+    }
+html:not(.dark) .banner-cta:hover {
+    background: var(--hw-tl-dot-color-light);
+    color: var(--banner-cta-bg-dark)
+    }
+/* Header search dropdown — dark mode */
+html.dark #header-search-dropdown {
+    background: var(--surface-alt-dark) !important;
+    border-color: var(--cat-tile-border-dark) !important
+    }
+/* ═══ WHY INTERWORK ═══ */
+html:not(.dark) .why-iw-section {
+    background: var(--home-bg)
+    }
+html.dark .why-iw-section {
+    background: var(--home-bg)
+    }
+html:not(.dark) .why-iw-title {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .why-iw-title {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .why-iw-card {
+    background: var(--banner-cta-bg-dark);
+    border-color: var(--text-dark-mode)
+    }
+html.dark .why-iw-card {
+    background: var(--surf-900);
+    border-color: rgba(255, 255, 255, 0.07)
+    }
+html:not(.dark) .why-iw-label {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .why-iw-label {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .why-iw-sub {
+    color: var(--partner-sub-color-light)
+    }
+html.dark .why-iw-sub {
+    color: var(--hw-card-sub-color-dark)
+    }
+/* ═══ STRATEGIC PARTNER ═══ */
+html:not(.dark) .partner-section {
+    background: var(--home-bg);
+    border-color: var(--home-border)
+    }
+html.dark .partner-section {
+    background: var(--home-bg);
+    border-color: var(--home-border)
+    }
+html:not(.dark) .partner-badge {
+    background: var(--bg-partner-badge-light);
+    color: var(--partner-btn-bg-hover-light)
+    }
+html.dark .partner-badge {
+    background: var(--partner-badge-bg-dark);
+    color: var(--partner-badge-text-dark)
+    }
+html:not(.dark) .partner-logo-wrap {
+    background: var(--cat-tile-border-light);
+    border-color: var(--text-dark-mode)
+    }
+html.dark .partner-logo-wrap {
+    background: var(--surf-800);
+    border-color: var(--bg-dark-tag-border)
+    }
+html:not(.dark) .partner-logo-icon {
+    color: var(--partner-btn-bg-hover-light)
+    }
+html.dark .partner-logo-icon {
+    color: var(--partner-btn-bg-dark)
+    }
+html:not(.dark) .partner-title {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .partner-title {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .partner-sub {
+    color: var(--partner-sub-color-light)
+    }
+html.dark .partner-sub {
+    color: var(--hw-card-sub-color-dark)
+    }
+html:not(.dark) .partner-btn {
+    background: var(--partner-btn-bg-light);
+    color: var(--banner-cta-bg-dark)
+    }
+html:not(.dark) .partner-btn:hover {
+    background: var(--partner-btn-bg-hover-light)
+    }
+html.dark .partner-btn {
+    background: var(--partner-btn-bg-dark);
+    color: var(--surf-950)
+    }
+html.dark .partner-btn:hover {
+    background: var(--partner-btn-bg-hover-dark)
+    }
+/* ═══ POWERED BY INTERLINK ═══ */
+html:not(.dark) .powered-section {
+    background: var(--cat-tile-icon-wrap-bg-light);
+    border-top: 1px solid var(--text-dark-mode)
+    }
+html.dark .powered-section {
+    background: var(--surf-950);
+    border-top: 1px solid var(--powered-border-dark)
+    }
+html:not(.dark) .powered-text {
+    color: var(--ink-muted-dark)
+    }
+html.dark .powered-text {
+    color: var(--text-dark-mode-gray)
+    }
+/* ═══ OVERVIEW ═══ */
+html:not(.dark) .ow-section {
+    background: var(--home-bg)
+    }
+html.dark .ow-section {
+    background: var(--home-bg)
+    }
+html:not(.dark) .ow-kicker {
+    color: var(--brand-500)
+    }
+html.dark .ow-kicker {
+    color: var(--sonic)
+    }
+html:not(.dark) .ow-line {
+    background: var(--brand-500)
+    }
+html.dark .ow-line {
+    background: var(--sonic)
+    }
+html:not(.dark) .ow-title {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .ow-title {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .ow-accent {
+    color: var(--brand-500)
+    }
+html.dark .ow-accent {
+    color: var(--sonic)
+    }
+html:not(.dark) .ow-sub {
+    color: var(--partner-sub-color-light)
+    }
+html.dark .ow-sub {
+    color: var(--hw-card-sub-color-dark)
+    }
+html:not(.dark) .ow-stat-card {
+    background: var(--hero-search-input-color-dark);
+    border-color: var(--text-dark-mode)
+    }
+html.dark .ow-stat-card {
+    background: var(--surf-900);
+    border-color: var(--border-dark-mode-alt)
+    }
+html:not(.dark) .ow-stat-num {
+    color: var(--brand-500)
+    }
+html.dark .ow-stat-num {
+    color: var(--sonic)
+    }
+html:not(.dark) .ow-stat-label {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .ow-stat-label {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .ow-stat-sub {
+    color: var(--muted)
+    }
+html.dark .ow-stat-sub {
+    color: var(--ow-stat-sub-color-dark)
+    }
+/* ═══ HOW IT WORKS ═══ */
+html:not(.dark) .hw-section {
+    background: var(--home-bg)
+    }
+html.dark .hw-section {
+    background: var(--home-bg)
+    }
+html:not(.dark) .hw-kicker {
+    color: var(--brand-500)
+    }
+html.dark .hw-kicker {
+    color: var(--sonic)
+    }
+html:not(.dark) .hw-line {
+    background: var(--brand-500)
+    }
+html.dark .hw-line {
+    background: var(--sonic)
+    }
+html:not(.dark) .hw-title {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .hw-title {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .hw-sub {
+    color: var(--partner-sub-color-light)
+    }
+html.dark .hw-sub {
+    color: var(--hw-card-sub-color-dark)
+    }
+html:not(.dark) .hw-card {
+    background: var(--cat-tile-icon-wrap-bg-light);
+    border-color: var(--text-dark-mode)
+    }
+html.dark .hw-card {
+    background: var(--surf-900);
+    border-color: var(--border-dark-mode-alt)
+    }
+html:not(.dark) .hw-num {
+    color: var(--sonic)
+    }
+html.dark .hw-num {
+    color: var(--sonic)
+    }
+html:not(.dark) .hw-card-title {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .hw-card-title {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .hw-card-sub {
+    color: var(--partner-sub-color-light)
+    }
+html.dark .hw-card-sub {
+    color: var(--hw-card-sub-color-dark)
+    }
+html:not(.dark) .hw-arrow-bg {
+    background: var(--brand-100)
+    }
+html.dark .hw-arrow-bg {
+    background: rgba(255, 255, 255, 0.06)
+    }
+html:not(.dark) .hw-arrow-icon {
+    color: var(--brand-500)
+    }
+html.dark .hw-arrow-icon {
+    color: var(--hw-card-sub-color-dark)
+    }
+html:not(.dark) .hw-tl-line {
+    background: var(--hw-tl-line-light)
+    }
+html.dark .hw-tl-line {
+    background: var(--hw-tl-line-dark)
+    }
+html:not(.dark) .hw-tl-dot {
+    background: var(--hw-tl-dot-bg-light);
+    border-color: var(--hw-tl-line-light);
+    color: var(--hw-tl-dot-color-light)
+    }
+html.dark .hw-tl-dot {
+    background: var(--hw-tl-dot-bg-dark);
+    border-color: var(--hw-tl-dot-border-dark);
+    color: var(--sonic)
+    }
+html:not(.dark) .hw-tl-title {
+    color: var(--text-dark-ink-111)
+    }
+html.dark .hw-tl-title {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .hw-tl-sub {
+    color: var(--hw-card-sub-color-dark)
+    }
+html.dark .hw-tl-sub {
+    color: var(--border-dark-mode-strong)
+    }
+/* Category tiles — Obsidian: monocromático, vira roxo no hover */
+html:not(.dark) .cat-tiles-section {
+    background: var(--home-bg);
+    border-color: var(--home-border)
+    }
+html.dark .cat-tiles-section {
+    background: var(--home-bg);
+    border-color: var(--home-border)
+    }
+html:not(.dark) .cat-tile {
+    background: var(--hero-search-input-color-dark);
+    border-color: var(--cat-tile-border-light)
+    }
+html.dark .cat-tile {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--cat-tile-border-dark)
+    }
+.cat-tile:hover {
+    border-color: var(--neon-violet) !important
+    }
+html:not(.dark) .cat-tile-icon-wrap {
+    background: var(--cat-tile-icon-wrap-bg-light)
+    }
+html.dark .cat-tile-icon-wrap {
+    background: var(--cat-tile-icon-wrap-bg-dark)
+    }
+.cat-tile:hover .cat-tile-icon-wrap {
+    background: var(--cat-tile-icon-wrap-hover-dark)
+    }
+html:not(.dark) .cat-tile-icon {
+    color: var(--text-cat-tile-icon-light)
+    }
+html.dark .cat-tile-icon {
+    color: var(--cat-tile-icon-color-dark)
+    }
+.cat-tile:hover .cat-tile-icon {
+    color: var(--neon-violet)
+    }
+html:not(.dark) .cat-tile-label {
+    color: var(--text-cat-tile-label-light)
+    }
+html.dark .cat-tile-label {
+    color: var(--cat-tile-label-color-dark)
+    }
+.cat-tile:hover .cat-tile-label {
+    color: var(--neon-violet)
+    }
+/* ═══ BENEFITS ═══ */
+html:not(.dark) .bn-section {
+    background: var(--home-bg)
+    }
+html.dark .bn-section {
+    background: var(--home-bg)
+    }
+html:not(.dark) .bn-kicker {
+    color: var(--brand-500)
+    }
+html.dark .bn-kicker {
+    color: var(--sonic)
+    }
+html:not(.dark) .bn-line {
+    background: var(--brand-500)
+    }
+html.dark .bn-line {
+    background: var(--sonic)
+    }
+html:not(.dark) .bn-title {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .bn-title {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .bn-sub {
+    color: var(--partner-sub-color-light)
+    }
+html.dark .bn-sub {
+    color: var(--hw-card-sub-color-dark)
+    }
+html:not(.dark) .bn-card {
+    background: var(--hero-search-input-color-dark);
+    border-color: var(--text-dark-mode)
+    }
+html.dark .bn-card {
+    background: var(--surf-900);
+    border-color: var(--border-dark-mode-alt)
+    }
+html:not(.dark) .bn-tag {
+    background: var(--brand-50);
+    color: var(--brand-600)
+    }
+html.dark .bn-tag {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--sonic)
+    }
+html:not(.dark) .bn-card-title {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .bn-card-title {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .bn-card-sub {
+    color: var(--partner-sub-color-light)
+    }
+html.dark .bn-card-sub {
+    color: var(--hw-card-sub-color-dark)
+    }
+/* ═══ COMMUNITY & REWARDS ═══ */
+html:not(.dark) .rw-section {
+    background: var(--hero-search-input-color-dark)
+    }
+html.dark .rw-section {
+    background: var(--surf-950)
+    }
+html:not(.dark) .rw-kicker {
+    color: var(--brand-500)
+    }
+html.dark .rw-kicker {
+    color: var(--sonic)
+    }
+html:not(.dark) .rw-line {
+    background: var(--brand-500)
+    }
+html.dark .rw-line {
+    background: var(--sonic)
+    }
+html:not(.dark) .rw-title {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .rw-title {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .rw-sub {
+    color: var(--partner-sub-color-light)
+    }
+html.dark .rw-sub {
+    color: var(--hw-card-sub-color-dark)
+    }
+html:not(.dark) .rw-card {
+    background: var(--cat-tile-icon-wrap-bg-light);
+    border-color: var(--text-dark-mode)
+    }
+html.dark .rw-card {
+    background: var(--surf-900);
+    border-color: var(--border-dark-mode-alt)
+    }
+html:not(.dark) .rw-icon {
+    background: var(--brand-50)
+    }
+html.dark .rw-icon {
+    background: rgba(255, 255, 255, 0.06)
+    }
+html:not(.dark) .rw-icon-color {
+    color: var(--brand-500)
+    }
+html.dark .rw-icon-color {
+    color: var(--sonic)
+    }
+html:not(.dark) .rw-card-title {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .rw-card-title {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .rw-card-sub {
+    color: var(--partner-sub-color-light)
+    }
+html.dark .rw-card-sub {
+    color: var(--hw-card-sub-color-dark)
+    }
+html:not(.dark) .rw-cta {
+    background: linear-gradient(135deg, var(--brand-50) 0%, var(--bg-partner-badge-light) 100%);
+    border-color: var(--brand-100)
+    }
+html.dark .rw-cta {
+    background: linear-gradient(135deg, var(--surf-900) 0%, rgba(124, 58, 237, 0.15) 100%);
+    border-color: var(--border-dark-mode-alt)
+    }
+html:not(.dark) .rw-cta-title {
+    color: var(--partner-btn-bg-light)
+    }
+html.dark .rw-cta-title {
+    color: var(--hw-tl-title-color-dark)
+    }
+html:not(.dark) .rw-cta-sub {
+    color: var(--partner-sub-color-light)
+    }
+html.dark .rw-cta-sub {
+    color: var(--hw-card-sub-color-dark)
+    }
+html:not(.dark) .rw-cta-btn {
+    background: var(--brand-500);
+    color: var(--hero-search-input-color-dark)
+    }
+html:not(.dark) .rw-cta-btn:hover {
+    background: var(--brand-600)
+    }
+html.dark .rw-cta-btn {
+    background: var(--sonic);
+    color: var(--hero-search-input-color-dark)
+    }
+html.dark .rw-cta-btn:hover {
+    opacity: 0.9
+    }
+/* ═══ ATV-INSPIRED SECTION TITLES (serif + gold underline) ═══ */
+.atv-title {
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 800;
+    display: block;
+    position: relative;
+    padding-bottom: 0.45em;
+    margin-bottom: 0.3em
+    }
+.atv-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 84px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold-accent) 0%, var(--gold-accent) 70%, transparent 100%);
+    border-radius: 2px
+    }
+.atv-title.atv-title-center::after {
+    left: 50%;
+    transform: translatex(-50%)
+    }
+.atv-num {
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 800
+    }
+.atv-connector {
+    width: 22px;
+    height: 22px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease
+    }
+.atv-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease
+    }
+.atv-card:hover {
+    transform: translatey(-4px)
+    }
+html:not(.dark) .atv-card:hover {
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08)
+    }
+html.dark .atv-card:hover {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35)
+    }
+.atv-icon-float {
+    animation: atvFloat 5s ease-in-out infinite
+    }
+@keyframes atvFloat {
+    0%, 100% {
+        transform: translateY(0)
+        } 50% {
+        transform: translateY(-5px)
+        }
+    }
+/* Estilos para fidelidade visual ao print */
+.bg-brand-500 {
+    background-color: #9b87f5 !important
+    }
+/* Roxo do print */
+.text-brand-500 {
+    color: #9b87f5 !important
+    }
+.border-brand-500 {
+    border-color: #9b87f5 !important
+    }
+.shadow-brand-500\/20 {
+    box-shadow: 0 10px 15px -3px rgba(155, 135, 245, 0.2), 0 4px 6px -2px rgba(155, 135, 245, 0.1)
+    }
+.ring-brand-500\/20 {
+    --tw-ring-color: rgba(155, 135, 245, 0.2)
+    }
+.hover\:bg-brand-600:hover {
+    background-color: #7e69f2 !important
+    }
+.text-sonic {
+    color: #000 !important;
+    font-weight: 800
+    }
+/* Preço em preto negrito no print */
+/* ═══ TEMPLATE REFINEMENTS ═══ */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none
+    }
+.scrollbar-hide {
+    scrollbar-width: none
+    }
+/* Melhorias de cards com efeito hover */
+.gig-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease
+    }
+.gig-card:hover {
+    transform: translatey(-3px);
+    box-shadow: 0 14px 30px -12px rgba(139, 124, 255, 0.18)
+    }
+.gig-card:hover .gig-thumb {
+    border-color: var(--border-primary-hover)
+    }
+.gig-card .gig-img {
+    transition: transform 0.4s ease
+    }
+.gig-card:hover .gig-img {
+    transform: scale(1.06)
+    }
+/* Badges de status */
+.badge-best {
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(6px)
+    }
+.badge-rising {
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(6px)
+    }
+/* Chips e Pills */
+.chip {
+    border: 1px solid var(--hw-tl-line-light);
+    background: var(--hero-search-input-color-dark);
+    color: var(--partner-sub-color-light);
+    transition: all 0.15s
+    }
+.chip:hover {
+    border-color: var(--border-primary-hover);
+    color: var(--primary-text);
+    background: var(--bg-chip-hover-light)
+    }
+.pill {
+    border: 1px solid var(--hw-tl-line-light);
+    color: var(--surf-700-dark);
+    background: var(--hero-search-input-color-dark);
+    transition: all 0.15s
+    }
+.pill:hover {
+    border-color: var(--border-primary-hover);
+    color: var(--primary-text)
+    }
+.pill-active {
+    background: #a99cff;
+    color: var(--hero-search-input-color-dark);
+    border-color: transparent
+    }
+/* Focus states melhorados */
+input:focus {
+    outline: none
+    }
+.focus-within\:border-brand-400:focus-within {
+    border-color: #a99cff
+    }
+/* Animações suaves */
+.transition-all {
+    transition: all 0.15s ease
+    }
+/* Brand colors refinadas */
+:root {
+    --brand-500: var(--sonic);
+    --brand-600: var(--primary-600);
+    --brand-50: var(--primary-soft)
+    }
+.bg-brand-500 {
+    background-color: var(--sonic)
+    }
+.hover\:bg-brand-600:hover {
+    background-color: var(--primary-600)
+    }
+.text-brand-500 {
+    color: var(--sonic)
+    }
+.border-brand-400 {
+    border-color: #a99cff
+    }
+.bg-brand-50 {
+    background-color: var(--primary-soft)
+    }
+.text-brand-600 {
+    color: #6b5ce7
+    }
+/* ═══ CARD REFINEMENTS — Fidelidade ao Print ═══ */
+.gig-card {
     display: flex;
     flex-direction: column;
     min-width: 0;
     width: 100%;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  }
-  
-  .gig-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(139, 124, 255, 0.15);
-  }
-  
-  .gig-thumb {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease
+    }
+.gig-card:hover {
+    transform: translatey(-4px);
+    box-shadow: 0 12px 28px rgba(139, 124, 255, 0.15)
+    }
+.gig-thumb {
     position: relative;
     width: 100%;
     padding-bottom: 53%;
-    background: #f1f5f9;
-    border: 1px solid #e5e7eb;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  .gig-thumb > img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  
-  .gig-card:hover .gig-thumb {
-    border-color: #c7c0ff;
-    box-shadow: 0 8px 20px rgba(139, 124, 255, 0.12);
-  }
-  
-  .gig-card .gig-img {
-    transition: transform 0.4s ease;
-  }
-  
-  .gig-card:hover .gig-img {
-    transform: scale(1.06);
-  }
-  
-  .gig-title {
+    background: var(--cat-tile-border-light);
+    border: 1px solid var(--hw-tl-line-light);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease
+    }
+.gig-card:hover .gig-thumb {
+    border-color: var(--border-primary-hover);
+    box-shadow: 0 8px 20px rgba(139, 124, 255, 0.12)
+    }
+.gig-title {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
     min-height: 36px;
-    word-break: break-word;
-  }
-  
-  /* Badge styling */
-  .gig-card .badge {
+    word-break: break-word
+    }
+/* Badge styling */
+.gig-card .badge {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
-    border-radius: 6px;
-  }
-  
-  /* Carrossel de imagens */
-  .gig-carousel-arrow {
-    transition: opacity 0.2s ease, background-color 0.2s ease;
-  }
-  
-  .gig-carousel-dots {
-    transition: opacity 0.2s ease;
-  }
-  
-  /* Dark mode */
-  html.dark .gig-thumb {
+    border-radius: 6px
+    }
+/* Carrossel de imagens */
+.gig-carousel-arrow {
+    transition: opacity 0.2s ease, background-color 0.2s ease
+    }
+.gig-carousel-dots {
+    transition: opacity 0.2s ease
+    }
+/* Dark mode */
+html.dark .gig-thumb {
     background: var(--surf-800);
-    border-color: rgba(255, 255, 255, 0.08);
-  }
-  
-  html.dark .gig-card:hover .gig-thumb {
-    border-color: rgba(139, 124, 255, 0.4);
-  }
-
-
-  /* ============ PROFILE PAGE (origin design) ============ */
-  /* btn-primary / btn-outline (used inside profile page) */
-  .btn-primary{background:var(--primary);color:#fff;transition:background .15s}
-  .btn-primary:hover{background:var(--primary-600)}
-  .btn-outline{border:1px solid #e2e8f0;color:#0f172a;background:#fff;transition:all .15s}
-  .btn-outline:hover{border-color:#c7c0ff;color:var(--primary-text)}
-  /* tab / tab-active (profile tabs) */
-  .tab{border-bottom:2px solid transparent;color:#64748b;transition:all .15s;padding-bottom:.5rem;font-size:14px;background:none;cursor:pointer}
-  .tab:hover{color:#0f172a}
-  .tab-active{color:#0f172a;border-color:var(--primary);font-weight:700}
-  /* star-row (used in profile head and reviews) */
-  .star-row i{color:var(--warning)}
-  
-  .cover { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-bottom: 1px solid #e2e8f0; }
-
-  .card-gig{transition:transform .2s, box-shadow .2s, border-color .2s;border:1px solid #e5e7eb}
-  .card-gig:hover{transform:translateY(-3px);box-shadow:0 14px 30px -12px rgba(91,78,224,.18);border-color:#c7c0ff}
-  .card-gig .gig-img{transition:transform .4s}
-  .card-gig:hover .gig-img{transform:scale(1.06)}
-  .lvl-bar{height:6px;background:#f1f5f9;border-radius:9999px;overflow:hidden}
-  .lvl-fill{height:100%;background:#8b7cff;border-radius:9999px}
-  .badge-verified{background:#dcfce7;color:#15803d}
-  .badge-top{background:#fef3c7;color:#b45309}
-  html.dark .cover{background:linear-gradient(120deg,rgba(91,78,224,.25) 0%,rgba(60,50,180,.2) 40%,rgba(40,30,140,.15) 100%)}
-  html.dark .card-gig{border-color:rgba(255,255,255,.07)}
-  html.dark .card-gig:hover{border-color:rgba(139,124,255,.4)}
-  html.dark .lvl-bar{background:var(--surf-700)}
-  html.dark .badge-verified{background:rgba(16,185,129,.15);color:#34d399}
-  html.dark .badge-top{background:rgba(245,158,11,.12);color:#fbbf24}
-
-  </style>
-</head>
-<body class="bg-white text-ink-900">
-  <!-- Skip to main content (keyboard users press Tab to reveal) -->
-  <a href="#view" class="skip-link" data-no-tr>Pular para o conteúdo</a>
-
-  <!-- HEADER -->
-  <header id="app-header" role="banner"></header>
-
-  <!-- MAIN VIEW -->
-  <main id="view" role="main" tabindex="-1" class="min-h-[80vh]"></main>
-
-  <!-- MODAL ROOT -->
-  <div id="modal-root" aria-live="polite"></div>
-
-  <!-- CHAT DRAWER ROOT -->
-  <div id="chat-root"></div>
-
-  <!-- TOAST ROOT -->
-  <div id="toast-root" role="status" aria-live="polite" aria-atomic="true" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-2"></div>
-
-  <!-- FOOTER -->
- <footer id="app-footer" role="contentinfo"></footer>
-
-<script src="data.js"></script>
-<script>
-
-    
-const AVAILABILITY_FILTERS = [
-  { id:'all', label:'Qualquer disponibilidade' },
-  { id:'online', label:'Online agora' },
-  { id:'24h', label:'Disponível em 24h' },
-];
-
-/* ---------- i18n ---------- */
-const I18N = {
-  pt:{ nav_explore:'Explorar', nav_orders:'Meus pedidos', nav_sell:'Vender serviço', nav_how:'Como funciona',
-       net:'Interlink Network', connect:'Conectar wallet', search_ph:'O que você precisa hoje?',
-       hero_kicker:'O marketplace de trabalho do ecossistema Interlink', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'Contrate, trabalhe e receba em ITL — rápido, simples e protegido, tudo dentro do ecossistema InterLink.',
-       cta_browse:'Buscar', cta_sell:'Vender meu serviço', trending:'Em alta agora',
-       categories:'Categorias', top_services:'Serviços em destaque', view_all:'ver tudo',
-       light:'Claro', dark:'Escuro', notifications:'Notificações', mark_all:'Marcar tudo',
-       no_notif:'Sem notificações', live_market:'Marketplace ao vivo', escrow_audit:'Escrow auditado',
-       how_it_works:'Como funciona', filters:'Filtros', clear:'Limpar', category:'Categoria',
-       country:'País', all:'Todos', sort:'Ordenar por', sort_rel:'Relevância', sort_rating:'Melhor avaliados',
-       sort_low:'Menor preço', sort_high:'Maior preço', sort_new:'Mais recentes',
-       results:'resultados', no_results:'Nenhum serviço encontrado', try_other:'Tente outros filtros ou termos.',
-       footer_tag:'O marketplace de trabalho do ecossistema Interlink. Pagamentos em ITL, escrow on-chain e proteção real para ambos os lados.',
-       product:'Produto', explore:'Explorar', sell:'Vender', dashboard:'Painel',
-       legal:'Legal', terms:'Termos', privacy:'Privacidade', cookies:'Cookies',
-       social:'Comunidade', built_on:'Powered by Interlink',
-       cat_design:'Design', cat_dev:'Desenvolvimento', cat_marketing:'Marketing',
-       cat_writing:'Redação', cat_audit:'Auditoria Smart Contract', cat_video:'Vídeo & Motion',
-       starting_at:'a partir de', hire:'Contratar', message:'Conversar', share:'Compartilhar',
-       edit_profile:'Editar perfil', save:'Salvar', cancel:'Cancelar',
-       order_in_progress:'Em andamento', order_delivered:'Entregue', order_approved:'Aprovado', order_disputed:'Em disputa',
-       client:'Cliente', freelancer:'Freelancer', my_orders:'Meus pedidos', my_services:'Meus serviços',
-       wallet:'Carteira', balance:'Saldo', tx_history:'Histórico', single_token:'Saldo único · pagamento exclusivo em ITL' },
-
-  en:{ nav_explore:'Explore', nav_orders:'My orders', nav_sell:'Sell a service', nav_how:'How it works',
-       net:'Interlink Network', connect:'Connect wallet', search_ph:'What do you need today?',
-       hero_kicker:'The workforce marketplace for the Interlink ecosystem', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'Hire, work and get paid in ITL — fast, simple and protected, all within the InterLink ecosystem.',
-       cta_browse:'Search', cta_sell:'Sell my service', trending:'Trending now',
-       categories:'Categories', top_services:'Featured services', view_all:'view all',
-       light:'Light', dark:'Dark', notifications:'Notifications', mark_all:'Mark all',
-       no_notif:'No notifications', live_market:'Live marketplace', escrow_audit:'Audited escrow',
-       how_it_works:'How it works', filters:'Filters', clear:'Clear', category:'Category',
-       country:'Country', all:'All', sort:'Sort by', sort_rel:'Relevance', sort_rating:'Top rated',
-       sort_low:'Lowest price', sort_high:'Highest price', sort_new:'Newest',
-       results:'results', no_results:'No services found', try_other:'Try other filters or keywords.',
-       footer_tag:'The workforce marketplace for the Interlink ecosystem. ITL payments, on-chain escrow and real protection on both sides.',
-       product:'Product', explore:'Explore', sell:'Sell', dashboard:'Dashboard',
-       legal:'Legal', terms:'Terms', privacy:'Privacy', cookies:'Cookies',
-       social:'Community', built_on:'Powered by Interlink',
-       cat_design:'Design', cat_dev:'Development', cat_marketing:'Marketing',
-       cat_writing:'Writing', cat_audit:'Smart Contract Audit', cat_video:'Video & Motion',
-       starting_at:'starting at', hire:'Hire', message:'Message', share:'Share',
-       edit_profile:'Edit profile', save:'Save', cancel:'Cancel',
-       order_in_progress:'In progress', order_delivered:'Delivered', order_approved:'Approved', order_disputed:'In dispute',
-       client:'Client', freelancer:'Freelancer', my_orders:'My orders', my_services:'My services',
-       wallet:'Wallet', balance:'Balance', tx_history:'History', single_token:'Single balance · ITL-only payment' },
-
-  es:{ nav_explore:'Explorar', nav_orders:'Mis pedidos', nav_sell:'Vender servicio', nav_how:'Cómo funciona',
-       net:'Interlink Network', connect:'Conectar wallet', search_ph:'¿Qué necesitas hoy?',
-       hero_kicker:'El marketplace de trabajo del ecosistema Interlink', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'Contrata, trabaja y cobra en ITL — rápido, simple y protegido, todo dentro del ecosistema InterLink.',
-       cta_browse:'Buscar', cta_sell:'Vender mi servicio', trending:'Tendencia',
-       categories:'Categorías', top_services:'Servicios destacados', view_all:'ver todo',
-       light:'Claro', dark:'Oscuro', notifications:'Notificaciones', mark_all:'Marcar todo',
-       no_notif:'Sin notificaciones', live_market:'Marketplace en vivo', escrow_audit:'Escrow auditado',
-       how_it_works:'Cómo funciona', filters:'Filtros', clear:'Limpiar', category:'Categoría',
-       country:'País', all:'Todos', sort:'Ordenar por', sort_rel:'Relevancia', sort_rating:'Mejor valorados',
-       sort_low:'Precio bajo', sort_high:'Precio alto', sort_new:'Más recientes',
-       results:'resultados', no_results:'No se encontraron servicios', try_other:'Prueba otros filtros o palabras.',
-       footer_tag:'El marketplace de trabajo del ecosistema Interlink. Pagos en ITL, escrow on-chain y protección real para ambas partes.',
-       product:'Producto', explore:'Explorar', sell:'Vender', dashboard:'Panel',
-       legal:'Legal', terms:'Términos', privacy:'Privacidad', cookies:'Cookies',
-       social:'Comunidad', built_on:'Powered by Interlink',
-       cat_design:'Diseño', cat_dev:'Desarrollo', cat_marketing:'Marketing',
-       cat_writing:'Redacción', cat_audit:'Auditoría Smart Contract', cat_video:'Video & Motion',
-       starting_at:'desde', hire:'Contratar', message:'Mensaje', share:'Compartir',
-       edit_profile:'Editar perfil', save:'Guardar', cancel:'Cancelar',
-       order_in_progress:'En curso', order_delivered:'Entregado', order_approved:'Aprobado', order_disputed:'En disputa',
-       client:'Cliente', freelancer:'Freelancer', my_orders:'Mis pedidos', my_services:'Mis servicios',
-       wallet:'Billetera', balance:'Saldo', tx_history:'Historial', single_token:'Saldo único · pago exclusivo en ITL' },
-
-  de:{ nav_explore:'Entdecken', nav_orders:'Aufträge', nav_sell:'Service verkaufen', nav_how:'Funktionsweise',
-       net:'Interlink Network', connect:'Wallet verbinden', search_ph:'Was brauchst du heute?',
-       hero_kicker:'Der Workforce-Marktplatz des Interlink-Ökosystems', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'Heuere an, arbeite und werde in ITL bezahlt — schnell, einfach und geschützt, alles innerhalb des InterLink-Ökosystems.',
-       cta_browse:'Suchen', cta_sell:'Service anbieten', trending:'Im Trend',
-       categories:'Kategorien', top_services:'Empfohlene Services', view_all:'alle',
-       light:'Hell', dark:'Dunkel', notifications:'Benachrichtigungen', mark_all:'Alle markieren',
-       no_notif:'Keine Benachrichtigungen', live_market:'Live-Marktplatz', escrow_audit:'Geprüftes Escrow',
-       how_it_works:'Funktionsweise', filters:'Filter', clear:'Zurücksetzen', category:'Kategorie',
-       country:'Land', all:'Alle', sort:'Sortieren', sort_rel:'Relevanz', sort_rating:'Top bewertet',
-       sort_low:'Niedrigster Preis', sort_high:'Höchster Preis', sort_new:'Neueste',
-       results:'Ergebnisse', no_results:'Keine Services gefunden', try_other:'Andere Filter oder Begriffe versuchen.',
-       footer_tag:'Der Workforce-Marktplatz des Interlink-Ökosystems. ITL-Zahlungen, On-Chain-Escrow und echter Schutz für beide Seiten.',
-       product:'Produkt', explore:'Entdecken', sell:'Verkaufen', dashboard:'Dashboard',
-       legal:'Rechtliches', terms:'AGB', privacy:'Datenschutz', cookies:'Cookies',
-       social:'Community', built_on:'Powered by Interlink',
-       cat_design:'Design', cat_dev:'Entwicklung', cat_marketing:'Marketing',
-       cat_writing:'Texten', cat_audit:'Smart-Contract-Audit', cat_video:'Video & Motion',
-       starting_at:'ab', hire:'Beauftragen', message:'Nachricht', share:'Teilen',
-       edit_profile:'Profil bearbeiten', save:'Speichern', cancel:'Abbrechen',
-       order_in_progress:'Läuft', order_delivered:'Geliefert', order_approved:'Genehmigt', order_disputed:'Im Streit',
-       client:'Auftraggeber', freelancer:'Freelancer', my_orders:'Meine Aufträge', my_services:'Meine Services',
-       wallet:'Wallet', balance:'Guthaben', tx_history:'Verlauf', single_token:'Einziges Guthaben · nur ITL-Zahlung' },
-
-  ja:{ nav_explore:'探す', nav_orders:'注文', nav_sell:'出品', nav_how:'仕組み',
-       net:'Interlink Network', connect:'ウォレット接続', search_ph:'今日は何が必要？',
-       hero_kicker:'Interlinkエコシステムのワークフォース・マーケット', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'ITLで雇って、働いて、報酬を受け取る——速くて、シンプルで、安全。すべてInterLinkエコシステム内で。',
-       cta_browse:'検索', cta_sell:'出品する', trending:'人気急上昇',
-       categories:'カテゴリ', top_services:'おすすめ', view_all:'すべて',
-       light:'ライト', dark:'ダーク', notifications:'通知', mark_all:'すべて既読',
-       no_notif:'通知なし', live_market:'ライブマーケット', escrow_audit:'監査済みエスクロー',
-       how_it_works:'仕組み', filters:'フィルター', clear:'クリア', category:'カテゴリ',
-       country:'国', all:'すべて', sort:'並び替え', sort_rel:'関連度', sort_rating:'評価順',
-       sort_low:'価格が安い順', sort_high:'価格が高い順', sort_new:'新着順',
-       results:'件', no_results:'サービスが見つかりません', try_other:'他のキーワードでお試しください。',
-       footer_tag:'Interlinkエコシステムのためのワークフォース・マーケット。ITL決済、オンチェーンエスクロー、両者への確実な保護。',
-       product:'プロダクト', explore:'探す', sell:'出品', dashboard:'ダッシュボード',
-       legal:'リーガル', terms:'利用規約', privacy:'プライバシー', cookies:'クッキー',
-       social:'コミュニティ', built_on:'Powered by Interlink',
-       cat_design:'デザイン', cat_dev:'開発', cat_marketing:'マーケティング',
-       cat_writing:'ライティング', cat_audit:'スマートコントラクト監査', cat_video:'映像&モーション',
-       starting_at:'最低', hire:'依頼する', message:'メッセージ', share:'共有',
-       edit_profile:'プロフィール編集', save:'保存', cancel:'キャンセル',
-       order_in_progress:'進行中', order_delivered:'納品済み', order_approved:'承認済み', order_disputed:'紛争中',
-       client:'クライアント', freelancer:'フリーランサー', my_orders:'注文', my_services:'マイサービス',
-       wallet:'ウォレット', balance:'残高', tx_history:'履歴', single_token:'単一残高 · ITLのみで支払い' },
-
-  hi:{ nav_explore:'खोजें', nav_orders:'मेरे ऑर्डर', nav_sell:'सेवा बेचें', nav_how:'कैसे काम करता है',
-       net:'Interlink Network', connect:'वॉलेट कनेक्ट', search_ph:'आज आपको क्या चाहिए?',
-       hero_kicker:'Interlink इकोसिस्टम का वर्कफोर्स मार्केटप्लेस', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
-       hero_sub:'ITL में नियुक्त करें, काम करें और भुगतान पाएं — तेज़, आसान और सुरक्षित, पूरी तरह InterLink इकोसिस्टम के भीतर।',
-       cta_browse:'खोज', cta_sell:'अपनी सेवा बेचें', trending:'ट्रेंडिंग',
-       categories:'श्रेणियाँ', top_services:'विशेष सेवाएँ', view_all:'सभी देखें',
-       light:'लाइट', dark:'डार्क', notifications:'सूचनाएँ', mark_all:'सभी पढ़ा हुआ',
-       no_notif:'कोई सूचना नहीं', live_market:'लाइव मार्केटप्लेस', escrow_audit:'ऑडिटेड एस्क्रो',
-       how_it_works:'कैसे काम करता है', filters:'फिल्टर', clear:'साफ करें', category:'श्रेणी',
-       country:'देश', all:'सभी', sort:'क्रमबद्ध करें', sort_rel:'प्रासंगिकता', sort_rating:'टॉप रेटेड',
-       sort_low:'कम कीमत', sort_high:'अधिक कीमत', sort_new:'नए',
-       results:'परिणाम', no_results:'कोई सेवा नहीं मिली', try_other:'अन्य फ़िल्टर या शब्द आज़माएँ.',
-       footer_tag:'Interlink इकोसिस्टम के लिए वर्कफोर्स मार्केटप्लेस। ITL भुगतान, ऑन-चेन एस्क्रो और दोनों पक्षों के लिए वास्तविक सुरक्षा।',
-       product:'उत्पाद', explore:'खोजें', sell:'बेचें', dashboard:'डैशबोर्ड',
-       legal:'कानूनी', terms:'शर्तें', privacy:'गोपनीयता', cookies:'कुकीज़',
-       social:'समुदाय', built_on:'Powered by Interlink',
-       cat_design:'डिज़ाइन', cat_dev:'विकास', cat_marketing:'मार्केटिंग',
-       cat_writing:'लेखन', cat_audit:'स्मार्ट कॉन्ट्रैक्ट ऑडिट', cat_video:'वीडियो और मोशन',
-       starting_at:'से शुरू', hire:'हायर करें', message:'संदेश', share:'शेयर',
-       edit_profile:'प्रोफ़ाइल संपादित करें', save:'सेव', cancel:'रद्द करें',
-       order_in_progress:'जारी', order_delivered:'डिलीवर', order_approved:'स्वीकृत', order_disputed:'विवाद',
-       client:'क्लाइंट', freelancer:'फ्रीलांसर', my_orders:'मेरे ऑर्डर', my_services:'मेरी सेवाएँ',
-       wallet:'वॉलेट', balance:'बैलेंस', tx_history:'इतिहास', single_token:'एकल बैलेंस · केवल ITL भुगतान' },
-};
-function t(k){ return (I18N[STATE.language]||I18N.en)[k] || I18N.en[k] || k; }
-function tCat(id){ return t('cat_'+id) || id; }
-
-/* ---------- FULL UI TRANSLATION DICTIONARY (PT → en/es/de/ja/hi) ---------- */
-const TR = {
-  // Navigation & shell
-  'Início':{en:'Home',es:'Inicio',de:'Start',ja:'ホーム',hi:'मुख्य'},
-  'Explorar':{en:'Explore',es:'Explorar',de:'Entdecken',ja:'探す',hi:'खोजें'},
-  'Meus pedidos':{en:'My orders',es:'Mis pedidos',de:'Meine Aufträge',ja:'注文',hi:'मेरे ऑर्डर'},
-  'Meus serviços':{en:'My services',es:'Mis servicios',de:'Meine Services',ja:'マイサービス',hi:'मेरी सेवाएँ'},
-  'Meu painel':{en:'My dashboard',es:'Mi panel',de:'Mein Dashboard',ja:'マイダッシュボード',hi:'मेरा डैशबोर्ड'},
-  'Como funciona':{en:'How it works',es:'Cómo funciona',de:'Funktionsweise',ja:'仕組み',hi:'कैसे काम करता है'},
-  'Conectar carteira':{en:'Connect wallet',es:'Conectar wallet',de:'Wallet verbinden',ja:'ウォレット接続',hi:'वॉलेट कनेक्ट'},
-  'Desconectar':{en:'Disconnect',es:'Desconectar',de:'Trennen',ja:'切断',hi:'डिस्कनेक्ट'},
-  'Idiomas':{en:'Languages',es:'Idiomas',de:'Sprachen',ja:'言語',hi:'भाषाएँ'},
-  'Perfil':{en:'Profile',es:'Perfil',de:'Profil',ja:'プロフィール',hi:'प्रोफ़ाइल'},
-  'Editar perfil':{en:'Edit profile',es:'Editar perfil',de:'Profil bearbeiten',ja:'プロフィール編集',hi:'प्रोफ़ाइल संपादित करें'},
-  'Sair':{en:'Sign out',es:'Salir',de:'Abmelden',ja:'ログアウト',hi:'साइन आउट'},
-
-  // Common actions
-  'Aprovar':{en:'Approve',es:'Aprobar',de:'Genehmigen',ja:'承認',hi:'स्वीकृत करें'},
-  'Aprovar e liberar pagamento':{en:'Approve and release payment',es:'Aprobar y liberar pago',de:'Genehmigen & Zahlung freigeben',ja:'承認して支払い解放',hi:'मंज़ूरी देकर भुगतान जारी करें'},
-  'Avaliar':{en:'Rate',es:'Valorar',de:'Bewerten',ja:'評価',hi:'रेट करें'},
-  'Avaliar serviço':{en:'Rate service',es:'Valorar servicio',de:'Service bewerten',ja:'サービスを評価',hi:'सेवा को रेट करें'},
-  'Enviar avaliação':{en:'Submit review',es:'Enviar valoración',de:'Bewertung senden',ja:'評価を送信',hi:'समीक्षा भेजें'},
-  'Cancelar':{en:'Cancel',es:'Cancelar',de:'Abbrechen',ja:'キャンセル',hi:'रद्द करें'},
-  'Fechar':{en:'Close',es:'Cerrar',de:'Schließen',ja:'閉じる',hi:'बंद करें'},
-  'Voltar':{en:'Back',es:'Volver',de:'Zurück',ja:'戻る',hi:'वापस'},
-  'Salvar':{en:'Save',es:'Guardar',de:'Speichern',ja:'保存',hi:'सेव'},
-  'Salvar alterações':{en:'Save changes',es:'Guardar cambios',de:'Änderungen speichern',ja:'変更を保存',hi:'परिवर्तन सेव करें'},
-  'Pular':{en:'Skip',es:'Omitir',de:'Überspringen',ja:'スキップ',hi:'छोड़ें'},
-  'Mais tarde':{en:'Later',es:'Más tarde',de:'Später',ja:'あとで',hi:'बाद में'},
-  'Compartilhar':{en:'Share',es:'Compartir',de:'Teilen',ja:'共有',hi:'शेयर'},
-  'Conversar':{en:'Message',es:'Conversar',de:'Nachricht',ja:'メッセージ',hi:'संदेश'},
-  'Chat':{en:'Chat',es:'Chat',de:'Chat',ja:'チャット',hi:'चैट'},
-  'Entregar':{en:'Deliver',es:'Entregar',de:'Liefern',ja:'納品',hi:'डिलीवर'},
-  'Entregar trabalho':{en:'Deliver work',es:'Entregar trabajo',de:'Arbeit abliefern',ja:'作業を納品',hi:'काम डिलीवर करें'},
-  'Enviar entrega':{en:'Send delivery',es:'Enviar entrega',de:'Lieferung senden',ja:'納品物を送る',hi:'डिलीवरी भेजें'},
-  'Pedir ajuste':{en:'Request changes',es:'Pedir ajustes',de:'Änderungen anfordern',ja:'修正を依頼',hi:'बदलाव माँगें'},
-  'Preencher formulário':{en:'Fill briefing',es:'Rellenar briefing',de:'Briefing ausfüllen',ja:'要件を入力',hi:'ब्रीफिंग भरें'},
-  'Preencher formulário agora':{en:'Fill briefing now',es:'Rellenar briefing ahora',de:'Briefing jetzt ausfüllen',ja:'今すぐ要件を入力',hi:'अभी ब्रीफिंग भरें'},
-  'Baixar todos os arquivos':{en:'Download all files',es:'Descargar todos los archivos',de:'Alle Dateien herunterladen',ja:'すべてのファイルをダウンロード',hi:'सभी फ़ाइलें डाउनलोड करें'},
-  'Sacar':{en:'Withdraw',es:'Retirar',de:'Auszahlen',ja:'引き出し',hi:'निकालें'},
-  'Contratar com escrow':{en:'Hire with escrow',es:'Contratar con escrow',de:'Mit Escrow beauftragen',ja:'エスクローで依頼',hi:'एस्क्रो से हायर करें'},
-  'Contratar':{en:'Hire',es:'Contratar',de:'Beauftragen',ja:'依頼する',hi:'हायर करें'},
-  'Explorar serviços':{en:'Explore services',es:'Explorar servicios',de:'Services entdecken',ja:'サービスを探す',hi:'सेवाएँ देखें'},
-  'Marcar tudo':{en:'Mark all',es:'Marcar todo',de:'Alle markieren',ja:'すべて既読',hi:'सभी पढ़ा हुआ'},
-  'Ver perfil completo':{en:'View full profile',es:'Ver perfil completo',de:'Vollständiges Profil',ja:'プロフィール全体を見る',hi:'पूरा प्रोफ़ाइल देखें'},
-  'Ver meu pedido':{en:'View my order',es:'Ver mi pedido',de:'Meinen Auftrag ansehen',ja:'注文を見る',hi:'मेरा ऑर्डर देखें'},
-  'Arraste para reordenar':{en:'Drag to reorder',es:'Arrastra para reordenar',de:'Ziehen zum Neuordnen',ja:'ドラッグで並べ替え',hi:'क्रम बदलने हेतु खींचें'},
-
-  // Order statuses & badges
-  'Em andamento':{en:'In progress',es:'En curso',de:'Läuft',ja:'進行中',hi:'जारी'},
-  'Aprovados & pagos':{en:'Approved & paid',es:'Aprobados y pagados',de:'Genehmigt & bezahlt',ja:'承認済み・支払い済み',hi:'स्वीकृत और भुगतान किया'},
-  'Aguardando':{en:'Waiting',es:'Esperando',de:'Wartend',ja:'待機中',hi:'प्रतीक्षारत'},
-  'Aguardando aprovação':{en:'Awaiting approval',es:'Esperando aprobación',de:'Wartet auf Genehmigung',ja:'承認待ち',hi:'मंज़ूरी का इंतज़ार'},
-  'Aguardando formulário':{en:'Awaiting briefing',es:'Esperando briefing',de:'Wartet auf Briefing',ja:'要件待ち',hi:'ब्रीफिंग का इंतज़ार'},
-  'Aguardando confirmação':{en:'Awaiting confirmation',es:'Esperando confirmación',de:'Wartet auf Bestätigung',ja:'確認待ち',hi:'पुष्टि का इंतज़ार'},
-  'Recebido':{en:'Received',es:'Recibido',de:'Erhalten',ja:'受領済み',hi:'प्राप्त'},
-  'Finalizado':{en:'Finished',es:'Finalizado',de:'Abgeschlossen',ja:'完了',hi:'समाप्त'},
-  'Entrega recebida':{en:'Delivery received',es:'Entrega recibida',de:'Lieferung erhalten',ja:'納品を受領',hi:'डिलीवरी प्राप्त'},
-  'Entrega aprovada':{en:'Delivery approved',es:'Entrega aprobada',de:'Lieferung genehmigt',ja:'納品承認済み',hi:'डिलीवरी स्वीकृत'},
-  'Conteúdo entregue':{en:'Delivered content',es:'Contenido entregado',de:'Gelieferter Inhalt',ja:'納品コンテンツ',hi:'डिलीवर की गई सामग्री'},
-
-  // Dashboard
-  'Como cliente':{en:'As a client',es:'Como cliente',de:'Als Auftraggeber',ja:'クライアントとして',hi:'क्लाइंट के रूप में'},
-  'Como freelancer':{en:'As a freelancer',es:'Como freelancer',de:'Als Freelancer',ja:'フリーランサーとして',hi:'फ्रीलांसर के रूप में'},
-  'Pedidos ativos':{en:'Active orders',es:'Pedidos activos',de:'Aktive Aufträge',ja:'進行中の注文',hi:'सक्रिय ऑर्डर'},
-  'Pedidos abertos':{en:'Open orders',es:'Pedidos abiertos',de:'Offene Aufträge',ja:'オープン注文',hi:'खुले ऑर्डर'},
-  'Pedidos recebidos':{en:'Orders received',es:'Pedidos recibidos',de:'Erhaltene Aufträge',ja:'受注',hi:'प्राप्त ऑर्डर'},
-  'Em escrow':{en:'Protected',es:'Protegido',de:'Geschützt',ja:'保護中',hi:'सुरक्षित'},
-  'Saldo wallet':{en:'Wallet balance',es:'Saldo wallet',de:'Wallet-Guthaben',ja:'ウォレット残高',hi:'वॉलेट बैलेंस'},
-  'Concluídos':{en:'Completed',es:'Completados',de:'Abgeschlossen',ja:'完了',hi:'पूर्ण'},
-  'Receita (escrow)':{en:'Earnings',es:'Ganancias',de:'Einnahmen',ja:'収益',hi:'आय'},
-  'Rating':{en:'Rating',es:'Valoración',de:'Bewertung',ja:'評価',hi:'रेटिंग'},
-  'Serviços ativos':{en:'Active services',es:'Servicios activos',de:'Aktive Services',ja:'公開サービス',hi:'सक्रिय सेवाएँ'},
-  'Nenhum pedido ainda':{en:'No orders yet',es:'Aún sin pedidos',de:'Noch keine Aufträge',ja:'まだ注文はありません',hi:'अभी तक कोई ऑर्डर नहीं'},
-  'Nenhum pedido ainda.':{en:'No orders yet.',es:'Aún sin pedidos.',de:'Noch keine Aufträge.',ja:'まだ注文はありません。',hi:'अभी तक कोई ऑर्डर नहीं।'},
-  'Nenhum pedido aprovado ainda':{en:'No approved orders yet',es:'Aún sin pedidos aprobados',de:'Noch keine genehmigten Aufträge',ja:'承認済みの注文はまだありません',hi:'अभी तक कोई स्वीकृत ऑर्डर नहीं'},
-  'Nenhum pedido em andamento':{en:'No orders in progress',es:'Sin pedidos en curso',de:'Keine laufenden Aufträge',ja:'進行中の注文はありません',hi:'कोई जारी ऑर्डर नहीं'},
-
-  // Profile / service page
-  'Sobre este serviço':{en:'About this service',es:'Sobre este servicio',de:'Über diesen Service',ja:'このサービスについて',hi:'इस सेवा के बारे में'},
-  'Sobre o freelancer':{en:'About the freelancer',es:'Sobre el freelancer',de:'Über den Freelancer',ja:'フリーランサーについて',hi:'फ्रीलांसर के बारे में'},
-  'O que está incluído':{en:'What\u2019s included',es:'Qué incluye',de:'Was enthalten ist',ja:'含まれるもの',hi:'क्या शामिल है'},
-  'Avaliações':{en:'Reviews',es:'Valoraciones',de:'Bewertungen',ja:'レビュー',hi:'समीक्षाएँ'},
-  'Avaliações recebidas':{en:'Reviews received',es:'Valoraciones recibidas',de:'Erhaltene Bewertungen',ja:'受け取ったレビュー',hi:'प्राप्त समीक्षाएँ'},
-  'Sem avaliações ainda.':{en:'No reviews yet.',es:'Aún sin valoraciones.',de:'Noch keine Bewertungen.',ja:'まだレビューはありません。',hi:'अभी तक कोई समीक्षा नहीं।'},
-  'Nenhuma avaliação enviada ainda.':{en:'No reviews submitted yet.',es:'Aún no se enviaron valoraciones.',de:'Noch keine Bewertungen abgegeben.',ja:'まだレビューを投稿していません。',hi:'अभी तक कोई समीक्षा नहीं भेजी।'},
-  'Portfólio':{en:'Portfolio',es:'Portafolio',de:'Portfolio',ja:'ポートフォリオ',hi:'पोर्टफ़ोलियो'},
-  'Skills':{en:'Skills',es:'Habilidades',de:'Skills',ja:'スキル',hi:'कौशल'},
-  'Bio':{en:'Bio',es:'Bio',de:'Bio',ja:'バイオ',hi:'बायो'},
-  'Tags':{en:'Tags',es:'Etiquetas',de:'Tags',ja:'タグ',hi:'टैग'},
-  'Categoria':{en:'Category',es:'Categoría',de:'Kategorie',ja:'カテゴリ',hi:'श्रेणी'},
-  'Título':{en:'Title',es:'Título',de:'Titel',ja:'タイトル',hi:'शीर्षक'},
-  'Descrição':{en:'Description',es:'Descripción',de:'Beschreibung',ja:'説明',hi:'विवरण'},
-  'País':{en:'Country',es:'País',de:'Land',ja:'国',hi:'देश'},
-  'Prazo':{en:'Deadline',es:'Plazo',de:'Frist',ja:'納期',hi:'समय-सीमा'},
-  'Documentos':{en:'Documents',es:'Documentos',de:'Dokumente',ja:'ドキュメント',hi:'दस्तावेज़'},
-  'Arquivos':{en:'Files',es:'Archivos',de:'Dateien',ja:'ファイル',hi:'फ़ाइलें'},
-  'Logo do serviço':{en:'Service logo',es:'Logo del servicio',de:'Service-Logo',ja:'サービスロゴ',hi:'सेवा लोगो'},
-  'Nome de exibição':{en:'Display name',es:'Nombre visible',de:'Anzeigename',ja:'表示名',hi:'दिखाया गया नाम'},
-  'Verificações':{en:'Verifications',es:'Verificaciones',de:'Verifizierungen',ja:'認証',hi:'सत्यापन'},
-  'Identidade verificada':{en:'Verified identity',es:'Identidad verificada',de:'Identität verifiziert',ja:'本人確認済み',hi:'पहचान सत्यापित'},
-  'Identidade não verificada':{en:'Identity not verified',es:'Identidad no verificada',de:'Identität nicht verifiziert',ja:'未確認',hi:'पहचान असत्यापित'},
-  'Freelancer verificado on-chain':{en:'Freelancer verified on-chain',es:'Freelancer verificado on-chain',de:'Freelancer on-chain verifiziert',ja:'オンチェーン認証済みフリーランサー',hi:'ऑन-चेन सत्यापित फ्रीलांसर'},
-  'Online agora':{en:'Online now',es:'En línea',de:'Jetzt online',ja:'オンライン',hi:'अभी ऑनलाइन'},
-  'Offline':{en:'Offline',es:'Sin conexión',de:'Offline',ja:'オフライン',hi:'ऑफ़लाइन'},
-  'Você ainda não publicou serviços.':{en:'You haven\u2019t published any services yet.',es:'Aún no has publicado servicios.',de:'Du hast noch keine Services veröffentlicht.',ja:'まだサービスを公開していません。',hi:'आपने अभी तक कोई सेवा प्रकाशित नहीं की।'},
-
-  // Order row & escrow
-  'Travado':{en:'Locked',es:'Bloqueado',de:'Gesperrt',ja:'ロック中',hi:'लॉक्ड'},
-  'Total travado':{en:'Total locked',es:'Total bloqueado',de:'Gesperrter Gesamtbetrag',ja:'ロック総額',hi:'कुल लॉक्ड'},
-  'Total a travar':{en:'Total to lock',es:'Total a bloquear',de:'Zu sperrender Betrag',ja:'ロック予定額',hi:'लॉक करने हेतु कुल'},
-  'Saldo insuficiente':{en:'Insufficient balance',es:'Saldo insuficiente',de:'Unzureichendes Guthaben',ja:'残高不足',hi:'अपर्याप्त बैलेंस'},
-  'Contrato escrow':{en:'Escrow contract',es:'Contrato escrow',de:'Escrow-Vertrag',ja:'エスクロー契約',hi:'एस्क्रो अनुबंध'},
-  'Escrow travado on-chain':{en:'Escrow locked on-chain',es:'Escrow bloqueado on-chain',de:'Escrow on-chain gesperrt',ja:'オンチェーンでエスクローロック',hi:'ऑन-चेन एस्क्रो लॉक्ड'},
-  'Pagamento travado em contrato escrow':{en:'Payment locked in escrow contract',es:'Pago bloqueado en contrato escrow',de:'Zahlung im Escrow-Vertrag gesperrt',ja:'エスクロー契約で支払いロック',hi:'एस्क्रो अनुबंध में भुगतान लॉक्ड'},
-  'Hash da transação':{en:'Transaction hash',es:'Hash de transacción',de:'Transaktions-Hash',ja:'トランザクションハッシュ',hi:'लेन-देन हैश'},
-  'Tx hash':{en:'Tx hash',es:'Tx hash',de:'Tx-Hash',ja:'Txハッシュ',hi:'Tx हैश'},
-  'Gas usado':{en:'Gas used',es:'Gas usado',de:'Verbrauchtes Gas',ja:'使用Gas',hi:'उपयोग किया गया गैस'},
-  'Transações':{en:'Transactions',es:'Transacciones',de:'Transaktionen',ja:'トランザクション',hi:'लेन-देन'},
-  'Enviando transação…':{en:'Sending transaction…',es:'Enviando transacción…',de:'Transaktion wird gesendet…',ja:'トランザクションを送信中…',hi:'लेन-देन भेजा जा रहा है…'},
-
-  // Modals & forms
-  'Mensagem para o cliente':{en:'Message to the client',es:'Mensaje para el cliente',de:'Nachricht an den Kunden',ja:'クライアントへのメッセージ',hi:'क्लाइंट के लिए संदेश'},
-  'Clique para enviar arquivos':{en:'Click to upload files',es:'Haz clic para subir archivos',de:'Klicken, um Dateien hochzuladen',ja:'クリックしてファイルをアップロード',hi:'फ़ाइलें अपलोड करने हेतु क्लिक करें'},
-  'Descreva seu projeto':{en:'Describe your project',es:'Describe tu proyecto',de:'Beschreibe dein Projekt',ja:'プロジェクトを説明',hi:'अपना प्रोजेक्ट बताइए'},
-  'Formulário que você vai preencher':{en:'Briefing you will fill out',es:'Briefing a completar',de:'Briefing zum Ausfüllen',ja:'入力する要件',hi:'आप जो ब्रीफिंग भरेंगे'},
-  'Handle e wallet não são editáveis.':{en:'Handle and wallet are not editable.',es:'Handle y wallet no se pueden editar.',de:'Handle und Wallet können nicht bearbeitet werden.',ja:'ハンドルとウォレットは編集できません。',hi:'हैंडल और वॉलेट संपादन योग्य नहीं हैं।'},
-  'Motivo':{en:'Reason',es:'Motivo',de:'Grund',ja:'理由',hi:'कारण'},
-  'Outro':{en:'Other',es:'Otro',de:'Sonstiges',ja:'その他',hi:'अन्य'},
-  'Qualidade abaixo do contratado':{en:'Quality below what was contracted',es:'Calidad inferior a la contratada',de:'Qualität unter dem Vereinbarten',ja:'契約より低品質',hi:'अनुबंध से कम गुणवत्ता'},
-  'Não entregue no prazo':{en:'Not delivered on time',es:'No entregado a tiempo',de:'Nicht fristgerecht geliefert',ja:'納期未達',hi:'समय पर डिलीवर नहीं'},
-  'Escopo alterado sem acordo':{en:'Scope changed without agreement',es:'Alcance cambiado sin acuerdo',de:'Umfang ohne Vereinbarung geändert',ja:'合意なしで範囲変更',hi:'सहमति के बिना दायरा बदला'},
-  'Reclamação':{en:'Complaint',es:'Reclamación',de:'Beschwerde',ja:'申し立て',hi:'शिकायत'},
-  'Resolução pedida':{en:'Resolution requested',es:'Resolución solicitada',de:'Gewünschte Lösung',ja:'希望する解決',hi:'अनुरोधित समाधान'},
-  'Reembolso total':{en:'Full refund',es:'Reembolso total',de:'Volle Rückerstattung',ja:'全額返金',hi:'पूर्ण रिफंड'},
-  'Sua versão dos fatos':{en:'Your side of the story',es:'Tu versión de los hechos',de:'Deine Sicht der Dinge',ja:'あなたの主張',hi:'आपका पक्ष'},
-  'Abrir disputa on-chain':{en:'Open dispute on-chain',es:'Abrir disputa on-chain',de:'On-Chain-Streit eröffnen',ja:'オンチェーンで紛争を開く',hi:'ऑन-चेन विवाद खोलें'},
-  'votação ativa':{en:'voting active',es:'votación activa',de:'Abstimmung läuft',ja:'投票中',hi:'मतदान जारी'},
-  'encerrada':{en:'closed',es:'cerrada',de:'beendet',ja:'終了',hi:'समाप्त'},
-
-  // Wallet & notifications
-  'Wallet conectada':{en:'Wallet connected',es:'Wallet conectada',de:'Wallet verbunden',ja:'ウォレット接続済み',hi:'वॉलेट कनेक्ट हुआ'},
-  'Escrow confirmado':{en:'Escrow confirmed',es:'Escrow confirmado',de:'Escrow bestätigt',ja:'エスクロー確認済み',hi:'एस्क्रो की पुष्टि'},
-  'Pagamento liberado':{en:'Payment released',es:'Pago liberado',de:'Zahlung freigegeben',ja:'支払い解放',hi:'भुगतान जारी'},
-  'Perfil atualizado on-chain':{en:'Profile updated on-chain',es:'Perfil actualizado on-chain',de:'Profil on-chain aktualisiert',ja:'プロフィールをオンチェーン更新',hi:'प्रोफ़ाइल ऑन-चेन अपडेट'},
-  'Avaliação registrada on-chain':{en:'Review recorded on-chain',es:'Valoración registrada on-chain',de:'Bewertung on-chain registriert',ja:'評価をオンチェーン記録',hi:'समीक्षा ऑन-चेन दर्ज'},
-  'Disputa aberta':{en:'Dispute opened',es:'Disputa abierta',de:'Streit eröffnet',ja:'紛争を開始',hi:'विवाद खुला'},
-  'Disputa resolvida':{en:'Dispute resolved',es:'Disputa resuelta',de:'Streit gelöst',ja:'紛争解決済み',hi:'विवाद हल'},
-  'Sem notificações':{en:'No notifications',es:'Sin notificaciones',de:'Keine Benachrichtigungen',ja:'通知なし',hi:'कोई सूचना नहीं'},
-
-  // Footer / legal
-  'Legal':{en:'Legal',es:'Legal',de:'Rechtliches',ja:'リーガル',hi:'कानूनी'},
-  'Termos':{en:'Terms',es:'Términos',de:'AGB',ja:'利用規約',hi:'शर्तें'},
-  'Termos de uso':{en:'Terms of use',es:'Términos de uso',de:'Nutzungsbedingungen',ja:'利用規約',hi:'उपयोग की शर्तें'},
-  'Privacidade':{en:'Privacy',es:'Privacidad',de:'Datenschutz',ja:'プライバシー',hi:'गोपनीयता'},
-
-  // Chat replies (simulated)
-  'Inicie a conversa':{en:'Start the conversation',es:'Inicia la conversación',de:'Konversation starten',ja:'会話を始める',hi:'बातचीत शुरू करें'},
-  'Combinado!':{en:'Got it!',es:'¡Hecho!',de:'Abgemacht!',ja:'了解！',hi:'पक्का!'},
-  'Já estou nisso.':{en:'Already on it.',es:'Ya estoy en eso.',de:'Bin schon dran.',ja:'すでに取り掛かっています。',hi:'मैं इस पर हूँ।'},
-  'Pode me mandar o briefing detalhado?':{en:'Can you send me the detailed briefing?',es:'¿Puedes enviarme el briefing detallado?',de:'Kannst du mir das ausführliche Briefing schicken?',ja:'詳細な要件を送ってもらえますか？',hi:'क्या आप विस्तृत ब्रीफिंग भेज सकते हैं?'},
-  'Vou subir um preview hoje.':{en:'I\u2019ll upload a preview today.',es:'Subiré una vista previa hoy.',de:'Ich lade heute eine Vorschau hoch.',ja:'今日プレビューをアップします。',hi:'आज एक प्रीव्यू अपलोड करूँगा।'},
-  'Posso adiantar parte da entrega.':{en:'I can deliver part of it early.',es:'Puedo adelantar parte de la entrega.',de:'Ich kann einen Teil vorab liefern.',ja:'納品物の一部を前倒しできます。',hi:'मैं हिस्सा पहले डिलीवर कर सकता हूँ।'},
-  'Digite uma mensagem…':{en:'Type a message…',es:'Escribe un mensaje…',de:'Nachricht eingeben…',ja:'メッセージを入力…',hi:'संदेश लिखें…'},
-
-  // Toasts (key phrases)
-  'Aguarde a entrega antes de aprovar.':{en:'Wait for the delivery before approving.',es:'Espera la entrega antes de aprobar.',de:'Warte auf die Lieferung, bevor du genehmigst.',ja:'承認前に納品をお待ちください。',hi:'मंज़ूरी देने से पहले डिलीवरी का इंतज़ार करें।'},
-  'Entrega enviada ao cliente!':{en:'Delivery sent to client!',es:'¡Entrega enviada al cliente!',de:'Lieferung an den Kunden gesendet!',ja:'クライアントに納品しました！',hi:'क्लाइंट को डिलीवरी भेजी गई!'},
-  'Pedido criado e tx confirmada!':{en:'Order created and tx confirmed!',es:'¡Pedido creado y tx confirmada!',de:'Auftrag erstellt und Tx bestätigt!',ja:'注文作成、トランザクション確認済み！',hi:'ऑर्डर बना और tx पुष्टि हुई!'},
-  'Formulário enviado on-chain. Prazo iniciado.':{en:'Briefing sent on-chain. Timer started.',es:'Briefing enviado on-chain. Plazo iniciado.',de:'Briefing on-chain gesendet. Frist gestartet.',ja:'要件をオンチェーン送信。納期開始。',hi:'ब्रीफिंग ऑन-चेन भेजी गई। समय शुरू।'},
-  'Serviço publicado!':{en:'Service published!',es:'¡Servicio publicado!',de:'Service veröffentlicht!',ja:'サービスを公開しました！',hi:'सेवा प्रकाशित!'},
-  'Serviço atualizado!':{en:'Service updated!',es:'¡Servicio actualizado!',de:'Service aktualisiert!',ja:'サービスを更新しました！',hi:'सेवा अपडेट हुई!'},
-  'Serviço excluído.':{en:'Service deleted.',es:'Servicio eliminado.',de:'Service gelöscht.',ja:'サービスを削除しました。',hi:'सेवा हटाई गई।'},
-  'Wallet desconectada':{en:'Wallet disconnected',es:'Wallet desconectada',de:'Wallet getrennt',ja:'ウォレット切断',hi:'वॉलेट डिस्कनेक्ट'},
-  'Wallet já conectada':{en:'Wallet already connected',es:'Wallet ya conectada',de:'Wallet bereits verbunden',ja:'ウォレットは接続済み',hi:'वॉलेट पहले से कनेक्ट'},
-  'Endereço copiado':{en:'Address copied',es:'Dirección copiada',de:'Adresse kopiert',ja:'アドレスをコピー',hi:'पता कॉपी किया'},
-  'Link do perfil copiado':{en:'Profile link copied',es:'Enlace de perfil copiado',de:'Profil-Link kopiert',ja:'プロフィールリンクをコピー',hi:'प्रोफ़ाइल लिंक कॉपी'},
-  'Pedido não encontrado.':{en:'Order not found.',es:'Pedido no encontrado.',de:'Auftrag nicht gefunden.',ja:'注文が見つかりません。',hi:'ऑर्डर नहीं मिला।'},
-  'Serviço não encontrado.':{en:'Service not found.',es:'Servicio no encontrado.',de:'Service nicht gefunden.',ja:'サービスが見つかりません。',hi:'सेवा नहीं मिली।'},
-  'Usuário não encontrado':{en:'User not found',es:'Usuario no encontrado',de:'Benutzer nicht gefunden',ja:'ユーザーが見つかりません',hi:'उपयोगकर्ता नहीं मिला'},
-  'Nenhum arquivo de entrega disponível.':{en:'No delivery files available.',es:'Sin archivos de entrega.',de:'Keine Lieferdateien verfügbar.',ja:'納品ファイルがありません。',hi:'कोई डिलीवरी फ़ाइल उपलब्ध नहीं।'},
-  'Download simulado iniciado (demo).':{en:'Simulated download started (demo).',es:'Descarga simulada iniciada (demo).',de:'Simulierter Download gestartet (Demo).',ja:'デモのダウンロードを開始しました。',hi:'सिम्युलेटेड डाउनलोड शुरू (डेमो)।'},
-
-  // Misc inline
-  'on-chain':{en:'on-chain',es:'on-chain',de:'on-chain',ja:'オンチェーン',hi:'ऑन-चेन'},
-  'Synced':{en:'Synced',es:'Sincronizado',de:'Synchronisiert',ja:'同期済み',hi:'सिंक'},
-  'Block':{en:'Block',es:'Bloque',de:'Block',ja:'ブロック',hi:'ब्लॉक'},
-  'Idiomas ':{en:'Languages ',es:'Idiomas ',de:'Sprachen ',ja:'言語 ',hi:'भाषाएँ '},
-  'Skills ':{en:'Skills ',es:'Habilidades ',de:'Skills ',ja:'スキル ',hi:'कौशल '},
-
-  // How it works page
-  'Pagamento seguro, on-chain, em':{en:'Secure on-chain payments in',es:'Pago seguro, on-chain, en',de:'Sichere On-Chain-Zahlung in',ja:'安全なオンチェーン決済を',hi:'सुरक्षित ऑन-चेन भुगतान'},
-  'Interwork remove intermediários, mas mantém a segurança. Tudo verificável no Interlink Explorer.':{en:'Interwork removes middlemen while keeping security. Everything verifiable on the Interlink Explorer.',es:'Interwork elimina intermediarios y mantiene la seguridad. Todo verificable en el Interlink Explorer.',de:'Interwork entfernt Mittelsmänner und bewahrt die Sicherheit. Alles im Interlink Explorer überprüfbar.',ja:'Interworkは仲介者を排除しつつセキュリティを維持。すべてInterlink Explorerで検証可能。',hi:'Interwork बिचौलियों को हटाता है लेकिन सुरक्षा बनाए रखता है। Interlink Explorer पर सब कुछ सत्यापन योग्य।'},
-  'Escolha o serviço':{en:'Pick the service',es:'Elige el servicio',de:'Service auswählen',ja:'サービスを選ぶ',hi:'सेवा चुनें'},
-  'Filtre por categoria, país e rating. Veja o portfólio e converse antes de contratar.':{en:'Filter by category, country and rating. Browse the portfolio and chat before hiring.',es:'Filtra por categoría, país y valoración. Mira el portafolio y chatea antes de contratar.',de:'Filtere nach Kategorie, Land und Bewertung. Sieh dir das Portfolio an und schreibe vor dem Beauftragen.',ja:'カテゴリ・国・評価でフィルター。ポートフォリオを確認し、依頼前にチャット可能。',hi:'श्रेणी, देश और रेटिंग से फ़िल्टर करें। पोर्टफ़ोलियो देखें और हायर करने से पहले चैट करें।'},
-  'Trave o pagamento em ITL':{en:'Lock the ITL payment',es:'Bloquea el pago en ITL',de:'Zahlung in ITL sperren',ja:'ITLで支払いをロック',hi:'ITL में भुगतान लॉक करें'},
-  'O valor + 2% de taxa fica bloqueado no smart contract de escrow na rede Interlink.':{en:'The amount + 2% fee gets locked in the escrow smart contract on the Interlink network.',es:'El importe + 2% de comisión queda bloqueado en el smart contract de escrow en la red Interlink.',de:'Der Betrag + 2% Gebühr werden im Escrow-Smart-Contract auf dem Interlink-Netzwerk gesperrt.',ja:'金額＋2%手数料がInterlinkネットワークのエスクロー・スマートコントラクトでロックされます。',hi:'राशि + 2% शुल्क Interlink नेटवर्क के एस्क्रो स्मार्ट कॉन्ट्रैक्ट में लॉक हो जाती है।'},
-  'Acompanhe a entrega':{en:'Track the delivery',es:'Sigue la entrega',de:'Lieferung verfolgen',ja:'納品を追跡',hi:'डिलीवरी ट्रैक करें'},
-  'Chat integrado, barra de progresso e prazos transparentes.':{en:'Built-in chat, progress bar and transparent deadlines.',es:'Chat integrado, barra de progreso y plazos transparentes.',de:'Integrierter Chat, Fortschrittsbalken und transparente Fristen.',ja:'統合チャット、進捗バー、透明な納期。',hi:'इन-बिल्ट चैट, प्रगति बार और पारदर्शी समय-सीमाएँ।'},
-  'Aprove e libere o ITL':{en:'Approve and release the ITL',es:'Aprueba y libera los ITL',de:'Genehmigen und ITL freigeben',ja:'承認してITLを解放',hi:'मंज़ूरी देकर ITL जारी करें'},
-  'Você aprova a entrega e o contrato libera automaticamente o pagamento ao freelancer.':{en:'You approve the delivery and the contract automatically releases payment to the freelancer.',es:'Apruebas la entrega y el contrato libera automáticamente el pago al freelancer.',de:'Du genehmigst die Lieferung und der Vertrag gibt die Zahlung automatisch an den Freelancer frei.',ja:'納品を承認すると、契約がフリーランサーへの支払いを自動的に解放します。',hi:'आप डिलीवरी मंज़ूर करते हैं और अनुबंध स्वचालित रूप से फ्रीलांसर को भुगतान जारी करता है।'},
-  'PASSO':{en:'STEP',es:'PASO',de:'SCHRITT',ja:'ステップ',hi:'चरण'},
-
-  // Accessibility helpers
-  'Pular para o conteúdo':{en:'Skip to main content',es:'Saltar al contenido',de:'Zum Hauptinhalt springen',ja:'メインコンテンツへスキップ',hi:'मुख्य सामग्री पर जाएँ'},
-  'Fechar chat':{en:'Close chat',es:'Cerrar chat',de:'Chat schließen',ja:'チャットを閉じる',hi:'चैट बंद करें'},
-  'Anexar arquivo':{en:'Attach file',es:'Adjuntar archivo',de:'Datei anhängen',ja:'ファイルを添付',hi:'फ़ाइल अटैच करें'},
-  'Enviar mensagem':{en:'Send message',es:'Enviar mensaje',de:'Nachricht senden',ja:'メッセージを送信',hi:'संदेश भेजें'},
-  'Digite uma mensagem':{en:'Type a message',es:'Escribe un mensaje',de:'Nachricht eingeben',ja:'メッセージを入力',hi:'संदेश लिखें'},
-  'Mudar idioma':{en:'Change language',es:'Cambiar idioma',de:'Sprache ändern',ja:'言語を変更',hi:'भाषा बदलें'},
-  'Imagem anterior':{en:'Previous image',es:'Imagen anterior',de:'Vorheriges Bild',ja:'前の画像',hi:'पिछली छवि'},
-  'Próxima imagem':{en:'Next image',es:'Imagen siguiente',de:'Nächstes Bild',ja:'次の画像',hi:'अगली छवि'},
-  'Fechar':{en:'Close',es:'Cerrar',de:'Schließen',ja:'閉じる',hi:'बंद करें'},
-
-  // Chat — strings that were bypassing the translation dictionary
-  'Conversa preliminar':{en:'Preliminary conversation',es:'Conversación preliminar',de:'Vorab-Unterhaltung',ja:'事前のやり取り',hi:'प्रारंभिक बातचीत'},
-  'Mensagem':{en:'Message',es:'Mensaje',de:'Nachricht',ja:'メッセージ',hi:'संदेश'},
-  'Anexos prontos para enviar':{en:'Attachments ready to send',es:'Archivos listos para enviar',de:'Anhänge zum Senden bereit',ja:'送信準備済みの添付ファイル',hi:'भेजने के लिए तैयार अटैचमेंट'},
-  'digitando…':{en:'typing…',es:'escribiendo…',de:'schreibt…',ja:'入力中…',hi:'टाइप कर रहा है…'},
-  'Enviada':{en:'Sent',es:'Enviado',de:'Gesendet',ja:'送信済み',hi:'भेजा गया'},
-  'Entregue':{en:'Delivered',es:'Entregado',de:'Zugestellt',ja:'配信済み',hi:'डिलीवर हुआ'},
-  'Lida':{en:'Read',es:'Leído',de:'Gelesen',ja:'既読',hi:'पढ़ा गया'},
-
-  // Order status chip — was hardcoded in PT regardless of language
-  'Formulário pendente':{en:'Awaiting info',es:'Info pendiente',de:'Info ausstehend',ja:'情報待ち',hi:'जानकारी की प्रतीक्षा'},
-  'Cancelado':{en:'Cancelled',es:'Cancelado',de:'Abgebrochen',ja:'キャンセル済み',hi:'रद्द किया गया'},
-
-  // Related services — was a fixed PT sentence regardless of language
-  'Outros serviços de':{en:'More services in',es:'Otros servicios de',de:'Weitere Services in',ja:'関連サービス：',hi:'इनसे जुड़ी अन्य सेवाएँ:'},
-  'Recomendado para você':{en:'Recommended for you',es:'Recomendado para ti',de:'Für dich empfohlen',ja:'あなたへのおすすめ',hi:'आपके लिए सुझाया गया'},
-  'Baseado no que você visualizou e contratou':{en:'Based on what you viewed and hired',es:'Basado en lo que viste y contrataste',de:'Basierend auf dem, was du angesehen und beauftragt hast',ja:'閲覧・依頼履歴に基づく',hi:'आपने जो देखा और हायर किया उस पर आधारित'},
-  // New homepage sections — Why InterWork, Strategic Partner, Powered by InterLink
-  'Why InterWork?':{en:'Why InterWork?',es:'¿Por qué InterWork?',de:'Warum InterWork?',ja:'なぜInterWork？',hi:'InterWork क्यों?'},
-  'Secure Payments':{en:'Secure Payments',es:'Pagos seguros',de:'Sichere Zahlungen',ja:'安全な支払い',hi:'सुरक्षित भुगतान'},
-  'Funds locked in an automatic contract — released only when the job is approved.':{en:'Funds locked in an automatic contract — released only when the job is approved.',es:'Fondos bloqueados en un contrato automático — liberados solo cuando se aprueba el trabajo.',de:'Geld in einem automatischen Vertrag gesperrt — freigegeben erst nach Genehmigung der Arbeit.',ja:'自動契約でロック — 仕事が承認されたときのみ解放。',hi:'स्वचालित अनुबंध में लॉक — केवल काम मंज़ूर होने पर जारी।'},
-  'Reputation System':{en:'Reputation System',es:'Sistema de reputación',de:'Reputationssystem',ja:'レピュテーションシステム',hi:'प्रतिष्ठा प्रणाली'},
-  'Verified reviews tied to real completed orders. No fake ratings.':{en:'Verified reviews tied to real completed orders. No fake ratings.',es:'Valoraciones verificadas vinculadas a pedidos reales completados. Sin calificaciones falsas.',de:'Verifizierte Bewertungen, verknüpft mit echten abgeschlossenen Aufträgen. Keine gefälschten Ratings.',ja:'実際の完了注文に紐づいた検証済みレビュー。偽の評価なし。',hi:'वास्तविक पूर्ण ऑर्डर से जुड़ी सत्यापित समीक्षाएँ। कोई फ़र्ज़ी रेटिंग नहीं।'},
-  'Human Marketplace':{en:'Human Marketplace',es:'Marketplace humano',de:'Menschlicher Marktplatz',ja:'ヒューマンマーケット',hi:'मानव मार्केटप्लेस'},
-  'Real professionals, real deliverables. Every account backed by a verified wallet.':{en:'Real professionals, real deliverables. Every account backed by a verified wallet.',es:'Profesionales reales, entregables reales. Cada cuenta respaldada por una wallet verificada.',de:'Echte Profis, echte Ergebnisse. Jedes Konto durch eine verifizierte Wallet abgesichert.',ja:'本物のプロ、本物の成果物。すべてのアカウントは認証済みウォレットで裏付け。',hi:'असली पेशेवर, असली डिलीवरेबल। हर अकाउंट एक सत्यापित वॉलेट से समर्थित।'},
-  'Powered by ITL':{en:'Powered by ITL',es:'Impulsado por ITL',de:'Powered by ITL',ja:'ITLで稼働',hi:'ITL द्वारा संचालित'},
-  'All payments in ITL — the native token of the Interlink ecosystem.':{en:'All payments in ITL — the native token of the Interlink ecosystem.',es:'Todos los pagos en ITL — el token nativo del ecosistema Interlink.',de:'Alle Zahlungen in ITL — dem nativen Token des Interlink-Ökosystems.',ja:'すべての支払いはITL — Interlinkエコシステムのネイティブトークン。',hi:'सभी भुगतान ITL में — Interlink इकोसिस्टम का मूल टोकन।'},
-  'Strategic Partner':{en:'Strategic Partner',es:'Socio estratégico',de:'Strategischer Partner',ja:'戦略的パートナー',hi:'रणनीतिक भागीदार'},
-  'Supporting the growth of InterWork through strategic guidance and ecosystem collaboration.':{en:'Supporting the growth of InterWork through strategic guidance and ecosystem collaboration.',es:'Apoyando el crecimiento de InterWork con orientación estratégica y colaboración en el ecosistema.',de:'Unterstützung des Wachstums von InterWork durch strategische Beratung und Ökosystem-Zusammenarbeit.',ja:'戦略的指導とエコシステム協力でInterWorkの成長を支援。',hi:'रणनीतिक मार्गदर्शन और पारिस्थितिकी सहयोग के माध्यम से InterWork की वृद्धि का समर्थन।'},
-  'Visit ATV Website':{en:'Visit ATV Website',es:'Visitar sitio de ATV',de:'ATV-Website besuchen',ja:'ATVサイトへ',hi:'ATV वेबसाइट देखें'},
-  'Powered by InterLink':{en:'Powered by InterLink',es:'Impulsado por InterLink',de:'Powered by InterLink',ja:'InterLinkで稼働',hi:'InterLink द्वारा संचालित'},
-
-};
-
-/* Reverse helper so any *displayed* PT text gets translated to the active language. */
-function tr(s){
-  if (s == null) return s;
-  if (STATE.language === 'en') return s;
-  const txt = String(s);
-  const key = txt.trim();
-  if (!key) return s;
-  const lead  = txt.match(/^\s*/)[0];
-  const trail = txt.match(/\s*$/)[0];
-  const entry = TR[key];
-  if (entry && entry[STATE.language]){
-    return lead + entry[STATE.language] + trail;
-  }
-  // Dynamic patterns: "PASSO 1", "PASSO 2", etc.
-  const passo = key.match(/^PASSO\s+(\d+)$/i);
-  if (passo){
-    const w = TR['PASSO'] && TR['PASSO'][STATE.language];
-    if (w) return lead + w + ' ' + passo[1] + trail;
-  }
-  return s;
-}
-
-/* Walk a DOM subtree and translate text nodes + common attributes. */
-function applyTranslations(root){
-  if (STATE.language === 'pt') return;
-  const r = root || document.body;
-  if (!r) return;
-  // Text nodes
-  try {
-    const walker = document.createTreeWalker(r, NodeFilter.SHOW_TEXT, {
-      acceptNode(node){
-        if (!node.nodeValue) return NodeFilter.FILTER_REJECT;
-        const trimmed = node.nodeValue.trim();
-        if (!trimmed) return NodeFilter.FILTER_REJECT;
-        const p = node.parentNode;
-        if (!p) return NodeFilter.FILTER_REJECT;
-        const tag = p.nodeName;
-        if (tag==='SCRIPT'||tag==='STYLE'||tag==='CODE'||tag==='PRE'||tag==='TEXTAREA') return NodeFilter.FILTER_REJECT;
-        if (p.closest && p.closest('[data-no-tr]')) return NodeFilter.FILTER_REJECT;
-        return NodeFilter.FILTER_ACCEPT;
-      }
-    });
-    const nodes = [];
-    let n; while ((n = walker.nextNode())) nodes.push(n);
-    nodes.forEach(node=>{
-      const newVal = tr(node.nodeValue);
-      if (newVal !== node.nodeValue) node.nodeValue = newVal;
-    });
-  } catch(e){}
-  // Attributes
-  const attrSel = '[placeholder],[title],[aria-label],[data-tr-attr]';
-  const nodes = (r.querySelectorAll ? r.querySelectorAll(attrSel) : []);
-  nodes.forEach(el=>{
-    if (el.closest && el.closest('[data-no-tr]')) return;
-    ['placeholder','title','aria-label'].forEach(a=>{
-      const v = el.getAttribute(a);
-      if (!v) return;
-      const nv = tr(v);
-      if (nv !== v) el.setAttribute(a, nv);
-    });
-  });
-}
-
-/* Auto-translate any future DOM insertion (toasts, modals, chat, notifications). */
-function initI18nObserver(){
-  if (window._i18nObserver || !document.body) return;
-  const obs = new MutationObserver(muts=>{
-    if (STATE.language === 'en') return;
-    for (const m of muts){
-      m.addedNodes && m.addedNodes.forEach(n=>{
-        if (n.nodeType === 1) applyTranslations(n);
-        else if (n.nodeType === 3 && n.parentNode){
-          const nv = tr(n.nodeValue);
-          if (nv !== n.nodeValue) n.nodeValue = nv;
-        }
-      });
+    border-color: rgba(255, 255, 255, 0.08)
     }
-  });
-  obs.observe(document.body, { childList:true, subtree:true, characterData:false });
-  window._i18nObserver = obs;
-}
-
-const TRENDING_TAGS = ['auditoria solidity','landing DeFi','tokenomics','growth NFT','community manager','motion reels','interlink dApp','whitepaper'];
-
-const SKILLS_POOL = ['Figma','Webflow','Solidity','Foundry','Hardhat','Next.js','wagmi','Tailwind','After Effects','Notion','Discord','Twitter Ads','Token Design','UX Research','Slither'];
-
-const CATEGORIES = [
-  { id:'design',  label:'Design',          icon:'palette',     color:'#f97316' },
-  { id:'dev',     label:'Desenvolvimento', icon:'code-2',      color:'#1a73e8' },
-  { id:'marketing',label:'Marketing',      icon:'megaphone',   color:'#10b981' },
-  { id:'writing', label:'Redação',         icon:'pen-tool',    color:'#a855f7' },
-  { id:'audit',   label:'Auditoria Smart Contract', icon:'shield-check', color:'#ef4444' },
-  { id:'video',   label:'Vídeo & Motion',  icon:'video',       color:'#06b6d4' },
-  { id:'ai',         label:'AI Services',    icon:'sparkles',    color:'#8b5cf6' },
-  { id:'music',      label:'Música & Áudio', icon:'music-2',     color:'#ec4899' },
-  { id:'business',   label:'Business',       icon:'users',       color:'#0ea5e9' },
-  { id:'consulting', label:'Consultoria',    icon:'badge-check', color:'#14b8a6' },
-  { id:'other',      label:'Outros',         icon:'more-horizontal', color:'#6b7280' },
-];
-
-const COUNTRIES = [
-  { id:'BR', flag:'🇧🇷', name:'Brasil' },
-  { id:'PT', flag:'🇵🇹', name:'Portugal' },
-  { id:'US', flag:'🇺🇸', name:'EUA' },
-  { id:'DE', flag:'🇩🇪', name:'Alemanha' },
-  { id:'JP', flag:'🇯🇵', name:'Japão' },
-  { id:'AR', flag:'🇦🇷', name:'Argentina' },
-  { id:'NG', flag:'🇳🇬', name:'Nigéria' },
-  { id:'IN', flag:'🇮🇳', name:'Índia' },
-];
-
-function initMock(){
-  // Me
-  DB.users.push({
-    id:'u_me', name:'Você', handle:'you.interlink', country:'BR', verified:true,
-    wallet:'0x9b51E3Aa7c1f4d29F8e6b34bD7b9aF2c8a3c1c91',
-    avatar: avatarSVG('Y','#1a73e8'),
-    bio:'Cliente Web3 explorando serviços na Interwork.', rating:0, jobs:0, joinedTs: Date.now()-86400000*45,
-    balanceITL: 1250.50,
-    languages:['en'], skills:[], portfolio:[],
-    responseHours: 1, repeatClientsPct: 0, approvalPct: 0,
-    online: true,
-    referralCode: 'INTERWORK-ME',
-    pendingPayoutITL: 0,
-  });
-
-  const seed = [
-    ['u_ana','Ana Marques','ana.web3','BR',true, 4.9, 132, 'Designer de produto com foco em DApps e DeFi UX.', ['pt','en','es'],['Figma','UX Research','Webflow','Notion'], 'palette','#f97316', 2, 78, 94],
-    ['u_leo','Leo Tanaka','leo.dev','JP',true, 5.0, 87, 'Solidity engineer • auditor • Interlink enthusiast.', ['en','ja'],['Solidity','Foundry','Slither','Hardhat'], 'code-2','#1a73e8', 3, 64, 97],
-    ['u_kai','Kai Müller','kai.dao','DE',true, 4.8, 64, 'Marketing growth para protocolos DeFi e NFT.', ['de','en'],['Twitter Ads','Notion','Discord'], 'megaphone','#10b981', 4, 55, 91],
-    ['u_sof','Sofia Pereira','sofia.tx','PT',true, 4.9, 51, 'Copywriter especializada em whitepapers e tokenomics.', ['pt','en'],['Token Design','Notion','Figma'], 'pen-tool','#a855f7', 6, 40, 95],
-    ['u_chi','Chinedu Okoro','chinedu.eth','NG',false, 4.6, 22, 'Auditor júnior — relatórios em 72h.', ['en'],['Solidity','Slither','Foundry'], 'shield-check','#ef4444', 12, 18, 86],
-    ['u_riy','Riya Patel','riya.motion','IN',true, 4.7, 41, 'Motion designer • animações 3D para launchpads.', ['hi','en'],['After Effects','Figma'], 'video','#06b6d4', 5, 38, 89],
-    ['u_emi','Emilia Costa','emi.brand','AR',true, 4.8, 73, 'Branding completo para projetos cripto.', ['es','en','pt'],['Figma','Notion'], 'palette','#f97316', 4, 60, 92],
-    ['u_max','Max Reuter','max.fullstack','US',true, 4.9, 110, 'Fullstack Next.js + wagmi + Foundry.', ['en','de'],['Next.js','wagmi','Foundry','Hardhat','Solidity'], 'code-2','#1a73e8', 2, 82, 96],
-  ];
-  seed.forEach(([id,name,handle,country,verified,rating,jobs,bio,langs,skills,icon,color,responseHours,repeatPct,approvPct])=>{
-    DB.users.push({
-      id, name, handle, country, verified, rating, jobs, bio,
-      wallet:'0x'+id.padEnd(40,'a').slice(0,40),
-      avatar: avatarSVG(name[0],color),
-      joinedTs: Date.now()-86400000*Math.floor(Math.random()*600+120),
-      iconColor: color,
-      languages: langs,
-      skills,
-      portfolio: [1,2,3,4,5,6].map(k=>({ id:uid('p'), title: name.split(' ')[0]+' Work '+k, thumb: thumbSVG('Work '+k, color)})),
-      responseHours, repeatClientsPct: repeatPct, approvalPct: approvPct,
-      online: Math.random()>0.4,
-      referralCode: 'INTERWORK-'+handle.toUpperCase().slice(0,8),
-      pendingPayoutITL: Math.floor(Math.random()*500),
-      level: levelOf(jobs),
-    });
-  });
-
-  const services = [
-    ['I will create a premium DeFi landing page in 7 days','design','u_ana',198,7,'BR',4.9,86,['Figma source','3 conceitos','Animações Lottie'],`Oi! 👋\n\nMe contate antes de fazer o pedido para alinharmos os detalhes do seu protocolo.\n\nMeu processo:\n1) Briefing sobre o protocolo e referências\n2) Wireframe + proposta visual no Figma\n3) Refinamento após feedback\n4) Handoff para dev (specs, assets)\n5) Suporte 7 dias pós-entrega\n\n-Ana`,true],
-    ['I will audit your Solidity smart contract for security vulnerabilities','audit','u_leo',280,14,'JP',5.0,54,['Relatório PDF','Fix recomendações','Re-audit grátis'],`Olá!\n\nMe contate antes para entender o tamanho do contrato.\n\nMeu processo:\n1) Você envia o repositório e contexto\n2) Auditoria manual + Slither/Foundry fuzzing\n3) Relatório com severidade OWASP/SWC\n4) Você corrige os pontos críticos\n5) Re-auditoria gratuita + PDF final\n\n-Leo`,true],
-    ['I will create a full growth marketing strategy for your token launch','marketing','u_kai',175,21,'DE',4.8,31,['KOL outreach','Estratégia 30d','Calendário X/Discord'],`Oi!\n\nFale comigo antes de fechar o pedido.\n\nMeu processo:\n1) Briefing sobre token e comunidade\n2) Mapeamento de KOLs e canais\n3) Calendário de conteúdo 30 dias\n4) Execução com relatórios semanais\n5) Relatório final com aprendizados\n\n-Kai`,false],
-    ['I will write a professional technical whitepaper up to 25 pages','writing','u_sof',240,12,'PT',4.9,47,['Estrutura','Tokenomics','Revisão jurídica leve'],`Olá!\n\nMe manda mensagem antes de pedir.\n\nMeu processo:\n1) Entrevista técnica sobre produto e roadmap\n2) Estrutura e sumário aprovados\n3) Primeira versão com diagramas\n4) Revisão com seus comentários\n5) PDF final formatado\n\n-Sofia`,false],
-    ['I will design a crypto logo and brand identity for your Web3 project','design','u_emi',155,6,'AR',4.8,73,['3 propostas','Manual de marca PDF','Vetores SVG'],`Oi!\n\nMe contate antes para entendermos a personalidade da sua marca.\n\nMeu processo:\n1) Briefing sobre a marca e referências visuais\n2) 3 propostas de logo em direções diferentes\n3) Refinamento da escolhida\n4) Manual de marca em PDF\n5) Exportação SVG/PNG\n\n-Emilia`,false],
-    ['I will build a fullstack DApp with Next.js and wagmi integration','dev','u_max',275,21,'US',4.9,110,['Frontend','Integração contrato','Deploy Vercel'],`Hey!\n\nMe manda mensagem antes de pedir.\n\nMeu processo:\n1) Você me passa o contrato e telas\n2) Protótipo wallet connect + leitura/escrita\n3) Telas com Next.js + wagmi\n4) Você testa em testnet\n5) Deploy Vercel + handoff repositório\n\n-Max`,true],
-    ['I will develop an ERC-20 smart contract with custom vesting schedule','dev','u_leo',210,9,'JP',5.0,26,['Contrato','Testes Foundry','Deploy Interlink network'],`Olá!\n\nFale comigo antes para alinharmos as regras de vesting.\n\nMeu processo:\n1) Definimos supply, vesting e taxas\n2) Desenvolvimento com testes Foundry\n3) Contrato em testnet para validação\n4) Auditoria interna\n5) Deploy Interlink + código-fonte\n\n-Leo`,false],
-    ['I will create cinematic motion reels for your Twitter and X campaigns','video','u_riy',89,5,'IN',4.7,38,['3 reels 15s','Música licenciada','Versão vertical'],`Hi!\n\nMe contate antes para entender o estilo da sua marca.\n\nMeu processo:\n1) Briefing sobre a campanha e referências\n2) Storyboard rápido para aprovação\n3) Primeira versão animada\n4) Ajustes de timing, cores e música\n5) Entrega em 9:16, 1:1 e 16:9\n\n-Riya`,false],
-    ['I will do an express security audit for mini smart contracts in 72h','audit','u_chi',95,3,'NG',4.6,22,['Relatório markdown','Severidade OWASP'],`Hey,\n\nMe contate antes se seu contrato tiver mais de 400 linhas.\n\nMeu processo:\n1) Você envia contrato e contexto\n2) Revisão manual + Slither\n3) Relatório markdown com severidade\n4) Você corrige os críticos\n5) Confirmação das correções\n\n-Chinedu`,false],
-    ['I will design a pitch deck for investors in your crypto project','design','u_ana',168,8,'BR',4.9,18,['12-16 slides','Versão pt/en','Source Figma'],`Oi!\n\nMe chama antes para entendermos a rodada de investimento.\n\nMeu processo:\n1) Briefing sobre o projeto e métricas\n2) Estrutura do deck\n3) Versão visual completa em alta-fidelidade\n4) Revisão conjunta\n5) PDF + Figma source\n\n-Ana`,false],
-    ['I will translate your whitepaper between English and Portuguese','writing','u_sof',78,4,'PT',4.9,12,['Tradução técnica','Glossário'],`Olá!\n\nMe manda mensagem antes de pedir.\n\nMeu processo:\n1) Você envia o documento original\n2) Tradução completa com terminologia técnica\n3) Glossário dos termos-chave\n4) Segunda leitura para naturalidade\n5) Entrega formatada\n\n-Sofia`,false],
-    ['I will manage your Discord community for 30 days professionally','marketing','u_kai',190,30,'DE',4.8,15,['Setup roles','Eventos AMA','Relatório semanal'],`Oi!\n\nFale comigo antes para alinharmos as regras da comunidade.\n\nMeu processo:\n1) Auditoria do servidor (ou setup do zero)\n2) Organização de cargos e canais\n3) Calendário de eventos e AMAs\n4) Moderação ativa diária\n5) Relatório semanal com métricas\n\n-Kai`,false],
-
-    ['I will design a Web3 mobile app UI in Figma','design','u_ana',132,5,'BR',4.9,29,['Figma source','Protótipo interativo','Design system'],`Oi!\n\nMe chame antes para entender o fluxo do app.\n-Ana`,false],
-    ['I will write SEO-optimized content for your crypto blog','writing','u_sof',65,3,'PT',4.8,19,['3 artigos','Pesquisa de palavras-chave','Headlines A/B'],`Olá!\n\nMe manda mensagem para alinharmos os temas.\n-Sofia`,false],
-    ['I will set up and configure your Hardhat development environment','dev','u_max',88,2,'US',4.9,41,['Config completa','Scripts deploy','CI/CD básico'],`Hey!\n\nFala antes para entender sua stack.\n-Max`,false],
-    ['I will create an NFT collection artwork pack (10 traits)','design','u_emi',145,7,'AR',4.8,33,['10 traits PSD','Export PNG','Rarity sheet'],`Oi!\n\nMe contate para entendermos a identidade da coleção.\n-Emilia`,true],
-    ['I will produce a 60-second explainer video for your DeFi protocol','video','u_riy',178,8,'IN',4.7,27,['Roteiro','Animação','Narração off'],`Hi!\n\nMe fala antes sobre o protocolo e o tom.\n-Riya`,false],
-    ['I will write a tokenomics model and distribution table','writing','u_sof',195,6,'PT',4.9,22,['Modelo Excel','Vesting schedule','Resumo executivo'],`Olá!\n\nPreciso entender a visão do projeto antes.\n-Sofia`,false],
-    ['I will review and fix bugs in your Solidity smart contract','audit','u_leo',128,5,'JP',5.0,18,['Bug report','Fixes comentados','Teste de regressão'],`Olá!\n\nEnvie o repositório e descreva o bug.\n-Leo`,false],
-    ['I will create Twitter/X thread templates for Web3 projects','marketing','u_kai',58,2,'DE',4.8,44,['10 templates','Guia de tom','Exemplos preenchidos'],`Oi!\n\nMe fala sobre o projeto e o público-alvo.\n-Kai`,false],
-    ['I will design a DAO governance dashboard UI','design','u_ana',220,10,'BR',4.9,14,['Figma completo','Dark/light mode','Componentes'],`Oi!\n\nMe chama para entender as funções de governança.\n-Ana`,false],
-    ['I will build a token staking smart contract','dev','u_leo',245,12,'JP',5.0,31,['Contrato Solidity','Testes Foundry','Documentação'],`Olá!\n\nFale antes para definirmos APY e regras de lock.\n-Leo`,true],
-    ['I will create an animated logo intro for your crypto brand','video','u_riy',68,3,'IN',4.7,52,['Versão 5s','MP4 + WebM','Fundo transparente'],`Hi!\n\nEnvie o logo e a paleta de cores.\n-Riya`,false],
-    ['I will set up a full Next.js + Tailwind frontend boilerplate','dev','u_max',105,4,'US',4.9,38,['Boilerplate GitHub','Tailwind config','Dark mode pronto'],`Hey!\n\nFala antes sobre as integrações que você precisa.\n-Max`,false],
-    ['I will write a DAO proposal template and voting guide','writing','u_sof',72,4,'PT',4.9,9,['Template Notion','Guia de votação','Exemplos reais'],`Olá!\n\nMe conta sobre a estrutura da sua DAO.\n-Sofia`,false],
-    ['I will design social media kit for token launch','design','u_emi',98,4,'AR',4.8,61,['20 posts','Stories','Banner Twitter/X'],`Oi!\n\nMe manda o logo e a identidade visual.\n-Emilia`,false],
-    ['I will audit a DeFi protocol for reentrancy and flash loan attacks','audit','u_chi',185,7,'NG',4.6,11,['Relatório detalhado','PoC de ataque','Recomendações'],`Hey,\n\nEnvie o repositório e o contexto do protocolo.\n-Chinedu`,false],
-    ['I will create a Telegram bot for your crypto community','dev','u_max',138,6,'US',4.9,24,['Bot funcional','Comandos customizados','Deploy VPS'],`Hey!\n\nFala antes para listar os comandos que você quer.\n-Max`,false],
-    ['I will write on-chain copy for your minting website','writing','u_sof',82,3,'PT',4.9,17,['Copy completo','Variações A/B','Revisão UX Writing'],`Olá!\n\nMe manda o wireframe do site.\n-Sofia`,false],
-    ['I will produce a 3-part YouTube series about your project','video','u_riy',265,14,'IN',4.7,8,['3 vídeos editados','Thumbnails','Roteiro aprovado'],`Hi!\n\nPreciso entender a narrativa do projeto.\n-Riya`,false],
-    ['I will set up multi-sig wallet (Gnosis Safe) for your DAO treasury','dev','u_leo',115,4,'JP',5.0,19,['Config Safe','Guia de uso','Políticas de signatário'],`Olá!\n\nFale antes para entender a estrutura da tesouraria.\n-Leo`,false],
-    ['I will design a Web3 email newsletter template','design','u_ana',75,3,'BR',4.9,36,['Template HTML','Dark mode','3 variações de cor'],`Oi!\n\nMe manda o logo e a paleta da marca.\n-Ana`,false],
-    ['I will write a community growth playbook for Discord','marketing','u_kai',145,10,'DE',4.8,28,['Playbook PDF','Cronograma','KPIs definidos'],`Oi!\n\nFale sobre o estágio atual da comunidade.\n-Kai`,false],
-    ['I will create a crypto project one-pager for investors','writing','u_sof',110,5,'PT',4.9,23,['PDF formatado','Versão EN/PT','Infográfico incluído'],`Olá!\n\nMe manda os dados principais do projeto.\n-Sofia`,false],
-    ['I will design NFT collection banner and profile images','design','u_emi',62,2,'AR',4.8,88,['Banner 1500x500','Avatar 400x400','Versões PNG'],`Oi!\n\nEnvie referências visuais da coleção.\n-Emilia`,false],
-    ['I will integrate WalletConnect v2 into your existing DApp','dev','u_max',175,7,'US',4.9,16,['Integração completa','Suporte multi-chain','Documentação'],`Hey!\n\nFala antes sobre o stack atual do DApp.\n-Max`,false],
-    ['I will run a 2-week KOL campaign on Twitter/X','marketing','u_kai',248,14,'DE',4.8,12,['5 KOLs','Relatório de alcance','Conteúdo aprovado'],`Oi!\n\nMe fala sobre o token e a data de lançamento.\n-Kai`,true],
-    ['I will animate a token price chart for social media','video','u_riy',53,2,'IN',4.7,67,['MP4 15s','Versão vertical','Fundo branco e preto'],`Hi!\n\nEnvie os dados do gráfico e as cores da marca.\n-Riya`,false],
-    ['I will build a simple ERC-721 NFT minting contract','dev','u_leo',158,6,'JP',5.0,43,['Contrato auditado','Deploy testnet','Frontend básico'],`Olá!\n\nFale antes sobre as regras de mint e supply.\n-Leo`,false],
-    ['I will design a referral program flow and UI','design','u_ana',118,5,'BR',4.9,21,['Fluxo Figma','Componentes','Spec para dev'],`Oi!\n\nMe conta como funciona o programa de referral.\n-Ana`,false],
-    ['I will write smart contract technical documentation','writing','u_sof',88,5,'PT',4.9,15,['Docs Markdown','Exemplos de uso','Guia de deploy'],`Olá!\n\nEnvie o código do contrato para eu analisar.\n-Sofia`,false],
-    ['I will do a UI/UX audit of your existing Web3 app','design','u_emi',138,6,'AR',4.8,19,['Relatório Figma','Prioridades','Quick wins'],`Oi!\n\nMe envie o link do app ou screenshots.\n-Emilia`,false],
-    ['I will create a 30-day content calendar for your crypto project','marketing','u_kai',95,7,'DE',4.8,37,['Planilha completa','60 posts rascunhados','Hashtags por nicho'],`Oi!\n\nMe fala sobre as redes sociais que você usa.\n-Kai`,false],
-    ['I will produce intro + outro animations for your YouTube channel','video','u_riy',79,4,'IN',4.7,44,['Intro 5s','Outro 10s','Arquivo editável'],`Hi!\n\nEnvie logo, paleta e tom do canal.\n-Riya`,false],
-    ['I will build a Web3 portfolio tracker dashboard','dev','u_max',232,14,'US',4.9,9,['Dashboard React','Suporte multi-chain','Charts em tempo real'],`Hey!\n\nFala antes sobre as chains e tokens que você quer rastrear.\n-Max`,true],
-    ['I will write a press release for your token launch','writing','u_sof',68,3,'PT',4.9,31,['Press release PT/EN','Lista de veículos','Template de follow-up'],`Olá!\n\nMe passa os detalhes do lançamento.\n-Sofia`,false],
-    ['I will design a DeFi protocol brand identity from scratch','design','u_ana',268,12,'BR',4.9,7,['Logo','Tipografia','Paleta completa','Brand book PDF'],`Oi!\n\nMe conta a visão e os valores do protocolo.\n-Ana`,true],
-    ['I will implement on-chain voting for your DAO','dev','u_leo',195,10,'JP',5.0,11,['Contrato de votação','Frontend básico','Docs'],`Olá!\n\nFale sobre o modelo de governança que você quer.\n-Leo`,false],
-    ['I will create short-form TikTok videos about your crypto project','video','u_riy',112,5,'IN',4.7,29,['4 vídeos 30s','Roteiros','Legendas'],`Hi!\n\nMe fala o objetivo e o público-alvo.\n-Riya`,false],
-    ['I will audit your frontend Web3 app for security issues','audit','u_chi',148,5,'NG',4.6,14,['Relatório de vulnerabilidades','Fixes sugeridos','Checklist OWASP'],`Hey,\n\nEnvie o repositório ou URL do app.\n-Chinedu`,false],
-    ['I will write copy for your IDO/IEO launch page','writing','u_sof',125,5,'PT',4.9,20,['Copy completo','CTAs','FAQ para investidores'],`Olá!\n\nMe passa os detalhes do projeto e a data do IDO.\n-Sofia`,false],
-  ];
-
-  services.forEach(s=>{
-    const [title,cat,fid,price,days,country,rating,reviews,inc,desc,featured] = s;
-    // Auto-generate tags from category + a few words extracted from title/desc
-    const TAG_DICT = {
-      design:['design','ui','ux','figma','branding','logo'],
-      audit:['security','solidity','audit','smart-contract','defi','review'],
-      marketing:['marketing','growth','kol','community','launch','social'],
-      writing:['writing','whitepaper','copy','content','translation'],
-      dev:['dev','solidity','nextjs','fullstack','wagmi','web3','dapp'],
-      video:['video','motion','reels','animation']
-    };
-    const baseTags = (TAG_DICT[cat] || [cat]).slice(0,4);
-    const extra = (title+' '+desc).toLowerCase().match(/\b(defi|nft|dao|erc20|erc-20|vesting|token|discord|twitter|next\.js|foundry|slither|solidity|tokenomics|landing|pitch|whitepaper|reels)\b/g) || [];
-    const tags = Array.from(new Set([...baseTags, ...extra.map(t=>t.replace('.',''))])).slice(0,8);
-    DB.services.push({
-      id: uid('s'), title, category:cat, freelancerId:fid, price, deliveryDays:days,
-      country, rating, reviewsCount:reviews, includes:inc, description:desc,
-      tags,
-      thumb: thumbSVG(title, CATEGORIES.find(c=>c.id===cat).color),
-      gallery: [2,3,4].map(n => gallerySVG(title, CATEGORIES.find(c=>c.id===cat).color, n)),
-      createdTs: Date.now()-86400000*Math.floor(Math.random()*120+5),
-      featured: !!featured,
-      acceptedTokens: ['ITL'],
-      qrPayMaxITL: 200,
-      tiers: makeTiers(price, days, inc),
-      addons: [
-        { id:'fast',     label:'Entrega expressa (-2 dias)',     priceITL: Math.round(price*0.18), days:-2, icon:'rocket' },
-        { id:'revision', label:'+1 revisão extra',               priceITL: Math.round(price*0.10), days:1,  icon:'refresh-cw' },
-        { id:'sourcef',  label:'Arquivos fonte adicionais',      priceITL: Math.round(price*0.08), days:0,  icon:'archive' },
-        { id:'priority', label:'Suporte prioritário pós-entrega',priceITL: Math.round(price*0.12), days:0,  icon:'phone-call' },
-      ],
-      tags: pickTags(cat),
-      requirements: requirementsByCategory(cat),
-    });
-  });
-
-  // ---- Expand catalog with variations so pagination has enough items (Fiverr-style large result sets) ----
-  const VARIANT_PREFIXES = [
-    'I will', 'I will professionally', 'I will quickly', 'I will expertly',
-    'I will personally', 'I will carefully', 'I will efficiently'
-  ];
-  const VARIANT_FREELANCERS = DB.users.map(u=>u.id);
-  const baseSnapshot = DB.services.slice();
-  baseSnapshot.forEach((base, bi) => {
-    for (let v = 0; v < 4; v++) {
-      const fid = VARIANT_FREELANCERS[(bi*4 + v) % VARIANT_FREELANCERS.length];
-      const priceJitter = Math.round(base.price * (0.75 + (v * 0.15) + Math.random()*0.2));
-      const daysJitter  = Math.max(2, base.deliveryDays + (v % 3) - 1);
-      const ratingJitter = Math.min(5, Math.max(4.2, base.rating - (v*0.08) + Math.random()*0.15));
-      const reviewsJitter = Math.max(3, Math.round(base.reviewsCount * (0.2 + Math.random()*0.6)));
-      const prefix = VARIANT_PREFIXES[(bi+v) % VARIANT_PREFIXES.length];
-      const restOfTitle = base.title.toLowerCase().startsWith('i will ') ? base.title.slice(7) : base.title;
-      DB.services.push({
-        ...base,
-        id: uid('s'),
-        title: `${prefix} ${restOfTitle}`,
-        freelancerId: fid,
-        price: Math.max(20, priceJitter),
-        deliveryDays: daysJitter,
-        rating: Math.round(ratingJitter*10)/10,
-        reviewsCount: reviewsJitter,
-        thumb: thumbSVG(`${prefix} ${restOfTitle}`, CATEGORIES.find(c=>c.id===base.category).color),
-        gallery: base.gallery,
-        createdTs: Date.now()-86400000*Math.floor(Math.random()*180+1),
-        featured: false,
-        tiers: makeTiers(Math.max(20, priceJitter), daysJitter, base.includes),
-        reviews: [],
-      });
+html.dark .gig-card:hover .gig-thumb {
+    border-color: rgba(139, 124, 255, 0.4)
     }
-  });
-
-  // Reviews per service
-  const sampleReviews = [
-    ['Entrega impecável e dentro do prazo. Voltarei a contratar.', 5],
-    ['Comunicação ótima, ajustes rápidos. Recomendo.', 5],
-    ['Bom trabalho, alguns pontos para melhorar no briefing.', 4],
-    ['Profissional sênior, vale cada ITL.', 5],
-    ['Atendeu o esperado, prazo levemente estendido.', 4],
-  ];
-  const sampleClientReviews = [
-    ['Cliente muito comunicativo, briefing claro.',5],
-    ['Pagamento rápido em escrow, sem dramas.',5],
-    ['Pediu vários ajustes mas dentro do escopo.',4],
-  ];
-  DB.services.forEach(sv=>{
-    const n = Math.min(4, Math.max(2, Math.floor(sv.reviewsCount/10)));
-    sv.reviews = [];
-    for (let i=0;i<n;i++){
-      const r  = sampleReviews[(i+sv.title.length)%sampleReviews.length];
-      const cr = sampleClientReviews[i%sampleClientReviews.length];
-      sv.reviews.push({
-        id:uid('r'),
-        userId: DB.users[(i+2)%DB.users.length].id,
-        text:r[0], stars:r[1],
-        clientReview: { text: cr[0], stars: cr[1] },
-        ts: Date.now()-86400000*(i*7+3)
-      });
+/* ============ PROFILE PAGE (origin design) ============ */
+/* btn-primary / btn-outline (used inside profile page) */
+.btn-primary {
+    background: var(--primary);
+    color: var(--hero-search-input-color-dark);
+    transition: background 0.15s
     }
-  });
-
-  // Seed orders
-  const s1 = DB.services[0], s2 = DB.services[1], s3 = DB.services[5];
-  // Order 1: já com briefing enviado (mantém in_progress mesmo o serviço tendo requirements)
-  const o1 = mkOrder(s1, 'u_me', 'Quero uma landing para o nosso protocolo de yield, paleta escura, foco em conversão para airdrop.', 'in_progress', 55);
-  o1.status = 'in_progress';
-  o1.requirementsSubmitted = true;
-  o1.requirementsSubmittedTs = o1.createdTs + 3600000;
-  o1.requirementsAnswers = (s1.requirements||[]).reduce((a,r,i)=>{a[r.id]= i===0 ? 'Landing escura, hero animado, foco em airdrop.' : (r.type==='select' ? (r.options||[''])[0] : (r.placeholder||'Resposta de exemplo')); return a;}, {});
-  STATE.orders.push(o1);
-  STATE.orders.push(mkOrder(s2, 'u_me', 'Auditoria do contrato de staking v2. Repo Github privado, libero acesso ao iniciar.', 'awaiting_delivery', 80));
-  const oDel = mkOrder(s3, 'u_me', 'DApp para mintar nosso NFT na rede Interlink, conectar wallet e ver saldo de ITL.', 'delivered', 100);
-  // Make deliveredAt 2 days + 21 hours ago → countdown shows ~3 hours remaining (urgent amber)
-  oDel.deliveredAt = Date.now() - (AUTO_APPROVE_MS - 3 * 3600000);
-  STATE.orders.push(oDel);
-  // Order 4: NOVO pedido em awaiting_requirements pra demo da feature de briefing
-  if (DB.services[7]){
-    const oNew = mkOrder(DB.services[7], 'u_me', '', 'in_progress', 0);
-    oNew.status = 'awaiting_requirements';
-    oNew.requirementsSubmitted = false;
-    oNew.requirementsAnswers = null;
-    oNew.progress = 0;
-    STATE.orders.unshift(oNew);
-  }
-  STATE.orders.forEach(o=>{
-    STATE.messages[o.id] = [
-      { from:o.freelancerId, text:'Olá! Recebi seu pedido, vou começar agora.', ts: o.createdTs+60000 },
-      { from:'u_me',         text:'Perfeito, qualquer dúvida me chama por aqui.', ts: o.createdTs+120000 },
-    ];
-  });
-
-  // Demo milestone order (so user sees the feature on first load)
-  const sMil = DB.services[3]; // Sofia whitepaper
-  const oMil = mkOrder(sMil, 'u_me', 'Whitepaper técnico do nosso protocolo de lending — 20 páginas, tokenomics incluído.', 'in_progress', 35);
-  oMil.milestones = [
-    { id:uid('ms'), name:'Estrutura aprovada', pct:30, amountITL:+(sMil.price*0.3).toFixed(2), status:'released', releaseTx:txHash(), releasedAt:Date.now()-86400000*2 },
-    { id:uid('ms'), name:'Rascunho completo',  pct:40, amountITL:+(sMil.price*0.4).toFixed(2), status:'pending',  releaseTx:null, releasedAt:null },
-    { id:uid('ms'), name:'Revisão final',      pct:30, amountITL:+(sMil.price*0.3).toFixed(2), status:'locked',   releaseTx:null, releasedAt:null },
-  ];
-  STATE.orders.push(oMil);
-  STATE.messages[oMil.id] = [
-    { from:sMil.freelancerId, text:'Estrutura entregue e aprovada ✅ Agora finalizo o rascunho!', ts: oMil.createdTs+3600000 },
-    { from:'u_me', text:'Ótimo! Aguardando o rascunho completo.', ts: oMil.createdTs+7200000 },
-  ];
-
-  // Notifications
-  STATE.notifications = [
-    { id:uid('n'), type:'delivery',  title:'Entrega recebida', body:'Max enviou a entrega do DApp Next.js.', ts: Date.now()-3600000*2, read:false, link:'#/dashboard/client' },
-    { id:uid('n'), type:'message',   title:'Nova mensagem',     body:'Ana: "Subi o preview no Figma".',       ts: Date.now()-3600000*5, read:false, link:'#/dashboard/client' },
-    { id:uid('n'), type:'tx',        title:'Escrow confirmado', body:'1224 ITL travados na rede Interlink.',   ts: Date.now()-86400000,  read:true,  link:'#/wallet' },
-  ];
-
-  // Tx history (seed)
-  STATE.txHistory = [
-    { hash: txHash(), type:'escrow_lock',    amount: 285.60, token:'ITL', ts: Date.now()-86400000*3, orderId: STATE.orders[0].id },
-    { hash: txHash(), type:'escrow_lock',    amount: 1224.00,token:'ITL', ts: Date.now()-86400000*5, orderId: STATE.orders[1].id },
-    { hash: txHash(), type:'escrow_release', amount: 1836.00,token:'ITL', ts: Date.now()-86400000*9, orderId: STATE.orders[2].id },
-    { hash: txHash(), type:'deposit',        amount: 500.00, token:'ITL', ts: Date.now()-86400000*12 },
-  ];
-  STATE.payouts = [
-    { hash: txHash(), amount: 320, token:'ITL', ts: Date.now()-86400000*7 },
-    { hash: txHash(), amount: 540, token:'ITL', ts: Date.now()-86400000*21 },
-  ];
-}
-
-function makeTiers(price, days, includes){
-  return {
-    basic:    { label:'Basic',    priceITL: Math.round(price*0.6),  days: Math.max(1, days-2), includes: includes.slice(0,Math.max(1,includes.length-1)), revisions:1, badge:'Essencial' },
-    standard: { label:'Standard', priceITL: price,                  days, includes,                                                                       revisions:2, badge:'Recomendado' },
-    premium:  { label:'Premium',  priceITL: Math.round(price*1.7),  days: days+3,              includes: [...includes,'Suporte prioritário','Versão alternativa'], revisions:5, badge:'Completo' },
-  };
-}
-
-function pickTags(cat){
-  const pool = {
-    design:['UI','UX','Branding','DeFi','NFT'],
-    dev:['Solidity','Next.js','wagmi','Foundry','Interlink'],
-    marketing:['KOL','Discord','Twitter','Growth'],
-    writing:['Tokenomics','Whitepaper','Tradução'],
-    audit:['Slither','Foundry','OWASP','DeFi'],
-    video:['Motion','Reels','Cinematic'],
-  }[cat] || [];
-  return pool.slice(0,3);
-}
-
-function requirementsByCategory(cat){
-  // Templates de briefing por categoria — simples, sem jargão técnico, qualquer cliente entende de cara.
-  const common = { id: uid('req'), type:'textarea', label:'Descreva seu projeto em detalhe — objetivo, escopo, prazo desejado.', required:true, placeholder:'' };
-  const refs = { id: uid('req'), type:'url', label:'Algum link de referência ou inspiração?', required:false, placeholder:'https://...' };
-  const map = {
-    design: [
-      common,
-      { id: uid('req'), type:'text',   label:'Já tem cores ou uma marca pra seguir?', required:false, placeholder:'Ex: tons de azul, igual ao nosso site' },
-      refs,
-      { id: uid('req'), type:'select', label:'Que estilo você imagina?', required:true, options:['Moderno e clean','Colorido e divertido','Sério e profissional','Deixo a seu critério'] },
-    ],
-    dev: [
-      common,
-      { id: uid('req'), type:'url',  label:'Link do repositório (se já existir um — se não, deixe em branco)', required:false, placeholder:'https://github.com/...' },
-      { id: uid('req'), type:'text', label:'Em qual rede deve funcionar? (ex: Interlink — se não souber, combinamos no chat)', required:false, placeholder:'Interlink' },
-      { id: uid('req'), type:'textarea', label:'O que precisa estar funcionando pra você aceitar a entrega?', required:true, placeholder:'' },
-    ],
-    audit: [
-      common,
-      { id: uid('req'), type:'url',  label:'Link do repositório do contrato', required:true, placeholder:'https://github.com/...' },
-      { id: uid('req'), type:'text', label:'Versão ou trecho específico a revisar (opcional)', required:false, placeholder:'Ex: v1.2.0 — se não souber, tudo bem' },
-      { id: uid('req'), type:'select', label:'Quão a fundo você quer essa revisão?', required:true, options:['Rápida (até 3 dias)','Padrão','Completa e aprofundada'] },
-    ],
-    marketing: [
-      common,
-      { id: uid('req'), type:'url',  label:'Link do site ou projeto', required:true, placeholder:'https://...' },
-      { id: uid('req'), type:'text', label:'Já tem comunidade hoje? (ex: Discord, Twitter — e o tamanho aproximado)', required:false, placeholder:'Ex: 500 no Discord, ainda sem Twitter' },
-    ],
-    writing: [
-      common,
-      refs,
-    ],
-    video: [
-      common,
-      refs,
-      { id: uid('req'), type:'select', label:'Formato', required:true, options:['Vertical (celular)','Horizontal (YouTube)','Quadrado (feed)'] },
-      { id: uid('req'), type:'text', label:'Duração desejada', required:false, placeholder:'Ex: 15 a 30 segundos' },
-    ],
-  };
-  return map[cat] || [common, refs];
-}
-
-function mkOrder(service, clientId, brief, status='in_progress', progress=10){
-  const id = uid('o');
-  const fee = +(service.price*0.02).toFixed(2);
-  const createdTs = Date.now()-86400000*Math.floor(Math.random()*5+1);
-  const deliveryAt = createdTs + service.deliveryDays*86400000;
-  // Se o serviço tem campos de requirements, o pedido começa em awaiting_requirements
-  // e o timer de delivery só inicia quando o cliente envia o briefing.
-  const hasReqs = Array.isArray(service.requirements) && service.requirements.length > 0;
-  const initialStatus = (status==='in_progress' && hasReqs) ? 'awaiting_requirements' : status;
-  return {
-    id, serviceId: service.id, freelancerId: service.freelancerId, clientId,
-    brief, status: initialStatus, progress,
-    tier: 'standard',
-    selectedAddons: [],
-    token: 'ITL',
-    price: service.price, fee, total: +(service.price+fee).toFixed(2),
-    deliveryDays: service.deliveryDays, createdTs, deliveryAt,
-    deliveredAt: status==='delivered' ? Date.now()-3600000*4 : null,
-    deliverable: status==='delivered' ? { files:[{name:'entrega_v1.zip', size:'4.2 MB'}], note:'Pronto para revisão!' } : null,
-    rated: false,
-    clientRated: false,
-    escrowTx: txHash(),
-    milestones: null,
-    dispute: null,
-    cancelRequest: null,
-    refundRequested: false,
-    tipITL: 0,
-    // Pre-order requirements (Fiverr-style briefing form)
-    requirementsAnswers: null,        // { [fieldId]: value }
-    requirementsSubmitted: initialStatus !== 'awaiting_requirements',
-    requirementsSubmittedTs: initialStatus !== 'awaiting_requirements' ? createdTs : null,
-  };
-}
-
-/* ---------- helpers extras ---------- */
-function txHash(){ return '0x'+Array.from({length:64},()=>'0123456789abcdef'[Math.floor(Math.random()*16)]).join(''); }
-function explorerURL(hash){ return 'https://explorer.interlinklabs.ai/tx/'+hash; }
-function shortHash(h){ return h.slice(0,10)+'…'+h.slice(-6); }
-function tokenInfo(id){ return TOKENS.find(t=>t.id===id) || TOKENS[0]; }
-function priceInToken(itl, token){
-  const t = tokenInfo(token); return +(itl*t.rateITL).toFixed(2);
-}
-function fmtToken(amount, token){
-  const t = tokenInfo(token); return amount.toLocaleString('en-US',{maximumFractionDigits:2})+' '+t.label;
-}
-function diffCountdown(ms){
-  if (ms<=0) return 'Vencido';
-  const d=Math.floor(ms/86400000), h=Math.floor((ms%86400000)/3600000), m=Math.floor((ms%3600000)/60000);
-  if (d>0) return `${d}d ${h}h`;
-  if (h>0) return `${h}h ${m}m`;
-  return `${m}m`;
-}
-function addNotification(n){
-  STATE.notifications.unshift({ id:uid('n'), read:false, ts:Date.now(), ...n });
-  if (STATE.notifications.length > 200) STATE.notifications = STATE.notifications.slice(0, 200);
-}
-function unreadCount(){ return STATE.notifications.filter(n=>!n.read).length; }
-
-/* ---------- Avatars / Thumbs ---------- */
-function avatarSVG(letter, color){
-  const s = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
-    <defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'>
-      <stop offset='0' stop-color='${color}'/><stop offset='1' stop-color='#0b1220'/>
-    </linearGradient></defs>
-    <rect width='64' height='64' rx='16' fill='url(#g)'/>
-    <text x='32' y='40' text-anchor='middle' font-family='Inter,system-ui' font-size='28' font-weight='800' fill='white'>${letter}</text>
-  </svg>`;
-  return 'data:image/svg+xml;utf8,'+encodeURIComponent(s);
-}
-function thumbSVG(title, color){
-  const initials = title.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  const s = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'>
-    <defs>
-      <linearGradient id='bg' x1='0' x2='1' y1='0' y2='1'>
-        <stop offset='0' stop-color='${color}' stop-opacity='.18'/>
-        <stop offset='1' stop-color='#1a73e8' stop-opacity='.10'/>
-      </linearGradient>
-      <pattern id='p' width='24' height='24' patternUnits='userSpaceOnUse'>
-        <circle cx='2' cy='2' r='1.2' fill='${color}' opacity='.35'/>
-      </pattern>
-    </defs>
-    <rect width='400' height='240' fill='white'/>
-    <rect width='400' height='240' fill='url(#bg)'/>
-    <rect width='400' height='240' fill='url(#p)'/>
-    <g transform='translate(28,28)'>
-      <rect width='56' height='56' rx='14' fill='${color}'/>
-      <text x='28' y='37' text-anchor='middle' font-family='Inter,system-ui' font-size='22' font-weight='800' fill='white'>${initials}</text>
-    </g>
-    <g transform='translate(28,170)' fill='#0b1220' font-family='Inter,system-ui'>
-      <text font-size='14' font-weight='700' opacity='.55'>INTERWORK</text>
-      <text y='22' font-size='18' font-weight='800'>${escapeHtml(title.length>32?title.slice(0,30)+'…':title)}</text>
-    </g>
-  </svg>`;
-  return 'data:image/svg+xml;utf8,'+encodeURIComponent(s);
-}
-function gallerySVG(title, color, n){
-  const s = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'>
-    <defs>
-      <linearGradient id='bg${n}' x1='0' x2='1' y1='1' y2='0'>
-        <stop offset='0' stop-color='${color}' stop-opacity='.22'/>
-        <stop offset='1' stop-color='#1a73e8' stop-opacity='.12'/>
-      </linearGradient>
-      <pattern id='p${n}' width='22' height='22' patternUnits='userSpaceOnUse'>
-        <circle cx='2' cy='2' r='1.1' fill='${color}' opacity='.3'/>
-      </pattern>
-    </defs>
-    <rect width='400' height='240' fill='white'/>
-    <rect width='400' height='240' fill='url(#bg${n})'/>
-    <rect width='400' height='240' fill='url(#p${n})'/>
-    <g transform='translate(200,120)'>
-      <circle r='34' fill='${color}' opacity='.92'/>
-      <text text-anchor='middle' dy='10' font-family='Inter,system-ui' font-size='26' font-weight='800' fill='white'>${n}</text>
-    </g>
-    <g transform='translate(28,206)' fill='#0b1220' font-family='Inter,system-ui'>
-      <text font-size='13' font-weight='700' opacity='.5'>${escapeHtml(title.length>34?title.slice(0,32)+'…':title)}</text>
-    </g>
-  </svg>`;
-  return 'data:image/svg+xml;utf8,'+encodeURIComponent(s);
-}
-
-function getUser(id){ return DB.users.find(u=>u.id===id); }
-
-// ADICIONADO — fallback seguro: evita quebrar a renderização quando o serviço
-// pertence a um usuário real (Supabase) que ainda não existe em DB.users (mock).
-function getUserSafe(id){
-  const local = getUser(id);
-  if (local) return local;
-  return {
-    id, name: 'Usuário Interwork', handle: 'user', avatar: getAvatarSrc('U','#1a73e8').src,
-    verified: false, online: false, wallet: null, rating: 5, jobs: 0,
-  };
-}
-function getService(id){ return DB.services.find(s=>s.id===id); }
-function getCategory(id){ return CATEGORIES.find(c=>c.id===id); }
-function getCountry(id){ return COUNTRIES.find(c=>c.id===id); }
-
-/* ---------- FAVORITOS / WISHLIST ---------- */
-function isFavorited(serviceId){ return STATE.favorites.includes(serviceId); }
-function favoritesCount(){ return STATE.favorites.length; }
-function toggleFavorite(serviceId, event){
-  event?.preventDefault();
-  event?.stopPropagation();
-  if (!requireAuth('salvar nos favoritos')) return;
-  const idx = STATE.favorites.indexOf(serviceId);
-  if (idx >= 0){
-    STATE.favorites.splice(idx, 1);
-    toast('Removido dos favoritos.', 'info');
-  } else {
-    STATE.favorites.unshift(serviceId);
-    toast('Salvo em favoritos.', 'success');
-  }
-  render();
-}
-function isAuthed(){ return !!(STATE.walletConnected && STATE.authenticated && STATE.onboardingComplete && getUser(STATE.currentUserId)); }
-function requireAuth(action='continuar'){
-  if (isAuthed()) return true;
-  openConnectWallet(`Para ${action}, conecte sua wallet e crie seu handle Interwork.`);
-  return false;
-}
-
-
-/* ---------- AVATAR ---------- */
-function pickAvatarFile(){
-  const input = document.createElement('input');
-  input.type = 'file'; input.accept = 'image/*'; input.capture = 'user';
-  input.onchange = function(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    if(!file.type.startsWith('image/')){ toast('Selecione uma imagem','warn'); return; }
-    if(file.size > 3*1024*1024){ toast('Máx 3MB','warn'); return; }
-    const reader = new FileReader();
-    reader.onload = function(ev){
-      STATE._avatarPhoto = ev.target.result;
-      updateAvatarPreview(ev.target.result);
-      selectAvatarOpt('upload');
-      toast('Foto carregada!','success');
-    };
-    reader.readAsDataURL(file);
-  };
-  input.click();
-}
-function updateAvatarPreview(url){
-  const el = document.getElementById('avatar-preview');
-  if(el) el.innerHTML = '<img src="'+url+'" alt="foto"/>';
-}
-function selectAvatarOpt(opt){
-  STATE._avatarOpt = opt;
-  document.querySelectorAll('.avatar-option').forEach(function(el){ el.classList.remove('on'); });
-  const sel = document.querySelector('.avatar-option[data-opt="'+opt+'"]');
-  if(sel) sel.classList.add('on');
-}
-function getAvatarSrc(name, color){
-  if(STATE._avatarOpt === 'upload' && STATE._avatarPhoto) return {type:'upload', src:STATE._avatarPhoto};
-  return {type:'generated', src:avatarSVG((name||'U')[0].toUpperCase(), color||'#1a73e8')};
-}
-function updateAvatarLetter(name){
-  const el = document.getElementById('avatar-preview');
-  if(!el || (STATE._avatarOpt==='upload' && STATE._avatarPhoto)) return;
-  const letter = (name && name[0] ? name[0] : '?').toUpperCase();
-  el.innerHTML = '<div class="avatar-letter">'+letter+'</div><div class="avatar-camera"><i data-lucide="camera"></i></div>';
-  icons();
-}
-
-/* ---------- TROCAR FOTO DO PERFIL ---------- */
-function changeProfileAvatar(userId){
-  var input = document.createElement('input');
-  input.type = 'file'; input.accept = 'image/*'; input.capture = 'user';
-  input.onchange = function(e){
-    var file = e.target.files[0];
-    if(!file) return;
-    if(!file.type.startsWith('image/')){ toast('Selecione uma imagem','warn'); return; }
-    if(file.size > 3*1024*1024){ toast('Máx 3MB','warn'); return; }
-    var reader = new FileReader();
-    reader.onload = function(ev){
-      var u = getUser(userId);
-      if(u){ u.avatar = ev.target.result; u.avatarType = 'upload'; }
-      var img = document.getElementById('profile-avatar-img');
-      if(img) img.src = ev.target.result;
-      toast('Foto atualizada!','success');
-      renderHeader();
-    };
-    reader.readAsDataURL(file);
-  };
-  input.click();
-}
-
+.btn-primary:hover {
+    background: var(--primary-600)
+    }
+.btn-outline {
+    border: 1px solid var(--text-dark-mode);
+    color: var(--home-bg-dark);
+    background: var(--hero-search-input-color-dark);
+    transition: all 0.15s
+    }
+.btn-outline:hover {
+    border-color: var(--border-primary-hover);
+    color: var(--primary-text)
+    }
+/* tab / tab-active (profile tabs) */
+.tab {
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    transition: all 0.15s;
+    padding-bottom: 0.5rem;
+    font-size: 14px;
+    background: none;
+    cursor: pointer
+    }
+.tab:hover {
+    color: var(--home-bg-dark)
+    }
+.tab-active {
+    color: var(--home-bg-dark);
+    border-color: var(--primary);
+    font-weight: 700
+    }
+/* star-row (used in profile head and reviews) */
+.star-row i {
+    color: var(--warning)
+    }
+.cover {
+    background: linear-gradient(135deg, var(--cat-tile-icon-wrap-bg-light) 0%, var(--text-dark-mode) 100%);
+    border-bottom: 1px solid var(--text-dark-mode)
+    }
+.card-gig {
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    border: 1px solid var(--hw-tl-line-light)
+    }
+.card-gig:hover {
+    transform: translatey(-3px);
+    box-shadow: 0 14px 30px -12px rgba(91, 78, 224, 0.18);
+    border-color: var(--border-primary-hover)
+    }
+.card-gig .gig-img {
+    transition: transform 0.4s
+    }
+.card-gig:hover .gig-img {
+    transform: scale(1.06)
+    }
+.lvl-bar {
+    height: 6px;
+    background: var(--cat-tile-border-light);
+    border-radius: 9999px;
+    overflow: hidden
+    }
+.lvl-fill {
+    height: 100%;
+    background: var(--sonic);
+    border-radius: 9999px
+    }
+.badge-verified {
+    background: #dcfce7;
+    color: #15803d
+    }
+.badge-top {
+    background: #fef3c7;
+    color: #b45309
+    }
+html.dark .cover {
+    background: linear-gradient(120deg, rgba(91, 78, 224, 0.25) 0%, rgba(60, 50, 180, 0.2) 40%, rgba(40, 30, 140, 0.15) 100%)
+    }
+html.dark .card-gig {
+    border-color: var(--border-dark-mode-alt)
+    }
+html.dark .card-gig:hover {
+    border-color: rgba(139, 124, 255, 0.4)
+    }
+html.dark .lvl-bar {
+    background: var(--surf-700)
+    }
+html.dark .badge-verified {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399
+    }
+html.dark .badge-top {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24
+    }</style></head><body class="bg-white text-ink-900"><a class="skip-link" data-no-tr="" href="#view">Pular para o conteúdo</a><header id="app-header" role="banner"></header><main class="min-h-[80vh]" id="view" role="main" tabindex="-1"></main><div aria-live="polite" id="modal-root"></div><div id="chat-root"></div><div aria-atomic="true" aria-live="polite" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-2" id="toast-root" role="status"></div><footer id="app-footer" role="contentinfo"></footer><script></script></body></html>
 /* ---------- RENDER ROOT ---------- */
 function render(){
   applyTheme();
@@ -9555,8 +9546,13 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const SB_READY = SUPABASE_URL !== 'COLE_SUA_URL_AQUI' && SUPABASE_ANON !== 'COLE_SUA_ANON_KEY_AQUI';
 let sb = null; // instância do cliente Supabase
 
-// Lógica de dados movida para data.js
-
+if (SB_READY) {
+  try {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  } catch(e) {
+    console.warn('[Supabase] Erro ao criar cliente:', e);
+  }
+}
 
 /* ──────────────────────────────────────────────────────────
  * ADMIN — controle simples por email whitelist
