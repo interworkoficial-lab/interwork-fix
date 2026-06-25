@@ -392,7 +392,7 @@ function viewNewServicePage() {
       <!-- Breadcrumb -->
       <div class="text-center mb-8">
         <div class="flex items-center justify-center gap-2 text-xs text-ink-500 mb-4">
-          <button onclick="STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView()" class="hover:text-brand-500 transition">Dashboard</button>
+          <button onclick="STATE.route='dashboard';STATE.dashboardTab='freelancer';render()" class="hover:text-brand-500 transition">Dashboard</button>
           <i data-lucide="chevron-right" class="w-3 h-3"></i>
           <span class="font-semibold text-ink-700">${editing ? 'Editar Serviço' : 'Publicar Serviço'}</span>
         </div>
@@ -988,11 +988,11 @@ function createService() {
   /* Modal de confirmação */
   document.getElementById('modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in"
-       onclick="if(event.target===this){closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView();}">
+       onclick="if(event.target===this){closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';STATE._frTab='services';render();}">
     <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
       <div class="px-5 pt-4 pb-3 border-b border-ink-100 flex items-center gap-2">
         <div class="font-extrabold text-sm flex items-center gap-2 flex-1">Serviço enviado para revisão ✅</div>
-        <button onclick="closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView()"
+        <button onclick="closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';STATE._frTab='services';render()"
           class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50">
           <i data-lucide="x" class="w-4 h-4 text-ink-500"></i>
         </button>
@@ -1011,7 +1011,7 @@ function createService() {
             class="flex-1 border border-ink-200 hover:bg-ink-50 font-semibold py-2.5 rounded-xl text-sm">
             Fechar
           </button>
-          <button onclick="closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView()"
+          <button onclick="closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';STATE._frTab='services';render()"
             class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
             <i data-lucide="layout-dashboard" class="w-4 h-4"></i>Ver dashboard
           </button>
@@ -1131,7 +1131,7 @@ function showPendingApprovalScreen() {
             class="flex-1 border border-ink-200 hover:bg-ink-50 font-semibold py-2.5 rounded-xl text-sm">
             Fechar
           </button>
-          <button onclick="closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';renderView()"
+          <button onclick="closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';STATE._frTab='services';render()"
             class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
             <i data-lucide="layout-dashboard" class="w-4 h-4"></i>Ver dashboard
           </button>
