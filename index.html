@@ -1397,13 +1397,12 @@ function renderHeader(){
       </a>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
-        <a href="#/earn" class="hover:text-slate-900 transition ${STATE.route==='earn'?'text-brand-600 font-bold':''}">Earn ITL</a>
-        <a href="#/home" class="hover:text-slate-900 transition">Hire Talent</a>
-        <a href="#/how" class="hover:text-slate-900 transition">How It Works</a>
-        <a href="#/home" class="hover:text-slate-900 transition">Community</a>
-        <button onclick="openNewServiceModal()" class="hover:text-slate-900 transition ${STATE.route==='new-service'?'text-brand-600 font-bold':''}">Sell a Service</button>
-      </nav>
+     <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
+  <a href="#/earn" class="hover:text-slate-900 transition ${STATE.route==='earn'?'text-brand-600 font-bold':''}">Earn ITL</a>
+  <a href="#/how" class="hover:text-slate-900 transition">How It Works</a>
+  <a href="#/home" class="hover:text-slate-900 transition">Community</a>
+  <button onclick="openNewServiceModal()" class="hover:text-slate-900 transition ${STATE.route==='new-service'?'text-brand-600 font-bold':''}">Sell a Service</button>
+</nav>
 
       <!-- Right Actions -->
       <div class="flex items-center gap-3 sm:gap-5">
@@ -1528,10 +1527,10 @@ function renderHeader(){
     <!-- Mobile menu dropdown -->
     <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-100 bg-white overflow-hidden transition-all">
       <nav class="px-4 py-4 flex flex-col gap-2 text-sm font-medium text-slate-700">
-        <a href="#/earn" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='earn'?'bg-slate-50 text-brand-600 font-bold':''}">Earn ITL</a>
-        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Hire Talent</a>
-        <a href="#/how" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
-        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Community</a>
+  <a href="#/earn" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='earn'?'bg-slate-50 text-brand-600 font-bold':''}">Earn ITL</a>
+  <a href="#/how" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
+  <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Community</a>
+  <button onclick="toggleMobileMenu();openNewServiceModal()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 text-left w-full ${STATE.route==='new-service'?'bg-slate-50 text-brand-600 font-bold':''}">Sell a Service</button>
         <button onclick="toggleMobileMenu();openNewServiceModal()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 text-left w-full ${STATE.route==='new-service'?'bg-slate-50 text-brand-600 font-bold':''}">Sell a Service</button>
         <div class="border-t border-slate-100 mt-2 pt-2">
            <button onclick="toggleLangMenu(event)" class="w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between">
