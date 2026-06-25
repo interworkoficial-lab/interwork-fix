@@ -826,7 +826,7 @@ function initMock(){
   });
 
   // Seed orders
-  const s1 = DB.services[0], s2 = DB.services[1], s3 = DB.services[5];
+    const s1 = DB.services[0], s2 = DB.services[1], s3 = DB.services[2];
   // Order 1: já com briefing enviado (mantém in_progress mesmo o serviço tendo requirements)
   const o1 = mkOrder(s1, 'u_me', 'Quero uma landing para o nosso protocolo de yield, paleta escura, foco em conversão para airdrop.', 'in_progress', 55);
   o1.status = 'in_progress';
@@ -2615,12 +2615,20 @@ function serviceCard(s){
   </a>`;
 }
 
-function gigCarouselStep(ev, serviceId, dir){
-    function gigCarouselShowControls(wrap){
+function gigCarouselShowControls(wrap){
   wrap.querySelectorAll('.gig-carousel-arrow,.gig-carousel-dots')
     .forEach(function(el){ el.style.opacity='1'; });
 }
 
+function gigCarouselHideControls(wrap){
+  wrap.querySelectorAll('.gig-carousel-arrow,.gig-carousel-dots')
+    .forEach(function(el){ el.style.opacity='0'; });
+}
+
+function gigCarouselStep(ev, serviceId, dir){
+  ev.preventDefault();
+  ev.stopPropagation();
+  // resto do código continua igual...
 function gigCarouselHideControls(wrap){
   wrap.querySelectorAll('.gig-carousel-arrow,.gig-carousel-dots')
     .forEach(function(el){ el.style.opacity='0'; });
