@@ -1149,3 +1149,8 @@ html.dark .gig-carousel-arrow {
 html.dark .gig-carousel-arrow:hover {
   background: #1e293b;
 }
+
+/* ══ PROFILE DROPDOWN ══ */
+#profile-dropdown {
+  animation: fade .15s ease-out;
+}
