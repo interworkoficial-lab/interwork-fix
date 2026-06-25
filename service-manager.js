@@ -1009,7 +1009,7 @@ function createService() {
     thumb:   STATE.newServiceLogo || thumbSVG(title, (CATEGORIES.find(c => c.id === cat)?.color || '#1a73e8')),
     gallery: STATE.newServiceGallery.slice(),
     tags, requirements, faqs,
-    status: 'pending_approval',
+    status: 'pending',
     createdTs: Date.now(),
     reviews: [],
   };
@@ -1129,8 +1129,8 @@ function saveService(id) {
 
   /* [C3] Sem closeModal() — o wizard roda como página, não como modal */
   STATE.route        = 'dashboard';
-  STATE.dashboardTab = 'freelancer';
-  STATE._frTab       = 'services';
+STATE.dashboardTab = 'freelancer';
+STATE._frTab       = 'services';
   renderView();
 }
 
