@@ -3618,6 +3618,7 @@ function cancelOrder(orderId, perspective='client'){
   addNotification({ type:'cancel', title:'Cancelamento solicitado', body:`Pedido #${o.id.slice(-5)} aguardando acordo mútuo.`, link:'#/dashboard/'+(perspective==='client'?'freelancer':'client') });
   toast('Solicitação de cancelamento enviada.', 'info');
   render();
+  icons();
 }
 function acceptCancellation(orderId, perspective='freelancer'){
   if (!requireAuth('aceitar cancelamento')) return;
@@ -3627,6 +3628,7 @@ function acceptCancellation(orderId, perspective='freelancer'){
   finalizeCancellation(o, 'mutual_agreement', o.total || 0, actorIdForPerspective(o, perspective));
   toast('Cancelamento aceito. Escrow reembolsado ao cliente.', 'success');
   render();
+  icons();
 }
 function finalizeCancellation(o, reason, refundAmount, actorId){
   const hash = txHash();
@@ -3673,7 +3675,8 @@ function approveOrder(orderId){
   STATE.messages[o.id].push({ from:o.clientId, text:`✅ Entrega aprovada. ${fmtITL(o.price)} liberados via ${shortHash(hash)}.`, ts:nowTs() });
   toast('Entrega aprovada. ITL liberado via tx '+shortHash(hash), 'success');
   render();
-  setTimeout(()=>openRateModal(orderId), 300);
+  icons();
+  setTimeout(()=>openRateModal(orderId), 500);
 }
 
 function releaseMilestone(orderId, milestoneId){
@@ -3714,7 +3717,8 @@ function releaseMilestone(orderId, milestoneId){
   persistNow();
   toast(`Milestone "${ms.name}" liberado — ${fmtITL(ms.amountITL)} on-chain`, 'success');
   render();
-  if (allDone) setTimeout(()=>openRateModal(orderId), 400);
+  icons();
+  if (allDone) setTimeout(()=>openRateModal(orderId), 500);
 }
 
 function openRateModal(orderId){
@@ -3936,6 +3940,7 @@ function submitRate(orderId){
   closeModal();
   toast(`${stars}★ Avaliação publicada on-chain`, 'success');
   render();
+  icons();
   maybeOfferATV(orderId);
 }
 
@@ -4005,6 +4010,7 @@ function submitDelivery(orderId){
   closeModal();
   toast('Entrega enviada ao cliente!', 'success');
   render();
+  icons();
 }
 
 
