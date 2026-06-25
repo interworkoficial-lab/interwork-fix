@@ -716,60 +716,13 @@ function initMock(){
     });
   });
 
-  const services = [
-    ['I will create a premium DeFi landing page in 7 days','design','u_ana',198,7,'BR',4.9,86,['Figma source','3 conceitos','Animações Lottie'],`Oi! 👋\n\nMe contate antes de fazer o pedido para alinharmos os detalhes do seu protocolo.\n\nMeu processo:\n1) Briefing sobre o protocolo e referências\n2) Wireframe + proposta visual no Figma\n3) Refinamento após feedback\n4) Handoff para dev (specs, assets)\n5) Suporte 7 dias pós-entrega\n\n-Ana`,true],
-    ['I will audit your Solidity smart contract for security vulnerabilities','audit','u_leo',280,14,'JP',5.0,54,['Relatório PDF','Fix recomendações','Re-audit grátis'],`Olá!\n\nMe contate antes para entender o tamanho do contrato.\n\nMeu processo:\n1) Você envia o repositório e contexto\n2) Auditoria manual + Slither/Foundry fuzzing\n3) Relatório com severidade OWASP/SWC\n4) Você corrige os pontos críticos\n5) Re-auditoria gratuita + PDF final\n\n-Leo`,true],
-    ['I will create a full growth marketing strategy for your token launch','marketing','u_kai',175,21,'DE',4.8,31,['KOL outreach','Estratégia 30d','Calendário X/Discord'],`Oi!\n\nFale comigo antes de fechar o pedido.\n\nMeu processo:\n1) Briefing sobre token e comunidade\n2) Mapeamento de KOLs e canais\n3) Calendário de conteúdo 30 dias\n4) Execução com relatórios semanais\n5) Relatório final com aprendizados\n\n-Kai`,false],
-    ['I will write a professional technical whitepaper up to 25 pages','writing','u_sof',240,12,'PT',4.9,47,['Estrutura','Tokenomics','Revisão jurídica leve'],`Olá!\n\nMe manda mensagem antes de pedir.\n\nMeu processo:\n1) Entrevista técnica sobre produto e roadmap\n2) Estrutura e sumário aprovados\n3) Primeira versão com diagramas\n4) Revisão com seus comentários\n5) PDF final formatado\n\n-Sofia`,false],
-    ['I will design a crypto logo and brand identity for your Web3 project','design','u_emi',155,6,'AR',4.8,73,['3 propostas','Manual de marca PDF','Vetores SVG'],`Oi!\n\nMe contate antes para entendermos a personalidade da sua marca.\n\nMeu processo:\n1) Briefing sobre a marca e referências visuais\n2) 3 propostas de logo em direções diferentes\n3) Refinamento da escolhida\n4) Manual de marca em PDF\n5) Exportação SVG/PNG\n\n-Emilia`,false],
-    ['I will build a fullstack DApp with Next.js and wagmi integration','dev','u_max',275,21,'US',4.9,110,['Frontend','Integração contrato','Deploy Vercel'],`Hey!\n\nMe manda mensagem antes de pedir.\n\nMeu processo:\n1) Você me passa o contrato e telas\n2) Protótipo wallet connect + leitura/escrita\n3) Telas com Next.js + wagmi\n4) Você testa em testnet\n5) Deploy Vercel + handoff repositório\n\n-Max`,true],
-    ['I will develop an ERC-20 smart contract with custom vesting schedule','dev','u_leo',210,9,'JP',5.0,26,['Contrato','Testes Foundry','Deploy Interlink network'],`Olá!\n\nFale comigo antes para alinharmos as regras de vesting.\n\nMeu processo:\n1) Definimos supply, vesting e taxas\n2) Desenvolvimento com testes Foundry\n3) Contrato em testnet para validação\n4) Auditoria interna\n5) Deploy Interlink + código-fonte\n\n-Leo`,false],
-    ['I will create cinematic motion reels for your Twitter and X campaigns','video','u_riy',89,5,'IN',4.7,38,['3 reels 15s','Música licenciada','Versão vertical'],`Hi!\n\nMe contate antes para entender o estilo da sua marca.\n\nMeu processo:\n1) Briefing sobre a campanha e referências\n2) Storyboard rápido para aprovação\n3) Primeira versão animada\n4) Ajustes de timing, cores e música\n5) Entrega em 9:16, 1:1 e 16:9\n\n-Riya`,false],
-    ['I will do an express security audit for mini smart contracts in 72h','audit','u_chi',95,3,'NG',4.6,22,['Relatório markdown','Severidade OWASP'],`Hey,\n\nMe contate antes se seu contrato tiver mais de 400 linhas.\n\nMeu processo:\n1) Você envia contrato e contexto\n2) Revisão manual + Slither\n3) Relatório markdown com severidade\n4) Você corrige os críticos\n5) Confirmação das correções\n\n-Chinedu`,false],
-    ['I will design a pitch deck for investors in your crypto project','design','u_ana',168,8,'BR',4.9,18,['12-16 slides','Versão pt/en','Source Figma'],`Oi!\n\nMe chama antes para entendermos a rodada de investimento.\n\nMeu processo:\n1) Briefing sobre o projeto e métricas\n2) Estrutura do deck\n3) Versão visual completa em alta-fidelidade\n4) Revisão conjunta\n5) PDF + Figma source\n\n-Ana`,false],
-    ['I will translate your whitepaper between English and Portuguese','writing','u_sof',78,4,'PT',4.9,12,['Tradução técnica','Glossário'],`Olá!\n\nMe manda mensagem antes de pedir.\n\nMeu processo:\n1) Você envia o documento original\n2) Tradução completa com terminologia técnica\n3) Glossário dos termos-chave\n4) Segunda leitura para naturalidade\n5) Entrega formatada\n\n-Sofia`,false],
-    ['I will manage your Discord community for 30 days professionally','marketing','u_kai',190,30,'DE',4.8,15,['Setup roles','Eventos AMA','Relatório semanal'],`Oi!\n\nFale comigo antes para alinharmos as regras da comunidade.\n\nMeu processo:\n1) Auditoria do servidor (ou setup do zero)\n2) Organização de cargos e canais\n3) Calendário de eventos e AMAs\n4) Moderação ativa diária\n5) Relatório semanal com métricas\n\n-Kai`,false],
-
-    ['I will design a Web3 mobile app UI in Figma','design','u_ana',132,5,'BR',4.9,29,['Figma source','Protótipo interativo','Design system'],`Oi!\n\nMe chame antes para entender o fluxo do app.\n-Ana`,false],
-    ['I will write SEO-optimized content for your crypto blog','writing','u_sof',65,3,'PT',4.8,19,['3 artigos','Pesquisa de palavras-chave','Headlines A/B'],`Olá!\n\nMe manda mensagem para alinharmos os temas.\n-Sofia`,false],
-    ['I will set up and configure your Hardhat development environment','dev','u_max',88,2,'US',4.9,41,['Config completa','Scripts deploy','CI/CD básico'],`Hey!\n\nFala antes para entender sua stack.\n-Max`,false],
-    ['I will create an NFT collection artwork pack (10 traits)','design','u_emi',145,7,'AR',4.8,33,['10 traits PSD','Export PNG','Rarity sheet'],`Oi!\n\nMe contate para entendermos a identidade da coleção.\n-Emilia`,true],
-    ['I will produce a 60-second explainer video for your DeFi protocol','video','u_riy',178,8,'IN',4.7,27,['Roteiro','Animação','Narração off'],`Hi!\n\nMe fala antes sobre o protocolo e o tom.\n-Riya`,false],
-    ['I will write a tokenomics model and distribution table','writing','u_sof',195,6,'PT',4.9,22,['Modelo Excel','Vesting schedule','Resumo executivo'],`Olá!\n\nPreciso entender a visão do projeto antes.\n-Sofia`,false],
-    ['I will review and fix bugs in your Solidity smart contract','audit','u_leo',128,5,'JP',5.0,18,['Bug report','Fixes comentados','Teste de regressão'],`Olá!\n\nEnvie o repositório e descreva o bug.\n-Leo`,false],
-    ['I will create Twitter/X thread templates for Web3 projects','marketing','u_kai',58,2,'DE',4.8,44,['10 templates','Guia de tom','Exemplos preenchidos'],`Oi!\n\nMe fala sobre o projeto e o público-alvo.\n-Kai`,false],
-    ['I will design a DAO governance dashboard UI','design','u_ana',220,10,'BR',4.9,14,['Figma completo','Dark/light mode','Componentes'],`Oi!\n\nMe chama para entender as funções de governança.\n-Ana`,false],
-    ['I will build a token staking smart contract','dev','u_leo',245,12,'JP',5.0,31,['Contrato Solidity','Testes Foundry','Documentação'],`Olá!\n\nFale antes para definirmos APY e regras de lock.\n-Leo`,true],
-    ['I will create an animated logo intro for your crypto brand','video','u_riy',68,3,'IN',4.7,52,['Versão 5s','MP4 + WebM','Fundo transparente'],`Hi!\n\nEnvie o logo e a paleta de cores.\n-Riya`,false],
-    ['I will set up a full Next.js + Tailwind frontend boilerplate','dev','u_max',105,4,'US',4.9,38,['Boilerplate GitHub','Tailwind config','Dark mode pronto'],`Hey!\n\nFala antes sobre as integrações que você precisa.\n-Max`,false],
-    ['I will write a DAO proposal template and voting guide','writing','u_sof',72,4,'PT',4.9,9,['Template Notion','Guia de votação','Exemplos reais'],`Olá!\n\nMe conta sobre a estrutura da sua DAO.\n-Sofia`,false],
-    ['I will design social media kit for token launch','design','u_emi',98,4,'AR',4.8,61,['20 posts','Stories','Banner Twitter/X'],`Oi!\n\nMe manda o logo e a identidade visual.\n-Emilia`,false],
-    ['I will audit a DeFi protocol for reentrancy and flash loan attacks','audit','u_chi',185,7,'NG',4.6,11,['Relatório detalhado','PoC de ataque','Recomendações'],`Hey,\n\nEnvie o repositório e o contexto do protocolo.\n-Chinedu`,false],
-    ['I will create a Telegram bot for your crypto community','dev','u_max',138,6,'US',4.9,24,['Bot funcional','Comandos customizados','Deploy VPS'],`Hey!\n\nFala antes para listar os comandos que você quer.\n-Max`,false],
-    ['I will write on-chain copy for your minting website','writing','u_sof',82,3,'PT',4.9,17,['Copy completo','Variações A/B','Revisão UX Writing'],`Olá!\n\nMe manda o wireframe do site.\n-Sofia`,false],
-    ['I will produce a 3-part YouTube series about your project','video','u_riy',265,14,'IN',4.7,8,['3 vídeos editados','Thumbnails','Roteiro aprovado'],`Hi!\n\nPreciso entender a narrativa do projeto.\n-Riya`,false],
-    ['I will set up multi-sig wallet (Gnosis Safe) for your DAO treasury','dev','u_leo',115,4,'JP',5.0,19,['Config Safe','Guia de uso','Políticas de signatário'],`Olá!\n\nFale antes para entender a estrutura da tesouraria.\n-Leo`,false],
-    ['I will design a Web3 email newsletter template','design','u_ana',75,3,'BR',4.9,36,['Template HTML','Dark mode','3 variações de cor'],`Oi!\n\nMe manda o logo e a paleta da marca.\n-Ana`,false],
-    ['I will write a community growth playbook for Discord','marketing','u_kai',145,10,'DE',4.8,28,['Playbook PDF','Cronograma','KPIs definidos'],`Oi!\n\nFale sobre o estágio atual da comunidade.\n-Kai`,false],
-    ['I will create a crypto project one-pager for investors','writing','u_sof',110,5,'PT',4.9,23,['PDF formatado','Versão EN/PT','Infográfico incluído'],`Olá!\n\nMe manda os dados principais do projeto.\n-Sofia`,false],
-    ['I will design NFT collection banner and profile images','design','u_emi',62,2,'AR',4.8,88,['Banner 1500x500','Avatar 400x400','Versões PNG'],`Oi!\n\nEnvie referências visuais da coleção.\n-Emilia`,false],
-    ['I will integrate WalletConnect v2 into your existing DApp','dev','u_max',175,7,'US',4.9,16,['Integração completa','Suporte multi-chain','Documentação'],`Hey!\n\nFala antes sobre o stack atual do DApp.\n-Max`,false],
-    ['I will run a 2-week KOL campaign on Twitter/X','marketing','u_kai',248,14,'DE',4.8,12,['5 KOLs','Relatório de alcance','Conteúdo aprovado'],`Oi!\n\nMe fala sobre o token e a data de lançamento.\n-Kai`,true],
-    ['I will animate a token price chart for social media','video','u_riy',53,2,'IN',4.7,67,['MP4 15s','Versão vertical','Fundo branco e preto'],`Hi!\n\nEnvie os dados do gráfico e as cores da marca.\n-Riya`,false],
-    ['I will build a simple ERC-721 NFT minting contract','dev','u_leo',158,6,'JP',5.0,43,['Contrato auditado','Deploy testnet','Frontend básico'],`Olá!\n\nFale antes sobre as regras de mint e supply.\n-Leo`,false],
-    ['I will design a referral program flow and UI','design','u_ana',118,5,'BR',4.9,21,['Fluxo Figma','Componentes','Spec para dev'],`Oi!\n\nMe conta como funciona o programa de referral.\n-Ana`,false],
-    ['I will write smart contract technical documentation','writing','u_sof',88,5,'PT',4.9,15,['Docs Markdown','Exemplos de uso','Guia de deploy'],`Olá!\n\nEnvie o código do contrato para eu analisar.\n-Sofia`,false],
-    ['I will do a UI/UX audit of your existing Web3 app','design','u_emi',138,6,'AR',4.8,19,['Relatório Figma','Prioridades','Quick wins'],`Oi!\n\nMe envie o link do app ou screenshots.\n-Emilia`,false],
-    ['I will create a 30-day content calendar for your crypto project','marketing','u_kai',95,7,'DE',4.8,37,['Planilha completa','60 posts rascunhados','Hashtags por nicho'],`Oi!\n\nMe fala sobre as redes sociais que você usa.\n-Kai`,false],
-    ['I will produce intro + outro animations for your YouTube channel','video','u_riy',79,4,'IN',4.7,44,['Intro 5s','Outro 10s','Arquivo editável'],`Hi!\n\nEnvie logo, paleta e tom do canal.\n-Riya`,false],
-    ['I will build a Web3 portfolio tracker dashboard','dev','u_max',232,14,'US',4.9,9,['Dashboard React','Suporte multi-chain','Charts em tempo real'],`Hey!\n\nFala antes sobre as chains e tokens que você quer rastrear.\n-Max`,true],
-    ['I will write a press release for your token launch','writing','u_sof',68,3,'PT',4.9,31,['Press release PT/EN','Lista de veículos','Template de follow-up'],`Olá!\n\nMe passa os detalhes do lançamento.\n-Sofia`,false],
-    ['I will design a DeFi protocol brand identity from scratch','design','u_ana',268,12,'BR',4.9,7,['Logo','Tipografia','Paleta completa','Brand book PDF'],`Oi!\n\nMe conta a visão e os valores do protocolo.\n-Ana`,true],
-    ['I will implement on-chain voting for your DAO','dev','u_leo',195,10,'JP',5.0,11,['Contrato de votação','Frontend básico','Docs'],`Olá!\n\nFale sobre o modelo de governança que você quer.\n-Leo`,false],
-    ['I will create short-form TikTok videos about your crypto project','video','u_riy',112,5,'IN',4.7,29,['4 vídeos 30s','Roteiros','Legendas'],`Hi!\n\nMe fala o objetivo e o público-alvo.\n-Riya`,false],
-    ['I will audit your frontend Web3 app for security issues','audit','u_chi',148,5,'NG',4.6,14,['Relatório de vulnerabilidades','Fixes sugeridos','Checklist OWASP'],`Hey,\n\nEnvie o repositório ou URL do app.\n-Chinedu`,false],
-    ['I will write copy for your IDO/IEO launch page','writing','u_sof',125,5,'PT',4.9,20,['Copy completo','CTAs','FAQ para investidores'],`Olá!\n\nMe passa os detalhes do projeto e a data do IDO.\n-Sofia`,false],
-  ];
+ const services = [
+    ['I will create a premium DeFi landing page in 7 days','design','u_ana',198,7,'BR',4.9,86,['Figma source','3 conceitos','Animações Lottie'],`Descrição aqui`,true],
+    ['I will audit your Solidity smart contract for security vulnerabilities','audit','u_leo',280,14,'JP',5.0,54,['Relatório PDF','Fix recomendações','Re-audit grátis'],`Descrição aqui`,true],
+    ['I will create a full growth marketing strategy for your token launch','marketing','u_kai',175,21,'DE',4.8,31,['KOL outreach','Estratégia 30d','Calendário X/Discord'],`Descrição aqui`,false],
+    ['I will write a professional technical whitepaper up to 25 pages','writing','u_sof',240,12,'PT',4.9,47,['Estrutura','Tokenomics','Revisão jurídica leve'],`Descrição aqui`,false],
+    ['I will build a fullstack DApp with Next.js and wagmi integration','dev','u_max',275,21,'US',4.9,110,['Frontend','Integração contrato','Deploy Vercel'],`Descrição aqui`,true],
+];
 
   services.forEach(s=>{
     const [title,cat,fid,price,days,country,rating,reviews,inc,desc,featured] = s;
@@ -815,7 +768,7 @@ function initMock(){
   const VARIANT_FREELANCERS = DB.users.map(u=>u.id);
   const baseSnapshot = DB.services.slice();
   baseSnapshot.forEach((base, bi) => {
-    for (let v = 0; v < 4; v++) {
+   for (let v = 0; v < 0; v++) {
       const fid = VARIANT_FREELANCERS[(bi*4 + v) % VARIANT_FREELANCERS.length];
       const priceJitter = Math.round(base.price * (0.75 + (v * 0.15) + Math.random()*0.2));
       const daysJitter  = Math.max(2, base.deliveryDays + (v % 3) - 1);
