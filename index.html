@@ -107,7 +107,7 @@
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
   }
-  .max-w-7xl { max-width: 72rem !important; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+  .max-w-7xl { max-width: 80rem !important; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
   @media (min-width: 640px) { .max-w-7xl { padding-left: 1.5rem; padding-right: 1.5rem; } }
   
   .btn-primary, .btn-primary-alt { 
@@ -248,12 +248,11 @@
 
   /* ============ GIG CARD (Fiverr-style, bulletproof) ============ */
   .gig-card{display:flex;flex-direction:column;min-width:0;width:100%}
-  .gig-thumb{position:relative;width:100%;padding-bottom:60%;background:#f1f5f9;border-radius:0.5rem}
+  .gig-thumb{position:relative;width:100%;padding-bottom:75%;background:#f1f5f9}
   .gig-thumb>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
   .gig-title{
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-    overflow:hidden;text-overflow:ellipsis;min-height:32px;word-break:break-word;
-    font-size:13px;
+    overflow:hidden;text-overflow:ellipsis;min-height:40px;word-break:break-word;
   }
   html.dark .gig-thumb{background:var(--surf-800)}
 
@@ -938,10 +937,9 @@ html.dark {
   .gig-thumb {
     position: relative;
     width: 100%;
-    padding-bottom: 60%;
+    padding-bottom: 75%;
     background: #f1f5f9;
     border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   
@@ -973,9 +971,8 @@ html.dark {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 32px;
+    min-height: 36px;
     word-break: break-word;
-    font-size: 13px;
   }
   
   /* Badge styling */
@@ -1035,22 +1032,11 @@ html.dark {
   html.dark .badge-verified{background:rgba(16,185,129,.15);color:#34d399}
   html.dark .badge-top{background:rgba(245,158,11,.12);color:#fbbf24}
 
-  /* CORREÇÃO DESCRIÇÃO DOS SERVIÇOS */
-  .service-description,
-  .text-slate-600.leading-relaxed,
-  .whitespace-pre-line {
-    word-wrap: break-word !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-    max-width: 100% !important;
-    white-space: pre-wrap !important;
-  }
-
-</style>
+  </style>
 </head>
 <body class="bg-white text-ink-900">
   <!-- Skip to main content (keyboard users press Tab to reveal) -->
-  <a href="#view" class="skip-link">Pular para o conteúdo</a>
+  <a href="#view" class="skip-link" data-no-tr>Pular para o conteúdo</a>
 
   <!-- HEADER -->
   <header id="app-header" role="banner"></header>
@@ -1070,8 +1056,7 @@ html.dark {
   <!-- FOOTER -->
   <footer id="app-footer" role="contentinfo"></footer>
 
-
-
+<script>
 /* ============================================================
  * INTERWORK — single-file prototype
  * Tech: vanilla JS state + hash routing + Tailwind + Lucide
@@ -1093,7 +1078,7 @@ const STATE = {
   availableOnly: false,
   freelancerLevel: 'all',           // all | new | level1 | level2 | top-rated | pro
   deliveryFilter: 'all',            // all | upto3 | upto7 | upto14 | over14
-  languageFilter: 'all',            // all | pt | en
+  languageFilter: 'all',            // all | pt | en | es
   availabilityFilter: 'all',        // all | online | 24h
   selectedServiceId: null,
   orders: [],
@@ -1114,7 +1099,7 @@ const STATE = {
   txHistory: [],                    // {hash, type, amount, token, ts, orderId?}
   payouts: [],                      // {hash, amount, token, ts}
   selectedProfileHandle: null,
-  language: 'en',                   // en | pt
+  language: 'en',                   // en | pt | es
   translateChat: false,
   searchFocused: false,
   selectedTier: 'standard',         // for service page
@@ -1204,9 +1189,13 @@ function chainHistoryOf(u){
 const LANGUAGES_LIST = [
   { id:'pt', label:'Português', flag:'🇧🇷' },
   { id:'en', label:'English',   flag:'🇬🇧' },
+  { id:'es', label:'Español',   flag:'🇪🇸' },
+  { id:'de', label:'Deutsch',   flag:'🇩🇪' },
+  { id:'ja', label:'日本語',     flag:'🇯🇵' },
+  { id:'hi', label:'हिन्दी',      flag:'🇮🇳' },
 ];
 
-const FILTER_LANGUAGE_OPTIONS = LANGUAGES_LIST.filter(l => ['pt','en'].includes(l.id));
+const FILTER_LANGUAGE_OPTIONS = LANGUAGES_LIST.filter(l => ['pt','en','es'].includes(l.id));
 const DELIVERY_FILTERS = [
   { id:'all', label:'Qualquer prazo' },
   { id:'upto3', label:'Até 3 dias' },
@@ -1269,9 +1258,435 @@ const I18N = {
        order_in_progress:'In progress', order_delivered:'Delivered', order_approved:'Approved', order_disputed:'In dispute',
        client:'Client', freelancer:'Freelancer', my_orders:'My orders', my_services:'My services',
        wallet:'Wallet', balance:'Balance', tx_history:'History', single_token:'Single balance · ITL-only payment' },
+
+  es:{ nav_explore:'Explorar', nav_orders:'Mis pedidos', nav_sell:'Vender servicio', nav_how:'Cómo funciona',
+       net:'Interlink Network', connect:'Conectar wallet', search_ph:'¿Qué necesitas hoy?',
+       hero_kicker:'El marketplace de trabajo del ecosistema Interlink', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
+       hero_sub:'Contrata, trabaja y cobra en ITL — rápido, simple y protegido, todo dentro del ecosistema InterLink.',
+       cta_browse:'Buscar', cta_sell:'Vender mi servicio', trending:'Tendencia',
+       categories:'Categorías', top_services:'Servicios destacados', view_all:'ver todo',
+       light:'Claro', dark:'Oscuro', notifications:'Notificaciones', mark_all:'Marcar todo',
+       no_notif:'Sin notificaciones', live_market:'Marketplace en vivo', escrow_audit:'Escrow auditado',
+       how_it_works:'Cómo funciona', filters:'Filtros', clear:'Limpiar', category:'Categoría',
+       country:'País', all:'Todos', sort:'Ordenar por', sort_rel:'Relevancia', sort_rating:'Mejor valorados',
+       sort_low:'Precio bajo', sort_high:'Precio alto', sort_new:'Más recientes',
+       results:'resultados', no_results:'No se encontraron servicios', try_other:'Prueba otros filtros o palabras.',
+       footer_tag:'El marketplace de trabajo del ecosistema Interlink. Pagos en ITL, escrow on-chain y protección real para ambas partes.',
+       product:'Producto', explore:'Explorar', sell:'Vender', dashboard:'Panel',
+       legal:'Legal', terms:'Términos', privacy:'Privacidad', cookies:'Cookies',
+       social:'Comunidad', built_on:'Powered by Interlink',
+       cat_design:'Diseño', cat_dev:'Desarrollo', cat_marketing:'Marketing',
+       cat_writing:'Redacción', cat_audit:'Auditoría Smart Contract', cat_video:'Video & Motion',
+       starting_at:'desde', hire:'Contratar', message:'Mensaje', share:'Compartir',
+       edit_profile:'Editar perfil', save:'Guardar', cancel:'Cancelar',
+       order_in_progress:'En curso', order_delivered:'Entregado', order_approved:'Aprobado', order_disputed:'En disputa',
+       client:'Cliente', freelancer:'Freelancer', my_orders:'Mis pedidos', my_services:'Mis servicios',
+       wallet:'Billetera', balance:'Saldo', tx_history:'Historial', single_token:'Saldo único · pago exclusivo en ITL' },
+
+  de:{ nav_explore:'Entdecken', nav_orders:'Aufträge', nav_sell:'Service verkaufen', nav_how:'Funktionsweise',
+       net:'Interlink Network', connect:'Wallet verbinden', search_ph:'Was brauchst du heute?',
+       hero_kicker:'Der Workforce-Marktplatz des Interlink-Ökosystems', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
+       hero_sub:'Heuere an, arbeite und werde in ITL bezahlt — schnell, einfach und geschützt, alles innerhalb des InterLink-Ökosystems.',
+       cta_browse:'Suchen', cta_sell:'Service anbieten', trending:'Im Trend',
+       categories:'Kategorien', top_services:'Empfohlene Services', view_all:'alle',
+       light:'Hell', dark:'Dunkel', notifications:'Benachrichtigungen', mark_all:'Alle markieren',
+       no_notif:'Keine Benachrichtigungen', live_market:'Live-Marktplatz', escrow_audit:'Geprüftes Escrow',
+       how_it_works:'Funktionsweise', filters:'Filter', clear:'Zurücksetzen', category:'Kategorie',
+       country:'Land', all:'Alle', sort:'Sortieren', sort_rel:'Relevanz', sort_rating:'Top bewertet',
+       sort_low:'Niedrigster Preis', sort_high:'Höchster Preis', sort_new:'Neueste',
+       results:'Ergebnisse', no_results:'Keine Services gefunden', try_other:'Andere Filter oder Begriffe versuchen.',
+       footer_tag:'Der Workforce-Marktplatz des Interlink-Ökosystems. ITL-Zahlungen, On-Chain-Escrow und echter Schutz für beide Seiten.',
+       product:'Produkt', explore:'Entdecken', sell:'Verkaufen', dashboard:'Dashboard',
+       legal:'Rechtliches', terms:'AGB', privacy:'Datenschutz', cookies:'Cookies',
+       social:'Community', built_on:'Powered by Interlink',
+       cat_design:'Design', cat_dev:'Entwicklung', cat_marketing:'Marketing',
+       cat_writing:'Texten', cat_audit:'Smart-Contract-Audit', cat_video:'Video & Motion',
+       starting_at:'ab', hire:'Beauftragen', message:'Nachricht', share:'Teilen',
+       edit_profile:'Profil bearbeiten', save:'Speichern', cancel:'Abbrechen',
+       order_in_progress:'Läuft', order_delivered:'Geliefert', order_approved:'Genehmigt', order_disputed:'Im Streit',
+       client:'Auftraggeber', freelancer:'Freelancer', my_orders:'Meine Aufträge', my_services:'Meine Services',
+       wallet:'Wallet', balance:'Guthaben', tx_history:'Verlauf', single_token:'Einziges Guthaben · nur ITL-Zahlung' },
+
+  ja:{ nav_explore:'探す', nav_orders:'注文', nav_sell:'出品', nav_how:'仕組み',
+       net:'Interlink Network', connect:'ウォレット接続', search_ph:'今日は何が必要？',
+       hero_kicker:'Interlinkエコシステムのワークフォース・マーケット', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
+       hero_sub:'ITLで雇って、働いて、報酬を受け取る——速くて、シンプルで、安全。すべてInterLinkエコシステム内で。',
+       cta_browse:'検索', cta_sell:'出品する', trending:'人気急上昇',
+       categories:'カテゴリ', top_services:'おすすめ', view_all:'すべて',
+       light:'ライト', dark:'ダーク', notifications:'通知', mark_all:'すべて既読',
+       no_notif:'通知なし', live_market:'ライブマーケット', escrow_audit:'監査済みエスクロー',
+       how_it_works:'仕組み', filters:'フィルター', clear:'クリア', category:'カテゴリ',
+       country:'国', all:'すべて', sort:'並び替え', sort_rel:'関連度', sort_rating:'評価順',
+       sort_low:'価格が安い順', sort_high:'価格が高い順', sort_new:'新着順',
+       results:'件', no_results:'サービスが見つかりません', try_other:'他のキーワードでお試しください。',
+       footer_tag:'Interlinkエコシステムのためのワークフォース・マーケット。ITL決済、オンチェーンエスクロー、両者への確実な保護。',
+       product:'プロダクト', explore:'探す', sell:'出品', dashboard:'ダッシュボード',
+       legal:'リーガル', terms:'利用規約', privacy:'プライバシー', cookies:'クッキー',
+       social:'コミュニティ', built_on:'Powered by Interlink',
+       cat_design:'デザイン', cat_dev:'開発', cat_marketing:'マーケティング',
+       cat_writing:'ライティング', cat_audit:'スマートコントラクト監査', cat_video:'映像&モーション',
+       starting_at:'最低', hire:'依頼する', message:'メッセージ', share:'共有',
+       edit_profile:'プロフィール編集', save:'保存', cancel:'キャンセル',
+       order_in_progress:'進行中', order_delivered:'納品済み', order_approved:'承認済み', order_disputed:'紛争中',
+       client:'クライアント', freelancer:'フリーランサー', my_orders:'注文', my_services:'マイサービス',
+       wallet:'ウォレット', balance:'残高', tx_history:'履歴', single_token:'単一残高 · ITLのみで支払い' },
+
+  hi:{ nav_explore:'खोजें', nav_orders:'मेरे ऑर्डर', nav_sell:'सेवा बेचें', nav_how:'कैसे काम करता है',
+       net:'Interlink Network', connect:'वॉलेट कनेक्ट', search_ph:'आज आपको क्या चाहिए?',
+       hero_kicker:'Interlink इकोसिस्टम का वर्कफोर्स मार्केटप्लेस', hero_title:'Hire Talent. Complete Projects. Earn ITL.',
+       hero_sub:'ITL में नियुक्त करें, काम करें और भुगतान पाएं — तेज़, आसान और सुरक्षित, पूरी तरह InterLink इकोसिस्टम के भीतर।',
+       cta_browse:'खोज', cta_sell:'अपनी सेवा बेचें', trending:'ट्रेंडिंग',
+       categories:'श्रेणियाँ', top_services:'विशेष सेवाएँ', view_all:'सभी देखें',
+       light:'लाइट', dark:'डार्क', notifications:'सूचनाएँ', mark_all:'सभी पढ़ा हुआ',
+       no_notif:'कोई सूचना नहीं', live_market:'लाइव मार्केटप्लेस', escrow_audit:'ऑडिटेड एस्क्रो',
+       how_it_works:'कैसे काम करता है', filters:'फिल्टर', clear:'साफ करें', category:'श्रेणी',
+       country:'देश', all:'सभी', sort:'क्रमबद्ध करें', sort_rel:'प्रासंगिकता', sort_rating:'टॉप रेटेड',
+       sort_low:'कम कीमत', sort_high:'अधिक कीमत', sort_new:'नए',
+       results:'परिणाम', no_results:'कोई सेवा नहीं मिली', try_other:'अन्य फ़िल्टर या शब्द आज़माएँ.',
+       footer_tag:'Interlink इकोसिस्टम के लिए वर्कफोर्स मार्केटप्लेस। ITL भुगतान, ऑन-चेन एस्क्रो और दोनों पक्षों के लिए वास्तविक सुरक्षा।',
+       product:'उत्पाद', explore:'खोजें', sell:'बेचें', dashboard:'डैशबोर्ड',
+       legal:'कानूनी', terms:'शर्तें', privacy:'गोपनीयता', cookies:'कुकीज़',
+       social:'समुदाय', built_on:'Powered by Interlink',
+       cat_design:'डिज़ाइन', cat_dev:'विकास', cat_marketing:'मार्केटिंग',
+       cat_writing:'लेखन', cat_audit:'स्मार्ट कॉन्ट्रैक्ट ऑडिट', cat_video:'वीडियो और मोशन',
+       starting_at:'से शुरू', hire:'हायर करें', message:'संदेश', share:'शेयर',
+       edit_profile:'प्रोफ़ाइल संपादित करें', save:'सेव', cancel:'रद्द करें',
+       order_in_progress:'जारी', order_delivered:'डिलीवर', order_approved:'स्वीकृत', order_disputed:'विवाद',
+       client:'क्लाइंट', freelancer:'फ्रीलांसर', my_orders:'मेरे ऑर्डर', my_services:'मेरी सेवाएँ',
+       wallet:'वॉलेट', balance:'बैलेंस', tx_history:'इतिहास', single_token:'एकल बैलेंस · केवल ITL भुगतान' },
 };
 function t(k){ return (I18N[STATE.language]||I18N.en)[k] || I18N.en[k] || k; }
 function tCat(id){ return t('cat_'+id) || id; }
+
+/* ---------- FULL UI TRANSLATION DICTIONARY (PT → en/es/de/ja/hi) ---------- */
+const TR = {
+  // Navigation & shell
+  'Início':{en:'Home',es:'Inicio',de:'Start',ja:'ホーム',hi:'मुख्य'},
+  'Explorar':{en:'Explore',es:'Explorar',de:'Entdecken',ja:'探す',hi:'खोजें'},
+  'Meus pedidos':{en:'My orders',es:'Mis pedidos',de:'Meine Aufträge',ja:'注文',hi:'मेरे ऑर्डर'},
+  'Meus serviços':{en:'My services',es:'Mis servicios',de:'Meine Services',ja:'マイサービス',hi:'मेरी सेवाएँ'},
+  'Meu painel':{en:'My dashboard',es:'Mi panel',de:'Mein Dashboard',ja:'マイダッシュボード',hi:'मेरा डैशबोर्ड'},
+  'Como funciona':{en:'How it works',es:'Cómo funciona',de:'Funktionsweise',ja:'仕組み',hi:'कैसे काम करता है'},
+  'Conectar carteira':{en:'Connect wallet',es:'Conectar wallet',de:'Wallet verbinden',ja:'ウォレット接続',hi:'वॉलेट कनेक्ट'},
+  'Desconectar':{en:'Disconnect',es:'Desconectar',de:'Trennen',ja:'切断',hi:'डिस्कनेक्ट'},
+  'Idiomas':{en:'Languages',es:'Idiomas',de:'Sprachen',ja:'言語',hi:'भाषाएँ'},
+  'Perfil':{en:'Profile',es:'Perfil',de:'Profil',ja:'プロフィール',hi:'प्रोफ़ाइल'},
+  'Editar perfil':{en:'Edit profile',es:'Editar perfil',de:'Profil bearbeiten',ja:'プロフィール編集',hi:'प्रोफ़ाइल संपादित करें'},
+  'Sair':{en:'Sign out',es:'Salir',de:'Abmelden',ja:'ログアウト',hi:'साइन आउट'},
+
+  // Common actions
+  'Aprovar':{en:'Approve',es:'Aprobar',de:'Genehmigen',ja:'承認',hi:'स्वीकृत करें'},
+  'Aprovar e liberar pagamento':{en:'Approve and release payment',es:'Aprobar y liberar pago',de:'Genehmigen & Zahlung freigeben',ja:'承認して支払い解放',hi:'मंज़ूरी देकर भुगतान जारी करें'},
+  'Avaliar':{en:'Rate',es:'Valorar',de:'Bewerten',ja:'評価',hi:'रेट करें'},
+  'Avaliar serviço':{en:'Rate service',es:'Valorar servicio',de:'Service bewerten',ja:'サービスを評価',hi:'सेवा को रेट करें'},
+  'Enviar avaliação':{en:'Submit review',es:'Enviar valoración',de:'Bewertung senden',ja:'評価を送信',hi:'समीक्षा भेजें'},
+  'Cancelar':{en:'Cancel',es:'Cancelar',de:'Abbrechen',ja:'キャンセル',hi:'रद्द करें'},
+  'Fechar':{en:'Close',es:'Cerrar',de:'Schließen',ja:'閉じる',hi:'बंद करें'},
+  'Voltar':{en:'Back',es:'Volver',de:'Zurück',ja:'戻る',hi:'वापस'},
+  'Salvar':{en:'Save',es:'Guardar',de:'Speichern',ja:'保存',hi:'सेव'},
+  'Salvar alterações':{en:'Save changes',es:'Guardar cambios',de:'Änderungen speichern',ja:'変更を保存',hi:'परिवर्तन सेव करें'},
+  'Pular':{en:'Skip',es:'Omitir',de:'Überspringen',ja:'スキップ',hi:'छोड़ें'},
+  'Mais tarde':{en:'Later',es:'Más tarde',de:'Später',ja:'あとで',hi:'बाद में'},
+  'Compartilhar':{en:'Share',es:'Compartir',de:'Teilen',ja:'共有',hi:'शेयर'},
+  'Conversar':{en:'Message',es:'Conversar',de:'Nachricht',ja:'メッセージ',hi:'संदेश'},
+  'Chat':{en:'Chat',es:'Chat',de:'Chat',ja:'チャット',hi:'चैट'},
+  'Entregar':{en:'Deliver',es:'Entregar',de:'Liefern',ja:'納品',hi:'डिलीवर'},
+  'Entregar trabalho':{en:'Deliver work',es:'Entregar trabajo',de:'Arbeit abliefern',ja:'作業を納品',hi:'काम डिलीवर करें'},
+  'Enviar entrega':{en:'Send delivery',es:'Enviar entrega',de:'Lieferung senden',ja:'納品物を送る',hi:'डिलीवरी भेजें'},
+  'Pedir ajuste':{en:'Request changes',es:'Pedir ajustes',de:'Änderungen anfordern',ja:'修正を依頼',hi:'बदलाव माँगें'},
+  'Preencher formulário':{en:'Fill briefing',es:'Rellenar briefing',de:'Briefing ausfüllen',ja:'要件を入力',hi:'ब्रीफिंग भरें'},
+  'Preencher formulário agora':{en:'Fill briefing now',es:'Rellenar briefing ahora',de:'Briefing jetzt ausfüllen',ja:'今すぐ要件を入力',hi:'अभी ब्रीफिंग भरें'},
+  'Baixar todos os arquivos':{en:'Download all files',es:'Descargar todos los archivos',de:'Alle Dateien herunterladen',ja:'すべてのファイルをダウンロード',hi:'सभी फ़ाइलें डाउनलोड करें'},
+  'Sacar':{en:'Withdraw',es:'Retirar',de:'Auszahlen',ja:'引き出し',hi:'निकालें'},
+  'Contratar com escrow':{en:'Hire with escrow',es:'Contratar con escrow',de:'Mit Escrow beauftragen',ja:'エスクローで依頼',hi:'एस्क्रो से हायर करें'},
+  'Contratar':{en:'Hire',es:'Contratar',de:'Beauftragen',ja:'依頼する',hi:'हायर करें'},
+  'Explorar serviços':{en:'Explore services',es:'Explorar servicios',de:'Services entdecken',ja:'サービスを探す',hi:'सेवाएँ देखें'},
+  'Marcar tudo':{en:'Mark all',es:'Marcar todo',de:'Alle markieren',ja:'すべて既読',hi:'सभी पढ़ा हुआ'},
+  'Ver perfil completo':{en:'View full profile',es:'Ver perfil completo',de:'Vollständiges Profil',ja:'プロフィール全体を見る',hi:'पूरा प्रोफ़ाइल देखें'},
+  'Ver meu pedido':{en:'View my order',es:'Ver mi pedido',de:'Meinen Auftrag ansehen',ja:'注文を見る',hi:'मेरा ऑर्डर देखें'},
+  'Arraste para reordenar':{en:'Drag to reorder',es:'Arrastra para reordenar',de:'Ziehen zum Neuordnen',ja:'ドラッグで並べ替え',hi:'क्रम बदलने हेतु खींचें'},
+
+  // Order statuses & badges
+  'Em andamento':{en:'In progress',es:'En curso',de:'Läuft',ja:'進行中',hi:'जारी'},
+  'Aprovados & pagos':{en:'Approved & paid',es:'Aprobados y pagados',de:'Genehmigt & bezahlt',ja:'承認済み・支払い済み',hi:'स्वीकृत और भुगतान किया'},
+  'Aguardando':{en:'Waiting',es:'Esperando',de:'Wartend',ja:'待機中',hi:'प्रतीक्षारत'},
+  'Aguardando aprovação':{en:'Awaiting approval',es:'Esperando aprobación',de:'Wartet auf Genehmigung',ja:'承認待ち',hi:'मंज़ूरी का इंतज़ार'},
+  'Aguardando formulário':{en:'Awaiting briefing',es:'Esperando briefing',de:'Wartet auf Briefing',ja:'要件待ち',hi:'ब्रीफिंग का इंतज़ार'},
+  'Aguardando confirmação':{en:'Awaiting confirmation',es:'Esperando confirmación',de:'Wartet auf Bestätigung',ja:'確認待ち',hi:'पुष्टि का इंतज़ार'},
+  'Recebido':{en:'Received',es:'Recibido',de:'Erhalten',ja:'受領済み',hi:'प्राप्त'},
+  'Finalizado':{en:'Finished',es:'Finalizado',de:'Abgeschlossen',ja:'完了',hi:'समाप्त'},
+  'Entrega recebida':{en:'Delivery received',es:'Entrega recibida',de:'Lieferung erhalten',ja:'納品を受領',hi:'डिलीवरी प्राप्त'},
+  'Entrega aprovada':{en:'Delivery approved',es:'Entrega aprobada',de:'Lieferung genehmigt',ja:'納品承認済み',hi:'डिलीवरी स्वीकृत'},
+  'Conteúdo entregue':{en:'Delivered content',es:'Contenido entregado',de:'Gelieferter Inhalt',ja:'納品コンテンツ',hi:'डिलीवर की गई सामग्री'},
+
+  // Dashboard
+  'Como cliente':{en:'As a client',es:'Como cliente',de:'Als Auftraggeber',ja:'クライアントとして',hi:'क्लाइंट के रूप में'},
+  'Como freelancer':{en:'As a freelancer',es:'Como freelancer',de:'Als Freelancer',ja:'フリーランサーとして',hi:'फ्रीलांसर के रूप में'},
+  'Pedidos ativos':{en:'Active orders',es:'Pedidos activos',de:'Aktive Aufträge',ja:'進行中の注文',hi:'सक्रिय ऑर्डर'},
+  'Pedidos abertos':{en:'Open orders',es:'Pedidos abiertos',de:'Offene Aufträge',ja:'オープン注文',hi:'खुले ऑर्डर'},
+  'Pedidos recebidos':{en:'Orders received',es:'Pedidos recibidos',de:'Erhaltene Aufträge',ja:'受注',hi:'प्राप्त ऑर्डर'},
+  'Em escrow':{en:'Protected',es:'Protegido',de:'Geschützt',ja:'保護中',hi:'सुरक्षित'},
+  'Saldo wallet':{en:'Wallet balance',es:'Saldo wallet',de:'Wallet-Guthaben',ja:'ウォレット残高',hi:'वॉलेट बैलेंस'},
+  'Concluídos':{en:'Completed',es:'Completados',de:'Abgeschlossen',ja:'完了',hi:'पूर्ण'},
+  'Receita (escrow)':{en:'Earnings',es:'Ganancias',de:'Einnahmen',ja:'収益',hi:'आय'},
+  'Rating':{en:'Rating',es:'Valoración',de:'Bewertung',ja:'評価',hi:'रेटिंग'},
+  'Serviços ativos':{en:'Active services',es:'Servicios activos',de:'Aktive Services',ja:'公開サービス',hi:'सक्रिय सेवाएँ'},
+  'Nenhum pedido ainda':{en:'No orders yet',es:'Aún sin pedidos',de:'Noch keine Aufträge',ja:'まだ注文はありません',hi:'अभी तक कोई ऑर्डर नहीं'},
+  'Nenhum pedido ainda.':{en:'No orders yet.',es:'Aún sin pedidos.',de:'Noch keine Aufträge.',ja:'まだ注文はありません。',hi:'अभी तक कोई ऑर्डर नहीं।'},
+  'Nenhum pedido aprovado ainda':{en:'No approved orders yet',es:'Aún sin pedidos aprobados',de:'Noch keine genehmigten Aufträge',ja:'承認済みの注文はまだありません',hi:'अभी तक कोई स्वीकृत ऑर्डर नहीं'},
+  'Nenhum pedido em andamento':{en:'No orders in progress',es:'Sin pedidos en curso',de:'Keine laufenden Aufträge',ja:'進行中の注文はありません',hi:'कोई जारी ऑर्डर नहीं'},
+
+  // Profile / service page
+  'Sobre este serviço':{en:'About this service',es:'Sobre este servicio',de:'Über diesen Service',ja:'このサービスについて',hi:'इस सेवा के बारे में'},
+  'Sobre o freelancer':{en:'About the freelancer',es:'Sobre el freelancer',de:'Über den Freelancer',ja:'フリーランサーについて',hi:'फ्रीलांसर के बारे में'},
+  'O que está incluído':{en:'What\u2019s included',es:'Qué incluye',de:'Was enthalten ist',ja:'含まれるもの',hi:'क्या शामिल है'},
+  'Avaliações':{en:'Reviews',es:'Valoraciones',de:'Bewertungen',ja:'レビュー',hi:'समीक्षाएँ'},
+  'Avaliações recebidas':{en:'Reviews received',es:'Valoraciones recibidas',de:'Erhaltene Bewertungen',ja:'受け取ったレビュー',hi:'प्राप्त समीक्षाएँ'},
+  'Sem avaliações ainda.':{en:'No reviews yet.',es:'Aún sin valoraciones.',de:'Noch keine Bewertungen.',ja:'まだレビューはありません。',hi:'अभी तक कोई समीक्षा नहीं।'},
+  'Nenhuma avaliação enviada ainda.':{en:'No reviews submitted yet.',es:'Aún no se enviaron valoraciones.',de:'Noch keine Bewertungen abgegeben.',ja:'まだレビューを投稿していません。',hi:'अभी तक कोई समीक्षा नहीं भेजी।'},
+  'Portfólio':{en:'Portfolio',es:'Portafolio',de:'Portfolio',ja:'ポートフォリオ',hi:'पोर्टफ़ोलियो'},
+  'Skills':{en:'Skills',es:'Habilidades',de:'Skills',ja:'スキル',hi:'कौशल'},
+  'Bio':{en:'Bio',es:'Bio',de:'Bio',ja:'バイオ',hi:'बायो'},
+  'Tags':{en:'Tags',es:'Etiquetas',de:'Tags',ja:'タグ',hi:'टैग'},
+  'Categoria':{en:'Category',es:'Categoría',de:'Kategorie',ja:'カテゴリ',hi:'श्रेणी'},
+  'Título':{en:'Title',es:'Título',de:'Titel',ja:'タイトル',hi:'शीर्षक'},
+  'Descrição':{en:'Description',es:'Descripción',de:'Beschreibung',ja:'説明',hi:'विवरण'},
+  'País':{en:'Country',es:'País',de:'Land',ja:'国',hi:'देश'},
+  'Prazo':{en:'Deadline',es:'Plazo',de:'Frist',ja:'納期',hi:'समय-सीमा'},
+  'Documentos':{en:'Documents',es:'Documentos',de:'Dokumente',ja:'ドキュメント',hi:'दस्तावेज़'},
+  'Arquivos':{en:'Files',es:'Archivos',de:'Dateien',ja:'ファイル',hi:'फ़ाइलें'},
+  'Logo do serviço':{en:'Service logo',es:'Logo del servicio',de:'Service-Logo',ja:'サービスロゴ',hi:'सेवा लोगो'},
+  'Nome de exibição':{en:'Display name',es:'Nombre visible',de:'Anzeigename',ja:'表示名',hi:'दिखाया गया नाम'},
+  'Verificações':{en:'Verifications',es:'Verificaciones',de:'Verifizierungen',ja:'認証',hi:'सत्यापन'},
+  'Identidade verificada':{en:'Verified identity',es:'Identidad verificada',de:'Identität verifiziert',ja:'本人確認済み',hi:'पहचान सत्यापित'},
+  'Identidade não verificada':{en:'Identity not verified',es:'Identidad no verificada',de:'Identität nicht verifiziert',ja:'未確認',hi:'पहचान असत्यापित'},
+  'Freelancer verificado on-chain':{en:'Freelancer verified on-chain',es:'Freelancer verificado on-chain',de:'Freelancer on-chain verifiziert',ja:'オンチェーン認証済みフリーランサー',hi:'ऑन-चेन सत्यापित फ्रीलांसर'},
+  'Online agora':{en:'Online now',es:'En línea',de:'Jetzt online',ja:'オンライン',hi:'अभी ऑनलाइन'},
+  'Offline':{en:'Offline',es:'Sin conexión',de:'Offline',ja:'オフライン',hi:'ऑफ़लाइन'},
+  'Você ainda não publicou serviços.':{en:'You haven\u2019t published any services yet.',es:'Aún no has publicado servicios.',de:'Du hast noch keine Services veröffentlicht.',ja:'まだサービスを公開していません。',hi:'आपने अभी तक कोई सेवा प्रकाशित नहीं की।'},
+
+  // Order row & escrow
+  'Travado':{en:'Locked',es:'Bloqueado',de:'Gesperrt',ja:'ロック中',hi:'लॉक्ड'},
+  'Total travado':{en:'Total locked',es:'Total bloqueado',de:'Gesperrter Gesamtbetrag',ja:'ロック総額',hi:'कुल लॉक्ड'},
+  'Total a travar':{en:'Total to lock',es:'Total a bloquear',de:'Zu sperrender Betrag',ja:'ロック予定額',hi:'लॉक करने हेतु कुल'},
+  'Saldo insuficiente':{en:'Insufficient balance',es:'Saldo insuficiente',de:'Unzureichendes Guthaben',ja:'残高不足',hi:'अपर्याप्त बैलेंस'},
+  'Contrato escrow':{en:'Escrow contract',es:'Contrato escrow',de:'Escrow-Vertrag',ja:'エスクロー契約',hi:'एस्क्रो अनुबंध'},
+  'Escrow travado on-chain':{en:'Escrow locked on-chain',es:'Escrow bloqueado on-chain',de:'Escrow on-chain gesperrt',ja:'オンチェーンでエスクローロック',hi:'ऑन-चेन एस्क्रो लॉक्ड'},
+  'Pagamento travado em contrato escrow':{en:'Payment locked in escrow contract',es:'Pago bloqueado en contrato escrow',de:'Zahlung im Escrow-Vertrag gesperrt',ja:'エスクロー契約で支払いロック',hi:'एस्क्रो अनुबंध में भुगतान लॉक्ड'},
+  'Hash da transação':{en:'Transaction hash',es:'Hash de transacción',de:'Transaktions-Hash',ja:'トランザクションハッシュ',hi:'लेन-देन हैश'},
+  'Tx hash':{en:'Tx hash',es:'Tx hash',de:'Tx-Hash',ja:'Txハッシュ',hi:'Tx हैश'},
+  'Gas usado':{en:'Gas used',es:'Gas usado',de:'Verbrauchtes Gas',ja:'使用Gas',hi:'उपयोग किया गया गैस'},
+  'Transações':{en:'Transactions',es:'Transacciones',de:'Transaktionen',ja:'トランザクション',hi:'लेन-देन'},
+  'Enviando transação…':{en:'Sending transaction…',es:'Enviando transacción…',de:'Transaktion wird gesendet…',ja:'トランザクションを送信中…',hi:'लेन-देन भेजा जा रहा है…'},
+
+  // Modals & forms
+  'Mensagem para o cliente':{en:'Message to the client',es:'Mensaje para el cliente',de:'Nachricht an den Kunden',ja:'クライアントへのメッセージ',hi:'क्लाइंट के लिए संदेश'},
+  'Clique para enviar arquivos':{en:'Click to upload files',es:'Haz clic para subir archivos',de:'Klicken, um Dateien hochzuladen',ja:'クリックしてファイルをアップロード',hi:'फ़ाइलें अपलोड करने हेतु क्लिक करें'},
+  'Descreva seu projeto':{en:'Describe your project',es:'Describe tu proyecto',de:'Beschreibe dein Projekt',ja:'プロジェクトを説明',hi:'अपना प्रोजेक्ट बताइए'},
+  'Formulário que você vai preencher':{en:'Briefing you will fill out',es:'Briefing a completar',de:'Briefing zum Ausfüllen',ja:'入力する要件',hi:'आप जो ब्रीफिंग भरेंगे'},
+  'Handle e wallet não são editáveis.':{en:'Handle and wallet are not editable.',es:'Handle y wallet no se pueden editar.',de:'Handle und Wallet können nicht bearbeitet werden.',ja:'ハンドルとウォレットは編集できません。',hi:'हैंडल और वॉलेट संपादन योग्य नहीं हैं।'},
+  'Motivo':{en:'Reason',es:'Motivo',de:'Grund',ja:'理由',hi:'कारण'},
+  'Outro':{en:'Other',es:'Otro',de:'Sonstiges',ja:'その他',hi:'अन्य'},
+  'Qualidade abaixo do contratado':{en:'Quality below what was contracted',es:'Calidad inferior a la contratada',de:'Qualität unter dem Vereinbarten',ja:'契約より低品質',hi:'अनुबंध से कम गुणवत्ता'},
+  'Não entregue no prazo':{en:'Not delivered on time',es:'No entregado a tiempo',de:'Nicht fristgerecht geliefert',ja:'納期未達',hi:'समय पर डिलीवर नहीं'},
+  'Escopo alterado sem acordo':{en:'Scope changed without agreement',es:'Alcance cambiado sin acuerdo',de:'Umfang ohne Vereinbarung geändert',ja:'合意なしで範囲変更',hi:'सहमति के बिना दायरा बदला'},
+  'Reclamação':{en:'Complaint',es:'Reclamación',de:'Beschwerde',ja:'申し立て',hi:'शिकायत'},
+  'Resolução pedida':{en:'Resolution requested',es:'Resolución solicitada',de:'Gewünschte Lösung',ja:'希望する解決',hi:'अनुरोधित समाधान'},
+  'Reembolso total':{en:'Full refund',es:'Reembolso total',de:'Volle Rückerstattung',ja:'全額返金',hi:'पूर्ण रिफंड'},
+  'Sua versão dos fatos':{en:'Your side of the story',es:'Tu versión de los hechos',de:'Deine Sicht der Dinge',ja:'あなたの主張',hi:'आपका पक्ष'},
+  'Abrir disputa on-chain':{en:'Open dispute on-chain',es:'Abrir disputa on-chain',de:'On-Chain-Streit eröffnen',ja:'オンチェーンで紛争を開く',hi:'ऑन-चेन विवाद खोलें'},
+  'votação ativa':{en:'voting active',es:'votación activa',de:'Abstimmung läuft',ja:'投票中',hi:'मतदान जारी'},
+  'encerrada':{en:'closed',es:'cerrada',de:'beendet',ja:'終了',hi:'समाप्त'},
+
+  // Wallet & notifications
+  'Wallet conectada':{en:'Wallet connected',es:'Wallet conectada',de:'Wallet verbunden',ja:'ウォレット接続済み',hi:'वॉलेट कनेक्ट हुआ'},
+  'Escrow confirmado':{en:'Escrow confirmed',es:'Escrow confirmado',de:'Escrow bestätigt',ja:'エスクロー確認済み',hi:'एस्क्रो की पुष्टि'},
+  'Pagamento liberado':{en:'Payment released',es:'Pago liberado',de:'Zahlung freigegeben',ja:'支払い解放',hi:'भुगतान जारी'},
+  'Perfil atualizado on-chain':{en:'Profile updated on-chain',es:'Perfil actualizado on-chain',de:'Profil on-chain aktualisiert',ja:'プロフィールをオンチェーン更新',hi:'प्रोफ़ाइल ऑन-चेन अपडेट'},
+  'Avaliação registrada on-chain':{en:'Review recorded on-chain',es:'Valoración registrada on-chain',de:'Bewertung on-chain registriert',ja:'評価をオンチェーン記録',hi:'समीक्षा ऑन-चेन दर्ज'},
+  'Disputa aberta':{en:'Dispute opened',es:'Disputa abierta',de:'Streit eröffnet',ja:'紛争を開始',hi:'विवाद खुला'},
+  'Disputa resolvida':{en:'Dispute resolved',es:'Disputa resuelta',de:'Streit gelöst',ja:'紛争解決済み',hi:'विवाद हल'},
+  'Sem notificações':{en:'No notifications',es:'Sin notificaciones',de:'Keine Benachrichtigungen',ja:'通知なし',hi:'कोई सूचना नहीं'},
+
+  // Footer / legal
+  'Legal':{en:'Legal',es:'Legal',de:'Rechtliches',ja:'リーガル',hi:'कानूनी'},
+  'Termos':{en:'Terms',es:'Términos',de:'AGB',ja:'利用規約',hi:'शर्तें'},
+  'Termos de uso':{en:'Terms of use',es:'Términos de uso',de:'Nutzungsbedingungen',ja:'利用規約',hi:'उपयोग की शर्तें'},
+  'Privacidade':{en:'Privacy',es:'Privacidad',de:'Datenschutz',ja:'プライバシー',hi:'गोपनीयता'},
+
+  // Chat replies (simulated)
+  'Inicie a conversa':{en:'Start the conversation',es:'Inicia la conversación',de:'Konversation starten',ja:'会話を始める',hi:'बातचीत शुरू करें'},
+  'Combinado!':{en:'Got it!',es:'¡Hecho!',de:'Abgemacht!',ja:'了解！',hi:'पक्का!'},
+  'Já estou nisso.':{en:'Already on it.',es:'Ya estoy en eso.',de:'Bin schon dran.',ja:'すでに取り掛かっています。',hi:'मैं इस पर हूँ।'},
+  'Pode me mandar o briefing detalhado?':{en:'Can you send me the detailed briefing?',es:'¿Puedes enviarme el briefing detallado?',de:'Kannst du mir das ausführliche Briefing schicken?',ja:'詳細な要件を送ってもらえますか？',hi:'क्या आप विस्तृत ब्रीफिंग भेज सकते हैं?'},
+  'Vou subir um preview hoje.':{en:'I\u2019ll upload a preview today.',es:'Subiré una vista previa hoy.',de:'Ich lade heute eine Vorschau hoch.',ja:'今日プレビューをアップします。',hi:'आज एक प्रीव्यू अपलोड करूँगा।'},
+  'Posso adiantar parte da entrega.':{en:'I can deliver part of it early.',es:'Puedo adelantar parte de la entrega.',de:'Ich kann einen Teil vorab liefern.',ja:'納品物の一部を前倒しできます。',hi:'मैं हिस्सा पहले डिलीवर कर सकता हूँ।'},
+  'Digite uma mensagem…':{en:'Type a message…',es:'Escribe un mensaje…',de:'Nachricht eingeben…',ja:'メッセージを入力…',hi:'संदेश लिखें…'},
+
+  // Toasts (key phrases)
+  'Aguarde a entrega antes de aprovar.':{en:'Wait for the delivery before approving.',es:'Espera la entrega antes de aprobar.',de:'Warte auf die Lieferung, bevor du genehmigst.',ja:'承認前に納品をお待ちください。',hi:'मंज़ूरी देने से पहले डिलीवरी का इंतज़ार करें।'},
+  'Entrega enviada ao cliente!':{en:'Delivery sent to client!',es:'¡Entrega enviada al cliente!',de:'Lieferung an den Kunden gesendet!',ja:'クライアントに納品しました！',hi:'क्लाइंट को डिलीवरी भेजी गई!'},
+  'Pedido criado e tx confirmada!':{en:'Order created and tx confirmed!',es:'¡Pedido creado y tx confirmada!',de:'Auftrag erstellt und Tx bestätigt!',ja:'注文作成、トランザクション確認済み！',hi:'ऑर्डर बना और tx पुष्टि हुई!'},
+  'Formulário enviado on-chain. Prazo iniciado.':{en:'Briefing sent on-chain. Timer started.',es:'Briefing enviado on-chain. Plazo iniciado.',de:'Briefing on-chain gesendet. Frist gestartet.',ja:'要件をオンチェーン送信。納期開始。',hi:'ब्रीफिंग ऑन-चेन भेजी गई। समय शुरू।'},
+  'Serviço publicado!':{en:'Service published!',es:'¡Servicio publicado!',de:'Service veröffentlicht!',ja:'サービスを公開しました！',hi:'सेवा प्रकाशित!'},
+  'Serviço atualizado!':{en:'Service updated!',es:'¡Servicio actualizado!',de:'Service aktualisiert!',ja:'サービスを更新しました！',hi:'सेवा अपडेट हुई!'},
+  'Serviço excluído.':{en:'Service deleted.',es:'Servicio eliminado.',de:'Service gelöscht.',ja:'サービスを削除しました。',hi:'सेवा हटाई गई।'},
+  'Wallet desconectada':{en:'Wallet disconnected',es:'Wallet desconectada',de:'Wallet getrennt',ja:'ウォレット切断',hi:'वॉलेट डिस्कनेक्ट'},
+  'Wallet já conectada':{en:'Wallet already connected',es:'Wallet ya conectada',de:'Wallet bereits verbunden',ja:'ウォレットは接続済み',hi:'वॉलेट पहले से कनेक्ट'},
+  'Endereço copiado':{en:'Address copied',es:'Dirección copiada',de:'Adresse kopiert',ja:'アドレスをコピー',hi:'पता कॉपी किया'},
+  'Link do perfil copiado':{en:'Profile link copied',es:'Enlace de perfil copiado',de:'Profil-Link kopiert',ja:'プロフィールリンクをコピー',hi:'प्रोफ़ाइल लिंक कॉपी'},
+  'Pedido não encontrado.':{en:'Order not found.',es:'Pedido no encontrado.',de:'Auftrag nicht gefunden.',ja:'注文が見つかりません。',hi:'ऑर्डर नहीं मिला।'},
+  'Serviço não encontrado.':{en:'Service not found.',es:'Servicio no encontrado.',de:'Service nicht gefunden.',ja:'サービスが見つかりません。',hi:'सेवा नहीं मिली।'},
+  'Usuário não encontrado':{en:'User not found',es:'Usuario no encontrado',de:'Benutzer nicht gefunden',ja:'ユーザーが見つかりません',hi:'उपयोगकर्ता नहीं मिला'},
+  'Nenhum arquivo de entrega disponível.':{en:'No delivery files available.',es:'Sin archivos de entrega.',de:'Keine Lieferdateien verfügbar.',ja:'納品ファイルがありません。',hi:'कोई डिलीवरी फ़ाइल उपलब्ध नहीं।'},
+  'Download simulado iniciado (demo).':{en:'Simulated download started (demo).',es:'Descarga simulada iniciada (demo).',de:'Simulierter Download gestartet (Demo).',ja:'デモのダウンロードを開始しました。',hi:'सिम्युलेटेड डाउनलोड शुरू (डेमो)।'},
+
+  // Misc inline
+  'on-chain':{en:'on-chain',es:'on-chain',de:'on-chain',ja:'オンチェーン',hi:'ऑन-चेन'},
+  'Synced':{en:'Synced',es:'Sincronizado',de:'Synchronisiert',ja:'同期済み',hi:'सिंक'},
+  'Block':{en:'Block',es:'Bloque',de:'Block',ja:'ブロック',hi:'ब्लॉक'},
+  'Idiomas ':{en:'Languages ',es:'Idiomas ',de:'Sprachen ',ja:'言語 ',hi:'भाषाएँ '},
+  'Skills ':{en:'Skills ',es:'Habilidades ',de:'Skills ',ja:'スキル ',hi:'कौशल '},
+
+  // How it works page
+  'Pagamento seguro, on-chain, em':{en:'Secure on-chain payments in',es:'Pago seguro, on-chain, en',de:'Sichere On-Chain-Zahlung in',ja:'安全なオンチェーン決済を',hi:'सुरक्षित ऑन-चेन भुगतान'},
+  'Interwork remove intermediários, mas mantém a segurança. Tudo verificável no Interlink Explorer.':{en:'Interwork removes middlemen while keeping security. Everything verifiable on the Interlink Explorer.',es:'Interwork elimina intermediarios y mantiene la seguridad. Todo verificable en el Interlink Explorer.',de:'Interwork entfernt Mittelsmänner und bewahrt die Sicherheit. Alles im Interlink Explorer überprüfbar.',ja:'Interworkは仲介者を排除しつつセキュリティを維持。すべてInterlink Explorerで検証可能。',hi:'Interwork बिचौलियों को हटाता है लेकिन सुरक्षा बनाए रखता है। Interlink Explorer पर सब कुछ सत्यापन योग्य।'},
+  'Escolha o serviço':{en:'Pick the service',es:'Elige el servicio',de:'Service auswählen',ja:'サービスを選ぶ',hi:'सेवा चुनें'},
+  'Filtre por categoria, país e rating. Veja o portfólio e converse antes de contratar.':{en:'Filter by category, country and rating. Browse the portfolio and chat before hiring.',es:'Filtra por categoría, país y valoración. Mira el portafolio y chatea antes de contratar.',de:'Filtere nach Kategorie, Land und Bewertung. Sieh dir das Portfolio an und schreibe vor dem Beauftragen.',ja:'カテゴリ・国・評価でフィルター。ポートフォリオを確認し、依頼前にチャット可能。',hi:'श्रेणी, देश और रेटिंग से फ़िल्टर करें। पोर्टफ़ोलियो देखें और हायर करने से पहले चैट करें।'},
+  'Trave o pagamento em ITL':{en:'Lock the ITL payment',es:'Bloquea el pago en ITL',de:'Zahlung in ITL sperren',ja:'ITLで支払いをロック',hi:'ITL में भुगतान लॉक करें'},
+  'O valor + 2% de taxa fica bloqueado no smart contract de escrow na rede Interlink.':{en:'The amount + 2% fee gets locked in the escrow smart contract on the Interlink network.',es:'El importe + 2% de comisión queda bloqueado en el smart contract de escrow en la red Interlink.',de:'Der Betrag + 2% Gebühr werden im Escrow-Smart-Contract auf dem Interlink-Netzwerk gesperrt.',ja:'金額＋2%手数料がInterlinkネットワークのエスクロー・スマートコントラクトでロックされます。',hi:'राशि + 2% शुल्क Interlink नेटवर्क के एस्क्रो स्मार्ट कॉन्ट्रैक्ट में लॉक हो जाती है।'},
+  'Acompanhe a entrega':{en:'Track the delivery',es:'Sigue la entrega',de:'Lieferung verfolgen',ja:'納品を追跡',hi:'डिलीवरी ट्रैक करें'},
+  'Chat integrado, barra de progresso e prazos transparentes.':{en:'Built-in chat, progress bar and transparent deadlines.',es:'Chat integrado, barra de progreso y plazos transparentes.',de:'Integrierter Chat, Fortschrittsbalken und transparente Fristen.',ja:'統合チャット、進捗バー、透明な納期。',hi:'इन-बिल्ट चैट, प्रगति बार और पारदर्शी समय-सीमाएँ।'},
+  'Aprove e libere o ITL':{en:'Approve and release the ITL',es:'Aprueba y libera los ITL',de:'Genehmigen und ITL freigeben',ja:'承認してITLを解放',hi:'मंज़ूरी देकर ITL जारी करें'},
+  'Você aprova a entrega e o contrato libera automaticamente o pagamento ao freelancer.':{en:'You approve the delivery and the contract automatically releases payment to the freelancer.',es:'Apruebas la entrega y el contrato libera automáticamente el pago al freelancer.',de:'Du genehmigst die Lieferung und der Vertrag gibt die Zahlung automatisch an den Freelancer frei.',ja:'納品を承認すると、契約がフリーランサーへの支払いを自動的に解放します。',hi:'आप डिलीवरी मंज़ूर करते हैं और अनुबंध स्वचालित रूप से फ्रीलांसर को भुगतान जारी करता है।'},
+  'PASSO':{en:'STEP',es:'PASO',de:'SCHRITT',ja:'ステップ',hi:'चरण'},
+
+  // Accessibility helpers
+  'Pular para o conteúdo':{en:'Skip to main content',es:'Saltar al contenido',de:'Zum Hauptinhalt springen',ja:'メインコンテンツへスキップ',hi:'मुख्य सामग्री पर जाएँ'},
+  'Fechar chat':{en:'Close chat',es:'Cerrar chat',de:'Chat schließen',ja:'チャットを閉じる',hi:'चैट बंद करें'},
+  'Anexar arquivo':{en:'Attach file',es:'Adjuntar archivo',de:'Datei anhängen',ja:'ファイルを添付',hi:'फ़ाइल अटैच करें'},
+  'Enviar mensagem':{en:'Send message',es:'Enviar mensaje',de:'Nachricht senden',ja:'メッセージを送信',hi:'संदेश भेजें'},
+  'Digite uma mensagem':{en:'Type a message',es:'Escribe un mensaje',de:'Nachricht eingeben',ja:'メッセージを入力',hi:'संदेश लिखें'},
+  'Mudar idioma':{en:'Change language',es:'Cambiar idioma',de:'Sprache ändern',ja:'言語を変更',hi:'भाषा बदलें'},
+  'Imagem anterior':{en:'Previous image',es:'Imagen anterior',de:'Vorheriges Bild',ja:'前の画像',hi:'पिछली छवि'},
+  'Próxima imagem':{en:'Next image',es:'Imagen siguiente',de:'Nächstes Bild',ja:'次の画像',hi:'अगली छवि'},
+  'Fechar':{en:'Close',es:'Cerrar',de:'Schließen',ja:'閉じる',hi:'बंद करें'},
+
+  // Chat — strings that were bypassing the translation dictionary
+  'Conversa preliminar':{en:'Preliminary conversation',es:'Conversación preliminar',de:'Vorab-Unterhaltung',ja:'事前のやり取り',hi:'प्रारंभिक बातचीत'},
+  'Mensagem':{en:'Message',es:'Mensaje',de:'Nachricht',ja:'メッセージ',hi:'संदेश'},
+  'Anexos prontos para enviar':{en:'Attachments ready to send',es:'Archivos listos para enviar',de:'Anhänge zum Senden bereit',ja:'送信準備済みの添付ファイル',hi:'भेजने के लिए तैयार अटैचमेंट'},
+  'digitando…':{en:'typing…',es:'escribiendo…',de:'schreibt…',ja:'入力中…',hi:'टाइप कर रहा है…'},
+  'Enviada':{en:'Sent',es:'Enviado',de:'Gesendet',ja:'送信済み',hi:'भेजा गया'},
+  'Entregue':{en:'Delivered',es:'Entregado',de:'Zugestellt',ja:'配信済み',hi:'डिलीवर हुआ'},
+  'Lida':{en:'Read',es:'Leído',de:'Gelesen',ja:'既読',hi:'पढ़ा गया'},
+
+  // Order status chip — was hardcoded in PT regardless of language
+  'Formulário pendente':{en:'Awaiting info',es:'Info pendiente',de:'Info ausstehend',ja:'情報待ち',hi:'जानकारी की प्रतीक्षा'},
+  'Cancelado':{en:'Cancelled',es:'Cancelado',de:'Abgebrochen',ja:'キャンセル済み',hi:'रद्द किया गया'},
+
+  // Related services — was a fixed PT sentence regardless of language
+  'Outros serviços de':{en:'More services in',es:'Otros servicios de',de:'Weitere Services in',ja:'関連サービス：',hi:'इनसे जुड़ी अन्य सेवाएँ:'},
+  'Recomendado para você':{en:'Recommended for you',es:'Recomendado para ti',de:'Für dich empfohlen',ja:'あなたへのおすすめ',hi:'आपके लिए सुझाया गया'},
+  'Baseado no que você visualizou e contratou':{en:'Based on what you viewed and hired',es:'Basado en lo que viste y contrataste',de:'Basierend auf dem, was du angesehen und beauftragt hast',ja:'閲覧・依頼履歴に基づく',hi:'आपने जो देखा और हायर किया उस पर आधारित'},
+  // New homepage sections — Why InterWork, Strategic Partner, Powered by InterLink
+  'Why InterWork?':{en:'Why InterWork?',es:'¿Por qué InterWork?',de:'Warum InterWork?',ja:'なぜInterWork？',hi:'InterWork क्यों?'},
+  'Secure Payments':{en:'Secure Payments',es:'Pagos seguros',de:'Sichere Zahlungen',ja:'安全な支払い',hi:'सुरक्षित भुगतान'},
+  'Funds locked in an automatic contract — released only when the job is approved.':{en:'Funds locked in an automatic contract — released only when the job is approved.',es:'Fondos bloqueados en un contrato automático — liberados solo cuando se aprueba el trabajo.',de:'Geld in einem automatischen Vertrag gesperrt — freigegeben erst nach Genehmigung der Arbeit.',ja:'自動契約でロック — 仕事が承認されたときのみ解放。',hi:'स्वचालित अनुबंध में लॉक — केवल काम मंज़ूर होने पर जारी।'},
+  'Reputation System':{en:'Reputation System',es:'Sistema de reputación',de:'Reputationssystem',ja:'レピュテーションシステム',hi:'प्रतिष्ठा प्रणाली'},
+  'Verified reviews tied to real completed orders. No fake ratings.':{en:'Verified reviews tied to real completed orders. No fake ratings.',es:'Valoraciones verificadas vinculadas a pedidos reales completados. Sin calificaciones falsas.',de:'Verifizierte Bewertungen, verknüpft mit echten abgeschlossenen Aufträgen. Keine gefälschten Ratings.',ja:'実際の完了注文に紐づいた検証済みレビュー。偽の評価なし。',hi:'वास्तविक पूर्ण ऑर्डर से जुड़ी सत्यापित समीक्षाएँ। कोई फ़र्ज़ी रेटिंग नहीं।'},
+  'Human Marketplace':{en:'Human Marketplace',es:'Marketplace humano',de:'Menschlicher Marktplatz',ja:'ヒューマンマーケット',hi:'मानव मार्केटप्लेस'},
+  'Real professionals, real deliverables. Every account backed by a verified wallet.':{en:'Real professionals, real deliverables. Every account backed by a verified wallet.',es:'Profesionales reales, entregables reales. Cada cuenta respaldada por una wallet verificada.',de:'Echte Profis, echte Ergebnisse. Jedes Konto durch eine verifizierte Wallet abgesichert.',ja:'本物のプロ、本物の成果物。すべてのアカウントは認証済みウォレットで裏付け。',hi:'असली पेशेवर, असली डिलीवरेबल। हर अकाउंट एक सत्यापित वॉलेट से समर्थित।'},
+  'Powered by ITL':{en:'Powered by ITL',es:'Impulsado por ITL',de:'Powered by ITL',ja:'ITLで稼働',hi:'ITL द्वारा संचालित'},
+  'All payments in ITL — the native token of the Interlink ecosystem.':{en:'All payments in ITL — the native token of the Interlink ecosystem.',es:'Todos los pagos en ITL — el token nativo del ecosistema Interlink.',de:'Alle Zahlungen in ITL — dem nativen Token des Interlink-Ökosystems.',ja:'すべての支払いはITL — Interlinkエコシステムのネイティブトークン。',hi:'सभी भुगतान ITL में — Interlink इकोसिस्टम का मूल टोकन।'},
+  'Strategic Partner':{en:'Strategic Partner',es:'Socio estratégico',de:'Strategischer Partner',ja:'戦略的パートナー',hi:'रणनीतिक भागीदार'},
+  'Supporting the growth of InterWork through strategic guidance and ecosystem collaboration.':{en:'Supporting the growth of InterWork through strategic guidance and ecosystem collaboration.',es:'Apoyando el crecimiento de InterWork con orientación estratégica y colaboración en el ecosistema.',de:'Unterstützung des Wachstums von InterWork durch strategische Beratung und Ökosystem-Zusammenarbeit.',ja:'戦略的指導とエコシステム協力でInterWorkの成長を支援。',hi:'रणनीतिक मार्गदर्शन और पारिस्थितिकी सहयोग के माध्यम से InterWork की वृद्धि का समर्थन।'},
+  'Visit ATV Website':{en:'Visit ATV Website',es:'Visitar sitio de ATV',de:'ATV-Website besuchen',ja:'ATVサイトへ',hi:'ATV वेबसाइट देखें'},
+  'Powered by InterLink':{en:'Powered by InterLink',es:'Impulsado por InterLink',de:'Powered by InterLink',ja:'InterLinkで稼働',hi:'InterLink द्वारा संचालित'},
+
+};
+
+/* Reverse helper so any *displayed* PT text gets translated to the active language. */
+function tr(s){
+  if (s == null) return s;
+  if (STATE.language === 'en') return s;
+  const txt = String(s);
+  const key = txt.trim();
+  if (!key) return s;
+  const lead  = txt.match(/^\s*/)[0];
+  const trail = txt.match(/\s*$/)[0];
+  const entry = TR[key];
+  if (entry && entry[STATE.language]){
+    return lead + entry[STATE.language] + trail;
+  }
+  // Dynamic patterns: "PASSO 1", "PASSO 2", etc.
+  const passo = key.match(/^PASSO\s+(\d+)$/i);
+  if (passo){
+    const w = TR['PASSO'] && TR['PASSO'][STATE.language];
+    if (w) return lead + w + ' ' + passo[1] + trail;
+  }
+  return s;
+}
+
+/* Walk a DOM subtree and translate text nodes + common attributes. */
+function applyTranslations(root){
+  if (STATE.language === 'pt') return;
+  const r = root || document.body;
+  if (!r) return;
+  // Text nodes
+  try {
+    const walker = document.createTreeWalker(r, NodeFilter.SHOW_TEXT, {
+      acceptNode(node){
+        if (!node.nodeValue) return NodeFilter.FILTER_REJECT;
+        const trimmed = node.nodeValue.trim();
+        if (!trimmed) return NodeFilter.FILTER_REJECT;
+        const p = node.parentNode;
+        if (!p) return NodeFilter.FILTER_REJECT;
+        const tag = p.nodeName;
+        if (tag==='SCRIPT'||tag==='STYLE'||tag==='CODE'||tag==='PRE'||tag==='TEXTAREA') return NodeFilter.FILTER_REJECT;
+        if (p.closest && p.closest('[data-no-tr]')) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const nodes = [];
+    let n; while ((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(node=>{
+      const newVal = tr(node.nodeValue);
+      if (newVal !== node.nodeValue) node.nodeValue = newVal;
+    });
+  } catch(e){}
+  // Attributes
+  const attrSel = '[placeholder],[title],[aria-label],[data-tr-attr]';
+  const nodes = (r.querySelectorAll ? r.querySelectorAll(attrSel) : []);
+  nodes.forEach(el=>{
+    if (el.closest && el.closest('[data-no-tr]')) return;
+    ['placeholder','title','aria-label'].forEach(a=>{
+      const v = el.getAttribute(a);
+      if (!v) return;
+      const nv = tr(v);
+      if (nv !== v) el.setAttribute(a, nv);
+    });
+  });
+}
+
+/* Auto-translate any future DOM insertion (toasts, modals, chat, notifications). */
+function initI18nObserver(){
+  if (window._i18nObserver || !document.body) return;
+  const obs = new MutationObserver(muts=>{
+    if (STATE.language === 'en') return;
+    for (const m of muts){
+      m.addedNodes && m.addedNodes.forEach(n=>{
+        if (n.nodeType === 1) applyTranslations(n);
+        else if (n.nodeType === 3 && n.parentNode){
+          const nv = tr(n.nodeValue);
+          if (nv !== n.nodeValue) n.nodeValue = nv;
+        }
+      });
+    }
+  });
+  obs.observe(document.body, { childList:true, subtree:true, characterData:false });
+  window._i18nObserver = obs;
+}
 
 const TRENDING_TAGS = ['auditoria solidity','landing DeFi','tokenomics','growth NFT','community manager','motion reels','interlink dApp','whitepaper'];
 
@@ -1318,14 +1733,14 @@ function initMock(){
   });
 
   const seed = [
-    ['u_ana','Ana Marques','ana.web3','BR',true, 4.9, 132, 'Designer de produto com foco em DApps e DeFi UX.', ['pt','en'],['Figma','UX Research','Webflow','Notion'], 'palette','#f97316', 2, 78, 94],
-    ['u_leo','Leo Tanaka','leo.dev','JP',true, 5.0, 87, 'Solidity engineer • auditor • Interlink enthusiast.', ['en'],['Solidity','Foundry','Slither','Hardhat'], 'code-2','#1a73e8', 3, 64, 97],
-    ['u_kai','Kai Müller','kai.dao','DE',true, 4.8, 64, 'Marketing growth para protocolos DeFi e NFT.', ['en'],['Twitter Ads','Notion','Discord'], 'megaphone','#10b981', 4, 55, 91],
+    ['u_ana','Ana Marques','ana.web3','BR',true, 4.9, 132, 'Designer de produto com foco em DApps e DeFi UX.', ['pt','en','es'],['Figma','UX Research','Webflow','Notion'], 'palette','#f97316', 2, 78, 94],
+    ['u_leo','Leo Tanaka','leo.dev','JP',true, 5.0, 87, 'Solidity engineer • auditor • Interlink enthusiast.', ['en','ja'],['Solidity','Foundry','Slither','Hardhat'], 'code-2','#1a73e8', 3, 64, 97],
+    ['u_kai','Kai Müller','kai.dao','DE',true, 4.8, 64, 'Marketing growth para protocolos DeFi e NFT.', ['de','en'],['Twitter Ads','Notion','Discord'], 'megaphone','#10b981', 4, 55, 91],
     ['u_sof','Sofia Pereira','sofia.tx','PT',true, 4.9, 51, 'Copywriter especializada em whitepapers e tokenomics.', ['pt','en'],['Token Design','Notion','Figma'], 'pen-tool','#a855f7', 6, 40, 95],
     ['u_chi','Chinedu Okoro','chinedu.eth','NG',false, 4.6, 22, 'Auditor júnior — relatórios em 72h.', ['en'],['Solidity','Slither','Foundry'], 'shield-check','#ef4444', 12, 18, 86],
-    ['u_riy','Riya Patel','riya.motion','IN',true, 4.7, 41, 'Motion designer • animações 3D para launchpads.', ['en'],['After Effects','Figma'], 'video','#06b6d4', 5, 38, 89],
-    ['u_emi','Emilia Costa','emi.brand','AR',true, 4.8, 73, 'Branding completo para projetos cripto.', ['en','pt'],['Figma','Notion'], 'palette','#f97316', 4, 60, 92],
-    ['u_max','Max Reuter','max.fullstack','US',true, 4.9, 110, 'Fullstack Next.js + wagmi + Foundry.', ['en'],['Next.js','wagmi','Foundry','Hardhat','Solidity'], 'code-2','#1a73e8', 2, 82, 96],
+    ['u_riy','Riya Patel','riya.motion','IN',true, 4.7, 41, 'Motion designer • animações 3D para launchpads.', ['hi','en'],['After Effects','Figma'], 'video','#06b6d4', 5, 38, 89],
+    ['u_emi','Emilia Costa','emi.brand','AR',true, 4.8, 73, 'Branding completo para projetos cripto.', ['es','en','pt'],['Figma','Notion'], 'palette','#f97316', 4, 60, 92],
+    ['u_max','Max Reuter','max.fullstack','US',true, 4.9, 110, 'Fullstack Next.js + wagmi + Foundry.', ['en','de'],['Next.js','wagmi','Foundry','Hardhat','Solidity'], 'code-2','#1a73e8', 2, 82, 96],
   ];
   seed.forEach(([id,name,handle,country,verified,rating,jobs,bio,langs,skills,icon,color,responseHours,repeatPct,approvPct])=>{
     DB.users.push({
@@ -1358,6 +1773,46 @@ function initMock(){
     ['I will design a pitch deck for investors in your crypto project','design','u_ana',168,8,'BR',4.9,18,['12-16 slides','Versão pt/en','Source Figma'],`Oi!\n\nMe chama antes para entendermos a rodada de investimento.\n\nMeu processo:\n1) Briefing sobre o projeto e métricas\n2) Estrutura do deck\n3) Versão visual completa em alta-fidelidade\n4) Revisão conjunta\n5) PDF + Figma source\n\n-Ana`,false],
     ['I will translate your whitepaper between English and Portuguese','writing','u_sof',78,4,'PT',4.9,12,['Tradução técnica','Glossário'],`Olá!\n\nMe manda mensagem antes de pedir.\n\nMeu processo:\n1) Você envia o documento original\n2) Tradução completa com terminologia técnica\n3) Glossário dos termos-chave\n4) Segunda leitura para naturalidade\n5) Entrega formatada\n\n-Sofia`,false],
     ['I will manage your Discord community for 30 days professionally','marketing','u_kai',190,30,'DE',4.8,15,['Setup roles','Eventos AMA','Relatório semanal'],`Oi!\n\nFale comigo antes para alinharmos as regras da comunidade.\n\nMeu processo:\n1) Auditoria do servidor (ou setup do zero)\n2) Organização de cargos e canais\n3) Calendário de eventos e AMAs\n4) Moderação ativa diária\n5) Relatório semanal com métricas\n\n-Kai`,false],
+
+    ['I will design a Web3 mobile app UI in Figma','design','u_ana',132,5,'BR',4.9,29,['Figma source','Protótipo interativo','Design system'],`Oi!\n\nMe chame antes para entender o fluxo do app.\n-Ana`,false],
+    ['I will write SEO-optimized content for your crypto blog','writing','u_sof',65,3,'PT',4.8,19,['3 artigos','Pesquisa de palavras-chave','Headlines A/B'],`Olá!\n\nMe manda mensagem para alinharmos os temas.\n-Sofia`,false],
+    ['I will set up and configure your Hardhat development environment','dev','u_max',88,2,'US',4.9,41,['Config completa','Scripts deploy','CI/CD básico'],`Hey!\n\nFala antes para entender sua stack.\n-Max`,false],
+    ['I will create an NFT collection artwork pack (10 traits)','design','u_emi',145,7,'AR',4.8,33,['10 traits PSD','Export PNG','Rarity sheet'],`Oi!\n\nMe contate para entendermos a identidade da coleção.\n-Emilia`,true],
+    ['I will produce a 60-second explainer video for your DeFi protocol','video','u_riy',178,8,'IN',4.7,27,['Roteiro','Animação','Narração off'],`Hi!\n\nMe fala antes sobre o protocolo e o tom.\n-Riya`,false],
+    ['I will write a tokenomics model and distribution table','writing','u_sof',195,6,'PT',4.9,22,['Modelo Excel','Vesting schedule','Resumo executivo'],`Olá!\n\nPreciso entender a visão do projeto antes.\n-Sofia`,false],
+    ['I will review and fix bugs in your Solidity smart contract','audit','u_leo',128,5,'JP',5.0,18,['Bug report','Fixes comentados','Teste de regressão'],`Olá!\n\nEnvie o repositório e descreva o bug.\n-Leo`,false],
+    ['I will create Twitter/X thread templates for Web3 projects','marketing','u_kai',58,2,'DE',4.8,44,['10 templates','Guia de tom','Exemplos preenchidos'],`Oi!\n\nMe fala sobre o projeto e o público-alvo.\n-Kai`,false],
+    ['I will design a DAO governance dashboard UI','design','u_ana',220,10,'BR',4.9,14,['Figma completo','Dark/light mode','Componentes'],`Oi!\n\nMe chama para entender as funções de governança.\n-Ana`,false],
+    ['I will build a token staking smart contract','dev','u_leo',245,12,'JP',5.0,31,['Contrato Solidity','Testes Foundry','Documentação'],`Olá!\n\nFale antes para definirmos APY e regras de lock.\n-Leo`,true],
+    ['I will create an animated logo intro for your crypto brand','video','u_riy',68,3,'IN',4.7,52,['Versão 5s','MP4 + WebM','Fundo transparente'],`Hi!\n\nEnvie o logo e a paleta de cores.\n-Riya`,false],
+    ['I will set up a full Next.js + Tailwind frontend boilerplate','dev','u_max',105,4,'US',4.9,38,['Boilerplate GitHub','Tailwind config','Dark mode pronto'],`Hey!\n\nFala antes sobre as integrações que você precisa.\n-Max`,false],
+    ['I will write a DAO proposal template and voting guide','writing','u_sof',72,4,'PT',4.9,9,['Template Notion','Guia de votação','Exemplos reais'],`Olá!\n\nMe conta sobre a estrutura da sua DAO.\n-Sofia`,false],
+    ['I will design social media kit for token launch','design','u_emi',98,4,'AR',4.8,61,['20 posts','Stories','Banner Twitter/X'],`Oi!\n\nMe manda o logo e a identidade visual.\n-Emilia`,false],
+    ['I will audit a DeFi protocol for reentrancy and flash loan attacks','audit','u_chi',185,7,'NG',4.6,11,['Relatório detalhado','PoC de ataque','Recomendações'],`Hey,\n\nEnvie o repositório e o contexto do protocolo.\n-Chinedu`,false],
+    ['I will create a Telegram bot for your crypto community','dev','u_max',138,6,'US',4.9,24,['Bot funcional','Comandos customizados','Deploy VPS'],`Hey!\n\nFala antes para listar os comandos que você quer.\n-Max`,false],
+    ['I will write on-chain copy for your minting website','writing','u_sof',82,3,'PT',4.9,17,['Copy completo','Variações A/B','Revisão UX Writing'],`Olá!\n\nMe manda o wireframe do site.\n-Sofia`,false],
+    ['I will produce a 3-part YouTube series about your project','video','u_riy',265,14,'IN',4.7,8,['3 vídeos editados','Thumbnails','Roteiro aprovado'],`Hi!\n\nPreciso entender a narrativa do projeto.\n-Riya`,false],
+    ['I will set up multi-sig wallet (Gnosis Safe) for your DAO treasury','dev','u_leo',115,4,'JP',5.0,19,['Config Safe','Guia de uso','Políticas de signatário'],`Olá!\n\nFale antes para entender a estrutura da tesouraria.\n-Leo`,false],
+    ['I will design a Web3 email newsletter template','design','u_ana',75,3,'BR',4.9,36,['Template HTML','Dark mode','3 variações de cor'],`Oi!\n\nMe manda o logo e a paleta da marca.\n-Ana`,false],
+    ['I will write a community growth playbook for Discord','marketing','u_kai',145,10,'DE',4.8,28,['Playbook PDF','Cronograma','KPIs definidos'],`Oi!\n\nFale sobre o estágio atual da comunidade.\n-Kai`,false],
+    ['I will create a crypto project one-pager for investors','writing','u_sof',110,5,'PT',4.9,23,['PDF formatado','Versão EN/PT','Infográfico incluído'],`Olá!\n\nMe manda os dados principais do projeto.\n-Sofia`,false],
+    ['I will design NFT collection banner and profile images','design','u_emi',62,2,'AR',4.8,88,['Banner 1500x500','Avatar 400x400','Versões PNG'],`Oi!\n\nEnvie referências visuais da coleção.\n-Emilia`,false],
+    ['I will integrate WalletConnect v2 into your existing DApp','dev','u_max',175,7,'US',4.9,16,['Integração completa','Suporte multi-chain','Documentação'],`Hey!\n\nFala antes sobre o stack atual do DApp.\n-Max`,false],
+    ['I will run a 2-week KOL campaign on Twitter/X','marketing','u_kai',248,14,'DE',4.8,12,['5 KOLs','Relatório de alcance','Conteúdo aprovado'],`Oi!\n\nMe fala sobre o token e a data de lançamento.\n-Kai`,true],
+    ['I will animate a token price chart for social media','video','u_riy',53,2,'IN',4.7,67,['MP4 15s','Versão vertical','Fundo branco e preto'],`Hi!\n\nEnvie os dados do gráfico e as cores da marca.\n-Riya`,false],
+    ['I will build a simple ERC-721 NFT minting contract','dev','u_leo',158,6,'JP',5.0,43,['Contrato auditado','Deploy testnet','Frontend básico'],`Olá!\n\nFale antes sobre as regras de mint e supply.\n-Leo`,false],
+    ['I will design a referral program flow and UI','design','u_ana',118,5,'BR',4.9,21,['Fluxo Figma','Componentes','Spec para dev'],`Oi!\n\nMe conta como funciona o programa de referral.\n-Ana`,false],
+    ['I will write smart contract technical documentation','writing','u_sof',88,5,'PT',4.9,15,['Docs Markdown','Exemplos de uso','Guia de deploy'],`Olá!\n\nEnvie o código do contrato para eu analisar.\n-Sofia`,false],
+    ['I will do a UI/UX audit of your existing Web3 app','design','u_emi',138,6,'AR',4.8,19,['Relatório Figma','Prioridades','Quick wins'],`Oi!\n\nMe envie o link do app ou screenshots.\n-Emilia`,false],
+    ['I will create a 30-day content calendar for your crypto project','marketing','u_kai',95,7,'DE',4.8,37,['Planilha completa','60 posts rascunhados','Hashtags por nicho'],`Oi!\n\nMe fala sobre as redes sociais que você usa.\n-Kai`,false],
+    ['I will produce intro + outro animations for your YouTube channel','video','u_riy',79,4,'IN',4.7,44,['Intro 5s','Outro 10s','Arquivo editável'],`Hi!\n\nEnvie logo, paleta e tom do canal.\n-Riya`,false],
+    ['I will build a Web3 portfolio tracker dashboard','dev','u_max',232,14,'US',4.9,9,['Dashboard React','Suporte multi-chain','Charts em tempo real'],`Hey!\n\nFala antes sobre as chains e tokens que você quer rastrear.\n-Max`,true],
+    ['I will write a press release for your token launch','writing','u_sof',68,3,'PT',4.9,31,['Press release PT/EN','Lista de veículos','Template de follow-up'],`Olá!\n\nMe passa os detalhes do lançamento.\n-Sofia`,false],
+    ['I will design a DeFi protocol brand identity from scratch','design','u_ana',268,12,'BR',4.9,7,['Logo','Tipografia','Paleta completa','Brand book PDF'],`Oi!\n\nMe conta a visão e os valores do protocolo.\n-Ana`,true],
+    ['I will implement on-chain voting for your DAO','dev','u_leo',195,10,'JP',5.0,11,['Contrato de votação','Frontend básico','Docs'],`Olá!\n\nFale sobre o modelo de governança que você quer.\n-Leo`,false],
+    ['I will create short-form TikTok videos about your crypto project','video','u_riy',112,5,'IN',4.7,29,['4 vídeos 30s','Roteiros','Legendas'],`Hi!\n\nMe fala o objetivo e o público-alvo.\n-Riya`,false],
+    ['I will audit your frontend Web3 app for security issues','audit','u_chi',148,5,'NG',4.6,14,['Relatório de vulnerabilidades','Fixes sugeridos','Checklist OWASP'],`Hey,\n\nEnvie o repositório ou URL do app.\n-Chinedu`,false],
+    ['I will write copy for your IDO/IEO launch page','writing','u_sof',125,5,'PT',4.9,20,['Copy completo','CTAs','FAQ para investidores'],`Olá!\n\nMe passa os detalhes do projeto e a data do IDO.\n-Sofia`,false],
   ];
 
   services.forEach(s=>{
@@ -1818,6 +2273,8 @@ function render(){
   renderHeader();
   renderFooter();
   renderView();
+  applyTranslations(document.body);
+  initI18nObserver();
   schedulePersist();
 }
 function renderView(){
@@ -1853,6 +2310,7 @@ function renderView(){
   renderHeader();
   icons();
   bindViewEvents();
+  applyTranslations(v);
 }
 
 /* ---------- HEADER ---------- */
@@ -1960,19 +2418,19 @@ function renderHeader(){
   const langObj = LANGUAGES_LIST.find(l=>l.id===STATE.language);
 
   $('#app-header').innerHTML = `
-  <header class="bg-white border-b border-slate-100 sticky top-0 z-50 h-14">
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 h-14 flex items-center justify-between gap-3">
+  <header class="bg-white border-b border-slate-100 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
       
       <!-- Logo -->
       <a href="#/home" class="flex items-center gap-2 shrink-0">
-        <span class="w-7 h-7 rounded-lg bg-[#8b7cff] grid place-items-center text-white">
-          <i class="ri-briefcase-4-fill text-sm"></i>
+        <span class="w-8 h-8 rounded-lg bg-[#8b7cff] grid place-items-center text-white">
+          <i class="ri-briefcase-4-fill text-base"></i>
         </span>
-        <span class="font-extrabold text-[15px] text-slate-900 tracking-tight">InterWork</span>
+        <span class="font-extrabold text-slate-900 tracking-tight">InterWork</span>
       </a>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden lg:flex items-center gap-6 text-[13px] font-medium text-slate-600">
+      <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
         <a href="#/earn" class="hover:text-slate-900 transition ${STATE.route==='earn'?'text-brand-600 font-bold':''}">Earn ITL</a>
         <a href="#/home" class="hover:text-slate-900 transition">Hire Talent</a>
         <a href="#/how" class="hover:text-slate-900 transition">How It Works</a>
@@ -1981,31 +2439,31 @@ function renderHeader(){
       </nav>
 
       <!-- Right Actions -->
-      <div class="flex items-center gap-2 sm:gap-3">
+      <div class="flex items-center gap-3 sm:gap-5">
         
-        <!-- Language (Desktop) - APENAS PT e EN -->
-        <button onclick="toggleLangMenu(event)" class="hidden sm:flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-slate-900 transition">
+        <!-- Language (Desktop) -->
+        <button onclick="toggleLangMenu(event)" class="hidden sm:flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition">
           <span class="w-4 h-4 rounded-full bg-slate-200 grid place-items-center text-[10px] overflow-hidden">${langObj.flag}</span>
           <span>${langObj.id.toUpperCase()}</span>
-          <i class="ri-arrow-down-s-line opacity-50 text-sm"></i>
+          <i class="ri-arrow-down-s-line opacity-50"></i>
         </button>
 
         ${authed ? `
           <!-- Profile Link -->
-          <a href="#/u/${me?.handle||''}" class="w-8 h-8 rounded-full overflow-hidden border border-slate-200 hover:ring-4 hover:ring-[#efeaff] transition shrink-0 relative">
+          <a href="#/u/${me?.handle||''}" class="w-9 h-9 rounded-full overflow-hidden border border-slate-200 hover:ring-4 hover:ring-[#efeaff] transition shrink-0 relative">
             ${me?.avatar && me.avatarType!=='initials'
               ? `<img src="${me.avatar}" class="w-full h-full object-cover" />`
-              : `<div class="w-full h-full bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-[10px]"><span>${(me?.name||'U')[0].toUpperCase()}</span></div>`}
-            ${unreadCount() ? `<span class="absolute top-0 right-0 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full"></span>` : ''}
+              : `<div class="w-full h-full bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs"><span>${(me?.name||'U')[0].toUpperCase()}</span></div>`}
+            ${unreadCount() ? `<span class="absolute top-0 right-0 w-3 h-3 bg-rose-500 border-2 border-white rounded-full"></span>` : ''}
           </a>
         ` : `
-          <button onclick="openConnectWallet()" class="btn-primary-alt px-3 py-1.5 rounded-lg font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-sm h-8">
-            <i class="ri-wallet-line text-sm"></i> <span class="hidden xs:inline">Connect Wallet</span><span class="xs:hidden">Connect</span>
+          <button onclick="openConnectWallet()" class="btn-primary-alt px-4 py-2 rounded-lg font-bold text-xs sm:text-sm flex items-center gap-2 shadow-sm">
+            <i class="ri-wallet-line"></i> <span class="hidden xs:inline">Connect Wallet</span><span class="xs:hidden">Connect</span>
           </button>
         `}
 
         <!-- Mobile Menu Toggle -->
-        <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-700 text-lg p-0.5" aria-label="Menu">
+        <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-700 text-xl p-1" aria-label="Menu">
           <i id="mobMenuIcon" class="ri-menu-line"></i>
         </button>
       </div>
@@ -2013,14 +2471,14 @@ function renderHeader(){
 
     <!-- Mobile menu dropdown -->
     <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-100 bg-white overflow-hidden transition-all">
-      <nav class="px-4 py-3 flex flex-col gap-1 text-sm font-medium text-slate-700">
-        <a href="#/earn" onclick="toggleMobileMenu()" class="py-2 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='earn'?'bg-slate-50 text-brand-600 font-bold':''}">Earn ITL</a>
-        <a href="#/home" onclick="toggleMobileMenu()" class="py-2 px-3 rounded-lg hover:bg-slate-50">Hire Talent</a>
-        <a href="#/how" onclick="toggleMobileMenu()" class="py-2 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
-        <a href="#/home" onclick="toggleMobileMenu()" class="py-2 px-3 rounded-lg hover:bg-slate-50">Community</a>
-        <button onclick="toggleMobileMenu();openNewServiceModal()" class="py-2 px-3 rounded-lg hover:bg-slate-50 text-left w-full ${STATE.route==='new-service'?'bg-slate-50 text-brand-600 font-bold':''}">Sell a Service</button>
+      <nav class="px-4 py-4 flex flex-col gap-2 text-sm font-medium text-slate-700">
+        <a href="#/earn" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='earn'?'bg-slate-50 text-brand-600 font-bold':''}">Earn ITL</a>
+        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Hire Talent</a>
+        <a href="#/how" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
+        <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Community</a>
+        <button onclick="toggleMobileMenu();openNewServiceModal()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 text-left w-full ${STATE.route==='new-service'?'bg-slate-50 text-brand-600 font-bold':''}">Sell a Service</button>
         <div class="border-t border-slate-100 mt-2 pt-2">
-           <button onclick="toggleLangMenu(event)" class="w-full text-left py-2 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between text-sm">
+           <button onclick="toggleLangMenu(event)" class="w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between">
               <span>Language: ${langObj.label}</span>
               <span class="text-lg">${langObj.flag}</span>
            </button>
@@ -2028,11 +2486,11 @@ function renderHeader(){
       </nav>
     </div>
 
-    <!-- Lang menu floating - APENAS PT e EN -->
-    <div id="lang-menu" class="hidden absolute right-4 sm:right-16 mt-1 w-48 bg-white border border-slate-200 rounded-xl shadow-xl p-1.5 z-[60]">
-      ${LANGUAGES_LIST.filter(l => l.id === 'pt' || l.id === 'en').map(l=>`
-        <button onclick="setLang('${l.id}')" class="w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 ${STATE.language===l.id?'bg-slate-50 text-[#5b4ee0] font-bold':'hover:bg-slate-50 text-slate-700'}">
-          <span class="text-base">${l.flag}</span>
+    <!-- Lang menu floating -->
+    <div id="lang-menu" class="hidden absolute right-4 sm:right-20 mt-1 w-56 bg-white border border-slate-200 rounded-xl shadow-xl p-2 z-[60]">
+      ${LANGUAGES_LIST.map(l=>`
+        <button onclick="setLang('${l.id}')" class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-3 ${STATE.language===l.id?'bg-slate-50 text-[#5b4ee0] font-bold':'hover:bg-slate-50 text-slate-700'}">
+          <span class="text-lg">${l.flag}</span>
           <span class="flex-1">${l.label}</span>
           ${STATE.language===l.id?`<i class="ri-check-line"></i>`:''}
         </button>`).join('')}
@@ -2153,6 +2611,7 @@ window._handleReownConnected = async function(address) {
   STATE.walletConnected = true;
   STATE.authenticated   = true;
   closeModal();
+  // toast removido — sem popup ao conectar
   persistNow();
   render();
 };
@@ -2162,6 +2621,7 @@ window._handleReownDisconnected = function() {
   if (!STATE.walletConnected) return;
   STATE.walletConnected = false;
   STATE.authenticated   = false;
+  toast('Wallet desconectada.', 'warn');
   render();
 };
 
@@ -2319,6 +2779,7 @@ function finishWalletOnboarding(provider){
   addNotification({ type:'tx', title:'Conta criada', body:`@${fullHandle} conectado via ${provider}`, link:'#/dashboard/'+STATE.dashboardTab });
   persistNow();
   closeModal();
+  // toast removido — sem popup ao criar conta
   go('#/dashboard/'+STATE.dashboardTab);
 }
 function openWalletMenu(e){
@@ -2366,6 +2827,7 @@ function disconnectWallet(){
   STATE.walletConnected = false;
   STATE.authenticated   = false;
   closeModal();
+  toast('Wallet desconectada', 'info');
   render();
 }
 
@@ -2572,7 +3034,7 @@ function statusChip(status){
     awaiting_delivery:  [t('order_in_progress'),'bg-violet-50 text-violet-700','hourglass'],
     delivered:          [t('order_delivered'),'bg-blue-50 text-blue-700','package'],
     approved:           [t('order_approved'),'bg-emerald-50 text-emerald-700','check-circle-2'],
-    cancelled:          ['Cancelado','bg-slate-100 text-slate-700','x-circle'],
+    cancelled:          [tr('Cancelado'),'bg-slate-100 text-slate-700','x-circle'],
     disputed:           [t('order_disputed'),'bg-rose-50 text-rose-700','alert-octagon'],
   };
   const [lbl,c,i] = map[status] || ['—','bg-ink-100 text-ink-700','circle'];
@@ -2735,7 +3197,7 @@ function viewHeroPage(){
         <p class="mt-1 text-sm text-slate-500">Try different keywords or clear your filters.</p>
         <button onclick="clearAllFilters()" class="mt-5 px-6 py-2 rounded-full bg-[#8b7cff] text-white text-sm font-bold hover:bg-[#7a6cf0] transition">Clear all filters</button>
       </div>` : `
-      <div id="gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div id="gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         ${pageItems.map(serviceCard).join('')}
       </div>
       ${paginationBar(filtered.length)}`}
@@ -2883,7 +3345,7 @@ function viewExploreResults(){
           <i data-lucide="x" class="w-3.5 h-3.5"></i>Limpar filtros
         </button>
       </div>` : `
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-6">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-7">
         ${pageItems.map(serviceCard).join('')}
       </div>
       ${paginationBar(filtered.length)}`}
@@ -3090,28 +3552,28 @@ function serviceCard(s){
   return `
   <a href="#/service/${s.id}" class="gig-card group block min-w-0">
     <!-- IMAGEM COM BADGE E FAVORITO -->
-    <div class="gig-thumb gig-carousel relative rounded-xl overflow-hidden bg-white border border-ink-100 mb-2 shadow-sm group-hover:shadow-lg transition-all" data-imgcount="${imgs.length}" data-idx="0">
+    <div class="gig-thumb gig-carousel relative rounded-xl overflow-hidden bg-white border border-ink-100 mb-3 shadow-sm group-hover:shadow-lg transition-all" data-imgcount="${imgs.length}" data-idx="0">
       ${imgs.map((src,i) => `<img src="${src}" loading="lazy" alt="" data-slide="${i}" class="absolute inset-0 w-full h-full object-cover transition duration-300 ${i===0 ? 'opacity-100' : 'opacity-0'}" />`).join('')}
       
       <!-- BADGE (BEST SELLER / RISING STAR) -->
       ${badge ? `
-      <div class="absolute top-2 left-2 z-10 bg-white/95 backdrop-blur-sm px-2 py-0.5 rounded-md shadow-sm">
-        <span class="text-[9px] font-bold text-ink-900 tracking-wide">${badge}</span>
+      <div class="absolute top-3 left-3 z-10 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-md shadow-sm">
+        <span class="text-[10px] font-bold text-ink-900 tracking-wide">${badge}</span>
       </div>
       ` : ''}
       
       <!-- BOTÃO FAVORITO (CORAÇÃO) -->
-      <button onclick="toggleFavorite('${s.id}', event)" aria-label="${isFavorited(s.id) ? 'Remover dos favoritos' : 'Salvar nos favoritos'}" aria-pressed="${isFavorited(s.id)}" class="absolute top-2 right-2 z-10 w-7 h-7 grid place-items-center rounded-full bg-white/95 hover:bg-white shadow ring-1 ring-black/5 transition-all">
-        <i data-lucide="heart" class="w-3.5 h-3.5 ${isFavorited(s.id) ? 'fill-rose-500 text-rose-500' : 'text-ink-400'}" aria-hidden="true"></i>
+      <button onclick="toggleFavorite('${s.id}', event)" aria-label="${isFavorited(s.id) ? 'Remover dos favoritos' : 'Salvar nos favoritos'}" aria-pressed="${isFavorited(s.id)}" class="absolute top-3 right-3 z-10 w-8 h-8 grid place-items-center rounded-full bg-white/95 hover:bg-white shadow ring-1 ring-black/5 transition-all">
+        <i data-lucide="heart" class="w-4 h-4 ${isFavorited(s.id) ? 'fill-rose-500 text-rose-500' : 'text-ink-400'}" aria-hidden="true"></i>
       </button>
       
       <!-- CARROSSEL (setas e pontos) -->
       ${hasMulti ? `
-        <button onclick="gigCarouselStep(event,'${s.id}',-1)" aria-label="Imagem anterior" class="gig-carousel-arrow gig-carousel-prev absolute left-2 top-1/2 -translate-y-1/2 z-10 w-6 h-6 grid place-items-center rounded-full bg-white/90 hover:bg-white shadow opacity-0 group-hover:opacity-100 transition">
-          <i data-lucide="chevron-left" class="w-3.5 h-3.5 text-ink-700"></i>
+        <button onclick="gigCarouselStep(event,'${s.id}',-1)" aria-label="Imagem anterior" class="gig-carousel-arrow gig-carousel-prev absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 grid place-items-center rounded-full bg-white/90 hover:bg-white shadow opacity-0 group-hover:opacity-100 transition">
+          <i data-lucide="chevron-left" class="w-4 h-4 text-ink-700"></i>
         </button>
-        <button onclick="gigCarouselStep(event,'${s.id}',1)" aria-label="Próxima imagem" class="gig-carousel-arrow gig-carousel-next absolute right-2 top-1/2 -translate-y-1/2 z-10 w-6 h-6 grid place-items-center rounded-full bg-white/90 hover:bg-white shadow opacity-0 group-hover:opacity-100 transition">
-          <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-ink-700"></i>
+        <button onclick="gigCarouselStep(event,'${s.id}',1)" aria-label="Próxima imagem" class="gig-carousel-arrow gig-carousel-next absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 grid place-items-center rounded-full bg-white/90 hover:bg-white shadow opacity-0 group-hover:opacity-100 transition">
+          <i data-lucide="chevron-right" class="w-4 h-4 text-ink-700"></i>
         </button>
         <div class="gig-carousel-dots absolute bottom-2 left-0 right-0 z-10 flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition">
           ${imgs.map((_,i) => `<span data-dot="${i}" class="w-1.5 h-1.5 rounded-full ${i===0 ? 'bg-white' : 'bg-white/50'} shadow"></span>`).join('')}
@@ -3120,39 +3582,39 @@ function serviceCard(s){
     </div>
     
     <!-- INFORMAÇÕES DO FREELANCER -->
-    <div class="flex items-center gap-2 mb-1.5 min-w-0">
-      <img src="${u.avatar}" alt="" class="w-5 h-5 rounded-full shrink-0 border border-ink-100" />
+    <div class="flex items-center gap-2 mb-2 min-w-0">
+      <img src="${u.avatar}" alt="" class="w-6 h-6 rounded-full shrink-0 border border-ink-100" />
       <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-1">
-          <span class="text-[12px] font-semibold text-ink-900 truncate">${escapeHtml(u.name)}</span>
-          ${u.verified ? `<i data-lucide="badge-check" class="w-3 h-3 text-brand-500 shrink-0"></i>` : ''}
+        <div class="flex items-center gap-1.5">
+          <span class="text-[13px] font-semibold text-ink-900 truncate">${escapeHtml(u.name)}</span>
+          ${u.verified ? `<i data-lucide="badge-check" class="w-3.5 h-3.5 text-brand-500 shrink-0"></i>` : ''}
         </div>
-        <span class="text-[10px] text-ink-500">${u.level ? u.level.label : 'Level 1'}</span>
+        <span class="text-[11px] text-ink-500">${u.level ? u.level.label : 'Level 1'}</span>
       </div>
     </div>
     
     <!-- TÍTULO DO SERVIÇO -->
-    <h3 class="gig-title text-[12px] text-ink-900 leading-snug group-hover:underline font-medium mb-1.5">${
+    <h3 class="gig-title text-[13px] text-ink-900 leading-snug group-hover:underline font-medium mb-2">${
       s.title.toLowerCase().startsWith('i will ')
         ? '<span class="font-semibold text-ink-500">I will </span>' + escapeHtml(s.title.slice(7))
         : escapeHtml(s.title)
     }</h3>
     
     <!-- RATING E REVIEWS -->
-    <div class="flex items-center gap-1 mb-2">
+    <div class="flex items-center gap-1.5 mb-3">
       <div class="flex items-center gap-0.5">
-        <i data-lucide="star" class="w-3 h-3 fill-amber-400 text-amber-400"></i>
-        <span class="text-[12px] font-bold text-ink-900">${s.rating.toFixed(1)}</span>
+        <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+        <span class="text-[13px] font-bold text-ink-900">${s.rating.toFixed(1)}</span>
       </div>
-      <span class="text-[11px] text-ink-500">(${s.reviewsCount})</span>
+      <span class="text-[12px] text-ink-500">(${s.reviewsCount})</span>
     </div>
     
     <!-- CATEGORIA E PREÇO -->
-    <div class="pt-1.5 border-t border-ink-100 flex items-center justify-between">
-      <span class="text-[10px] text-ink-500 font-medium">${getCategory(s.category)?.label || s.category}</span>
+    <div class="pt-2 border-t border-ink-100 flex items-center justify-between">
+      <span class="text-[11px] text-ink-500 font-medium">${getCategory(s.category)?.label || s.category}</span>
       <div class="text-right">
-        <div class="text-[9px] text-ink-400 font-medium">From</div>
-        <div class="font-extrabold text-[14px] text-brand-500">${fmtITL(s.price)}</div>
+        <div class="text-[10px] text-ink-400 font-medium">From</div>
+        <div class="font-extrabold text-[15px] text-brand-500">${fmtITL(s.price)}</div>
       </div>
     </div>
   </a>`;
@@ -3184,31 +3646,31 @@ function recommendedCard(s){
   const u = getUserSafe(s.freelancerId); // ADICIONADO fallback — antes: getUser(s.freelancerId)
   const lvl = u.level || levelOf(u.jobs);
   return `
-  <a href="#/service/${s.id}" class="gig-card group block shrink-0 w-[200px] snap-start">
-    <div class="relative rounded-xl overflow-hidden bg-white border border-ink-100 mb-2 aspect-[4/3]">
+  <a href="#/service/${s.id}" class="gig-card group block shrink-0 w-[230px] snap-start">
+    <div class="relative rounded-xl overflow-hidden bg-white border border-ink-100 mb-3 aspect-[4/3]">
       <img src="${s.thumb}" loading="lazy" alt="" class="absolute inset-0 w-full h-full object-cover"/>
-      <button onclick="toggleFavorite('${s.id}', event)" aria-label="${isFavorited(s.id) ? 'Remover dos favoritos' : 'Salvar nos favoritos'}" aria-pressed="${isFavorited(s.id)}" class="absolute top-2 right-2 z-10 w-7 h-7 grid place-items-center rounded-full bg-white/95 hover:bg-white shadow ring-1 ring-black/5">
-        <i data-lucide="heart" class="w-3.5 h-3.5 ${isFavorited(s.id) ? 'fill-rose-500 text-rose-500' : 'text-ink-700'}" aria-hidden="true"></i>
+      <button onclick="toggleFavorite('${s.id}', event)" aria-label="${isFavorited(s.id) ? 'Remover dos favoritos' : 'Salvar nos favoritos'}" aria-pressed="${isFavorited(s.id)}" class="absolute top-2 right-2 z-10 w-8 h-8 grid place-items-center rounded-full bg-white/95 hover:bg-white shadow ring-1 ring-black/5">
+        <i data-lucide="heart" class="w-4 h-4 ${isFavorited(s.id) ? 'fill-rose-500 text-rose-500' : 'text-ink-700'}" aria-hidden="true"></i>
       </button>
     </div>
     <div class="flex items-center justify-between gap-2 mb-1 min-w-0">
       <div class="flex items-center gap-1.5 min-w-0">
-        <img src="${u.avatar}" class="w-4 h-4 rounded-full shrink-0 border border-ink-100"/>
-        <span class="text-[11px] font-semibold text-ink-900 truncate">${escapeHtml(u.name)}</span>
+        <img src="${u.avatar}" class="w-5 h-5 rounded-full shrink-0 border border-ink-100"/>
+        <span class="text-xs font-semibold text-ink-900 truncate">${escapeHtml(u.name)}</span>
       </div>
-      <span class="text-[10px] text-ink-400 shrink-0">${lvl.label||'Level 1'}</span>
+      <span class="text-[11px] text-ink-400 shrink-0">${lvl.label||'Level 1'}</span>
     </div>
-    <h3 class="text-[12px] text-ink-900 leading-snug group-hover:underline line-clamp-2">${
+    <h3 class="text-sm text-ink-900 leading-snug group-hover:underline line-clamp-2">${
       s.title.toLowerCase().startsWith('i will ')
         ? '<span class="font-semibold text-ink-500">I will </span>' + escapeHtml(s.title.slice(7))
         : escapeHtml(s.title)
     }</h3>
-    <div class="flex items-center gap-1 mt-1">
-      <i data-lucide="star" class="w-3 h-3 fill-amber-400 text-amber-400"></i>
-      <span class="text-[12px] font-bold">${s.rating.toFixed(1)}</span>
-      <span class="text-[10px] text-ink-500">(${s.reviewsCount})</span>
+    <div class="flex items-center gap-1 mt-1.5">
+      <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+      <span class="text-sm font-bold">${s.rating.toFixed(1)}</span>
+      <span class="text-xs text-ink-500">(${s.reviewsCount})</span>
     </div>
-    <div class="text-[12px] mt-1"><span class="text-ink-500">From</span> <span class="font-extrabold text-sonic">${fmtITL(s.price)}</span></div>
+    <div class="text-sm mt-1"><span class="text-ink-500">From</span> <span class="font-extrabold text-sonic">${fmtITL(s.price)}</span></div>
   </a>`;
 }
 function recommendedFor(s){
@@ -3219,7 +3681,7 @@ function recommendedFor(s){
 function scrollCarousel(ev, key, dir){
   ev.preventDefault(); ev.stopPropagation();
   const strip = document.querySelector('[data-carousel="'+key+'"]');
-  if (strip) strip.scrollBy({ left: dir*200, behavior:'smooth' });
+  if (strip) strip.scrollBy({ left: dir*250, behavior:'smooth' });
 }
 
 /* ---------- Reviews — Fiverr-style breakdown, search, sort, helpful votes ---------- */
@@ -3290,7 +3752,7 @@ function viewFavorites(){
         <div class="text-xs mt-1">Toque no coração de um serviço para guardá-lo aqui e comparar mais tarde.</div>
         <a href="#/home" class="inline-block mt-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold px-4 py-2 rounded-xl text-sm">Explorar serviços</a>
       </div>` : `
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
         ${favServices.map(serviceCard).join('')}
       </div>
     `}
@@ -3314,7 +3776,7 @@ function viewService(id){
 
   return `
   <!-- BREADCRUMB -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-5">
     <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500">
       <a href="#/home" class="hover:text-slate-900">Home</a>
       <i class="ri-arrow-right-s-line"></i>
@@ -3325,19 +3787,19 @@ function viewService(id){
   </div>
 
   <!-- MAIN SERVICE -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-5 grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
     <!-- LEFT (2 cols) -->
-    <div class="lg:col-span-2 space-y-6">
+    <div class="lg:col-span-2 space-y-8">
 
       <!-- Title block -->
       <div>
         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-snug">
           ${titleHtml}
         </h1>
-        <div class="mt-3 flex flex-wrap items-center gap-2 sm:gap-3 text-sm">
+        <div class="mt-4 flex flex-wrap items-center gap-3 sm:gap-4 text-sm">
           <div class="flex items-center gap-2">
-            <a href="#/u/${u.handle}" class="w-8 h-8 rounded-full grid place-items-center font-bold text-slate-600 hover:ring-4 hover:ring-[#efeaff] transition overflow-hidden" style="background:${u.avatar ? 'transparent' : '#fecaca'}">
+            <a href="#/u/${u.handle}" class="w-9 h-9 rounded-full grid place-items-center font-bold text-slate-600 hover:ring-4 hover:ring-[#efeaff] transition overflow-hidden" style="background:${u.avatar ? 'transparent' : '#fecaca'}">
                ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover"/>` : u.name[0]}
             </a>
             <div class="flex flex-col">
@@ -3381,7 +3843,7 @@ function viewService(id){
       <!-- About this gig -->
       <section>
         <h2 class="text-xl font-extrabold text-slate-900">About this gig</h2>
-        <div class="mt-3 text-slate-600 leading-relaxed space-y-3 text-sm sm:text-base whitespace-pre-line service-description">
+        <div class="mt-3 text-slate-600 leading-relaxed space-y-3 text-sm sm:text-base whitespace-pre-line">
           ${escapeHtml(s.description)}
         </div>
 
@@ -3402,9 +3864,9 @@ function viewService(id){
       </section>
 
       <!-- About the seller -->
-      <section class="border-t border-slate-200 pt-6">
+      <section class="border-t border-slate-200 pt-8">
         <h2 class="text-xl font-extrabold text-slate-900">About the seller</h2>
-        <div class="mt-4 flex flex-col sm:flex-row gap-4">
+        <div class="mt-4 flex flex-col sm:flex-row gap-5">
           <div class="flex items-center gap-4 sm:flex-col sm:items-center">
             <a href="#/u/${u.handle}" class="w-20 h-20 rounded-full grid place-items-center text-2xl font-extrabold text-slate-700 hover:ring-4 hover:ring-[#efeaff] transition overflow-hidden" style="background:${u.avatar ? 'transparent' : '#fecaca'}">
                ${u.avatar ? `<img src="${u.avatar}" class="w-full h-full object-cover"/>` : u.name[0]}
@@ -3422,7 +3884,7 @@ function viewService(id){
               <div><span class="text-slate-500">Avg. response</span><div class="font-semibold text-slate-900">~1 hour</div></div>
               <div><span class="text-slate-500">Last delivery</span><div class="font-semibold text-slate-900">2 days ago</div></div>
             </div>
-            <p class="mt-4 text-sm text-slate-600 leading-relaxed service-description">${escapeHtml(u.bio || '')}</p>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">${escapeHtml(u.bio || '')}</p>
             <div class="mt-4 flex flex-wrap gap-2">
               ${(u.skills || ['React', 'Tailwind', 'TypeScript']).map(skill => `<span class="chip-alt rounded-full text-xs px-3 py-1">${escapeHtml(skill)}</span>`).join('')}
             </div>
@@ -3431,7 +3893,7 @@ function viewService(id){
       </section>
 
       <!-- Reviews -->
-      <section class="border-t border-slate-200 pt-6">
+      <section class="border-t border-slate-200 pt-8">
         <div class="flex items-center justify-between flex-wrap gap-2">
           <h2 class="text-xl font-extrabold text-slate-900">Reviews</h2>
           <div class="flex items-center gap-2 text-sm">
@@ -3465,12 +3927,12 @@ function viewService(id){
         </div>
 
         <!-- Review items -->
-        <div class="mt-6 space-y-4">
+        <div class="mt-6 space-y-5">
           ${visReviews.map(r => `
             <article class="rounded-lg border border-slate-200 p-4">
               <header class="flex items-center justify-between flex-wrap gap-2">
                 <div class="flex items-center gap-3">
-                  <div class="w-9 h-9 rounded-full bg-slate-100 grid place-items-center font-bold text-slate-700 overflow-hidden" style="background:${getUserSafe(r.userId).avatar ? 'transparent' : '#e2e8f0'}">
+                  <div class="w-10 h-10 rounded-full bg-slate-100 grid place-items-center font-bold text-slate-700 overflow-hidden" style="background:${getUserSafe(r.userId).avatar ? 'transparent' : '#e2e8f0'}">
                     ${getUserSafe(r.userId).avatar ? `<img src="${getUserSafe(r.userId).avatar}" class="w-full h-full object-cover"/>` : getUserSafe(r.userId).name[0]}
                   </div>
                   <div>
@@ -3483,25 +3945,25 @@ function viewService(id){
                   <b class="text-slate-900 ml-1">${r.rating.toFixed(1)}</b>
                 </div>
               </header>
-              <p class="mt-3 text-sm text-slate-600 leading-relaxed service-description">${escapeHtml(r.text)}</p>
+              <p class="mt-3 text-sm text-slate-600 leading-relaxed">${escapeHtml(r.text)}</p>
             </article>
           `).join('')}
         </div>
-        <button class="mt-6 btn-outline-alt rounded-full px-4 py-1.5 text-sm font-semibold">Show more reviews</button>
+        <button class="mt-6 btn-outline-alt rounded-full px-5 py-2 text-sm font-semibold">Show more reviews</button>
       </section>
 
       <!-- FAQ -->
       ${s.faqs && s.faqs.length ? `
-      <section class="border-t border-slate-200 pt-6">
+      <section class="border-t border-slate-200 pt-8">
         <h2 class="text-xl font-extrabold text-slate-900">Frequently asked questions</h2>
         <div class="mt-4 space-y-2">
           ${s.faqs.map(f => `
-            <details class="accordion-alt rounded-lg border border-slate-200 p-3">
+            <details class="accordion-alt rounded-lg border border-slate-200 p-4">
               <summary class="flex items-center justify-between font-semibold text-slate-900 text-sm">
                 <span>${escapeHtml(f.q)}</span>
                 <i class="ic ri-arrow-down-s-line text-slate-500"></i>
               </summary>
-              <p class="mt-3 text-sm text-slate-600 service-description">${escapeHtml(f.a)}</p>
+              <p class="mt-3 text-sm text-slate-600">${escapeHtml(f.a)}</p>
             </details>
           `).join('')}
         </div>
@@ -3512,68 +3974,68 @@ function viewService(id){
     <!-- RIGHT — Pricing card -->
     <aside class="lg:col-span-1">
       <div class="lg:sticky lg:top-20 space-y-4">
-        <div class="pkg-card-alt active bg-white p-4">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div class="pkg-card-alt active bg-white p-5">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-200">
             <span class="text-xs font-bold tracking-wide text-[#5b4ee0] bg-[#efeaff] px-2.5 py-1 rounded-full">STANDARD</span>
             <div class="text-right">
               <div class="text-xs text-slate-500">From</div>
               <div class="font-extrabold text-slate-900 text-xl">${s.price} ITL</div>
             </div>
           </div>
-          <div class="mt-3">
-            <h3 class="font-extrabold text-slate-900 text-base">Service Package</h3>
-            <p class="mt-2 text-sm text-slate-600 service-description">${escapeHtml(s.title)}</p>
+          <div class="mt-4">
+            <h3 class="font-extrabold text-slate-900">Service Package</h3>
+            <p class="mt-2 text-sm text-slate-600">${escapeHtml(s.title)}</p>
           </div>
-          <ul class="mt-3 space-y-1.5 text-sm text-slate-700">
+          <ul class="mt-4 space-y-2 text-sm text-slate-700">
             ${(s.includes || []).slice(0, 5).map(inc => `
               <li class="flex items-start gap-2"><i class="ri-check-line text-[#8b7cff] mt-0.5"></i><span>${escapeHtml(inc)}</span></li>
             `).join('')}
           </ul>
-          <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+          <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
             <div class="flex items-center gap-2 text-slate-600"><i class="ri-time-line"></i><span>${s.deliveryDays}-day delivery</span></div>
             <div class="flex items-center gap-2 text-slate-600"><i class="ri-refresh-line"></i><span>Unlimited revisions</span></div>
           </div>
-          <button onclick="openHireModal('${s.id}')" class="mt-4 w-full btn-primary-alt py-2.5 rounded-lg font-bold flex items-center justify-center gap-2 shadow-sm text-sm">
+          <button onclick="openHireModal('${s.id}')" class="mt-5 w-full btn-primary-alt py-3 rounded-lg font-bold flex items-center justify-center gap-2 shadow-sm">
             Continue <i class="ri-arrow-right-line"></i>
           </button>
-          <button onclick="openChatPrep('${s.id}')" class="mt-1.5 w-full btn-outline-alt py-2.5 rounded-lg font-bold text-slate-900 text-sm">Contact me</button>
+          <button onclick="openChatPrep('${s.id}')" class="mt-2 w-full btn-outline-alt py-3 rounded-lg font-bold text-slate-900">Contact me</button>
         </div>
 
         <!-- Trust card -->
-        <div class="rounded-xl border border-slate-200 p-3 bg-white">
+        <div class="rounded-xl border border-slate-200 p-4 bg-white">
           <div class="flex items-center gap-2 text-sm">
             <i class="ri-shield-check-fill text-[#8b7cff] text-lg"></i>
             <span class="font-bold text-slate-900">Pay in ITL · escrow protected</span>
           </div>
-          <p class="mt-1 text-xs text-slate-500 leading-relaxed">Your funds are held in escrow until you approve the delivery. Refund guarantee if the gig is not delivered as described.</p>
+          <p class="mt-2 text-xs text-slate-500 leading-relaxed">Your funds are held in escrow until you approve the delivery. Refund guarantee if the gig is not delivered as described.</p>
         </div>
       </div>
     </aside>
   </main>
 
   <!-- RELATED GIGS -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 py-8 border-t border-slate-100 mt-4">
-    <div class="flex items-center justify-between mb-4">
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 py-10 border-t border-slate-100 mt-6">
+    <div class="flex items-center justify-between mb-5">
       <h2 class="text-xl font-extrabold text-slate-900">People also viewed</h2>
       <a href="#/home" class="text-sm font-semibold text-[#5b4ee0] hover:underline">View all gigs →</a>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       ${recommended.slice(0, 4).map(r => `
         <a href="#/service/${r.id}" class="bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-lg hover:border-[#c7c0ff] transition">
           <div class="relative overflow-hidden">
             <img src="${r.thumb}" class="w-full aspect-[3/2] object-cover" loading="lazy" />
           </div>
-          <div class="p-3 flex-1 flex flex-col">
+          <div class="p-4 flex-1 flex flex-col">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2 text-sm">
                 <span class="font-semibold text-slate-700">${escapeHtml(getUserSafe(r.freelancerId).name)}</span>
               </div>
             </div>
-            <h3 class="mt-2 text-sm font-bold text-[#5b4ee0] leading-snug line-clamp-2">${escapeHtml(r.title)}</h3>
+            <h3 class="mt-3 text-sm font-bold text-[#5b4ee0] leading-snug line-clamp-2">${escapeHtml(r.title)}</h3>
             <div class="mt-2 flex items-center gap-1 text-xs text-slate-500">
               <i class="ri-star-fill text-amber-400"></i><b class="text-slate-700">${r.rating.toFixed(1)}</b><span>(${r.reviewsCount})</span>
             </div>
-            <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
               <span>${getCategory(r.category).label}</span>
               <span>From <b class="font-extrabold text-slate-900">${r.price} ITL</b></span>
             </div>
@@ -3906,7 +4368,7 @@ function orderRow(o, perspective){
   const s = getService(o.serviceId);
   const other = perspective==='client' ? getUser(o.freelancerId) : getUser(o.clientId);
   return `
-  <div class="p-4">
+  <div class="p-5">
     <div class="flex flex-wrap gap-3 items-center">
     <div class="flex items-center gap-3 min-w-0 flex-1">
       <img src="${s.thumb}" class="w-14 h-14 rounded-lg object-cover" />
@@ -3953,11 +4415,11 @@ function orderRow(o, perspective){
         ${o.deliveredAt ? `<span class="text-ink-500 font-normal normal-case tracking-normal">• ${timeAgo(o.deliveredAt)} atrás</span>` : ''}
         ${o.autoApproved ? `<span class="chip bg-amber-50 text-amber-700 normal-case tracking-normal font-semibold text-[10px]"><i data-lucide="clock" class="w-3 h-3"></i>Auto-aprovado</span>` : ''}
       </div>
-      ${o.deliverable.note ? `<div class="text-sm text-ink-700 mt-1.5 whitespace-pre-wrap service-description">${escapeHtml(o.deliverable.note)}</div>` : ''}
+      ${o.deliverable.note ? `<div class="text-sm text-ink-700 mt-1.5 whitespace-pre-wrap">${escapeHtml(o.deliverable.note)}</div>` : ''}
       ${(o.deliverable.files && o.deliverable.files.length) ? `
         <div class="mt-2 flex flex-wrap gap-1.5">
           ${o.deliverable.files.map(f=>`
-            <a href="#" onclick="event.preventDefault();toast('Download simulado: '+'${escapeHtml(f.name)}','info');" class="chip bg-white border border-ink-100 hover:border-brand-300 text-ink-700 text-xs">
+            <a href="#" onclick="event.preventDefault();toast('Download simulado: '+'${escapeHtml(f.name)}','info');" class="chip bg-white border border-ink-100 hover:border-brand-300 text-ink-700">
               <i data-lucide="file" class="w-3 h-3"></i>${escapeHtml(f.name)}
               <span class="text-ink-400 ml-1">${escapeHtml(f.size||'')}</span>
               <i data-lucide="download" class="w-3 h-3 ml-1 text-brand-500"></i>
@@ -8714,7 +9176,7 @@ function renderChat(order, ephemeral){
         stream.scrollTop = stream.scrollHeight;
       }
       const subtitle = document.getElementById('chat-subtitle');
-      if (subtitle) subtitle.textContent = 'digitando…';
+      if (subtitle) subtitle.textContent = tr('digitando…');
     }, 750);
 
     // 3) Simulated reply
@@ -8901,7 +9363,7 @@ function chatBubble(m){
   let receiptHtml = '';
   if (mine){
     const status = m.status || 'sent'; // sent | delivered | read
-    const label = status==='read' ? 'Lida' : status==='delivered' ? 'Entregue' : 'Enviada';
+    const label = status==='read' ? tr('Lida') : status==='delivered' ? tr('Entregue') : tr('Enviada');
     const icon = status==='sent'
       ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
       : `<svg width="15" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 6 7 17 2 12"/><polyline points="22 9 11 20 9 18"/></svg>`;
@@ -8930,7 +9392,7 @@ function chatBubble(m){
 /* "Typing…" indicator bubble, shown while the other person is composing a reply */
 function chatTypingBubble(user){
   return `
-  <div id="chat-typing-indicator" class="flex items-end gap-2">
+  <div id="chat-typing-indicator" class="flex items-end gap-2" data-no-tr>
     <img src="${user.avatar}" class="w-7 h-7 rounded-lg shrink-0 self-end"/>
     <div class="px-3 py-2.5 rounded-2xl rounded-bl-sm bg-white border border-ink-100 flex items-center gap-1">
       <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
@@ -10135,7 +10597,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const restored = restorePersistedData();
   startPersistence();
   bindRouter();
-  // NOTIFICAÇÃO REMOVIDA: "Dados restaurados do localStorage."
+  if (restored) setTimeout(()=>toast('Dados restaurados do localStorage.', 'success'), 250);
   // Proteção extra: se Supabase não está configurado, admin só mostra tela de login (STATE.isAdmin = false por padrão)
 
   // ── Auto-approve engine: run once on boot, then every 60 s ──
