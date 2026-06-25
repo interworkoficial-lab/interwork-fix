@@ -1258,6 +1258,7 @@ function renderView(){
     case 'favorites':v.innerHTML = isAuthed() ? viewFavorites() : viewAuthRequired(); break;
     case 'dashboard':v.innerHTML = isAuthed() ? viewDashboard() : viewAuthRequired(); break;
     case 'wallet':   v.innerHTML = isAuthed() ? viewWallet() : viewAuthRequired(); break;
+    case 'notifications': v.innerHTML = isAuthed() ? viewNotifications() : viewAuthRequired(); break;
     case 'how':      v.innerHTML = viewHow(); break;
     case 'overview': v.innerHTML = viewOverview(); break;
     case 'benefits': v.innerHTML = viewBenefits(); break;
@@ -1477,7 +1478,7 @@ function renderHeader(){
   </div>
 </button>
 
-<button onclick="setTimeout(toggleNotifPanel,50);closeProfileMenu()"
+<button onclick="closeProfileMenu();go('#/notifications')"
   class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
   <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0 relative">
     <i class="ri-notification-3-line text-slate-500"></i>
@@ -3234,6 +3235,86 @@ function viewWallet(){
             </div>`).join('')}
         </div>` : `<div class="p-10 text-center text-ink-500">Nenhuma transação ainda.</div>`}
       </div>
+    </div>
+  </div>`;
+}
+
+function notifIcon(type){
+  return {
+    delivery: 'package',
+    message: 'message-circle',
+    tx: 'wallet',
+    rating: 'star',
+    dispute: 'gavel',
+    cancel: 'x-circle',
+    withdrawal: 'banknote',
+  }[type] || 'bell';
+}
+function notifColor(type){
+  return {
+    delivery: 'bg-blue-50 text-blue-600',
+    message: 'bg-violet-50 text-violet-600',
+    tx: 'bg-emerald-50 text-emerald-600',
+    rating: 'bg-amber-50 text-amber-600',
+    dispute: 'bg-rose-50 text-rose-600',
+    cancel: 'bg-slate-100 text-slate-600',
+    withdrawal: 'bg-cyan-50 text-cyan-600',
+  }[type] || 'bg-ink-100 text-ink-500';
+}
+
+function viewNotifications(){
+  const items = STATE.notifications || [];
+  const unread = items.filter(n=>!n.read);
+  const read = items.filter(n=>n.read);
+
+  function row(n){
+    return `
+    <a href="${n.link||'#/home'}" onclick="markRead('${n.id}')"
+       class="flex items-start gap-3 p-4 border-b border-ink-100 hover:bg-ink-50/60 transition relative ${n.read?'':'bg-brand-50/30'}">
+      <div class="w-10 h-10 rounded-xl ${notifColor(n.type)} grid place-items-center shrink-0">
+        <i data-lucide="${notifIcon(n.type)}" class="w-5 h-5"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-sm text-ink-900 truncate">${escapeHtml(n.title||'')}</span>
+          ${n.read?'':'<span class="w-2 h-2 rounded-full bg-brand-500 shrink-0"></span>'}
+        </div>
+        <div class="text-xs text-ink-600 mt-0.5 leading-snug">${escapeHtml(n.body||'')}</div>
+        <div class="text-[11px] text-ink-400 mt-1">${timeAgo(n.ts)} atrás</div>
+      </div>
+    </a>`;
+  }
+
+  return `
+  <div class="max-w-2xl mx-auto px-4 pt-6 pb-16">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <button onclick="history.back()" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-ink-100/60">
+          <i data-lucide="arrow-left" class="w-4 h-4 text-ink-500"></i>
+        </button>
+        <h1 class="text-xl font-extrabold">Notificações</h1>
+        ${unread.length ? `<span class="chip bg-rose-500 text-white text-[11px]">${unread.length}</span>` : ''}
+      </div>
+      ${unread.length ? `<button onclick="markAllRead();render()" class="text-xs font-bold text-brand-500 hover:text-brand-600">Marcar tudo como lida</button>` : ''}
+    </div>
+
+    <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden">
+      ${items.length===0 ? `
+        <div class="py-16 text-center text-ink-400">
+          <i data-lucide="bell-off" class="w-10 h-10 mx-auto mb-3 opacity-40"></i>
+          <div class="font-semibold text-ink-600">Nenhuma notificação ainda</div>
+          <div class="text-xs mt-1">Você será avisado aqui sobre pedidos, mensagens e pagamentos.</div>
+        </div>
+      ` : `
+        ${unread.length ? `
+          <div class="px-4 py-2 bg-ink-50 text-[11px] font-bold uppercase tracking-wider text-ink-500">Novas</div>
+          ${unread.map(row).join('')}
+        ` : ''}
+        ${read.length ? `
+          <div class="px-4 py-2 bg-ink-50 text-[11px] font-bold uppercase tracking-wider text-ink-500">Anteriores</div>
+          ${read.map(row).join('')}
+        ` : ''}
+      `}
     </div>
   </div>`;
 }
