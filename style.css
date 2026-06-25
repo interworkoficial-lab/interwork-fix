@@ -1154,3 +1154,11 @@ html.dark .gig-carousel-arrow:hover {
 #profile-dropdown {
   animation: fade .15s ease-out;
 }
+
+/* Avatar tamanho correto no perfil */
+#profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
