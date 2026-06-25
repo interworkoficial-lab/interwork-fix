@@ -841,7 +841,8 @@ function initMock(){
       });
     }
   });
-
+    
+ DB.services.slice(0, 5).forEach(s => { s.example = true; });
   // Reviews per service
   const sampleReviews = [
     ['Entrega impecável e dentro do prazo. Voltarei a contratar.', 5],
@@ -2354,7 +2355,7 @@ function filterServices(){
     });
   }
 
-  switch(STATE.trendingActive ? 'trending' : STATE.sort){
+ switch(STATE.trendingActive ? 'trending' : STATE.sort){
     case 'rating':     arr.sort((a,b)=>b.rating-a.rating); break;
     case 'price_asc':  arr.sort((a,b)=>a.price-b.price); break;
     case 'price_desc': arr.sort((a,b)=>b.price-a.price); break;
@@ -2365,7 +2366,10 @@ function filterServices(){
       if (searchScores) arr.sort((a,b)=>searchScores.get(b.id)-searchScores.get(a.id));
       else arr.sort((a,b)=>(b.rating*b.reviewsCount)-(a.rating*a.reviewsCount));
   }
-  return arr;
+  // Exemplos sempre no topo
+  const examples = arr.filter(s => s.example);
+  const rest = arr.filter(s => !s.example);
+  return [...examples, ...rest];
 }
 
 const PAGE_SIZE = 24; // itens por página na listagem de serviços
@@ -2478,7 +2482,11 @@ function serviceCard(s){
 
       ${imgs.map((src,i) => `<img src="${src}" loading="lazy" alt="" data-slide="${i}" class="absolute inset-0 w-full h-full object-cover transition duration-300 ${i===0 ? 'opacity-100' : 'opacity-0'}" />`).join('')}
 
-      ${badge ? `
+     ${s.example ? `
+      <div class="absolute top-3 left-3 z-10 bg-[#8b7cff] px-2.5 py-1 rounded-md shadow-sm">
+        <span class="text-[10px] font-bold text-white tracking-wide">EXEMPLO</span>
+      </div>
+      ` : badge ? `
       <div class="absolute top-3 left-3 z-10 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-md shadow-sm">
         <span class="text-[10px] font-bold text-ink-900 tracking-wide">${badge}</span>
       </div>
