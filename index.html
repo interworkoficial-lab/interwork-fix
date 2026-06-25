@@ -1055,155 +1055,12 @@ html.dark {
   <div id="toast-root" role="status" aria-live="polite" aria-atomic="true" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-2"></div>
 
   <!-- FOOTER -->
-  <footer id="app-footer" role="contentinfo"></footer>
+ <footer id="app-footer" role="contentinfo"></footer>
 
+<script src="data.js"></script>
 <script>
-/* ============================================================
- * INTERWORK — single-file prototype
- * Tech: vanilla JS state + hash routing + Tailwind + Lucide
- * ============================================================ */
 
-/* ---------- STATE ---------- */
-const STATE = {
-  route: 'home',
-  currentUserId: 'u_me',
-  // Helper para atualizar o estado e renderizar a tela automaticamente
-  set(key, val) { this[key] = val; renderView(); },
-  patch(obj) { Object.assign(this, obj); renderView(); },
-  query: '', category: 'all', country: 'all', sort: 'relevance', trendingActive: false,
-  page: 1,                          // página atual da listagem de serviços
-  ratingMin: 0,              // 0 | 4 | 4.5
-  priceMax: 0,               // 0 = any
-  priceMin: 0,               // 0 = any
-  verifiedOnly: false,
-  availableOnly: false,
-  freelancerLevel: 'all',           // all | new | level1 | level2 | top-rated | pro
-  deliveryFilter: 'all',            // all | upto3 | upto7 | upto14 | over14
-  languageFilter: 'all',            // all | pt | en | es
-  availabilityFilter: 'all',        // all | online | 24h
-  selectedServiceId: null,
-  orders: [],
-  messages: {},
-  chatOpenOrderId: null,
-  dashboardTab: 'client',
-  clientOrdersTab: 'active',
-  toastSeq: 0,
-  walletConnected: false,           // primeira visita começa desconectada
-  authenticated: false,             // login ativo após assinatura/onboarding da wallet
-  onboardingComplete: false,        // true depois de criar handle e escolher perfil
-  userRole: 'client',               // client | freelancer
-  walletProvider: 'ITLX',           // ITLX | MetaMask | Rabby | WalletConnect
-  network: 'interlink-mainnet',
-  recentlyViewed: [],               // serviceIds (max 8)
-  favorites: [],                    // serviceIds salvos pelo usuário (wishlist)
-  notifications: [],
-  txHistory: [],                    // {hash, type, amount, token, ts, orderId?}
-  payouts: [],                      // {hash, amount, token, ts}
-  selectedProfileHandle: null,
-  language: 'en',                   // en | pt | es
-  translateChat: false,
-  searchFocused: false,
-  selectedTier: 'standard',         // for service page
-  selectedAddons: [],
-  selectedToken: 'ITL',
-  showQR: false,
-  theme: 'blue',
-  newServiceLogo: null,            // dataURL da logo carregada no modal de novo serviço
-  newServiceGallery: [],           // Array de dataURLs — fotos extras de exemplo (estilo Fiverr)
-  newServiceRequirements: [],      // Builder de campos de briefing (Fiverr-style requirements)
-  newServiceFaqs: [],              // Builder de FAQ do gig (Fiverr-style, escrito pelo freelancer)
-  onboardingDismissed: false,      // Esconde checklist de onboarding quando freelancer fecha
-  restoredFromStorage: false,      // true quando os dados foram restaurados do localStorage
-};
-
-/* ---------- MOCK DATA ---------- */
-const DB = { users: [], services: [], reviews: [] };
-
-const TOKENS = [
-  { id:'ITL',  label:'ITL',  rateITL:1,    color:'#7C3AED', icon:'coins' },
-];
-
-const LEVELS = [
-  { id:'new',       label:'New',        min:0,    color:'#94a3b8', icon:'sparkles' },
-  { id:'level1',    label:'Level 1',    min:5,    color:'#10b981', icon:'shield' },
-  { id:'level2',    label:'Level 2',    min:25,   color:'#1a73e8', icon:'shield-check' },
-  { id:'top-rated', label:'Top Rated',  min:80,   color:'#f59e0b', icon:'award' },
-  { id:'pro',       label:'Pro',        min:150,  color:'#7C3AED', icon:'crown' },
-];
-function levelOf(jobs){ return [...LEVELS].reverse().find(l=>jobs>=l.min) || LEVELS[0]; }
-
-/* ============ SBT — SOULBOUND REPUTATION TOKENS ============ */
-const SBT_CONTRACT = '0xSBT0RepuT4tion1nterw0rk7C3AED1a73e8C0nTr4ct';
-const SBT_BADGES = [
-  { id:'human',    label:'Verified Human',  desc:'Proof of personhood via Interlink ID',     icon:'badge-check',  color:'#1a73e8', test: u => u.verified },
-  { id:'linker',   label:'Interlink Linker',desc:'Active member of the Interlink ecosystem', icon:'link-2',       color:'#a78bfa', test: u => u.verified && (Date.now()-u.joinedTs) > 90*86400000 },
-  { id:'veterano', label:'Veterano',        desc:'1+ ano no ecossistema',                    icon:'history',      color:'#7C3AED', test: u => (Date.now()-u.joinedTs) > 365*86400000 },
-  { id:'cem',      label:'100+ Entregas',   desc:'Cem ou mais pedidos concluídos on-chain',  icon:'package-check',color:'#10b981', test: u => (u.jobs||0) >= 100 },
-  { id:'top',      label:'Top Rated',       desc:'Rating ≥ 4.85 com 50+ avaliações',         icon:'award',        color:'#f59e0b', test: u => u.rating >= 4.85 && (u.jobs||0) >= 25 },
-  { id:'fast',     label:'Express Pro',     desc:'Responde em ≤ 3h em média',                icon:'rocket',       color:'#ef4444', test: u => (u.responseHours||99) <= 3 },
-  { id:'trust',    label:'Zero Disputas',   desc:'Nenhuma disputa em 20+ pedidos',           icon:'shield-check', color:'#06b6d4', test: u => ((u.disputes||0)===0) && (u.jobs||0) >= 20 },
-  { id:'recur',    label:'Cliente Fiel',    desc:'90%+ de clientes recorrentes',             icon:'repeat',       color:'#0ea5e9', test: u => (u.repeatClientsPct||0) >= 90 },
-];
-function sbtTxForUser(uid, badgeId){
-  // deterministic-ish hash so it stays stable per user+badge
-  let h=0; const s=uid+':'+badgeId+':'+SBT_CONTRACT;
-  for(let i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) >>> 0; }
-  let out='0x'; let x=h;
-  for(let i=0;i<64;i++){ x = (x*1103515245 + 12345) >>> 0; out += '0123456789abcdef'[(x>>>(i%24))&15]; }
-  return out;
-}
-function sbtBadgesOf(u){
-  return SBT_BADGES.filter(b => b.test(u)).map(b => ({
-    ...b,
-    tokenId: '#'+(Math.abs(u.id.charCodeAt(2)*7 + b.id.charCodeAt(0))%9000 + 1000),
-    mintedTs: u.joinedTs + (b.id==='human'?86400000:30*86400000) + (b.id.charCodeAt(0)%10)*86400000,
-    txHash: sbtTxForUser(u.id, b.id),
-    block: 1840000 + (Math.abs(u.id.charCodeAt(2))*113 + b.id.charCodeAt(0)*7)%80000,
-  }));
-}
-function chainHistoryOf(u){
-  // Build immutable on-chain timeline: SBT mints + completed jobs + reviews
-  const entries = [];
-  sbtBadgesOf(u).forEach(b => entries.push({
-    type:'sbt_mint', label:`SBT minted · ${b.label}`, icon:b.icon, color:b.color,
-    ts:b.mintedTs, txHash:b.txHash, block:b.block, amount:null
-  }));
-  // completed orders for this freelancer
-  STATE.orders?.filter(o=>o.freelancerId===u.id && (o.status==='approved'||o.status==='delivered')).forEach(o => {
-    entries.push({
-      type:'job_done', label:`Escrow liberado · ${(o.amount||0)} ITL`, icon:'package-check', color:'#10b981',
-      ts:o.createdTs||Date.now(), txHash: o.escrowReleaseHash || sbtTxForUser(u.id,'job'+o.id), block: 1900000+(o.id||'').length, amount:o.amount
-    });
-  });
-  // synthesize historic jobs based on u.jobs count (older proof of work)
-  const synth = Math.min(u.jobs||0, 6);
-  for(let i=0;i<synth;i++){
-    entries.push({
-      type:'job_done', label:`Pedido concluído · ${50+((i*73)%450)} ITL`, icon:'package-check', color:'#10b981',
-      ts: u.joinedTs + (i+1)*((Date.now()-u.joinedTs)/(synth+1)),
-      txHash: sbtTxForUser(u.id,'hist'+i), block: 1820000+i*271, amount: 50+((i*73)%450)
-    });
-  }
-  return entries.sort((a,b)=>b.ts-a.ts);
-}
-
-const LANGUAGES_LIST = [
-  { id:'pt', label:'Português', flag:'🇧🇷' },
-  { id:'en', label:'English',   flag:'🇬🇧' },
-  { id:'es', label:'Español',   flag:'🇪🇸' },
-  { id:'de', label:'Deutsch',   flag:'🇩🇪' },
-  { id:'ja', label:'日本語',     flag:'🇯🇵' },
-  { id:'hi', label:'हिन्दी',      flag:'🇮🇳' },
-];
-
-const FILTER_LANGUAGE_OPTIONS = LANGUAGES_LIST.filter(l => ['pt','en','es'].includes(l.id));
-const DELIVERY_FILTERS = [
-  { id:'all', label:'Qualquer prazo' },
-  { id:'upto3', label:'Até 3 dias' },
-  { id:'upto7', label:'Até 7 dias' },
-  { id:'upto14', label:'Até 14 dias' },
-  { id:'over14', label:'+14 dias' },
-];
+    
 const AVAILABILITY_FILTERS = [
   { id:'all', label:'Qualquer disponibilidade' },
   { id:'online', label:'Online agora' },
@@ -9698,13 +9555,8 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const SB_READY = SUPABASE_URL !== 'COLE_SUA_URL_AQUI' && SUPABASE_ANON !== 'COLE_SUA_ANON_KEY_AQUI';
 let sb = null; // instância do cliente Supabase
 
-if (SB_READY) {
-  try {
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-  } catch(e) {
-    console.warn('[Supabase] Erro ao criar cliente:', e);
-  }
-}
+// Lógica de dados movida para data.js
+
 
 /* ──────────────────────────────────────────────────────────
  * ADMIN — controle simples por email whitelist
