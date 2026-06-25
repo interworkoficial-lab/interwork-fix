@@ -2475,10 +2475,10 @@ function serviceCard(s){
 
   return `
   <a href="#/service/${s.id}" class="gig-card group block min-w-0">
-    <div class="gig-thumb gig-carousel relative rounded-xl overflow-hidden bg-white border border-ink-100 mb-3 shadow-sm transition-all"
-      data-imgcount="${imgs.length}" data-idx="0"
-      onmouseenter="this.querySelectorAll('.gig-carousel-arrow,.gig-carousel-dots').forEach(function(e){e.style.opacity='1'})"
-      onmouseleave="this.querySelectorAll('.gig-carousel-arrow,.gig-carousel-dots').forEach(function(e){e.style.opacity='0'})">
+    <div class="gig-thumb gig-carousel mb-3"
+  data-imgcount="${imgs.length}" data-idx="0"
+  onmouseenter="gigCarouselShowControls(this)"
+  onmouseleave="gigCarouselHideControls(this)">
 
       ${imgs.map((src,i) => `<img src="${src}" loading="lazy" alt="" data-slide="${i}" class="absolute inset-0 w-full h-full object-cover transition duration-300 ${i===0 ? 'opacity-100' : 'opacity-0'}" />`).join('')}
 
@@ -2545,6 +2545,15 @@ function serviceCard(s){
 }
 
 function gigCarouselStep(ev, serviceId, dir){
+    function gigCarouselShowControls(wrap){
+  wrap.querySelectorAll('.gig-carousel-arrow,.gig-carousel-dots')
+    .forEach(function(el){ el.style.opacity='1'; });
+}
+
+function gigCarouselHideControls(wrap){
+  wrap.querySelectorAll('.gig-carousel-arrow,.gig-carousel-dots')
+    .forEach(function(el){ el.style.opacity='0'; });
+}
   ev.preventDefault();
   ev.stopPropagation();
   const wrap = ev.currentTarget.closest('.gig-carousel');
