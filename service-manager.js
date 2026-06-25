@@ -968,7 +968,8 @@ function submitRequirements(orderId) {
   closeModal();
   toast('Formulário enviado on-chain. Prazo iniciado.', 'success');
   render();
-  setTimeout(showAtvRewardsOffer, 800);
+icons();
+setTimeout(showAtvRewardsOffer, 800);
 }
 
 /* ============================================================
