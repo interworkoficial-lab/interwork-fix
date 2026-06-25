@@ -1,53 +1,36 @@
 /* ============================================================
  * INTERWORK — service-manager.js
  * Módulo: Gerenciador de Serviços
- * Extraído do index.html para reduzir o tamanho do arquivo principal.
  *
- * DEPENDÊNCIAS GLOBAIS (já existem no index.html):
- *   STATE, DB, CATEGORIES, COUNTRIES, REQ_TYPES,
- *   uid, escapeHtml, fmtITL, toast, closeModal,
- *   render, renderView, go, icons, getService,
- *   getUser, getUserSafe, thumbSVG, thumbSVG,
- *   isAuthed, requireAuth, addNotification,
- *   SB_READY, sb, sbCreateService,
- *   persistNow, schedulePersist, timeAgo,
- *   nowTs, txHash, explorerURL, shortHash,
- *   levelOf, LEVELS, showAtvRewardsOffer
- *
- * COMO USAR:
- *   Adicione antes do </body> do index.html:
- *   <script src="service-manager.js"></script>
- *   E remova as funções abaixo do index.html (linhas ~4015–5526).
+ * CORREÇÕES APLICADAS (v2):
+ *  [C1] Removido const REQ_TYPES duplicado — estava causando SyntaxError em runtime
+ *  [C2] renderGalleryPreview agora usa id="ns-gallery-grid" existente no Step 3
+ *  [C3] saveService() não chama mais closeModal() — o wizard roda como página, não modal
+ *  [H1] collectFaqs/collectRequirements chamados em AMBAS as direções (voltar e avançar)
+ *  [H2] Inicialização do Step 2 centralizada: setTimeout(...,0) em viewNewServicePage,
+ *       removido o RAF duplicado de nsWizardNavPage
+ *  [H3] Botão Voltar no Step 3 salva price/days sem exigir validação
+ *  [H4] createService() e saveService() usam STATE.newServiceFaqs /
+ *       STATE.newServiceRequirements diretamente — não dependem mais do DOM do Step 2
+ *  [M1] FAQs no formato {question,answer} normalizados para {q,a} na edição
+ *  [M2] Step bar usa nsGoToStep(n) que coleta dados antes de navegar
+ *  [M3] deleteService() usa modal de confirmação em vez de confirm() nativo
+ *  [L1] Limite de upload do logo alinhado: código usa 5MB, igual ao texto no Step 3
  * ============================================================ */
-
-/* ============================================================
- * CONSTANTES LOCAIS DO MÓDULO
- * ============================================================ */
-
-const REQ_TYPES = [
-  { id:'text',     label:'Texto curto',            icon:'type'       },
-  { id:'textarea', label:'Texto longo / parágrafo', icon:'align-left' },
-  { id:'url',      label:'URL / link',              icon:'link'       },
-  { id:'select',   label:'Múltipla escolha',        icon:'list'       },
-  { id:'file',     label:'Anexo de arquivo',        icon:'paperclip'  },
-];
 
 /* ============================================================
  * HELPERS INTERNOS
  * ============================================================ */
 
-/** Retorna true quando o usuário logado é dono do serviço. */
 function isServiceOwner(s) {
   if (!s) return false;
   return s.freelancerId === STATE.currentUserId || s.freelancerId === 'u_ana';
 }
 
-/** Gera os FAQs padrão para um novo serviço. */
 function defaultFaqs() {
   return [{ id: uid('faq'), q: '', a: '' }];
 }
 
-/** Gera os campos de briefing padrão para um novo serviço. */
 function defaultRequirements() {
   return [
     {
@@ -65,28 +48,28 @@ function defaultRequirements() {
  * PONTO DE ENTRADA — abre o wizard (modal ou página)
  * ============================================================ */
 
-/**
- * Abre o wizard de criação/edição de serviço.
- * Se editId for passado, carrega os dados do serviço existente.
- */
 function openNewServiceModal(editId) {
   if (!requireAuth(editId ? 'editar serviços' : 'publicar serviços')) return;
 
   const editing  = !!editId;
   const existing = editing ? getService(editId) : null;
-  if (editing && !existing)      { toast('Serviço não encontrado.', 'warn'); return; }
+  if (editing && !existing)            { toast('Serviço não encontrado.', 'warn'); return; }
   if (editing && !isServiceOwner(existing)) { toast('Você não pode editar este serviço.', 'warn'); return; }
 
-  /* Inicializa o estado temporário do wizard */
   STATE.newServiceLogo         = editing ? (existing.thumb  || null) : null;
   STATE.newServiceGallery      = editing ? (existing.gallery ? existing.gallery.slice() : []) : [];
+
+  /* [H4] Requirements: sempre carrega do STATE, nunca do DOM */
   STATE.newServiceRequirements = editing
     ? (existing.requirements || []).map(r => ({ ...r }))
     : defaultRequirements();
+
+  /* [M1] FAQs: normaliza {question,answer} → {q,a} além de arrays legados */
   STATE.newServiceFaqs = editing
-    ? (existing.faqs || gigFaqsByCategory(existing.category)).map(f =>
-        Array.isArray(f) ? { q: f[0], a: f[1] } : { ...f }
-      )
+    ? (existing.faqs || gigFaqsByCategory(existing.category)).map(f => {
+        if (Array.isArray(f)) return { id: uid('faq'), q: f[0], a: f[1] };
+        return { ...f, q: f.q || f.question || '', a: f.a || f.answer || '' };
+      })
     : defaultFaqs();
 
   STATE._nsStep = 1;
@@ -106,7 +89,6 @@ function openNewServiceModal(editId) {
   renderView();
 }
 
-/** Alias usado na página de serviço pelo botão EDIT. */
 function openEditServiceModal(id) {
   openNewServiceModal(id);
 }
@@ -220,6 +202,7 @@ function viewNewServicePage() {
   </div>`;
 
   /* ── STEP 3 ── */
+  /* [C2] Grid da galeria agora tem id="ns-gallery-grid" para renderGalleryPreview() encontrar */
   const gPrev = (STATE.newServiceGallery || []).map((src, i) => `
     <div class="relative group aspect-square rounded-xl overflow-hidden border border-ink-100">
       <img src="${src}" class="w-full h-full object-cover pointer-events-none"/>
@@ -296,8 +279,8 @@ function viewNewServicePage() {
       <label class="text-xs font-bold uppercase tracking-wider text-ink-500">GALERIA <span class="font-normal normal-case text-ink-400">(opcional · até 8 imagens)</span></label>
       <input id="ns-gallery-input" type="file" accept="image/*" multiple class="hidden" onchange="handleGalleryUpload(event)"/>
       ${(STATE.newServiceGallery || []).length
-        ? `<div class="grid grid-cols-5 gap-2 mt-2 mb-2">${gPrev}</div>`
-        : ''}
+        ? `<div id="ns-gallery-grid" class="grid grid-cols-5 gap-2 mt-2 mb-2">${gPrev}</div>`
+        : `<div id="ns-gallery-grid" class="grid grid-cols-5 gap-2 mt-2 mb-2"></div>`}
       ${(STATE.newServiceGallery || []).length < 8
         ? `<button type="button" onclick="document.getElementById('ns-gallery-input').click()"
             class="w-full border-2 border-dashed border-ink-200 hover:border-brand-300 hover:bg-brand-50/40 py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold text-ink-500 hover:text-brand-600 transition mt-2">
@@ -318,8 +301,10 @@ function viewNewServicePage() {
   const coObj   = COUNTRIES.find(x => x.id === v.co);
   const incList = (v.inc  || '').split(',').map(s => s.trim()).filter(Boolean);
   const tagList = (v.tags || '').split(',').map(s => s.trim()).filter(Boolean);
-  const nFaqs   = (STATE.newServiceFaqs         || []).filter(f => (f.q || f.question)?.trim() && (f.a || f.answer)?.trim()).length;
-  const nReqs   = (STATE.newServiceRequirements || []).filter(r => r.label?.trim()).length;
+
+  /* [H4] No Step 4, lemos direto do STATE — DOM do Step 2 não existe mais */
+  const nFaqs = (STATE.newServiceFaqs || []).filter(f => (f.q || '').trim() && (f.a || '').trim()).length;
+  const nReqs = (STATE.newServiceRequirements || []).filter(r => (r.label || '').trim()).length;
 
   const rowItem = (icon, lbl, val, cls = 'text-ink-800') => `
     <div class="flex items-start gap-3 py-2.5 border-b border-ink-100 last:border-0">
@@ -380,9 +365,9 @@ function viewNewServicePage() {
     ? `<button onclick="nsWizardNavPage(1)" class="flex items-center gap-2 px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl transition">Próximo<i data-lucide="chevron-right" class="w-4 h-4"></i></button>`
     : `<button onclick="${STATE._nsEdit ? `saveService('${STATE._nsEdit}')` : 'createService()'}" class="flex items-center gap-2 px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl transition"><i data-lucide="send" class="w-4 h-4"></i>Enviar para Revisão</button>`;
 
-  /* Agenda inicialização dos builders após inserção no DOM */
+  /* [H2] Inicialização do Step 2 centralizada aqui com setTimeout, sem RAF duplicado */
   if (step === 2) {
-    requestAnimationFrame(() => { renderFaqBuilder(); renderRequirementsBuilder(); });
+    setTimeout(() => { renderFaqBuilder(); renderRequirementsBuilder(); }, 0);
   }
 
   return `
@@ -398,14 +383,14 @@ function viewNewServicePage() {
         </div>
         <h1 class="text-xl font-extrabold text-ink-900 mb-5">${editing ? 'Editar Serviço' : 'Registrar um Serviço'}</h1>
 
-        <!-- Step bar horizontal -->
+        <!-- [M2] Step bar usa nsGoToStep(n) para coletar dados antes de navegar -->
         <div class="flex items-center justify-center gap-0 mb-2">
           ${STEPS.map((s, i) => {
             const done   = step > s.n;
             const active = step === s.n;
             return `
             ${i > 0 ? `<div class="w-12 h-0.5 ${done ? 'bg-brand-500' : 'bg-ink-200'}"></div>` : ''}
-            <button onclick="if(${s.n}<${step + 1}){STATE._nsStep=${s.n};renderView()}"
+            <button onclick="nsGoToStep(${s.n})"
               class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm border-2 transition-all shrink-0
                 ${done ? 'bg-brand-500 border-brand-500 text-white cursor-pointer' : active ? 'border-brand-500 text-brand-600 bg-white' : 'border-ink-200 text-ink-400 bg-white cursor-default'}">
               ${done ? `<i data-lucide="check" class="w-4 h-4"></i>` : s.n}
@@ -430,13 +415,34 @@ function viewNewServicePage() {
 }
 
 /* ============================================================
+ * [M2] nsGoToStep — navega para um step coletando dados do atual
+ * ============================================================ */
+function nsGoToStep(targetStep) {
+  const currentStep = STATE._nsStep || 1;
+  /* Só permite ir para steps já visitados (menor ou igual ao atual + 1) */
+  if (targetStep > currentStep) return; // steps futuros estão bloqueados
+  if (targetStep === currentStep) return;
+
+  /* Coleta dados do step atual antes de navegar (igual ao nsWizardNavPage) */
+  _nsCollectCurrentStep(currentStep);
+
+  STATE._nsStep = targetStep;
+  renderView();
+
+  if (targetStep === 2) {
+    setTimeout(() => { renderFaqBuilder(); renderRequirementsBuilder(); }, 0);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
  * NAVEGAÇÃO DO WIZARD
  * ============================================================ */
 
 function nsWizardNavPage(dir) {
   const step = STATE._nsStep || 1;
 
-  /* Salva valores do step atual */
+  /* [H1] Coleta + valida (validação só quando dir=1) */
   if (step === 1) {
     const title = (document.getElementById('ns-title')?.value || '').trim();
     if (dir === 1 && !title) { toast('Informe um título para o serviço.', 'warn'); return; }
@@ -445,41 +451,74 @@ function nsWizardNavPage(dir) {
     STATE._nsV.co    = document.getElementById('ns-co')?.value   || '';
     STATE._nsV.tags  = (document.getElementById('ns-tags')?.value || '').trim();
   }
+
   if (step === 2) {
     const desc = (document.getElementById('ns-desc')?.value || '').trim();
     if (dir === 1 && desc.length < 20) { toast('Descrição muito curta — mínimo 20 caracteres.', 'warn'); return; }
     STATE._nsV.desc = desc;
+    /* [H1] Coleta FAQs e Requirements em QUALQUER direção */
     collectFaqsFromBuilder();
     collectRequirementsFromBuilder();
   }
+
   if (step === 3) {
     const price = parseFloat(document.getElementById('ns-price')?.value || '0');
     const days  = parseInt(document.getElementById('ns-days')?.value  || '0', 10);
+    /* [H3] Validação só ao avançar; ao voltar, salva o que tiver */
     if (dir === 1 && (!price || price < 1)) { toast('Defina um preço válido.', 'warn'); return; }
     if (dir === 1 && (!days  || days  < 1)) { toast('Defina um prazo válido.', 'warn'); return; }
-    if (price) STATE._nsV.price = price;
-    if (days)  STATE._nsV.days  = days;
+    /* Salva preservando o valor anterior se o campo vier vazio (não sobrescreve com 0) */
+    if (price && price > 0) STATE._nsV.price = price;
+    if (days  && days  > 0) STATE._nsV.days  = days;
     STATE._nsV.inc = (document.getElementById('ns-inc')?.value || '').trim();
   }
 
   STATE._nsStep = Math.max(1, Math.min(4, step + dir));
   renderView();
 
+  /* [H2] Sem RAF duplicado aqui — a inicialização está em viewNewServicePage */
   if ((STATE._nsStep || 1) === 2) {
-    requestAnimationFrame(() => { renderFaqBuilder(); renderRequirementsBuilder(); });
+    setTimeout(() => { renderFaqBuilder(); renderRequirementsBuilder(); }, 0);
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/**
+ * Helper interno: coleta os valores do step indicado sem validação.
+ * Usado por nsGoToStep para preservar dados ao clicar na step bar.
+ */
+function _nsCollectCurrentStep(step) {
+  if (step === 1) {
+    STATE._nsV.title = (document.getElementById('ns-title')?.value || '').trim();
+    STATE._nsV.cat   = document.getElementById('ns-cat')?.value  || STATE._nsV.cat;
+    STATE._nsV.co    = document.getElementById('ns-co')?.value   || STATE._nsV.co;
+    STATE._nsV.tags  = (document.getElementById('ns-tags')?.value || '').trim();
+  }
+  if (step === 2) {
+    const desc = (document.getElementById('ns-desc')?.value || '').trim();
+    if (desc) STATE._nsV.desc = desc;
+    collectFaqsFromBuilder();
+    collectRequirementsFromBuilder();
+  }
+  if (step === 3) {
+    const price = parseFloat(document.getElementById('ns-price')?.value || '0');
+    const days  = parseInt(document.getElementById('ns-days')?.value || '0', 10);
+    if (price > 0) STATE._nsV.price = price;
+    if (days  > 0) STATE._nsV.days  = days;
+    STATE._nsV.inc = (document.getElementById('ns-inc')?.value || '').trim();
+  }
 }
 
 /* ============================================================
  * UPLOAD DE MÍDIA
  * ============================================================ */
 
+/* [L1] Limite alinhado com o texto exibido na UI (5MB) */
 function handleLogoUpload(e) {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
-  if (!file.type.startsWith('image/'))    { toast('Arquivo inválido. Use PNG, JPG ou SVG.', 'warn'); return; }
-  if (file.size > 2 * 1024 * 1024)        { toast('Imagem muito grande (máx 2MB).', 'warn'); return; }
+  if (!file.type.startsWith('image/'))    { toast('Arquivo inválido. Use PNG, JPG ou WebP.', 'warn'); return; }
+  if (file.size > 5 * 1024 * 1024)        { toast('Imagem muito grande (máx 5MB).', 'warn'); return; }
   const reader = new FileReader();
   reader.onload = ev => {
     STATE.newServiceLogo = ev.target.result;
@@ -508,10 +547,11 @@ function handleGalleryUpload(e) {
   if (remaining <= 0) { toast(`Limite de ${MAX} imagens atingido.`, 'warn'); e.target.value = ''; return; }
   files.slice(0, remaining).forEach(file => {
     if (!file.type.startsWith('image/'))  { toast('Arquivo inválido: ' + file.name, 'warn'); return; }
-    if (file.size > 2 * 1024 * 1024)      { toast(`${file.name}: máx 2MB`, 'warn'); return; }
+    if (file.size > 5 * 1024 * 1024)      { toast(`${file.name}: máx 5MB`, 'warn'); return; }
     const reader = new FileReader();
     reader.onload = ev => {
       STATE.newServiceGallery.push(ev.target.result);
+      /* [C2] renderGalleryPreview encontra o id correto no Step 3 */
       renderGalleryPreview();
     };
     reader.readAsDataURL(file);
@@ -524,9 +564,14 @@ function removeGalleryImg(idx) {
   renderGalleryPreview();
 }
 
+/* [C2] Busca id="ns-gallery-grid" que agora existe no HTML do Step 3 */
 function renderGalleryPreview() {
   const grid = document.getElementById('ns-gallery-grid');
   if (!grid) return;
+  if (!STATE.newServiceGallery.length) {
+    grid.innerHTML = '';
+    return;
+  }
   grid.innerHTML = STATE.newServiceGallery.map((src, i) => `
     <div class="relative group rounded-xl overflow-hidden border border-ink-100" style="aspect-ratio:1/1">
       <img src="${src}" class="w-full h-full object-cover"/>
@@ -553,7 +598,7 @@ function handleServiceGalleryUpload(e, serviceId) {
   if (remaining <= 0) { toast(`Limite de ${MAX} fotos atingido.`, 'warn'); e.target.value = ''; return; }
   const batch = files.slice(0, remaining).filter(file => {
     if (!file.type.startsWith('image/')) { toast('Arquivo inválido: ' + file.name, 'warn'); return false; }
-    if (file.size > 2 * 1024 * 1024)     { toast(`${file.name}: máx 2MB`, 'warn'); return false; }
+    if (file.size > 5 * 1024 * 1024)     { toast(`${file.name}: máx 5MB`, 'warn'); return false; }
     return true;
   });
   if (!batch.length) { e.target.value = ''; return; }
@@ -669,12 +714,14 @@ function removeFaq(faqId) {
   if (i >= 0) { STATE.newServiceFaqs.splice(i, 1); renderFaqBuilder(); }
 }
 
+/* oninput atualiza STATE diretamente — fonte de verdade independe do DOM */
 function updateFaqField(faqId, key, value) {
   const f = STATE.newServiceFaqs.find(x => x.id === faqId);
   if (f) f[key] = value;
 }
 
 function collectFaqsFromBuilder() {
+  /* Tenta ler do DOM se os inputs existirem; caso contrário usa STATE como está */
   STATE.newServiceFaqs.forEach(f => {
     const q = document.getElementById('faq-q-' + f.id);
     const a = document.getElementById('faq-a-' + f.id);
@@ -741,6 +788,7 @@ function updateRequirementField(reqId, key, value) {
 }
 
 function collectRequirementsFromBuilder() {
+  /* Tenta ler do DOM se os inputs existirem; caso contrário usa STATE como está */
   STATE.newServiceRequirements.forEach(r => {
     const lab = document.getElementById('req-lbl-' + r.id);
     const typ = document.getElementById('req-typ-' + r.id);
@@ -920,7 +968,6 @@ function submitRequirements(orderId) {
   closeModal();
   toast('Formulário enviado on-chain. Prazo iniciado.', 'success');
   render();
-  // ATV modal: espera render() terminar, então exibe após 800ms
   setTimeout(showAtvRewardsOffer, 800);
 }
 
@@ -942,8 +989,14 @@ function createService() {
 
   if (!title || !desc || !price) { toast('Preencha título, descrição e preço.', 'warn'); return; }
 
-  const requirements = collectRequirementsFromBuilder();
-  const faqs         = collectFaqsFromBuilder();
+  /* [H4] Usa STATE diretamente — DOM do Step 2 não existe no Step 4 */
+  const requirements = STATE.newServiceRequirements
+    .filter(r => (r.label || '').trim())
+    .map(r => ({ id: r.id, type: r.type, label: r.label, required: !!r.required, options: r.options || [], placeholder: r.placeholder || '' }));
+
+  const faqs = STATE.newServiceFaqs
+    .filter(f => (f.q || '').trim() && (f.a || '').trim())
+    .map(f => ({ id: f.id, q: f.q, a: f.a }));
 
   const svc = {
     id:           uid('s'),
@@ -1048,8 +1101,16 @@ function saveService(id) {
   s.description  = desc;
   s.includes     = inc.length ? inc : ['Pacote padrão'];
   s.tags         = tags;
-  s.requirements = collectRequirementsFromBuilder();
-  s.faqs         = collectFaqsFromBuilder();
+
+  /* [H4] Usa STATE diretamente — DOM do Step 2 não existe no Step 4 */
+  s.requirements = STATE.newServiceRequirements
+    .filter(r => (r.label || '').trim())
+    .map(r => ({ id: r.id, type: r.type, label: r.label, required: !!r.required, options: r.options || [], placeholder: r.placeholder || '' }));
+
+  s.faqs = STATE.newServiceFaqs
+    .filter(f => (f.q || '').trim() && (f.a || '').trim())
+    .map(f => ({ id: f.id, q: f.q, a: f.a }));
+
   s.thumb        = STATE.newServiceLogo || thumbSVG(title, (CATEGORIES.find(c => c.id === cat)?.color || '#1a73e8'));
   s.gallery      = STATE.newServiceGallery.slice();
 
@@ -1064,13 +1125,15 @@ function saveService(id) {
 
   persistNow();
   toast('Serviço atualizado!', 'success');
-  closeModal();
+
+  /* [C3] Sem closeModal() — o wizard roda como página, não como modal */
   STATE.route        = 'dashboard';
   STATE.dashboardTab = 'freelancer';
+  STATE._frTab       = 'services';
   renderView();
 }
 
-/** Exclui um serviço (bloqueia se houver pedidos em aberto). */
+/** Exclui um serviço — usa modal customizado em vez de confirm() nativo. */
 function deleteService(id) {
   const s = getService(id);
   if (!s) return;
@@ -1083,8 +1146,43 @@ function deleteService(id) {
     toast(`Não é possível excluir: existem ${openOrders.length} pedido(s) em andamento.`, 'warn');
     return;
   }
-  if (!confirm(`Excluir o serviço "${s.title}"?\n\nEssa ação não pode ser desfeita.`)) return;
 
+  /* [M3] Modal customizado em vez de confirm() — funciona em iframes e mobile */
+  document.getElementById('modal-root').innerHTML = `
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in"
+       onclick="if(event.target===this)closeModal()">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
+      <div class="px-5 pt-4 pb-3 border-b border-ink-100 flex items-center gap-2">
+        <div class="font-extrabold text-sm flex items-center gap-2 flex-1 text-rose-700">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>Excluir serviço
+        </div>
+        <button onclick="closeModal()" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50">
+          <i data-lucide="x" class="w-4 h-4 text-ink-500"></i>
+        </button>
+      </div>
+      <div class="px-6 pb-6 pt-4 space-y-4">
+        <p class="text-sm text-ink-600 leading-relaxed">
+          Tem certeza que quer excluir <strong class="text-ink-900">"${escapeHtml(s.title)}"</strong>?<br/>
+          Essa ação não pode ser desfeita.
+        </p>
+        <div class="flex gap-2">
+          <button onclick="closeModal()"
+            class="flex-1 border border-ink-200 hover:bg-ink-50 font-semibold py-2.5 rounded-xl text-sm">
+            Cancelar
+          </button>
+          <button onclick="_confirmDeleteService('${id}')"
+            class="flex-[2] bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>Sim, excluir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  icons();
+}
+
+/** Executa a exclusão após confirmação no modal. */
+function _confirmDeleteService(id) {
   const idx = DB.services.findIndex(x => x.id === id);
   if (idx >= 0) DB.services.splice(idx, 1);
 
