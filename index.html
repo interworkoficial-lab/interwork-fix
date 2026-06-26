@@ -8192,6 +8192,46 @@ async function adminRejectConfirm(id){
 }
 
 /* ============================================================ */
+/* ============================================================ */
+
+window.addEventListener('DOMContentLoaded', () => {
+  initMock();
+  DB.services.forEach(s => s._mock = true);
+  DB_MOCKS.services = [...DB.services];
+  startPersistence();
+  bindRouter();
+
+  runAutoApprove();
+  setInterval(runAutoApprove, 60_000);
+
+  setInterval(()=>{
+    const hasDelivered = STATE.orders.some(o => o.status === 'delivered');
+    if (hasDelivered && ['dashboard'].includes(STATE.route)) render();
+  }, 60_000);
+
+  function bindFilterPin(){
+    const bar = document.querySelector('.filters-sticky');
+    const spacer = document.querySelector('.filters-sticky-spacer');
+    if (bar) bar.classList.remove('is-pinned');
+    if (spacer){ spacer.classList.remove('is-active'); spacer.style.height = '0px'; }
+  }
+
+  const origRender = window.renderView;
+  if (typeof origRender === 'function'){
+    window.renderView = function(){ origRender.apply(this, arguments); setTimeout(bindFilterPin, 0); };
+  }
+  setTimeout(bindFilterPin, 100);
+
+  if (SB_READY) {
+    sbInitAuth().then(() => {
+      sbLoadServices();
+      sbSubscribeServices();
+    });
+  } else {
+    DB.services.forEach(s => s._mock = true);
+  }
+});
+
 async function sbLoadServices(){
   if (!sb) return;
   const { data, error } = await sb
@@ -8199,18 +8239,12 @@ async function sbLoadServices(){
     .select('*')
     .order('created_at', { ascending: false });
   if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
-
   const realServices = (data || []).map(sbSvcToLocal);
   const realIds = new Set(realServices.map(s => s.id));
   const mocks = DB_MOCKS.services.filter(s => !realIds.has(s.id));
   DB.services = [...realServices, ...mocks];
   renderView();
 }
-  bindRouter();
-  // Proteção extra: se Supabase não está configurado, admin só mostra tela de login (STATE.isAdmin = false por padrão)
-
-  // ── Auto-approve engine: run once on boot, then every 60 s ──
-  runAutoApprove();
   setInterval(runAutoApprove, 60_000);
 
 
