@@ -1,0 +1,108 @@
+/* ─────────────────────────────────────────────────────────
+   INTERWORK — CSS FIXES
+   Inclua este arquivo APÓS o style.css principal:
+   <link rel="stylesheet" href="interwork-fixes.css">
+   ───────────────────────────────────────────────────────── */
+
+/* 1. Modal edit profile — garante scroll interno sem vazar */
+#modal-root > div > div {
+  max-height: min(92vh, 720px);
+}
+
+/* 2. Chat drawer — impede que conflite com z-index do header */
+#chat-root > div {
+  z-index: 45; /* abaixo do modal (z-50) mas acima do conteúdo */
+}
+
+/* 3. Chat stream — scroll suave sem flash ao re-renderizar */
+#chat-stream {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 4. Profile dropdown — garantia de posicionamento correto */
+#profile-dropdown {
+  position: fixed !important;
+  top: 56px !important;   /* altura exata do header (h-14 = 56px) */
+  right: 12px !important;
+  left: auto !important;
+  z-index: 60 !important;
+}
+
+/* 5. Chat bubble — evita overflow de texto longo */
+#chat-stream .max-w-\[80\%\] {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 6. Textarea do chat — grow suave */
+#chat-input {
+  transition: height 0.1s ease;
+  field-sizing: content;
+}
+
+/* 7. Stepper no chat — não mostra quando vazio */
+#chat-root [data-no-stepper] {
+  display: none;
+}
+
+/* 8. Profile avatar hover — cursor pointer sempre */
+.profile-avatar-img {
+  cursor: default;
+}
+.profile-avatar-img + button {
+  cursor: pointer;
+}
+
+/* 9. Sortmenu — garantia de z-index correto sobre a grid */
+#sortMenu {
+  z-index: 30;
+}
+
+/* 10. Modal — scroll interno sempre visível no iOS */
+#modal-root .overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* 11. Dropdown do menu — transição suave */
+#profile-dropdown,
+#lang-menu {
+  transition: opacity 0.1s ease;
+}
+#profile-dropdown.hidden,
+#lang-menu.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+#profile-dropdown:not(.hidden),
+#lang-menu:not(.hidden) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 12. Chat — staging area não empurra o form inesperadamente */
+#chat-attach-staging {
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+/* 13. Thumb alt hover — feedback visual claro */
+.thumb-alt {
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.15s;
+}
+.thumb-alt.active,
+.thumb-alt:hover {
+  opacity: 1;
+  ring: 2px;
+  ring-color: #8b7cff;
+}
+
+/* 14. Tag de ADMIN em viewWallet */
+.chip.admin-warning {
+  background: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
