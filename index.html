@@ -8206,11 +8206,23 @@ async function adminRejectConfirm(id){
 }
 
 /* ============================================================ */
-window.addEventListener('DOMContentLoaded', () => {
-  initMock();
-  DB.services.forEach(s => s._mock = true); // marca ANTES do Supabase sobrescrever
-  const restored = restorePersistedData();
-  startPersistence();
+async function sbLoadServices(){
+  if (!sb) return;
+  const { data, error } = await sb
+    .from('services')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
+
+  const realServices = (data || []).map(sbSvcToLocal);
+  const realIds = new Set(realServices.map(s => s.id));
+  
+  // Pega os mocks salvos separado, nunca perde
+  const mocks = DB_MOCKS.services.filter(s => !realIds.has(s.id));
+  
+  DB.services = [...realServices, ...mocks];
+  renderView();
+}
   bindRouter();
   // Proteção extra: se Supabase não está configurado, admin só mostra tela de login (STATE.isAdmin = false por padrão)
 
