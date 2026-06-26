@@ -7404,7 +7404,32 @@ async function sbInitAuth(){
   });
 }
 
+async function sbLoadServices(){
+  if (!sb) return;
+  const { data, error } = await sb
+    .from('services')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
 
+  // ALTERADO — antes: qualquer linha no banco (mesmo pending/rejected) já mesclava com mocks.
+  // Agora: os mocks só permanecem como fallback até existir pelo menos 1 serviço REAL APROVADO.
+  // Assim que o primeiro serviço real for aprovado, os mocks somem por completo da listagem.
+  const approvedReal = (data || []).filter(s => s.status === 'approved');
+  if (approvedReal.length > 0) {
+    DB.services = data.map(sbSvcToLocal); // só dados reais (todos os status, p/ admin/dono ver os próprios)
+  }
+  // Se ainda não há nenhum serviço real aprovado, DB.services continua com os mocks do initMock,
+  // mas qualquer serviço real (mesmo pending) já fica disponível pra quem precisa vê-lo (admin/dono).
+  else if (data && data.length > 0) {
+    const dbIds = new Set(data.map(s => s.id));
+    DB.services = [
+      ...data.map(sbSvcToLocal),
+      ...DB.services.filter(s => s._mock && !dbIds.has(s.id)),
+    ];
+  }
+  renderView();
+}
 
 // Salva um serviço novo no Supabase
 async function sbCreateService(svc){
@@ -8192,20 +8217,11 @@ async function adminRejectConfirm(id){
 }
 
 /* ============================================================ */
-async function sbLoadServices(){
-  if (!sb) return;
-  const { data, error } = await sb
-    .from('services')
-    .select('*')
-    .order('created_at', { ascending: false });
-  if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
-
-  const realServices = (data || []).map(sbSvcToLocal);
-  const realIds = new Set(realServices.map(s => s.id));
-  const mocks = DB_MOCKS.services.filter(s => !realIds.has(s.id));
-  DB.services = [...realServices, ...mocks];
-  renderView();
-}
+window.addEventListener('DOMContentLoaded', () => {
+  initMock();
+  DB.services.forEach(s => s._mock = true); // marca ANTES do Supabase sobrescrever
+  const restored = restorePersistedData();
+  startPersistence();
   bindRouter();
   // Proteção extra: se Supabase não está configurado, admin só mostra tela de login (STATE.isAdmin = false por padrão)
 
