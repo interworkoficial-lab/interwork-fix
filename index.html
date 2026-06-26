@@ -2385,7 +2385,7 @@ function filterServices(){
   // reseta a página pra 1 sempre que algum filtro/busca/ordenação mudar
   const sig = [STATE.category,STATE.country,STATE.ratingMin,STATE.priceMax,STATE.priceMin,STATE.verifiedOnly,STATE.availableOnly,STATE.sort,STATE.query,STATE.trendingActive].join('|');
   if (STATE._filterSig !== sig){ STATE._filterSig = sig; STATE.page = 1; }
-  let arr = DB.services.filter(sv=>!sv.status||sv.status==='approved');
+  let arr = DB.services.filter(sv => sv._mock || sv.status === 'approved');
   if (STATE.category!=='all') arr = arr.filter(s=>s.category===STATE.category);
   if (STATE.country!=='all')  arr = arr.filter(s=>s.country===STATE.country);
   if (STATE.ratingMin>0)      arr = arr.filter(s=>s.rating>=STATE.ratingMin);
