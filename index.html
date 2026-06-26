@@ -7424,9 +7424,9 @@ async function sbLoadServices(){
   else if (data && data.length > 0) {
     const dbIds = new Set(data.map(s => s.id));
     DB.services = [
-      ...data.map(sbSvcToLocal),
-      ...DB.services.filter(s => s._mock && !dbIds.has(s.id)),
-    ];
+  ...data.filter(s => s.status === 'approved').map(sbSvcToLocal),
+  ...DB.services.filter(s => s._mock && !dbIds.has(s.id)),
+];
   }
   renderView();
 }
