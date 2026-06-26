@@ -1220,6 +1220,8 @@ function renderView(){
     case 'u':        v.innerHTML = viewProfile(STATE.selectedProfileHandle); break;
     case 'admin':    v.innerHTML = viewAdmin(); break;
     case 'earn':     v.innerHTML = viewEarnITL(); break;
+    case 'community':v.innerHTML = viewCommunityRewards(); break;
+    case 'why-join': v.innerHTML = viewWhyJoin(); break;
     case 'new-service': v.innerHTML = isAuthed() ? viewNewServicePage() : viewAuthRequired(); break;
     case 'home':
     default:         v.innerHTML = viewHome();
@@ -1353,8 +1355,8 @@ function renderHeader(){
      <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
   <a href="#/earn" class="hover:text-slate-900 transition ${STATE.route==='earn'?'text-brand-600 font-bold':''}">Earn ITL</a>
   <a href="#/how" class="hover:text-slate-900 transition">How It Works</a>
-  <a href="#/home" class="hover:text-slate-900 transition">Community</a>
-  <button onclick="openNewServiceModal()" class="hover:text-slate-900 transition ${STATE.route==='new-service'?'text-brand-600 font-bold':''}">Sell a Service</button>
+  <a href="#/community" class="hover:text-slate-900 transition ${STATE.route==='community'?'text-brand-600 font-bold':''}">Community Rewards</a>
+  <a href="#/why-join" class="hover:text-slate-900 transition ${STATE.route==='why-join'?'text-brand-600 font-bold':''}">Why Join</a>
 </nav>
 
       <!-- Right Actions -->
@@ -1482,9 +1484,8 @@ function renderHeader(){
       <nav class="px-4 py-4 flex flex-col gap-2 text-sm font-medium text-slate-700">
   <a href="#/earn" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='earn'?'bg-slate-50 text-brand-600 font-bold':''}">Earn ITL</a>
   <a href="#/how" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
-  <a href="#/home" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">Community</a>
-  <button onclick="toggleMobileMenu();openNewServiceModal()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 text-left w-full ${STATE.route==='new-service'?'bg-slate-50 text-brand-600 font-bold':''}">Sell a Service</button>
-        <button onclick="toggleMobileMenu();openNewServiceModal()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 text-left w-full ${STATE.route==='new-service'?'bg-slate-50 text-brand-600 font-bold':''}">Sell a Service</button>
+  <a href="#/community" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='community'?'bg-slate-50 text-brand-600 font-bold':''}">Community Rewards</a>
+  <a href="#/why-join" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='why-join'?'bg-slate-50 text-brand-600 font-bold':''}">Why Join</a>
         <div class="border-t border-slate-100 mt-2 pt-2">
            <button onclick="toggleLangMenu(event)" class="w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between">
               <span>Language: ${langObj.label}</span>
@@ -7281,7 +7282,9 @@ function readRoute(){
   const param = parts[0] === 'new' && parts[1] === 'service' ? parts[2] : parts[1];
   STATE.route = route;
   if (route === 'service' && param) STATE.selectedServiceId = param;
-  if (route === 'earn') STATE.route = 'earn';
+ if (route === 'earn') STATE.route = 'earn';
+if (route === 'community') STATE.route = 'community';
+if (route === 'why-join') STATE.route = 'why-join';
   if (route === 'new-service') {
     // Inicializa o wizard se ainda não foi iniciado
     if (!STATE._nsV) {
@@ -8550,6 +8553,212 @@ window.viewProfile = function(handle){
   </div>`;
 };
 /* ---------- VIEW: EARN ITL ---------- */
+    function viewCommunityRewards(){
+  return `
+  <div class="bg-white min-h-screen">
+
+    <!-- Hero -->
+    <section class="bg-slate-900 text-white py-12 md:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/20 border border-brand-500/30 text-brand-400 text-[10px] font-bold uppercase tracking-widest mb-4">
+          <i class="ri-coin-line"></i> Community Rewards
+        </span>
+        <h1 class="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight">Earn INTER by contributing<br/><span class="text-brand-400">to the network</span></h1>
+        <p class="text-slate-400 text-sm leading-relaxed max-w-xl">INTER is earned through verified actions — not speculation. Every completed job, validated transaction, and network contribution is recorded on-chain and converted into real reward.</p>
+      </div>
+    </section>
+
+    <!-- Steps -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+      <div class="divide-y divide-slate-100">
+
+        <!-- Step 1 -->
+        <div class="flex gap-5 py-7">
+          <div class="flex flex-col items-center min-w-[40px]">
+            <div class="w-10 h-10 rounded-full bg-[#EEEDFE] text-[#534AB7] font-bold flex items-center justify-center shrink-0">1</div>
+            <div class="w-px flex-1 mt-2 bg-gradient-to-b from-[#AFA9EC] to-[#9FE1CB]"></div>
+          </div>
+          <div class="pt-2 flex-1">
+            <div class="font-semibold text-slate-900 mb-1">Connect your wallet and join InterWork</div>
+            <p class="text-sm text-slate-500 leading-relaxed">Sign up with any EVM-compatible wallet. Your identity is verified on-chain — no middlemen, no paperwork. Early participants receive a genesis certification badge.</p>
+            <span class="inline-flex items-center gap-1 mt-3 text-[11px] font-semibold px-2 py-1 rounded bg-[#EEEDFE] text-[#534AB7] border border-[#AFA9EC]">
+              <i class="ri-link"></i> On-chain identity
+            </span>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex gap-5 py-7">
+          <div class="flex flex-col items-center min-w-[40px]">
+            <div class="w-10 h-10 rounded-full bg-[#E1F5EE] text-[#0F6E56] font-bold flex items-center justify-center shrink-0">2</div>
+            <div class="w-px flex-1 mt-2 bg-[#9FE1CB]"></div>
+          </div>
+          <div class="pt-2 flex-1">
+            <div class="font-semibold text-slate-900 mb-1">Complete real jobs or validate transactions</div>
+            <p class="text-sm text-slate-500 leading-relaxed">Work as a freelancer and get paid in INTER via escrow. Or act as a validator in the ATV framework, confirming real-world transactions that define the token's measured value.</p>
+            <span class="inline-flex items-center gap-1 mt-3 text-[11px] font-semibold px-2 py-1 rounded bg-[#E1F5EE] text-[#085041] border border-[#5DCAA5]">
+              <i class="ri-checkbox-circle-line"></i> Verified contribution
+            </span>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex gap-5 py-7">
+          <div class="flex flex-col items-center min-w-[40px]">
+            <div class="w-10 h-10 rounded-full bg-[#E1F5EE] text-[#0F6E56] font-bold flex items-center justify-center shrink-0">3</div>
+            <div class="w-px flex-1 mt-2 bg-[#9FE1CB]"></div>
+          </div>
+          <div class="pt-2 flex-1">
+            <div class="font-semibold text-slate-900 mb-1">Smart contracts release INTER automatically</div>
+            <p class="text-sm text-slate-500 leading-relaxed">Once the client approves delivery, the escrow contract releases INTER directly to your wallet — no delays, no third parties. The code enforces the agreement.</p>
+            <span class="inline-flex items-center gap-1 mt-3 text-[11px] font-semibold px-2 py-1 rounded bg-[#EAF3DE] text-[#27500A] border border-[#97C459]">
+              <i class="ri-flashlight-line"></i> Instant settlement
+            </span>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="flex gap-5 py-7">
+          <div class="flex flex-col items-center min-w-[40px]">
+            <div class="w-10 h-10 rounded-full bg-[#EAF3DE] text-[#3B6D11] font-bold flex items-center justify-center shrink-0">4</div>
+            <div class="w-px flex-1 mt-2 bg-[#C0DD97]"></div>
+          </div>
+          <div class="pt-2 flex-1">
+            <div class="font-semibold text-slate-900 mb-1">Build your on-chain reputation</div>
+            <p class="text-sm text-slate-500 leading-relaxed">Every completed transaction adds to your verifiable track record — ratings, completed jobs, and ATV validations are stored as soulbound tokens. Your reputation grows with your work.</p>
+            <span class="inline-flex items-center gap-1 mt-3 text-[11px] font-semibold px-2 py-1 rounded bg-[#E1F5EE] text-[#085041] border border-[#5DCAA5]">
+              <i class="ri-shield-check-line"></i> Soulbound badges
+            </span>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="flex gap-5 py-7">
+          <div class="flex flex-col items-center min-w-[40px]">
+            <div class="w-10 h-10 rounded-full bg-[#FAEEDA] text-[#854F0B] font-bold flex items-center justify-center shrink-0">5</div>
+          </div>
+          <div class="pt-2 flex-1">
+            <div class="font-semibold text-slate-900 mb-1">Shape the ecosystem as an early mover</div>
+            <p class="text-sm text-slate-500 leading-relaxed">Early participants gain governance weight, foundation support, and positioning in the InterLink DAO. The network rewards those who build it from the ground up.</p>
+            <span class="inline-flex items-center gap-1 mt-3 text-[11px] font-semibold px-2 py-1 rounded bg-[#FAEEDA] text-[#633806] border border-[#EF9F27]">
+              <i class="ri-group-line"></i> Governance access
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Highlight box -->
+      <div class="mt-4 flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-2xl p-5">
+        <div class="w-11 h-11 rounded-xl bg-brand-50 grid place-items-center shrink-0">
+          <i class="ri-lock-unlock-line text-xl text-brand-500"></i>
+        </div>
+        <p class="text-sm text-slate-600 leading-relaxed"><strong class="text-slate-900">Everything is transparent.</strong> Transaction records, reward distribution, and reputation scores are publicly verifiable on the InterLink chain. No black boxes, no surprises.</p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="bg-slate-900 py-12">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+        <h2 class="text-2xl font-extrabold text-white mb-3">Ready to start earning?</h2>
+        <p class="text-slate-400 text-sm mb-6">Connect your wallet and make your first contribution today.</p>
+        <button onclick="openConnectWallet()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-8 py-3 rounded-xl text-sm transition shadow-lg">
+          Connect Wallet &amp; Start Earning
+        </button>
+      </div>
+    </section>
+
+  </div>`;
+}
+
+function viewWhyJoin(){
+  return `
+  <div class="bg-white min-h-screen">
+
+    <!-- Hero -->
+    <section class="bg-slate-900 text-white py-12 md:py-16">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold uppercase tracking-widest mb-4">
+          <i class="ri-star-line"></i> Why join early
+        </span>
+        <h1 class="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight">Built for people<br/><span class="text-emerald-400">who build first</span></h1>
+        <p class="text-slate-400 text-sm leading-relaxed max-w-xl">Early participants don't just earn INTER — they help define what the network becomes. Here's what that means in practice.</p>
+      </div>
+    </section>
+
+    <!-- Cards -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+      <div class="grid md:grid-cols-2 gap-4">
+
+        <!-- Card destaque -->
+        <div class="md:col-span-2 bg-[#EEEDFE] border border-[#AFA9EC] rounded-2xl p-6">
+          <div class="w-9 h-9 rounded-xl bg-[#534AB7]/20 grid place-items-center mb-4">
+            <i class="ri-medal-line text-xl text-[#534AB7]"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2">On-chain certification — yours permanently</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Your genesis certification badge is minted as a soulbound token. It records your participation date, contribution type, and ATV validation count. Not a screenshot — a permanent, public, on-chain credential that follows your wallet everywhere.</p>
+          <span class="inline-block mt-4 text-[11px] font-semibold px-3 py-1 rounded-full bg-[#EEEDFE] text-[#3C3489] border border-[#AFA9EC]">Non-transferable · Permanent</span>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-[#E1F5EE] border border-[#9FE1CB] rounded-2xl p-6">
+          <div class="w-9 h-9 rounded-xl bg-[#0F6E56]/10 grid place-items-center mb-4">
+            <i class="ri-coin-line text-xl text-[#0F6E56]"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2">INTER earned by doing real work</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Every job you complete, every transaction you validate contributes to the ATV and earns INTER at the same time. Value comes from verified activity — not from holding or waiting.</p>
+          <span class="inline-block mt-4 text-[11px] font-semibold px-3 py-1 rounded-full bg-[#E1F5EE] text-[#085041] border border-[#5DCAA5]">Paid on delivery</span>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-[#EAF3DE] border border-[#97C459] rounded-2xl p-6">
+          <div class="w-9 h-9 rounded-xl bg-[#3B6D11]/10 grid place-items-center mb-4">
+            <i class="ri-share-box-line text-xl text-[#3B6D11]"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2">Impact that actually shows up in the data</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Each validated transaction you submit becomes part of the ATV framework — the model that defines INTER's measured value. Your activity is not a footnote; it's a data point in the foundation.</p>
+          <span class="inline-block mt-4 text-[11px] font-semibold px-3 py-1 rounded-full bg-[#EAF3DE] text-[#27500A] border border-[#97C459]">Counted in ATV</span>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="bg-[#FAEEDA] border border-[#EF9F27] rounded-2xl p-6">
+          <div class="w-9 h-9 rounded-xl bg-[#854F0B]/10 grid place-items-center mb-4">
+            <i class="ri-line-chart-line text-xl text-[#854F0B]"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2">Early mover positioning</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">The InterLink Foundation provides direct support to early participants — technical onboarding, governance access, and priority in the network's expansion initiatives. Positions fill as the ecosystem grows.</p>
+          <span class="inline-block mt-4 text-[11px] font-semibold px-3 py-1 rounded-full bg-[#FAEEDA] text-[#633806] border border-[#EF9F27]">Foundation-supported</span>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="bg-white border border-[#AFA9EC] rounded-2xl p-6">
+          <div class="w-9 h-9 rounded-xl bg-[#534AB7]/10 grid place-items-center mb-4">
+            <i class="ri-scales-line text-xl text-[#534AB7]"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-2">A voice in governance — from day one</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Early participants accumulate governance weight proportional to their verified contributions. That weight carries into the DAO voting structure as the network matures — not as a promise, but as a mechanism already built into the contracts.</p>
+          <span class="inline-block mt-4 text-[11px] font-semibold px-3 py-1 rounded-full bg-[#EEEDFE] text-[#3C3489] border border-[#AFA9EC]">DAO voting weight</span>
+        </div>
+
+      </div>
+
+      <!-- CTA final -->
+      <div class="mt-10 rounded-2xl bg-slate-900 p-8 text-center">
+        <h2 class="text-2xl font-extrabold text-white mb-2">Join before the network fills up</h2>
+        <p class="text-slate-400 text-sm mb-6 max-w-md mx-auto">Early positions are limited. The sooner you contribute, the more governance weight and foundation support you receive.</p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <button onclick="openConnectWallet()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-7 py-3 rounded-xl text-sm transition shadow-lg">
+            Connect Wallet &amp; Join Now
+          </button>
+          <a href="#/community" class="bg-white/10 hover:bg-white/20 text-white font-bold px-7 py-3 rounded-xl text-sm transition border border-white/20">
+            See how rewards work
+          </a>
+        </div>
+      </div>
+
+    </section>
+  </div>`;
+}
 function viewEarnITL(){
   // Filtra apenas os 5 produtos mock iniciais para inspiração
   const inspirationGigs = DB.services.filter(s => s._mock).slice(0, 5);
