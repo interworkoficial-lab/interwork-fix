@@ -21,7 +21,13 @@
 /* ============================================================
  * HELPERS INTERNOS
  * ============================================================ */
-
+const REQ_TYPES = [
+  { id: 'text',     label: 'Texto curto' },
+  { id: 'textarea', label: 'Texto longo' },
+  { id: 'url',      label: 'Link/URL' },
+  { id: 'select',   label: 'Seleção' },
+  { id: 'file',     label: 'Arquivo' }
+];
 function isServiceOwner(s) {
   if (!s) return false;
   return s.freelancerId === STATE.currentUserId || s.freelancerId === 'u_ana';
