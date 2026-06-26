@@ -865,3 +865,760 @@ window.renderHeader = function() {
 };
 
 console.log('[InterWork Fixes] ✅ Patch carregado com sucesso.');
+/* ═══════════════════════════════════════════════════════════
+   INTERWORK — PATCH v2 (adicione ao FINAL do interwork-fixes.js)
+   Correções:
+     1. Tradução completa para inglês (textos fixos em PT)
+     2. Remove item "Carteira" (saldo fake) do dropdown do avatar
+     3. Modal editar perfil menor e mais compacto
+     4. Remove Online / SBT / Confiança do sidebar do perfil
+     5. Botão "My orders" no dropdown funciona corretamente
+     6. QR Code válido no pagamento
+     7. Header mobile proporcional (inspirado no LinkersMap)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────
+   1. TRADUÇÃO — substitui strings PT fixas por inglês
+   Sobrescreve as funções que tinham texto PT hardcoded
+   ───────────────────────────────────────────────────────── */
+
+/* statusChip em inglês */
+window.statusChip = function(status) {
+  const map = {
+    awaiting_requirements: ['Awaiting info',    'bg-amber-100 text-amber-800',   'info'],
+    in_progress:           ['In progress',       'bg-amber-50 text-amber-700',    'loader-2'],
+    awaiting_delivery:     ['In progress',       'bg-violet-50 text-violet-700',  'hourglass'],
+    delivered:             ['Delivered',          'bg-blue-50 text-blue-700',      'package'],
+    approved:              ['Approved',           'bg-emerald-50 text-emerald-700','check-circle-2'],
+    cancelled:             ['Cancelled',          'bg-slate-100 text-slate-700',   'x-circle'],
+    disputed:              ['In dispute',         'bg-rose-50 text-rose-700',      'alert-octagon'],
+  };
+  const [lbl, c, i] = map[status] || ['—', 'bg-ink-100 text-ink-700', 'circle'];
+  return `<span class="chip ${c}"><i data-lucide="${i}" class="w-3.5 h-3.5"></i>${lbl}</span>`;
+};
+
+/* clientActions em inglês */
+window.clientActions = function(o) {
+  if (o.status === 'cancelled') {
+    return `<span class="chip bg-slate-100 text-slate-700"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i>Cancelled</span>`;
+  }
+  if (o.cancelRequest && o.cancelRequest.by !== o.clientId) {
+    return `<button onclick="acceptCancellation('${o.id}','client')" class="chip bg-emerald-500 hover:bg-emerald-600 text-white"><i data-lucide="check" class="w-3.5 h-3.5"></i>Accept cancellation</button>`;
+  }
+  if (o.cancelRequest) {
+    return `<span class="chip bg-orange-50 text-orange-700"><i data-lucide="hourglass" class="w-3.5 h-3.5"></i>Cancellation requested</span>`;
+  }
+  if (o.status === 'awaiting_requirements') {
+    return `<button onclick="openRequirementsModal('${o.id}')" class="chip bg-amber-500 hover:bg-amber-600 text-white"><i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i>Fill in brief</button>
+      <button onclick="cancelOrder('${o.id}','client')" class="chip bg-slate-100 hover:bg-slate-200 text-slate-700"><i data-lucide="x" class="w-3.5 h-3.5"></i>Cancel</button>`;
+  }
+  if (o.status === 'delivered' && !o.rated) {
+    return `<button onclick="approveOrder('${o.id}')" class="chip bg-emerald-500 hover:bg-emerald-600 text-white"><i data-lucide="check" class="w-3.5 h-3.5"></i>Approve</button>`;
+  }
+  if (o.status === 'approved' && !o.rated) {
+    return `<button onclick="openRateModal('${o.id}')" class="chip bg-amber-400 hover:bg-amber-500 text-white"><i data-lucide="star" class="w-3.5 h-3.5"></i>Leave a review</button>`;
+  }
+  if (o.status === 'approved' && o.rated) {
+    return `<span class="chip bg-emerald-50 text-emerald-700"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>Completed</span>
+      <button onclick="openReceiptModal('${o.id}')" class="chip bg-ink-100/60 hover:bg-ink-100 text-ink-700" title="Download receipt"><i data-lucide="receipt" class="w-3.5 h-3.5"></i>Receipt</button>`;
+  }
+  if (o.status === 'in_progress' || o.status === 'awaiting_delivery') {
+    return `<button onclick="cancelOrder('${o.id}','client')" class="chip bg-slate-100 hover:bg-slate-200 text-slate-700"><i data-lucide="x" class="w-3.5 h-3.5"></i>Request cancellation</button>`;
+  }
+  return `<span class="chip bg-ink-100/60 text-ink-500"><i data-lucide="clock" class="w-3.5 h-3.5"></i>Waiting</span>`;
+};
+
+/* freelancerActions em inglês */
+window.freelancerActions = function(o) {
+  if (o.status === 'cancelled') {
+    return `<span class="chip bg-slate-100 text-slate-700"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i>Cancelled</span>`;
+  }
+  if (o.cancelRequest && o.cancelRequest.by !== o.freelancerId) {
+    return `<button onclick="acceptCancellation('${o.id}','freelancer')" class="chip bg-emerald-500 hover:bg-emerald-600 text-white"><i data-lucide="check" class="w-3.5 h-3.5"></i>Accept cancellation</button>`;
+  }
+  if (o.cancelRequest) {
+    return `<span class="chip bg-orange-50 text-orange-700"><i data-lucide="hourglass" class="w-3.5 h-3.5"></i>Cancellation requested</span>`;
+  }
+  if (o.status === 'awaiting_requirements') {
+    return `<span class="chip bg-amber-50 text-amber-700"><i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i>Awaiting brief</span>`;
+  }
+  if (o.status === 'in_progress' || o.status === 'awaiting_delivery') {
+    return `<button onclick="openDeliverModal('${o.id}')" class="chip bg-brand-500 hover:bg-brand-600 text-white"><i data-lucide="upload" class="w-3.5 h-3.5"></i>Deliver</button>
+      <button onclick="cancelOrder('${o.id}','freelancer')" class="chip bg-slate-100 hover:bg-slate-200 text-slate-700"><i data-lucide="x" class="w-3.5 h-3.5"></i>Cancel</button>`;
+  }
+  if (o.status === 'delivered') {
+    return `<span class="chip bg-violet-50 text-violet-700">Awaiting approval</span>`;
+  }
+  if (o.status === 'approved') {
+    return `<span class="chip bg-emerald-50 text-emerald-700">Received</span>
+      <button onclick="openReceiptModal('${o.id}')" class="chip bg-ink-100/60 hover:bg-ink-100 text-ink-700" title="Receipt"><i data-lucide="receipt" class="w-3.5 h-3.5"></i>Receipt</button>`;
+  }
+  return `<span class="chip bg-emerald-50 text-emerald-700">Received</span>`;
+};
+
+/* dashClient em inglês */
+window.dashClient = function() {
+  const orders = STATE.orders.filter(o => o.clientId === STATE.currentUserId);
+  const active  = orders.filter(o => !['approved','cancelled'].includes(o.status));
+  const done    = orders.filter(o => o.status === 'approved');
+  const tab     = STATE.clientOrdersTab === 'done' ? 'done' : 'active';
+  const listed  = tab === 'done' ? done : active;
+
+  return `
+  <div class="grid grid-cols-2 gap-3 mb-5">
+    <div class="bg-white border border-ink-100 rounded-2xl p-3">
+      <div class="text-xs text-ink-500 font-semibold mb-1">In progress</div>
+      <div class="text-2xl font-extrabold">${active.length}</div>
+    </div>
+    <div class="bg-white border border-ink-100 rounded-2xl p-3">
+      <div class="text-xs text-ink-500 font-semibold mb-1">Completed</div>
+      <div class="text-2xl font-extrabold">${done.length}</div>
+    </div>
+  </div>
+
+  <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden">
+    <div class="flex border-b border-ink-100">
+      <button onclick="STATE.clientOrdersTab='active';render()"
+        class="flex-1 py-3 text-sm font-bold border-b-2 transition
+          ${tab==='active'?'border-ink-900 text-ink-900':'border-transparent text-ink-400'}">
+        In progress${active.length ? ` (${active.length})` : ''}
+      </button>
+      <button onclick="STATE.clientOrdersTab='done';render()"
+        class="flex-1 py-3 text-sm font-bold border-b-2 transition
+          ${tab==='done'?'border-ink-900 text-ink-900':'border-transparent text-ink-400'}">
+        Completed${done.length ? ` (${done.length})` : ''}
+      </button>
+    </div>
+
+    ${listed.length === 0
+      ? `<div class="py-14 text-center text-ink-400">
+           <div class="text-4xl mb-3">${tab==='done'?'✅':'📦'}</div>
+           <div class="font-semibold text-ink-600 mb-1">${tab==='done'?'No completed orders yet':'No active orders'}</div>
+           <a href="#/home" class="mt-3 inline-block text-sm font-bold text-brand-500">Explore services →</a>
+         </div>`
+      : `<div class="divide-y divide-ink-100">${listed.map(o => orderRow(o,'client')).join('')}</div>`}
+  </div>`;
+};
+
+/* dashFreelancer em inglês */
+window.dashFreelancer = function() {
+  const freelancerId = 'u_ana';
+  const u       = getUserSafe(freelancerId);
+  const me      = getUserSafe(STATE.currentUserId);
+  const mySvc   = DB.services.filter(sv => sv.freelancerId === freelancerId);
+  const myOrders= STATE.orders.filter(o => o.freelancerId === freelancerId);
+  const pending = myOrders.filter(o => !['approved','cancelled'].includes(o.status));
+  const frTab   = STATE._frTab || 'orders';
+
+  return `
+  <div class="bg-white border border-ink-100 rounded-2xl p-5 mb-4 flex items-center justify-between gap-3">
+    <div>
+      <div class="text-xs text-ink-400 font-semibold mb-0.5">Available balance</div>
+      <div class="text-2xl font-extrabold text-brand-600">${fmtITL(me.balanceITL||0)}</div>
+    </div>
+    <button onclick="openWithdrawModal()"
+      class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2">
+      <i data-lucide="banknote" class="w-4 h-4"></i>Withdraw
+    </button>
+  </div>
+
+  <div class="grid grid-cols-2 gap-3 mb-4">
+    <div class="bg-white border border-ink-100 rounded-2xl p-3">
+      <div class="text-xs text-ink-500 font-semibold mb-1">Open orders</div>
+      <div class="text-2xl font-extrabold">${pending.length}</div>
+    </div>
+    <div class="bg-white border border-ink-100 rounded-2xl p-3">
+      <div class="text-xs text-ink-500 font-semibold mb-1">Rating</div>
+      <div class="text-2xl font-extrabold">${u.rating.toFixed(1)} ★</div>
+    </div>
+  </div>
+
+  <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden">
+    <div class="flex border-b border-ink-100">
+      <button onclick="STATE._frTab='orders';render()"
+        class="flex-1 py-3 text-sm font-bold border-b-2 transition
+          ${frTab==='orders'?'border-ink-900 text-ink-900':'border-transparent text-ink-400'}">
+        Orders${pending.length ? ` (${pending.length})` : ''}
+      </button>
+      <button onclick="STATE._frTab='services';render()"
+        class="flex-1 py-3 text-sm font-bold border-b-2 transition
+          ${frTab==='services'?'border-ink-900 text-ink-900':'border-transparent text-ink-400'}">
+        Services${mySvc.length ? ` (${mySvc.length})` : ''}
+      </button>
+    </div>
+
+    ${frTab === 'orders' ? (myOrders.length === 0
+      ? `<div class="py-14 text-center text-ink-400">
+           <div class="text-4xl mb-3">📦</div>
+           <div class="font-semibold text-ink-600 mb-1">No orders yet</div>
+           <p class="text-sm text-ink-400">When a client hires you, it will appear here.</p>
+         </div>`
+      : `<div class="divide-y divide-ink-100">${myOrders.map(o => orderRow(o,'freelancer')).join('')}</div>`
+    ) : ''}
+
+    ${frTab === 'services' ? `
+      <div class="p-3 flex items-center justify-between border-b border-ink-100">
+        <span class="text-sm font-semibold text-ink-600">${mySvc.length} service${mySvc.length!==1?'s':''}</span>
+        <button onclick="openNewServiceModal()"
+          class="text-sm font-bold bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-xl">
+          + New service
+        </button>
+      </div>
+      <div class="divide-y divide-ink-100">
+        ${mySvc.length === 0
+          ? `<div class="py-12 text-center text-ink-400">
+               <div class="text-4xl mb-3">🛠</div>
+               <div class="font-semibold text-ink-600 mb-1">No services published yet</div>
+               <button onclick="openNewServiceModal()" class="mt-2 text-sm font-bold text-brand-500">+ Create your first</button>
+             </div>`
+          : mySvc.map(sv => `
+            <div class="flex items-center gap-3 p-3">
+              <img src="${sv.thumb}" class="w-14 h-14 rounded-xl object-cover shrink-0"/>
+              <div class="flex-1 min-w-0">
+                <a href="#/service/${sv.id}" class="text-sm font-bold text-ink-900 line-clamp-2 hover:text-brand-600">${escapeHtml(sv.title)}</a>
+                <div class="flex items-center gap-2 mt-1">
+                  ${stars(sv.rating,'w-3 h-3')}
+                  <span class="text-xs text-ink-500">${sv.rating.toFixed(1)} · ${fmtITL(sv.price)}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <button onclick="openEditServiceModal('${sv.id}')" class="w-9 h-9 grid place-items-center rounded-xl hover:bg-ink-100 text-ink-400">
+                  <i data-lucide="pencil" class="w-4 h-4"></i>
+                </button>
+                <button onclick="deleteService('${sv.id}')" class="w-9 h-9 grid place-items-center rounded-xl hover:bg-rose-50 text-ink-300 hover:text-rose-500">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>`).join('')}
+      </div>` : ''}
+  </div>`;
+};
+
+/* ─────────────────────────────────────────────────────────
+   2. REMOVE "Wallet" (saldo fake) do dropdown do avatar
+   Sobrescreve renderHeader mantendo tudo igual mas
+   removendo apenas o bloco do item Carteira
+   ───────────────────────────────────────────────────────── */
+(function patchWalletItemFromHeader() {
+  const _orig = window.renderHeader;
+  window.renderHeader = function() {
+    _orig.call(this);
+    // Remove o botão de carteira do dropdown após renderizar
+    const walletBtn = document.querySelector(
+      '#profile-dropdown button[onclick*="wallet"], #profile-dropdown a[href*="wallet"]'
+    );
+    if (walletBtn) {
+      const parent = walletBtn.closest('button, a');
+      if (parent) parent.remove();
+    }
+  };
+})();
+
+/* ─────────────────────────────────────────────────────────
+   3. MODAL EDITAR PERFIL — mais compacto
+   ───────────────────────────────────────────────────────── */
+window.openEditProfileModal = function() {
+  const u = DB.users.find(x => x.id === STATE.currentUserId);
+  if (!u) { toast('User not found', 'warn'); return; }
+
+  const langOpts = LANGUAGES_LIST.map(l =>
+    `<option value="${l.id}" ${(u.languages||[]).includes(l.id)?'selected':''}>${l.flag} ${l.label}</option>`
+  ).join('');
+
+  $('#modal-root').innerHTML = `
+  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm flex items-center justify-center p-3 fade-in"
+       onclick="if(event.target===this)closeModal()">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-pop flex flex-col overflow-hidden"
+         style="max-height:min(88vh,640px)">
+
+      <!-- Header -->
+      <div class="px-4 py-3 border-b border-ink-100 flex items-center justify-between shrink-0">
+        <span class="font-extrabold text-sm flex items-center gap-2">
+          <i data-lucide="pencil" class="w-4 h-4 text-brand-500"></i>Edit profile
+        </span>
+        <button onclick="closeModal()" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50">
+          <i data-lucide="x" class="w-4 h-4 text-ink-400"></i>
+        </button>
+      </div>
+
+      <!-- Body com scroll -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-3">
+
+        <!-- Avatar + info básica lado a lado -->
+        <div class="flex items-center gap-3">
+          <div class="relative shrink-0 cursor-pointer"
+               onclick="closeModal();changeProfileAvatar('${u.id}')" title="Change photo">
+            <div class="w-14 h-14 rounded-xl overflow-hidden border border-ink-100">
+              <img src="${u.avatar}" class="w-full h-full object-cover profile-avatar-img"/>
+            </div>
+            <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-brand-500 rounded-full grid place-items-center shadow">
+              <i data-lucide="camera" class="w-3 h-3 text-white"></i>
+            </div>
+          </div>
+          <div class="text-xs text-ink-500 min-w-0">
+            <div class="font-mono truncate">@${escapeHtml(u.handle)}</div>
+            <div class="font-mono truncate mt-0.5">${(u.wallet||'').slice(0,8)}…${(u.wallet||'').slice(-4)}</div>
+            <div class="text-[10px] text-ink-400 mt-0.5">Handle and wallet cannot be edited.</div>
+          </div>
+        </div>
+
+        <!-- Nome -->
+        <div>
+          <label class="text-xs font-bold text-ink-600">Display name</label>
+          <input id="ep-name" value="${escapeHtml(u.name)}"
+            class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-300"/>
+        </div>
+
+        <!-- Bio -->
+        <div>
+          <label class="text-xs font-bold text-ink-600">Bio</label>
+          <textarea id="ep-bio" rows="2"
+            class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-300 resize-none">${escapeHtml(u.bio||'')}</textarea>
+        </div>
+
+        <!-- Skills -->
+        <div>
+          <label class="text-xs font-bold text-ink-600">Skills <span class="font-normal text-ink-400">(comma separated)</span></label>
+          <input id="ep-skills" value="${(u.skills||[]).map(escapeHtml).join(', ')}"
+            class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-300"
+            placeholder="React, Solidity, Figma"/>
+        </div>
+
+        <!-- Idiomas + País + Resposta em grid -->
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-xs font-bold text-ink-600">Country</label>
+            <select id="ep-country"
+              class="mt-1 w-full border border-ink-100 rounded-xl px-2 py-2 text-sm outline-none focus:border-brand-300">
+              ${COUNTRIES.map(c =>
+                `<option value="${c.id}" ${u.country===c.id?'selected':''}>${c.flag} ${c.name}</option>`
+              ).join('')}
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-ink-600">Response time (h)</label>
+            <input id="ep-resp" type="number" min="1" max="48" value="${u.responseHours||4}"
+              class="mt-1 w-full border border-ink-100 rounded-xl px-2 py-2 text-sm outline-none focus:border-brand-300"/>
+          </div>
+        </div>
+
+        <!-- Idiomas -->
+        <div>
+          <label class="text-xs font-bold text-ink-600">Languages <span class="font-normal text-ink-400">(Ctrl+click for multiple)</span></label>
+          <select id="ep-langs" multiple size="3"
+            class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-300">
+            ${langOpts}
+          </select>
+        </div>
+      </div>
+
+      <!-- Footer fixo -->
+      <div class="px-4 py-3 border-t border-ink-100 flex gap-2 shrink-0">
+        <button onclick="closeModal()"
+          class="flex-1 border border-ink-100 hover:bg-ink-50 font-semibold py-2 rounded-xl text-sm">
+          Cancel
+        </button>
+        <button onclick="saveProfile()"
+          class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2 rounded-xl text-sm flex items-center justify-center gap-2">
+          <i data-lucide="check" class="w-4 h-4"></i>Save changes
+        </button>
+      </div>
+    </div>
+  </div>`;
+  icons();
+};
+
+/* ─────────────────────────────────────────────────────────
+   4. REMOVE Online / SBT / Confiança do sidebar do perfil
+   Sobrescreve viewProfile removendo esses três blocos
+   ───────────────────────────────────────────────────────── */
+(function patchViewProfile() {
+  const _orig = window.viewProfile;
+  window.viewProfile = function(handle) {
+    const html = _orig.call(this, handle);
+    if (!html) return html;
+
+    // Cria um DOM temporário para remover os blocos indesejados
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+
+    // Remove o dot "Online agora" do header do perfil (span com bg-emerald-400/bg-ink-300)
+    tmp.querySelectorAll('.flex.items-center.gap-1.text-emerald-600').forEach(el => {
+      if (el.textContent.includes('Online') || el.textContent.includes('online')) el.remove();
+    });
+
+    // Remove o card SBT/Reputação do sidebar (contém "soulbound" ou "on-chain" ou "SBT")
+    tmp.querySelectorAll('aside > div, aside .space-y-4 > div').forEach(el => {
+      const txt = (el.textContent || '').toLowerCase();
+      if (
+        txt.includes('soulbound') ||
+        txt.includes('sbt') ||
+        txt.includes('reputação') ||
+        txt.includes('reputation') ||
+        txt.includes('0xsbt') ||
+        txt.includes('non-transferable')
+      ) {
+        el.remove();
+      }
+    });
+
+    // Remove o card "Confiança" / "Trust" do sidebar
+    tmp.querySelectorAll('aside > div, aside .space-y-4 > div').forEach(el => {
+      const txt = (el.textContent || '').toLowerCase();
+      if (
+        txt.includes('confiança') ||
+        txt.includes('trust') ||
+        txt.includes('identidade verificada') ||
+        txt.includes('verified identity') ||
+        txt.includes('escrow on-chain') ||
+        txt.includes('reputação on-chain')
+      ) {
+        el.remove();
+      }
+    });
+
+    // Remove também o "Online agora" / "Online now" do card "Sobre" no sidebar
+    tmp.querySelectorAll('aside div').forEach(el => {
+      if (
+        (el.textContent||'').trim() === 'Online agora' ||
+        (el.textContent||'').trim() === 'Online now'
+      ) {
+        el.closest('.flex') ? el.closest('.flex').remove() : el.remove();
+      }
+    });
+
+    return tmp.innerHTML;
+  };
+})();
+
+/* ─────────────────────────────────────────────────────────
+   5. BOTÃO "My orders" no dropdown — navegação corrigida
+   Garante que o botão usa goToDashboard de forma confiável
+   ───────────────────────────────────────────────────────── */
+window.goToDashboard = function(tab) {
+  document.getElementById('profile-dropdown')?.classList.add('hidden');
+  STATE.dashboardTab = tab || 'client';
+  STATE.route = 'dashboard';
+  location.hash = '#/dashboard/' + (tab || 'client');
+  render();
+};
+
+// Patch no renderHeader para garantir que o botão "My orders" chama goToDashboard
+(function patchOrdersButton() {
+  const _orig = window.renderHeader;
+  window.renderHeader = function() {
+    _orig.call(this);
+    // Aguarda o DOM atualizar antes de rebindar
+    requestAnimationFrame(() => {
+      const dropdown = document.getElementById('profile-dropdown');
+      if (!dropdown) return;
+      // Busca qualquer botão que mencione "pedidos" ou "orders" ou "dashboard"
+      dropdown.querySelectorAll('button, a').forEach(el => {
+        const txt = (el.textContent || '').toLowerCase();
+        const onclick = (el.getAttribute('onclick') || '').toLowerCase();
+        if (
+          txt.includes('orders') ||
+          txt.includes('pedidos') ||
+          onclick.includes('dashboard')
+        ) {
+          el.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeProfileMenu();
+            goToDashboard('client');
+          };
+        }
+      });
+    });
+  };
+})();
+
+/* ─────────────────────────────────────────────────────────
+   6. QR CODE VÁLIDO no modal de pagamento
+   Substitui a URL de QR por uma que gera código válido
+   ───────────────────────────────────────────────────────── */
+(function patchQRCode() {
+  const _orig = window.confirmHire;
+  window.confirmHire = function(serviceId, tierKey) {
+    const briefEl = document.getElementById('hire-brief');
+    const brief = briefEl ? briefEl.value.trim() : '';
+    const s = getService(serviceId);
+    const tier = { priceITL: s.price, days: s.deadline||s.days||7, revisions: 2, includes: s.includes||[] };
+    const me = getUser(STATE.currentUserId);
+    const total = +(tier.priceITL * 1.02).toFixed(2);
+
+    if (me.balanceITL < total) { toast('Insufficient balance.', 'error'); return; }
+
+    const msToggle = document.getElementById('hire-milestones-toggle');
+    const useMilestones = msToggle && msToggle.checked;
+    let milestonesConfig = null;
+    if (useMilestones) {
+      const preset = MILESTONE_PRESETS[window._hireMilestonePreset || 0];
+      milestonesConfig = preset.pcts.map((pct, i) => ({
+        id: uid('ms'), name: preset.names[i], pct,
+        amountITL: +((tier.priceITL * pct / 100)).toFixed(2),
+        status: i === 0 ? 'pending' : 'locked',
+        releaseTx: null, releasedAt: null,
+      }));
+    }
+
+    const hash = txHash();
+
+    // QR payload simples e válido — texto puro sempre funciona
+    const qrPayload = `INTERWORK PAYMENT\nAmount: ${total} ITL\nRef: ${hash.slice(0,16)}\nTo: InterWork Escrow`;
+    // API confiável: qrserver.com com dado UTF-8 simples
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&qzone=2&ecc=M&data=${encodeURIComponent(qrPayload)}`;
+
+    $('#modal-root').innerHTML = `
+    <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in">
+      <div id="tx-card" class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
+
+        <div class="px-5 py-4 border-b border-ink-100 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-brand-50 grid place-items-center shrink-0">
+            <i data-lucide="qr-code" class="w-5 h-5 text-brand-500"></i>
+          </div>
+          <div>
+            <div class="font-extrabold text-sm">Payment approval</div>
+            <div class="text-xs text-ink-500">Scan with your wallet to confirm</div>
+          </div>
+        </div>
+
+        <div class="px-4 py-4 space-y-3">
+
+          <!-- QR + valor -->
+          <div class="flex items-center gap-4">
+            <div class="w-[120px] h-[120px] shrink-0 rounded-xl border border-ink-100 overflow-hidden bg-white p-1.5 shadow-sm">
+              <img src="${qrUrl}" class="w-full h-full object-contain" alt="Payment QR Code"
+                   onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent('INTERWORK:'+total+'ITL:'+hash.slice(0,12))}'"/>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-[11px] text-ink-400 mb-1">Total in escrow</div>
+              <div class="font-extrabold text-xl text-brand-700 leading-tight">${fmtITL(total)}</div>
+              <div class="text-xs font-bold text-brand-500 mb-2">ITL</div>
+              <div class="text-[10px] text-ink-400 leading-snug">Scan with ITLX, MetaMask or WalletConnect</div>
+            </div>
+          </div>
+
+          <!-- Steps -->
+          <div class="grid grid-cols-4 gap-1 text-center text-[10px]">
+            ${['Open wallet','Scan QR','Approve tx','Confirm below'].map((step, i) => `
+            <div class="flex flex-col items-center gap-1 bg-brand-50 rounded-lg px-1 py-2">
+              <div class="w-5 h-5 rounded-full ${i===3?'bg-amber-400':'bg-brand-500'} text-white grid place-items-center font-bold text-[9px]">${i+1}</div>
+              <span class="text-ink-600 leading-tight">${step}</span>
+            </div>`).join('')}
+          </div>
+
+          <!-- Ref info -->
+          <div class="rounded-xl bg-ink-50 border border-ink-100 px-3 py-2 text-[10px] text-ink-500 font-mono break-all">
+            Ref: ${hash.slice(0,20)}…
+          </div>
+
+          <!-- Demo notice -->
+          <div class="flex items-center gap-1.5 text-[10px] text-ink-400 bg-amber-50 border border-amber-100 rounded-lg px-2.5 py-1.5">
+            <i data-lucide="info" class="w-3 h-3 shrink-0"></i>
+            <span>Demo — transaction simulated locally.</span>
+          </div>
+
+          <!-- Botões -->
+          <div class="flex gap-2 pt-1">
+            <button onclick="closeModal()"
+              class="flex-1 border border-ink-100 hover:bg-ink-50 font-semibold py-2.5 rounded-xl text-xs text-ink-500">
+              Cancel
+            </button>
+            <button id="qr-confirm-btn"
+              onclick="qrConfirmPayment(${JSON.stringify(serviceId)},${JSON.stringify(tierKey||STATE.selectedTier)},${JSON.stringify(brief)},${JSON.stringify(total)},${JSON.stringify(hash)},${JSON.stringify(tier)},${JSON.stringify(milestonesConfig)})"
+              class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>Confirm ${fmtITL(total)}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+    icons();
+  };
+})();
+
+/* ─────────────────────────────────────────────────────────
+   7. HEADER MOBILE — proporcional, inspirado no LinkersMap
+   Logo + nav compacta + ações limpas, sem poluição mobile
+   ───────────────────────────────────────────────────────── */
+(function patchHeaderMobile() {
+  const _orig = window.renderHeader;
+  window.renderHeader = function() {
+    const me = getUser(STATE.currentUserId);
+    const authed = isAuthed();
+    const langObj = LANGUAGES_LIST.find(l => l.id === STATE.language) || LANGUAGES_LIST[0];
+
+    document.getElementById('app-header').innerHTML = `
+    <header class="bg-white border-b border-slate-100 sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-2">
+
+        <!-- Logo -->
+        <a href="#/home" class="flex items-center gap-2 shrink-0 min-w-0">
+          <span class="w-7 h-7 rounded-lg bg-[#8b7cff] grid place-items-center text-white shrink-0">
+            <i class="ri-briefcase-4-fill text-sm"></i>
+          </span>
+          <span class="font-extrabold text-slate-900 tracking-tight hidden xs:inline sm:inline">InterWork</span>
+        </a>
+
+        <!-- Desktop nav — só aparece em telas grandes -->
+        <nav class="hidden xl:flex items-center gap-6 text-sm font-medium text-slate-600 flex-1 justify-center">
+          <a href="#/earn" class="hover:text-slate-900 transition whitespace-nowrap ${STATE.route==='earn'?'text-brand-600 font-bold':''}">Earn ITL</a>
+          <a href="#/how" class="hover:text-slate-900 transition whitespace-nowrap">How It Works</a>
+          <a href="#/community" class="hover:text-slate-900 transition whitespace-nowrap ${STATE.route==='community'?'text-brand-600 font-bold':''}">Community</a>
+          <a href="#/why-join" class="hover:text-slate-900 transition whitespace-nowrap ${STATE.route==='why-join'?'text-brand-600 font-bold':''}">Why Join</a>
+        </nav>
+
+        <!-- Right actions -->
+        <div class="flex items-center gap-2 shrink-0">
+
+          <!-- Idioma — só desktop -->
+          <button onclick="toggleLangMenu(event)"
+            class="hidden xl:flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-slate-900 transition">
+            <span class="text-base">${langObj.flag}</span>
+            <span class="text-xs">${langObj.id.toUpperCase()}</span>
+            <i class="ri-arrow-down-s-line opacity-50 text-xs"></i>
+          </button>
+
+          ${authed ? `
+            <!-- Avatar com badge de notificação -->
+            <div class="relative shrink-0" id="profile-menu-wrap">
+              <button onclick="toggleProfileMenu(event)"
+                class="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border-2 border-slate-200 hover:border-[#8b7cff] transition focus:outline-none"
+                aria-label="Profile menu">
+                ${me?.avatar && me.avatarType !== 'initials'
+                  ? `<img src="${me.avatar}" class="w-full h-full object-cover profile-avatar-img"/>`
+                  : `<div class="w-full h-full bg-[#efeaff] text-[#5b4ee0] font-bold flex items-center justify-center text-sm">${(me?.name||'U')[0].toUpperCase()}</div>`}
+              </button>
+              ${unreadCount() ? `
+              <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose-500 border-2 border-white rounded-full flex items-center justify-center text-[9px] text-white font-bold pointer-events-none">
+                ${unreadCount() > 9 ? '9+' : unreadCount()}
+              </span>` : ''}
+            </div>
+
+            <!-- Dropdown do perfil -->
+            <div id="profile-dropdown"
+              class="hidden absolute right-4 top-14 w-60 bg-white border border-slate-200 rounded-2xl shadow-xl z-[60] overflow-hidden">
+
+              <!-- User info -->
+              <div class="px-4 py-3 border-b border-slate-100 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full overflow-hidden border border-slate-200 shrink-0">
+                  ${me?.avatar && me.avatarType !== 'initials'
+                    ? `<img src="${me.avatar}" class="w-full h-full object-cover profile-avatar-img"/>`
+                    : `<div class="w-full h-full bg-[#efeaff] text-[#5b4ee0] font-bold flex items-center justify-center text-sm">${(me?.name||'U')[0].toUpperCase()}</div>`}
+                </div>
+                <div class="min-w-0">
+                  <div class="font-bold text-sm text-slate-900 truncate">${escapeHtml(me?.name||'User')}</div>
+                  <div class="text-xs text-slate-400 truncate">@${escapeHtml(me?.handle||'')}</div>
+                </div>
+              </div>
+
+              <!-- Menu items -->
+              <div class="py-1.5">
+                <a href="#/u/${me?.handle||''}" onclick="closeProfileMenu()"
+                  class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition">
+                  <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0">
+                    <i class="ri-user-line text-slate-500 text-sm"></i>
+                  </div>
+                  <span class="font-medium">View profile</span>
+                </a>
+
+                <button onclick="closeProfileMenu();goToDashboard('client')"
+                  class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
+                  <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0">
+                    <i class="ri-briefcase-line text-slate-500 text-sm"></i>
+                  </div>
+                  <span class="font-medium">My orders</span>
+                </button>
+
+                <button onclick="closeProfileMenu();go('#/notifications')"
+                  class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
+                  <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0 relative">
+                    <i class="ri-notification-3-line text-slate-500 text-sm"></i>
+                    ${unreadCount() ? `<span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 rounded-full text-[8px] text-white font-bold grid place-items-center">${unreadCount()}</span>` : ''}
+                  </div>
+                  <div class="flex-1 flex items-center justify-between">
+                    <span class="font-medium">Notifications</span>
+                    ${unreadCount() ? `<span class="text-xs font-bold text-rose-500">${unreadCount()} new</span>` : ''}
+                  </div>
+                </button>
+
+                <button onclick="closeProfileMenu();changeProfileAvatar('${me?.id||STATE.currentUserId}')"
+                  class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition text-left">
+                  <div class="w-7 h-7 rounded-lg bg-slate-100 grid place-items-center shrink-0">
+                    <i class="ri-camera-line text-slate-500 text-sm"></i>
+                  </div>
+                  <span class="font-medium">Change photo</span>
+                </button>
+              </div>
+
+              <!-- Disconnect -->
+              <div class="border-t border-slate-100 py-1.5">
+                <button onclick="closeProfileMenu();disconnectWallet()"
+                  class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 transition text-left">
+                  <div class="w-7 h-7 rounded-lg bg-rose-50 grid place-items-center shrink-0">
+                    <i class="ri-logout-box-r-line text-rose-500 text-sm"></i>
+                  </div>
+                  <span class="font-medium">Disconnect wallet</span>
+                </button>
+              </div>
+            </div>
+          ` : `
+            <!-- Connect wallet — ícone no mobile, texto no desktop -->
+            <button onclick="openConnectWallet()"
+              class="btn-primary-alt flex items-center gap-1.5 px-3 py-2 rounded-lg font-bold text-xs sm:text-sm shadow-sm">
+              <i class="ri-wallet-line text-sm"></i>
+              <span class="hidden sm:inline">Connect Wallet</span>
+            </button>
+          `}
+
+          <!-- Hamburguer — só mobile/tablet -->
+          <button onclick="toggleMobileMenu()" class="xl:hidden text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition" aria-label="Menu">
+            <i id="mobMenuIcon" class="ri-menu-line text-lg"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile menu -->
+      <div id="mobileMenu" class="hidden xl:hidden border-t border-slate-100 bg-white">
+        <nav class="px-4 py-3 flex flex-col gap-1 text-sm font-medium text-slate-700">
+          <a href="#/earn" onclick="toggleMobileMenu()"
+            class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='earn'?'bg-slate-50 text-brand-600 font-bold':''}">
+            Earn ITL
+          </a>
+          <a href="#/how" onclick="toggleMobileMenu()" class="py-2.5 px-3 rounded-lg hover:bg-slate-50">How It Works</a>
+          <a href="#/community" onclick="toggleMobileMenu()"
+            class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='community'?'bg-slate-50 text-brand-600 font-bold':''}">
+            Community Rewards
+          </a>
+          <a href="#/why-join" onclick="toggleMobileMenu()"
+            class="py-2.5 px-3 rounded-lg hover:bg-slate-50 ${STATE.route==='why-join'?'bg-slate-50 text-brand-600 font-bold':''}">
+            Why Join
+          </a>
+          <div class="border-t border-slate-100 mt-1 pt-2">
+            <button onclick="toggleLangMenu(event)" class="w-full text-left py-2.5 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between">
+              <span>Language</span>
+              <span class="text-lg">${langObj.flag}</span>
+            </button>
+          </div>
+        </nav>
+      </div>
+
+      <!-- Lang menu -->
+      <div id="lang-menu" class="hidden absolute right-4 mt-1 w-52 bg-white border border-slate-200 rounded-xl shadow-xl p-2 z-[60]">
+        ${LANGUAGES_LIST.map(l => `
+          <button onclick="setLang('${l.id}')"
+            class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-3
+              ${STATE.language===l.id?'bg-slate-50 text-[#5b4ee0] font-bold':'hover:bg-slate-50 text-slate-700'}">
+            <span class="text-lg">${l.flag}</span>
+            <span class="flex-1">${l.label}</span>
+            ${STATE.language===l.id?'<i class="ri-check-line"></i>':''}
+          </button>`).join('')}
+      </div>
+    </header>`;
+
+    icons();
+  };
+})();
+
+console.log('[InterWork Fixes v2] ✅ All 7 patches loaded successfully.');
