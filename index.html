@@ -7404,21 +7404,7 @@ async function sbInitAuth(){
   });
 }
 
-async function sbLoadServices(){
-  if (!sb) return;
-  const { data, error } = await sb
-    .from('services')
-    .select('*')
-    .order('created_at', { ascending: false });
-  if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
 
-  // Sempre mantém os mocks + adiciona os reais do Supabase
-  const realServices = (data || []).map(sbSvcToLocal);
-  const realIds = new Set(realServices.map(s => s.id));
-  const mocks = DB.services.filter(s => s._mock && !realIds.has(s.id));
-  DB.services = [...realServices, ...mocks];
-  renderView();
-}
 
 // Salva um serviço novo no Supabase
 async function sbCreateService(svc){
@@ -8216,10 +8202,7 @@ async function sbLoadServices(){
 
   const realServices = (data || []).map(sbSvcToLocal);
   const realIds = new Set(realServices.map(s => s.id));
-  
-  // Pega os mocks salvos separado, nunca perde
   const mocks = DB_MOCKS.services.filter(s => !realIds.has(s.id));
-  
   DB.services = [...realServices, ...mocks];
   renderView();
 }
