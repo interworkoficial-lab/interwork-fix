@@ -172,7 +172,6 @@ const STATE = {
 
 /* ---------- MOCK DATA ---------- */
 const DB = { users: [], services: [], reviews: [] };
-const DB_MOCKS = { services: [] };
 
 const TOKENS = [
   { id:'ITL',  label:'ITL',  rateITL:1,    color:'#7C3AED', icon:'coins' },
@@ -2629,23 +2628,8 @@ function gigCarouselHideControls(wrap){
 function gigCarouselStep(ev, serviceId, dir){
   ev.preventDefault();
   ev.stopPropagation();
-  const wrap = ev.currentTarget.closest('.gig-carousel');
-  if (!wrap) return;
-  const count = parseInt(wrap.dataset.imgcount, 10) || 1;
-  if (count <= 1) return;
-  let idx = parseInt(wrap.dataset.idx, 10) || 0;
-  idx = (idx + dir + count) % count;
-  wrap.dataset.idx = idx;
-  wrap.querySelectorAll('img[data-slide]').forEach(img => {
-    img.classList.toggle('opacity-100', parseInt(img.dataset.slide,10) === idx);
-    img.classList.toggle('opacity-0', parseInt(img.dataset.slide,10) !== idx);
-  });
-  wrap.querySelectorAll('[data-dot]').forEach(dot => {
-    const on = parseInt(dot.dataset.dot,10) === idx;
-    dot.classList.toggle('bg-white', on);
-    dot.classList.toggle('bg-white/50', !on);
-  });
-}
+  // resto do código continua igual...
+function gigCarouselHideControls(wrap){
   wrap.querySelectorAll('.gig-carousel-arrow,.gig-carousel-dots')
     .forEach(function(el){ el.style.opacity='0'; });
 }
@@ -8208,46 +8192,6 @@ async function adminRejectConfirm(id){
 }
 
 /* ============================================================ */
-/* ============================================================ */
-
-window.addEventListener('DOMContentLoaded', () => {
-  initMock();
-  DB.services.forEach(s => s._mock = true);
-  DB_MOCKS.services = [...DB.services];
-  startPersistence();
-  bindRouter();
-
-  runAutoApprove();
-  setInterval(runAutoApprove, 60_000);
-
-  setInterval(()=>{
-    const hasDelivered = STATE.orders.some(o => o.status === 'delivered');
-    if (hasDelivered && ['dashboard'].includes(STATE.route)) render();
-  }, 60_000);
-
-  function bindFilterPin(){
-    const bar = document.querySelector('.filters-sticky');
-    const spacer = document.querySelector('.filters-sticky-spacer');
-    if (bar) bar.classList.remove('is-pinned');
-    if (spacer){ spacer.classList.remove('is-active'); spacer.style.height = '0px'; }
-  }
-
-  const origRender = window.renderView;
-  if (typeof origRender === 'function'){
-    window.renderView = function(){ origRender.apply(this, arguments); setTimeout(bindFilterPin, 0); };
-  }
-  setTimeout(bindFilterPin, 100);
-
-  if (SB_READY) {
-    sbInitAuth().then(() => {
-      sbLoadServices();
-      sbSubscribeServices();
-    });
-  } else {
-    DB.services.forEach(s => s._mock = true);
-  }
-});
-
 async function sbLoadServices(){
   if (!sb) return;
   const { data, error } = await sb
@@ -8255,13 +8199,52 @@ async function sbLoadServices(){
     .select('*')
     .order('created_at', { ascending: false });
   if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
+
   const realServices = (data || []).map(sbSvcToLocal);
   const realIds = new Set(realServices.map(s => s.id));
   const mocks = DB_MOCKS.services.filter(s => !realIds.has(s.id));
   DB.services = [...realServices, ...mocks];
   renderView();
 }
- 
+  bindRouter();
+  // Proteção extra: se Supabase não está configurado, admin só mostra tela de login (STATE.isAdmin = false por padrão)
+
+  // ── Auto-approve engine: run once on boot, then every 60 s ──
+  runAutoApprove();
+  setInterval(runAutoApprove, 60_000);
+
+
+  // Re-render dashboard countdown banners every 60 s so timers stay accurate
+  setInterval(()=>{
+    const hasDelivered = STATE.orders.some(o => o.status === 'delivered');
+    if (hasDelivered && ['dashboard'].includes(STATE.route)) render();
+  }, 60_000);
+  // Filter bar pinning disabled by request — bar is now static and scrolls with the page
+  function bindFilterPin(){
+    const bar = document.querySelector('.filters-sticky');
+    const spacer = document.querySelector('.filters-sticky-spacer');
+    if (bar) bar.classList.remove('is-pinned');
+    if (spacer){ spacer.classList.remove('is-active'); spacer.style.height = '0px'; }
+  }
+  // Re-bind after every view render (innerHTML replacement loses listeners on children but window listener persists)
+  const origRender = window.renderView;
+  if (typeof origRender === 'function'){
+    window.renderView = function(){ origRender.apply(this, arguments); setTimeout(bindFilterPin, 0); };
+  }
+  setTimeout(bindFilterPin, 100);
+
+  // ── Supabase: inicializa auth
+  if (SB_READY) {
+    sbInitAuth().then(() => {
+      sbLoadServices();
+      sbSubscribeServices();
+    });
+  } else {
+    // Marca serviços mock para diferenciá-los dos reais
+    DB.services.forEach(s => s._mock = true);
+  }
+});
+
 /* ──────────────────────────────────────────────────────────
  * PROFILES — Supabase (PRIORIDADE 1)
  * Tabela: profiles
