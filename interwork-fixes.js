@@ -27,7 +27,7 @@ window.viewProfile = function(handle) {
 
   const co = getCountry(u.country);
   // Filtro de serviços: Remove recusados
-  const services = DB.services.filter(s => s.freelancerId === u.id && s.status !== 'rejected');
+  const services = DB.services.filter(s => s.freelancerId === u.id && s.status === 'approved');
   const ordersDone = STATE.orders.filter(o => o.freelancerId === u.id && o.status === 'approved').length + (u.jobs || 0);
   const lvl = u.level || levelOf(u.jobs);
   const allReviews = services.flatMap(s => s.reviews.map(r => ({ ...r, serviceTitle: s.title })));
@@ -1272,7 +1272,7 @@ window.viewExplore = function() {
   let realServices = DB.services.filter(s => {
     const matchCat = cat === 'all' || s.category === cat;
     const matchQuery = s.title.toLowerCase().includes(query) || (s.description && s.description.toLowerCase().includes(query));
-    return matchCat && matchQuery && s.status !== 'rejected';
+    return matchCat && matchQuery && (s.status === 'approved' || s._mock);
   });
 
   const allToShow = [...realServices, ...MOCK_SERVICES];
