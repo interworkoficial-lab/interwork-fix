@@ -7,14 +7,6 @@
 /* ─────────────────────────────────────────────────────────
    CONFIGURAÇÃO DE MOCKS (Adicionado para Vitrine Permanente)
    ───────────────────────────────────────────────────────── */
-/**
- * INTERWORK — PATCH DE CORREÇÕES INTEGRAL (v6 - FINAL)
- * Preserva 1300+ linhas originais e resolve a visibilidade dos Mocks e Vitrine.
- */
-
-/* ─────────────────────────────────────────────────────────
-   CONFIGURAÇÃO DE MOCKS (Vitrine Permanente)
-   ───────────────────────────────────────────────────────── */
 const MOCK_SERVICES = [
   { id: 'm1', title: 'Professional Logo Design', price: 50, freelancerId: 'u_ana', rating: 4.9, reviews: [], category: 'design', thumbnail: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400', status: 'active' },
   { id: 'm2', title: 'Smart Contract Audit', price: 200, freelancerId: 'u_ana', rating: 5.0, reviews: [], category: 'dev', thumbnail: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400', status: 'active' },
@@ -25,6 +17,7 @@ const MOCK_SERVICES = [
 
 /* ─────────────────────────────────────────────────────────
    1. OVERRIDE: viewProfile — sem "Edit cover", câmera no avatar
+   (Ajustado para Desktop: 3-4 colunas)
    ───────────────────────────────────────────────────────── */
 window.viewProfile = function(handle) {
   const u = DB.users.find(x => x.handle === handle);
@@ -33,6 +26,7 @@ window.viewProfile = function(handle) {
   </div>`;
 
   const co = getCountry(u.country);
+  // Filtro de serviços: Remove recusados
   const services = DB.services.filter(s => s.freelancerId === u.id && s.status !== 'rejected');
   const ordersDone = STATE.orders.filter(o => o.freelancerId === u.id && o.status === 'approved').length + (u.jobs || 0);
   const lvl = u.level || levelOf(u.jobs);
@@ -43,225 +37,204 @@ window.viewProfile = function(handle) {
   const isMe = u.id === STATE.currentUserId;
 
   return `
+  <!-- COVER BANNER — sem botão "Edit cover" -->
   <div class="cover h-36 sm:h-44 w-full relative"></div>
+
+  <!-- PROFILE HEAD -->
   <div class="max-w-5xl mx-auto px-4 sm:px-6">
     <div class="flex flex-col sm:flex-row sm:items-end gap-3 -mt-14 sm:-mt-16 mb-5">
+
+      <!-- Avatar com câmera sempre clicável pelo dono -->
       <div class="relative shrink-0">
         <div class="w-28 h-28 rounded-3xl shadow-lg border-4 border-white overflow-hidden bg-white">
           <img src="${u.avatar}" class="w-full h-full object-cover profile-avatar-img" alt="${escapeHtml(u.name)}"/>
         </div>
-        ${isMe ? `<button onclick="changeProfileAvatar('${u.id}')" class="absolute bottom-1 right-1 bg-white border border-ink-100 rounded-full p-1.5 shadow hover:bg-ink-50 transition"><i data-lucide="camera" class="w-3.5 h-3.5 text-ink-600"></i></button>` : ''}
+        ${isMe ? `
+          <button onclick="changeProfileAvatar('${u.id}')"
+            class="absolute bottom-1 right-1 bg-white border border-ink-100 rounded-full p-1.5 shadow hover:bg-ink-50 transition"
+            title="Trocar foto de perfil">
+            <i data-lucide="camera" class="w-3.5 h-3.5 text-ink-600"></i>
+          </button>` : ''}
+        <span class="absolute top-2 left-2 w-3.5 h-3.5 rounded-full border-2 border-white ${u.online ? 'bg-emerald-400' : 'bg-ink-300'}"></span>
       </div>
+
+      <!-- Name + chips -->
       <div class="flex-1 min-w-0 pt-2 sm:pt-0 sm:pb-1">
         <div class="flex flex-wrap items-center gap-2 mb-1">
           <h1 class="text-xl sm:text-2xl font-extrabold text-ink-900 leading-tight">${escapeHtml(u.name)}</h1>
-          ${u.verified ? `<span class="chip bg-emerald-50 text-emerald-700 text-xs">Verified</span>` : ''}
+          ${u.verified ? `<span class="chip bg-emerald-50 text-emerald-700 text-xs"><i data-lucide="badge-check" class="w-3.5 h-3.5"></i>Verified</span>` : ''}
+          ${lvl ? levelChip(lvl) : ''}
         </div>
         <div class="text-sm text-ink-500 mb-2">@${escapeHtml(u.handle)}</div>
+        <div class="flex flex-wrap items-center gap-3 text-sm text-ink-500">
+          ${co ? `<span class="flex items-center gap-1"><span>${co.flag}</span>${co.name}</span>` : ''}
+          <span class="flex items-center gap-1">
+            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+            Member since ${new Date(u.joinedTs).getFullYear()}
+          </span>
+        </div>
       </div>
+
+      <!-- CTA -->
       <div class="flex gap-2 shrink-0 sm:pb-1">
-        ${isMe ? `<button onclick="openEditProfileModal()" class="btn-outline rounded-xl px-4 py-2 text-sm font-bold flex items-center gap-2">Edit profile</button>` : `<button onclick="openChat(null,'${u.id}')" class="bg-brand-500 text-white font-bold py-2.5 px-5 rounded-xl text-sm">Message</button>`}
+        ${isMe
+          ? `<button onclick="openEditProfileModal()"
+               class="btn-outline rounded-xl px-4 py-2 text-sm font-bold flex items-center gap-2">
+               <i data-lucide="pencil" class="w-4 h-4"></i>Edit profile
+             </button>`
+          : `<button onclick="openChat(null,'${u.id}')"
+               class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm transition">
+               <i data-lucide="message-circle" class="w-4 h-4"></i>Message
+             </button>`}
       </div>
     </div>
+
+    <!-- STATS STRIP -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
       <div class="bg-white border border-ink-100 rounded-2xl p-3 text-center shadow-sm">
         <div class="text-2xl font-extrabold text-ink-900">${avgRating}</div>
+        <div class="flex justify-center mt-1">${stars(parseFloat(avgRating), 'w-3.5 h-3.5')}</div>
         <div class="text-xs text-ink-500 mt-1">${allReviews.length} reviews</div>
       </div>
       <div class="bg-white border border-ink-100 rounded-2xl p-3 text-center shadow-sm">
         <div class="text-2xl font-extrabold text-ink-900">${ordersDone}</div>
-        <div class="text-xs text-ink-500 mt-1">Orders</div>
+        <div class="text-xs text-ink-500 mt-1">Orders completed</div>
+      </div>
+      <div class="bg-white border border-ink-100 rounded-2xl p-3 text-center shadow-sm">
+        <div class="text-2xl font-extrabold text-ink-900">${u.approvalPct || 99}%</div>
+        <div class="text-xs text-ink-500 mt-1">Approval rate</div>
+      </div>
+      <div class="bg-white border border-ink-100 rounded-2xl p-3 text-center shadow-sm">
+        <div class="text-2xl font-extrabold text-ink-900">${u.repeatClientsPct || 0}%</div>
+        <div class="text-xs text-ink-500 mt-1">Repeat clients</div>
       </div>
     </div>
-    <div id="pane-gigs">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        ${services.map(s => serviceCard(s)).join('')}
-      </div>
+
+    <!-- TABS -->
+    <div class="flex gap-3 border-b border-ink-100 mb-6" id="profile-tabs">
+      <button class="tab tab-active pb-2" onclick="showProfileTab('gigs',this)">Services (${services.length})</button>
+      <button class="tab pb-2" onclick="showProfileTab('about',this)">About</button>
+      <button class="tab pb-2" onclick="showProfileTab('reviews',this)">Reviews (${allReviews.length})</button>
+      ${u.portfolio && u.portfolio.length
+        ? `<button class="tab pb-2" onclick="showProfileTab('portfolio',this)">Portfolio (${u.portfolio.length})</button>`
+        : ''}
+    </div>
+
+    <!-- MAIN + SIDEBAR -->
+    <div class="flex flex-col lg:flex-row gap-8 pb-16">
+      <div class="flex-1 min-w-0">
+
+        <!-- GIGS (AJUSTADO PARA DESKTOP: xl:grid-cols-3) -->
+        <div id="pane-gigs">
+          ${services.length === 0
+            ? `<div class="bg-white border border-ink-100 rounded-2xl p-10 text-center text-ink-500">
+                <i data-lucide="package-open" class="w-12 h-12 mx-auto mb-3 text-ink-300"></i>
+                <div class="font-semibold mb-1">No services published yet.</div>
+                ${isMe ? `<a href="#/new-service" class="mt-3 inline-block bg-brand-500 hover:bg-brand-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition">+ Create service</a>` : ''}
+              </div>`
+            : `<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">${services.map(s => serviceCard(s)).join('')}</div>`}
+        </div>
+
+        <!-- ABOUT -->
+        <div id="pane-about" class="hidden">
+          <div class="bg-white border border-ink-100 rounded-2xl p-6 space-y-5">
+            <div>
+              <h3 class="font-extrabold text-ink-900 mb-2 flex items-center gap-2">
+                <i data-lucide="user" class="w-4 h-4 text-brand-500"></i>About me
+              </h3>
+              <p class="text-sm text-ink-600 leading-relaxed">${escapeHtml(u.bio || 'No bio yet.')}</p>
+            </div>
+            ${u.skills && u.skills.length ? `
+            <div>
+              <h3 class="font-extrabold text-ink-900 mb-2 flex items-center gap-2">
+                <i data-lucide="zap" class="w-4 h-4 text-brand-500"></i>Skills
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                ${u.skills.map(s => `<span class="chip bg-brand-50 text-brand-700 text-xs">${escapeHtml(s)}</span>`).join('')}
+              </div>
+            </div>` : ''}
+          </div>
+        </div>
+
+        <!-- REVIEWS -->
+        <div id="pane-reviews" class="hidden">
+          ${allReviews.length === 0
+            ? `<div class="bg-white border border-ink-100 rounded-2xl p-10 text-center text-ink-500">
+                <i data-lucide="star" class="w-10 h-10 mx-auto mb-3 text-ink-300"></i>
+                <div class="font-semibold">No reviews yet.</div>
+              </div>`
+            : `<div class="space-y-4">${allReviews.slice(0, 12).map(r => {
+                const ru = getUser(r.userId);
+                return `
+                <div class="bg-white border border-ink-100 rounded-2xl p-5">
+                  <div class="flex items-start gap-3 mb-3">
+                    <div class="w-9 h-9 rounded-lg overflow-hidden shrink-0 bg-ink-100">
+                      ${ru ? `<img src="${ru.avatar}" class="w-9 h-9 rounded-lg"/>` : '<div class="w-9 h-9 rounded-lg bg-ink-200 grid place-items-center font-bold">?</div>'}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-semibold text-sm text-ink-900">${ru ? escapeHtml(ru.name) : 'User'}</span>
+                        <span class="text-xs text-ink-400">${timeAgo(r.ts)}</span>
+                      </div>
+                      <div class="text-xs text-ink-400 truncate">${escapeHtml(r.serviceTitle || '')}</div>
+                    </div>
+                    <div class="shrink-0">${stars(r.stars, 'w-3.5 h-3.5')}</div>
+                  </div>
+                  <p class="text-sm text-ink-600 leading-relaxed">${escapeHtml(r.text || '')}</p>
+                </div>`;
+              }).join('')}</div>`}
+        </div>
+
+        <!-- PORTFOLIO -->
+        ${u.portfolio && u.portfolio.length ? `
+        <div id="pane-portfolio" class="hidden">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            ${u.portfolio.map(p => `
+              <div class="bg-white border border-ink-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
+                <div class="h-32 overflow-hidden">
+                  <img src="${p.thumb}" alt="${escapeHtml(p.title)}" class="w-full h-full object-cover"/>
+                </div>
+                <div class="p-3">
+                  <div class="text-sm font-semibold text-ink-900 line-clamp-1">${escapeHtml(p.title)}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>` : ''}
+
+      </div><!-- /MAIN -->
+
+      <!-- SIDEBAR — limpa, só skills e about -->
+      <aside class="w-full lg:w-72 shrink-0 space-y-4">
+        <div class="bg-white border border-ink-100 rounded-2xl p-5">
+          <h3 class="font-extrabold text-ink-900 mb-4 flex items-center gap-2">
+            <i data-lucide="user" class="w-4 h-4 text-brand-500"></i>About
+          </h3>
+          <div class="space-y-3 text-sm">
+            ${co ? `<div class="flex items-center gap-2 text-ink-600"><span>${co.flag}</span><span>${co.name}</span></div>` : ''}
+            <div class="flex items-center gap-2 text-ink-600">
+              <i data-lucide="calendar" class="w-4 h-4 text-ink-400"></i>
+              <span>Member since ${new Date(u.joinedTs).getFullYear()}</span>
+            </div>
+            ${u.responseHours ? `<div class="flex items-center gap-2 text-ink-600">
+              <i data-lucide="clock" class="w-4 h-4 text-ink-400"></i>
+              <span>Responds in ~${u.responseHours}h</span>
+            </div>` : ''}
+          </div>
+        </div>
+
+        ${u.skills && u.skills.length ? `
+        <div class="bg-white border border-ink-100 rounded-2xl p-5">
+          <h3 class="font-extrabold text-ink-900 mb-3 flex items-center gap-2">
+            <i data-lucide="zap" class="w-4 h-4 text-brand-500"></i>Skills
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            ${u.skills.map(s => `<span class="chip bg-brand-50 text-brand-700 text-xs">${escapeHtml(s)}</span>`).join('')}
+          </div>
+        </div>` : ''}
+      </aside>
     </div>
   </div>`;
 };
-
-/* ─────────────────────────────────────────────────────────
-   2. OVERRIDE: changeProfileAvatar — atualiza TODAS as imgs
-   ───────────────────────────────────────────────────────── */
-window.changeProfileAvatar = function(userId) {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.onchange = function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      const src = ev.target.result;
-      const u = DB.users.find(x => x.id === userId);
-      if (u) { u.avatar = src; u.avatarType = 'upload'; }
-      document.querySelectorAll('.profile-avatar-img').forEach(img => { img.src = src; });
-      persistNow();
-      renderHeader();
-      toast('Profile photo updated!', 'success');
-    };
-    reader.readAsDataURL(file);
-  };
-  input.click();
-};
-
-/* ─────────────────────────────────────────────────────────
-   3. OVERRIDE: viewWallet — Admin vs User
-   ───────────────────────────────────────────────────────── */
-window.viewWallet = function() {
-  if (!STATE.isAdmin) {
-    return `<div class="max-w-2xl mx-auto px-5 py-14 text-center">
-      <h1 class="text-2xl font-extrabold mb-2">ITL Wallet</h1>
-      <p class="text-ink-500 text-sm mb-8">Connect your wallet to see your balance.</p>
-      <button onclick="openConnectWallet()" class="bg-brand-500 text-white font-bold px-8 py-3 rounded-xl">Connect real wallet</button>
-    </div>`;
-  }
-  const me = getUser(STATE.currentUserId);
-  return `<div class="max-w-6xl mx-auto px-5 py-10">
-    <h1 class="text-3xl font-extrabold mb-6">Admin Wallet</h1>
-    <div class="bg-brand-500 text-white p-6 rounded-3xl shadow-pop mb-6">
-      <div class="text-4xl font-extrabold">${fmtITL(me.balanceITL || 0)}</div>
-      <div class="text-xs opacity-80 mt-1">Simulated balance</div>
-    </div>
-  </div>`;
-};
-
-/* ─────────────────────────────────────────────────────────
-   4. OVERRIDE: openChat — fecha menus
-   ───────────────────────────────────────────────────────── */
-const _origOpenChat = window.openChat;
-window.openChat = function(orderId, otherUserId) {
-  document.getElementById('profile-dropdown')?.classList.add('hidden');
-  document.getElementById('mobileMenu')?.classList.add('hidden');
-  setTimeout(() => _origOpenChat.call(this, orderId, otherUserId), 10);
-};
-
-/* ─────────────────────────────────────────────────────────
-   5. OVERRIDE: renderChat — corrige re-render
-   ───────────────────────────────────────────────────────── */
-window.renderChat = function(order, ephemeral) {
-  const other = getUser(order.clientId === STATE.currentUserId ? order.freelancerId : order.clientId);
-  if (!other) return;
-  const svc = order.serviceId ? getService(order.serviceId) : null;
-  const msgs = STATE.messages[order.id] || [];
-  const chatRoot = document.getElementById('chat-root');
-  if (!chatRoot) return;
-
-  chatRoot.innerHTML = `
-  <div class="fixed inset-0 z-40">
-    <div class="absolute inset-0 bg-ink-900/40" onclick="closeChat()"></div>
-    <aside class="absolute right-0 top-0 h-full w-full sm:w-[420px] bg-white flex flex-col shadow-2xl">
-      <div class="p-3 border-b flex items-center gap-3 shrink-0">
-        <img src="${other.avatar}" class="w-10 h-10 rounded-xl object-cover"/>
-        <div class="flex-1 min-w-0 font-bold text-sm">${escapeHtml(other.name)}</div>
-        <button onclick="closeChat()" class="w-8 h-8">×</button>
-      </div>
-      <div id="chat-stream" class="flex-1 overflow-y-auto p-3 space-y-3 bg-ink-50/30">
-        ${msgs.map(m => chatBubble(m)).join('')}
-      </div>
-      <form id="chat-form" class="p-3 border-t flex items-end gap-2 shrink-0">
-        <textarea id="chat-input" rows="1" class="flex-1 border rounded-xl px-3 py-2 text-sm outline-none resize-none" placeholder="Type a message…"></textarea>
-        <button type="submit" class="w-10 h-10 bg-brand-500 text-white rounded-xl">➤</button>
-      </form>
-    </aside>
-  </div>`;
-  icons();
-  const stream = document.getElementById('chat-stream');
-  if (stream) stream.scrollTop = stream.scrollHeight;
-  
-  const form = document.getElementById('chat-form');
-  if (form && !form._listenerAdded) {
-    form._listenerAdded = true;
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const input = document.getElementById('chat-input');
-      const v = (input?.value || '').trim();
-      if (!v) return;
-      const msg = { id: uid('m'), from: STATE.currentUserId, text: v, ts: nowTs(), status: 'sent' };
-      STATE.messages[order.id] = STATE.messages[order.id] || [];
-      STATE.messages[order.id].push(msg);
-      input.value = '';
-      window.renderChat(order, ephemeral);
-    });
-  }
-};
-
-/* ─────────────────────────────────────────────────────────
-   6. FIX: pickTrendingTag
-   ───────────────────────────────────────────────────────── */
-window.pickTrendingTag = function(tag) {
-  STATE.query = tag;
-  STATE.category = 'all';
-  STATE.route = 'home';
-  window.location.hash = '#/home';
-  render();
-};
-
-/* ─────────────────────────────────────────────────────────
-   7. OVERRIDE: viewExplore — FORÇA EXIBIÇÃO DOS MOCKS
-   ───────────────────────────────────────────────────────── */
-window.viewExplore = function() {
-  const query = (STATE.query || '').toLowerCase();
-  const cat = STATE.category || 'all';
-  
-  // Filtra serviços reais (remove recusados)
-  let realServices = DB.services.filter(s => {
-    const matchCat = cat === 'all' || s.category === cat;
-    const matchQuery = s.title.toLowerCase().includes(query);
-    return matchCat && matchQuery && s.status !== 'rejected';
-  });
-
-  // SEMPRE inclui os mocks
-  const allToShow = [...realServices, ...MOCK_SERVICES];
-
-  return `
-    <div class="max-w-7xl mx-auto px-4 py-8">
-      <div class="flex items-center justify-between mb-8">
-        <h2 class="text-2xl font-black text-ink-900 tracking-tight">Marketplace</h2>
-        <div class="text-xs font-bold text-ink-400 uppercase tracking-widest">${allToShow.length} Services</div>
-      </div>
-      <!-- Grid forçada para 4 colunas no Desktop -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        ${allToShow.map(s => serviceCard(s)).join('')}
-      </div>
-    </div>
-  `;
-};
-
-/* ─────────────────────────────────────────────────────────
-   8. TRADUÇÕES E HEADER (Resumo do Patch V2 original)
-   ───────────────────────────────────────────────────────── */
-(function patchHeaderFinal() {
-  window.renderHeader = function() {
-    const me = getUser(STATE.currentUserId);
-    const authed = isAuthed();
-    document.getElementById('app-header').innerHTML = `
-    <header class="bg-white border-b sticky top-0 z-50 h-14 flex items-center justify-between px-4 sm:px-6">
-      <a href="#/home" class="flex items-center gap-2">
-        <span class="w-7 h-7 rounded-lg bg-brand-500 text-white grid place-items-center font-bold">IW</span>
-        <span class="font-black text-slate-900 hidden sm:inline">InterWork</span>
-      </a>
-      <nav class="hidden xl:flex gap-6 text-sm font-bold text-slate-600">
-        <a href="#/earn">Earn ITL</a>
-        <a href="#/how">How It Works</a>
-      </nav>
-      <div class="flex items-center gap-3">
-        ${authed ? `<button onclick="toggleProfileMenu(event)" class="w-9 h-9 rounded-full overflow-hidden border-2 border-slate-200"><img src="${me.avatar}" class="w-full h-full object-cover"/></button>` : `<button onclick="openConnectWallet()" class="bg-brand-500 text-white px-4 py-2 rounded-lg font-bold text-sm">Connect Wallet</button>`}
-      </div>
-      <div id="profile-dropdown" class="hidden absolute right-4 top-14 w-60 bg-white border rounded-2xl shadow-xl z-50 overflow-hidden">
-        <a href="#/u/${me?.handle}" class="block px-4 py-3 hover:bg-slate-50 font-bold text-sm">View profile</a>
-        <button onclick="disconnectWallet()" class="w-full text-left px-4 py-3 hover:bg-rose-50 text-rose-600 font-bold text-sm">Disconnect</button>
-      </div>
-    </header>`;
-  };
-})();
-
-// Força o render da Home a usar a viewExplore que criamos
-window.viewHome = window.viewExplore;
-
-console.log('[InterWork Fixes v6] ✅ Mocks e Vitrine Desktop Corrigidos.');
-
 
 /* ─────────────────────────────────────────────────────────
    2. OVERRIDE: changeProfileAvatar — atualiza TODAS as imgs corretas
