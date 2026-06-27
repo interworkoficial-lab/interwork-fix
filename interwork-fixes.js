@@ -915,67 +915,7 @@ window.dashFreelancer = function() {
 /* ─────────────────────────────────────────────────────────
    v2.6 editProfileModal em inglês
    ───────────────────────────────────────────────────────── */
-window.openEditProfileModal = function() {
-  const me = getUser(STATE.currentUserId);
- document.getElementById('modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in">
-    <div class="bg-white w-full max-w-lg rounded-3xl shadow-pop overflow-hidden flex flex-col max-h-[90vh]">
-      <div class="px-6 py-4 border-b border-ink-100 flex items-center justify-between shrink-0">
-        <h2 class="text-lg font-extrabold">Edit profile</h2>
-        <button onclick="closeModal()" class="w-8 h-8 grid place-items-center rounded-xl hover:bg-ink-50 text-ink-400 transition">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
 
-      <div class="p-6 overflow-y-auto space-y-5">
-        <div class="flex items-center gap-4 p-4 bg-ink-50 rounded-2xl">
-          <div class="relative">
-            <img src="${me.avatar}" class="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-sm profile-avatar-img"/>
-            <button onclick="changeProfileAvatar('${me.id}')" class="absolute -bottom-1 -right-1 bg-brand-500 text-white p-1.5 rounded-lg shadow-lg">
-              <i data-lucide="camera" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
-          <div>
-            <div class="font-bold text-sm">Profile photo</div>
-            <div class="text-xs text-ink-500">JPG, PNG or GIF. Max 3MB.</div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div>
-            <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Full name</label>
-            <input id="edit-name" type="text" value="${escapeHtml(me.name)}" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition"/>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Bio / Headline</label>
-            <textarea id="edit-bio" rows="3" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition resize-none">${escapeHtml(me.bio || '')}</textarea>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Skills (comma separated)</label>
-            <input id="edit-skills" type="text" value="${escapeHtml((me.skills||[]).join(', '))}" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition" placeholder="Design, React, Writing..."/>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Country</label>
-            <select id="edit-country" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition">
-              ${COUNTRIES.map(c => `<option value="${c.id}" ${(me.country || 'us') === c.id ? 'selected' : ''}>${c.flag} ${c.name}</option>`).join('')}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-4 border-t border-ink-100 flex gap-3 shrink-0">
-        <button onclick="closeModal()" class="flex-1 bg-ink-100 hover:bg-ink-200 text-ink-700 font-bold py-2 rounded-xl text-sm transition">
-          Cancel
-        </button>
-        <button onclick="saveProfile()"
-          class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2 rounded-xl text-sm flex items-center justify-center gap-2">
-          <i data-lucide="check" class="w-4 h-4"></i>Save changes
-        </button>
-      </div>
-    </div>
-  </div>`;
-  icons();
-};
 
 /* ─────────────────────────────────────────────────────────
    v2.7 QR CODE VÁLIDO no modal de pagamento
@@ -1344,22 +1284,6 @@ window.viewEarn = function() {
     </div>
   </div>`;
 };
-window.saveProfile = function() {
-  const me = DB.users.find(x => x.id === STATE.currentUserId);
-  if (!me) return;
-  const name = document.getElementById('edit-name')?.value.trim();
-  const bio = document.getElementById('edit-bio')?.value.trim();
-  const skills = document.getElementById('edit-skills')?.value.trim();
-  const country = document.getElementById('edit-country')?.value;
-  if (name) me.name = name;
-  if (bio !== undefined) me.bio = bio;
-  if (skills !== undefined) me.skills = skills.split(',').map(s => s.trim()).filter(Boolean);
-  if (country) me.country = country;
-  persistNow();
-  closeModal();
-  renderHeader();
-  toast('Profile updated!', 'success');
-  render();
-};
+
 
 console.log('[InterWork Fixes v5] ✅ Integral Patch Loaded — 1300+ lines preserved + New features.');
