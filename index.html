@@ -1677,102 +1677,82 @@ function openWalletOnboarding(provider){
   const suggested = normalizeHandle(me.handle || 'you') || 'you';
   $('#modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
-    <div class="bg-white w-full max-w-xl rounded-2xl shadow-pop overflow-hidden">
-      <div class="p-5 border-b border-ink-100 flex items-center justify-between">
-        <div>
-          <div class="font-extrabold flex items-center gap-2"><i data-lucide="user-plus" class="w-5 h-5 text-brand-500"></i>Criar conta Interwork</div>
-          <div class="text-xs text-ink-500 mt-1">Wallet selecionada: <b>${provider}</b> · rede Interlink</div>
-        </div>
-        <button onclick="closeModal()" aria-label="Fechar" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-ink-100/50"><i data-lucide="x" class="w-4 h-4" aria-hidden="true"></i></button>
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
+
+      <!-- Compact header -->
+      <div class="px-5 py-3.5 border-b border-ink-100 flex items-center justify-between">
+        <span class="font-extrabold text-sm flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4 text-brand-500"></i>Confirm Hire
+        </span>
+        <button onclick="closeModal()" class="w-7 h-7 grid place-items-center rounded-lg hover:bg-ink-100/50">
+          <i data-lucide="x" class="w-4 h-4 text-ink-400"></i>
+        </button>
       </div>
-      <div class="p-5 space-y-4">
-        <div class="grid md:grid-cols-3 gap-2 text-xs">
-          ${[
-            ['1','Wallet conectada','check-circle-2','emerald'],
-    
-            ['3','Perfil inicial','users','violet']
-          ].map(([n,label,ic,c])=>`
-            <div class="rounded-xl border border-ink-100 p-3 flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-${c}-50 text-${c}-700 grid place-items-center font-extrabold">${n}</span>
-              <i data-lucide="${ic}" class="w-3.5 h-3.5 text-${c}-600"></i>
-              <span class="font-semibold">${label}</span>
-            </div>`).join('')}
-        </div>
 
-        <div class="flex items-start gap-3">
-          <div class="flex flex-col items-center">
-            <div id="avatar-preview" class="avatar-circle" onclick="pickAvatarFile()">
-              <div class="avatar-letter">${(me.name && me.name !== 'Você' ? me.name[0] : 'U').toUpperCase()}</div>
-              <div class="avatar-camera"><i data-lucide="camera"></i></div>
-            </div>
-            <span class="text-[11px] text-ink-500 mt-1">Toque p/ foto</span>
-          </div>
-          <div class="flex-1 space-y-3">
-            <div>
-              <label class="text-sm font-bold">Nome público</label>
-              <input aria-label="Seu nome" id="ob-name" value="${escapeHtml(me.name && me.name !== 'Você' ? me.name : '')}" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm" placeholder="Ex: Bruno Silva" oninput="updateAvatarLetter(this.value)"/>
-            </div>
-            <div>
-              <label class="text-sm font-bold">Handle</label>
-              <div class="mt-1 flex items-center border border-ink-100 rounded-xl overflow-hidden focus-within:ring-brand">
-                <span class="pl-3 text-ink-500 text-sm">@</span>
-                <input aria-label="Seu nome de usuário" id="ob-handle" value="${escapeHtml(suggested)}" class="flex-1 px-1 py-2 text-sm outline-none border-0" placeholder="seunome"/>
-                <span class="pr-3 text-ink-500 text-xs">.interlink</span>
-              </div>
-              <div class="text-[10px] text-ink-500 mt-1">3–24 caracteres: letras, números, ponto, hífen ou underline.</div>
+      <div class="px-5 py-4 space-y-3">
+
+        <!-- Service + freelancer -->
+        <div class="flex items-center gap-3 p-3 rounded-xl bg-ink-50 border border-ink-100">
+          <img src="${s.thumb}" class="w-12 h-12 rounded-xl object-cover shrink-0"/>
+          <div class="flex-1 min-w-0">
+            <div class="font-semibold text-sm leading-snug line-clamp-2">${escapeHtml(s.title)}</div>
+            <div class="text-xs text-ink-500 mt-0.5 flex items-center gap-1.5">
+              <img src="${u.avatar}" class="w-3.5 h-3.5 rounded-full"/>
+              ${escapeHtml(u.name)}
+              ${u.verified?'<i data-lucide="badge-check" class="w-3 h-3 text-brand-500"></i>':''}
             </div>
           </div>
         </div>
 
+        <!-- Deadline + Revisions inline -->
+        <div class="grid grid-cols-2 gap-2">
+          <div class="flex items-center gap-2 bg-ink-50 border border-ink-100 rounded-xl px-3 py-2 text-xs">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-brand-500 shrink-0"></i>
+            <span class="text-ink-500">Deadline:</span>
+            <span class="font-semibold text-ink-700">${tier.days} days</span>
+          </div>
+          <div class="flex items-center gap-2 bg-ink-50 border border-ink-100 rounded-xl px-3 py-2 text-xs">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-brand-500 shrink-0"></i>
+            <span class="text-ink-500">Revisions:</span>
+            <span class="font-semibold text-ink-700">${tier.revisions}</span>
+          </div>
+        </div>
+
+        <!-- Quick project description (optional) -->
         <div>
-          <div class="text-sm font-bold mb-2">Foto de perfil</div>
-          <div class="space-y-2">
-            <div class="avatar-option on" data-opt="generated" onclick="selectAvatarOpt('generated')">
-              <div class="dot"></div>
-              <div>
-                <div class="text-sm font-bold">Gerar avatar automático</div>
-                <div class="text-[11px] text-ink-500">Iniciais coloridas · rápido</div>
-              </div>
-            </div>
-            <div class="avatar-option" data-opt="upload" onclick="selectAvatarOpt('upload');pickAvatarFile()">
-              <div class="dot"></div>
-              <div>
-                <div class="text-sm font-bold">Usar foto real</div>
-                <div class="text-[11px] text-ink-500">Selfie ou galeria</div>
-              </div>
-            </div>
+          <label class="text-xs font-bold text-ink-500 uppercase tracking-wider">Describe the project <span class="font-normal normal-case">(optional)</span></label>
+          <textarea id="hire-brief" rows="2" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-300 resize-none" placeholder="E.g.: Dark landing page with animated hero…"></textarea>
+        </div>
+
+        <!-- Total + balance -->
+        <div class="rounded-xl bg-brand-50 border border-brand-100 px-4 py-3 flex items-center justify-between">
+          <div>
+            <div class="text-xs text-ink-500">Total in escrow</div>
+            <div class="font-extrabold text-xl text-brand-700">${fmtITL(total)}</div>
+            <div class="text-[11px] text-ink-400">${fmtITL(tier.priceITL)} + 2% fee</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-ink-500">Balance</div>
+            <div class="font-bold text-sm ${insufficient?'text-rose-600':'text-ink-700'}">${fmtITL(me.balanceITL)}</div>
+            ${insufficient
+              ? '<div class="text-[11px] text-rose-500 font-semibold">Insufficient</div>'
+              : '<div class="text-[11px] text-emerald-600 flex items-center gap-0.5 justify-end"><i data-lucide="check" class="w-3 h-3"></i>OK</div>'}
           </div>
         </div>
 
-        <div>
-          <div class="text-sm font-bold mb-2">Como você quer começar?</div>
-          <div class="grid sm:grid-cols-2 gap-2">
-            <label class="cursor-pointer rounded-2xl border border-brand-300 bg-brand-50/50 p-3 flex items-start gap-3">
-              <input type="radio" name="ob-role" value="client" checked class="mt-1"/>
-              <span>
-                <span class="font-extrabold flex items-center gap-1.5"><i data-lucide="shopping-bag" class="w-4 h-4 text-brand-500"></i>Cliente</span>
-                <span class="block text-xs text-ink-500 mt-1">Contratar serviços com escrow em ITL.</span>
-              </span>
-            </label>
-            <label class="cursor-pointer rounded-2xl border border-ink-100 hover:border-sonic p-3 flex items-start gap-3">
-              <input type="radio" name="ob-role" value="freelancer" class="mt-1"/>
-              <span>
-                <span class="font-extrabold flex items-center gap-1.5"><i data-lucide="briefcase" class="w-4 h-4 text-sonic"></i>Freelancer</span>
-                <span class="block text-xs text-ink-500 mt-1">Publicar serviços e receber ITL.</span>
-              </span>
-            </label>
-          </div>
-        </div>
-
-        <div class="rounded-xl bg-ink-100/40 border border-ink-100 p-3 text-xs">
-          <div class="text-ink-500 mb-1">Endereço que será vinculado ao perfil</div>
-          <div id="ob-wallet-preview" class="font-mono break-all text-ink-700">${(getUser(STATE.currentUserId)||{}).wallet || provider || '—'}</div>
+        <!-- Escrow info -->
+        <div class="flex items-center gap-2 text-xs text-ink-600 bg-ink-100/40 rounded-xl px-3 py-2">
+          <i data-lucide="lock" class="w-3.5 h-3.5 text-brand-500 shrink-0"></i>
+          Payment protected until you approve the delivery.
         </div>
       </div>
-      <div class="p-5 border-t border-ink-100 flex gap-2">
-        <button onclick="openConnectWallet()" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl">Voltar</button>
-        <button onclick="finishWalletOnboarding('${provider}')" class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2">
-          <i data-lucide="signature" class="w-4 h-4"></i>Assinar e criar conta
+
+      <!-- Buttons -->
+      <div class="px-5 pb-4 flex gap-2">
+        <button onclick="closeModal()" class="flex-1 border border-ink-100 hover:bg-ink-50 font-semibold py-2.5 rounded-xl text-sm">Cancel</button>
+        <button id="confirm-hire" ${insufficient?'disabled':''} class="flex-[2] bg-brand-500 hover:bg-brand-600 disabled:bg-ink-200 disabled:text-ink-400 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm transition"
+          onclick="confirmHire('${s.id}','${tierKey||STATE.selectedTier}')">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>Lock ${fmtITL(total)} and hire
         </button>
       </div>
     </div>
