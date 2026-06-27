@@ -65,7 +65,7 @@
   @media (min-width: 1024px) { .grid-gigs { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
   html,body{font-family:'Plus Jakarta Sans',ui-sans-serif,system-ui}
-  body.modal-open-lock{overflow:hidden;height:100vh}
+  body.modal-open-lock { overflow: hidden; }
   .scrollbar-thin::-webkit-scrollbar{width:6px;height:6px}
   .scrollbar-thin::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
   .grad-hero{background:radial-gradient(1200px 500px at 20% 0%, #d9e8ff 0%, transparent 60%),radial-gradient(800px 400px at 90% 10%, #efe7ff 0%, transparent 60%),linear-gradient(180deg,#fafbff 0%,#ffffff 100%)}
