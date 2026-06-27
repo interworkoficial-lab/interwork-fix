@@ -678,10 +678,10 @@ const COUNTRIES = [
 function initMock(){
   // Me
   DB.users.push({
-    id:'u_me', name:'Você', handle:'you.interlink', country:'BR', verified:true,
+    id:'u_me', name:'Você', handle:'you.interlink', country:'US', verified:true,
     wallet:'0x9b51E3Aa7c1f4d29F8e6b34bD7b9aF2c8a3c1c91',
     avatar: avatarSVG('Y','#1a73e8'),
-    bio:'Cliente Web3 explorando serviços na Interwork.', rating:0, jobs:0, joinedTs: Date.now()-86400000*45,
+    bio:'Client Web3 .', rating:0, jobs:0, joinedTs: Date.now()-86400000*45,
     balanceITL: 1250.50,
     languages:['en'], skills:[], portfolio:[],
     responseHours: 1, repeatClientsPct: 0, approvalPct: 0,
@@ -872,11 +872,8 @@ function initMock(){
   ];
 
   // Notifications
-  STATE.notifications = [
-    { id:uid('n'), type:'delivery',  title:'Entrega recebida', body:'Max enviou a entrega do DApp Next.js.', ts: Date.now()-3600000*2, read:false, link:'#/dashboard/client' },
-    { id:uid('n'), type:'message',   title:'Nova mensagem',     body:'Ana: "Subi o preview no Figma".',       ts: Date.now()-3600000*5, read:false, link:'#/dashboard/client' },
-    { id:uid('n'), type:'tx',        title:'Escrow confirmado', body:'1224 ITL travados na rede Interlink.',   ts: Date.now()-86400000,  read:true,  link:'#/wallet' },
-  ];
+ // Notifications — usuário novo começa sem nenhuma
+  STATE.notifications = [];
 
   // Tx history (seed)
   STATE.txHistory = [
@@ -1631,6 +1628,7 @@ window._handleReownConnected = async function(address) {
     me.name    = 'Usuário';
     me.handle  = shortW + '.interlink';
     me.wallet  = address;
+    me.country = 'US'; 
     var av     = getAvatarSrc('U', '#1a73e8');
     me.avatar  = av.src;
     me.avatarType = av.type;
