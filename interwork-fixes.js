@@ -957,15 +957,6 @@ window.openEditProfileModal = function() {
         </div>
       </div>
 
-      <div>
-            <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Country</label>
-            <select id="ep-country" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition">
-              ${COUNTRIES.map(c => `<option value="${c.id}" ${me.country===c.id?'selected':''}>${c.flag} ${c.name}</option>`).join('')}
-            </select>
-          </div>
-
-        </div>
-
       <div class="p-4 border-t border-ink-100 flex gap-3 shrink-0">
         <button onclick="closeModal()" class="flex-1 bg-ink-100 hover:bg-ink-200 text-ink-700 font-bold py-2 rounded-xl text-sm transition">
           Cancel
