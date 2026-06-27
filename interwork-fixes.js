@@ -944,15 +944,15 @@ window.openEditProfileModal = function() {
         <div class="space-y-4">
           <div>
             <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Full name</label>
-            <input id="edit-name" type="text" value="${escapeHtml(me.name)}" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition"/>
+            <input id="ep-name" type="text" value="${escapeHtml(me.name)}" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition"/>
           </div>
           <div>
             <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Bio / Headline</label>
-            <textarea id="edit-bio" rows="3" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition resize-none">${escapeHtml(me.bio || '')}</textarea>
+            <textarea id="ep-bio" rows="3" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition resize-none">${escapeHtml(me.bio || '')}</textarea>
           </div>
           <div>
             <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Skills (comma separated)</label>
-            <input id="edit-skills" type="text" value="${escapeHtml((me.skills||[]).join(', '))}" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition" placeholder="Design, React, Writing..."/>
+            <input id="ep-skills" type="text" value="${escapeHtml((me.skills||[]).join(', '))}" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition" placeholder="Design, React, Writing..."/>
           </div>
         </div>
       </div>
