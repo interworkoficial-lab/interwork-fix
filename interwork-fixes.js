@@ -1347,42 +1347,5 @@ window.viewEarn = function() {
     </div>
   </div>`;
 };
-window.saveProfile = function() {
-  const u = DB.users.find(x => x.id === STATE.currentUserId);
-  if (!u) return;
-
-  const name = document.getElementById('ep-name')?.value?.trim();
-  const bio = document.getElementById('ep-bio')?.value?.trim();
-  const skillsRaw = document.getElementById('ep-skills')?.value?.trim();
-  const countryEl = document.getElementById('ep-country')?.value;
-
-  if (!name || name.length < 2) { toast('Enter a valid name.', 'warn'); return; }
-
-  u.name = name;
-  u.bio = bio || '';
-  u.skills = skillsRaw ? skillsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
-  if (countryEl) u.country = countryEl;
-
-  // Sincroniza avatar exibido no header/perfil
-  document.querySelectorAll('.profile-avatar-img').forEach(img => { img.src = u.avatar; });
-
-  // Supabase (se tiver sessão real)
-  if (typeof sbUpdateProfile === 'function' && STATE.sbProfile?.id) {
-    sbUpdateProfile({
-      name: u.name,
-      bio: u.bio,
-      skills: u.skills,
-      country: u.country,
-    }).catch(err => console.warn('[Supabase] Profile update failed:', err));
-  }
-
-  persistNow();
-  closeModal();
-  toast('Profile saved!', 'success');
-
-  // Re-render do header e da view atual
-  renderHeader();
-  if (STATE.route === 'u') renderView();
-};
 
 console.log('[InterWork Fixes v5] ✅ Integral Patch Loaded — 1300+ lines preserved + New features.');
