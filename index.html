@@ -1625,14 +1625,14 @@ window._handleReownConnected = async function(address) {
   const shortW = address.slice(0,6) + '...' + address.slice(-4);
   const me = getUser(STATE.currentUserId) || DB.users[0];
   if (!STATE.onboardingComplete) {
-    me.name    = 'Usuário';
+    me.name    = 'User';
     me.handle  = shortW + '.interlink';
     me.wallet  = address;
     me.country = 'US'; 
     var av     = getAvatarSrc('U', '#1a73e8');
     me.avatar  = av.src;
     me.avatarType = av.type;
-    me.bio     = 'Cliente Web3 explorando serviços na Interwork.';
+    me.bio     = 'Cliente Web3.';
     me.verified = true;
     me.online  = true;
     STATE.userRole          = 'client';
