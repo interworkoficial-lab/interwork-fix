@@ -121,7 +121,7 @@
 const STATE = {
   route: 'home',
   currentUserId: 'u_me',
-showMocks: true, // ADICIONE ESTA LINHA AQUI
+showMocks: false, // ADICIONE ESTA LINHA AQUI
   // Helper para atualizar o estado e renderizar a tela automaticamente
   set(key, val) { this[key] = val; renderView(); },
   patch(obj) { Object.assign(this, obj); renderView(); },
@@ -549,7 +549,8 @@ const TR = {
   // New homepage sections — Why InterWork, Strategic Partner, Powered by InterLink
   'Why InterWork?':{en:'Why InterWork?',es:'¿Por qué InterWork?',de:'Warum InterWork?',ja:'なぜInterWork？',hi:'InterWork क्यों?'},
   'Secure Payments':{en:'Secure Payments',es:'Pagos seguros',de:'Sichere Zahlungen',ja:'安全な支払い',hi:'सुरक्षित भुगतान'},
-  'Funds locked in an automatic contract — released only when the job is approved.':{en:'Funds locked in an automatic contract — released only when the job is approved.',es:'Fondos bloqueados en un contrato automático — liberados solo cuando se aprueba el trabajo.',de:'Geld in einem automatischen Vertrag gesperrt — freigegeben erst nach Genehmigung der Arbeit.',ja:'自動契約でロック — 仕事が承認されたときのみ解放。',hi:'स्वचालित अनुबंध में लॉक — केवल काम मंज़ूर होने पर जारी।'},
+  'Guaranteed Payment':{en:'Guaranteed Payment',es:'Pago garantizado',de:'Garantierte Zahlung',ja:'保証された支払い',hi:'गारंटीकृत भुगतान'},
+'No bureaucracy, no hassle. As soon as the client approves the delivery, your ITL payment is released by escrow.':{en:'No bureaucracy, no hassle. As soon as the client approves the delivery, your ITL payment is released by escrow.',es:'Sin burocracia, sin complicaciones. En cuanto el cliente aprueba la entrega, tu pago en ITL es liberado por el escrow.',de:'Keine Bürokratie, kein Aufwand. Sobald der Kunde die Lieferung genehmigt, wird deine ITL-Zahlung über Escrow freigegeben.',ja:'手続き不要、簡単。クライアントが納品を承認すると、エスクローによりITLの支払いが解放されます。',hi:'कोई कागज़ी कार्रवाई नहीं, कोई परेशानी नहीं। क्लाइंट के डिलीवरी मंज़ूर करते ही, आपका ITL भुगतान एस्क्रो द्वारा जारी हो जाता है।'},
   'Reputation System':{en:'Reputation System',es:'Sistema de reputación',de:'Reputationssystem',ja:'レピュテーションシステム',hi:'प्रतिष्ठा प्रणाली'},
   'Verified reviews tied to real completed orders. No fake ratings.':{en:'Verified reviews tied to real completed orders. No fake ratings.',es:'Valoraciones verificadas vinculadas a pedidos reales completados. Sin calificaciones falsas.',de:'Verifizierte Bewertungen, verknüpft mit echten abgeschlossenen Aufträgen. Keine gefälschten Ratings.',ja:'実際の完了注文に紐づいた検証済みレビュー。偽の評価なし。',hi:'वास्तविक पूर्ण ऑर्डर से जुड़ी सत्यापित समीक्षाएँ। कोई फ़र्ज़ी रेटिंग नहीं।'},
   'Human Marketplace':{en:'Human Marketplace',es:'Marketplace humano',de:'Menschlicher Marktplatz',ja:'ヒューマンマーケット',hi:'मानव मार्केटप्लेस'},
@@ -4873,6 +4874,7 @@ function saveProfile(){
   addNotification({ type:'tx', title:'Perfil atualizado on-chain', body:shortHash(hash), link:'#/u/'+u.handle });
   closeModal();
   toast('Perfil atualizado • '+shortHash(hash), 'success');
+  persistNow();
   if (!location.hash.startsWith('#/u/')) location.hash = '#/u/'+u.handle;
   render();
 }
@@ -8655,15 +8657,7 @@ function viewWhyJoin(){
     <section class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
       <div class="grid md:grid-cols-2 gap-4">
 
-        <!-- Card destaque -->
-        <div class="md:col-span-2 bg-[#EEEDFE] border border-[#AFA9EC] rounded-2xl p-6">
-          <div class="w-9 h-9 rounded-xl bg-[#534AB7]/20 grid place-items-center mb-4">
-            <i class="ri-medal-line text-xl text-[#534AB7]"></i>
-          </div>
-          <h3 class="font-bold text-slate-900 mb-2">On-chain certification — yours permanently</h3>
-          <p class="text-sm text-slate-600 leading-relaxed">Your genesis certification badge is minted as a soulbound token. It records your participation date, contribution type, and ATV validation count. Not a screenshot — a permanent, public, on-chain credential that follows your wallet everywhere.</p>
-          <span class="inline-block mt-4 text-[11px] font-semibold px-3 py-1 rounded-full bg-[#EEEDFE] text-[#3C3489] border border-[#AFA9EC]">Non-transferable · Permanent</span>
-        </div>
+        
 
         <!-- Card 2 -->
         <div class="bg-[#E1F5EE] border border-[#9FE1CB] rounded-2xl p-6">
