@@ -1186,8 +1186,13 @@ html.dark .gig-carousel-arrow:hover {
   box-shadow: 0 22px 48px rgba(15,23,42,.15) !important;
 }
 
-/* Thumbnail — mantém padding-bottom:53% (responsivo), só refina aparência */
+/* Thumbnail — mantém padding-bottom:53% (responsivo), só refina aparência.
+   Reverte o aspect-ratio:4/3 que uma regra anterior do arquivo aplicou,
+   para a imagem voltar a ser larga (16:9-ish) em vez de quadrada/alta. */
 .gig-card .gig-thumb {
+  aspect-ratio: auto !important;
+  padding-bottom: 53% !important;
+  height: 0 !important;
   border-radius: 14px !important;
   border: none !important;
   margin: -24px -24px 16px -24px !important;
