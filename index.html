@@ -3348,17 +3348,7 @@ function dashFreelancer(){
   const pending  = myOrders.filter(o=>!['approved','cancelled'].includes(o.status));
   const frTab    = STATE._frTab || 'orders';
   return `
-  <!-- Saldo + Sacar — destaque principal -->
-  <div class="bg-white border border-ink-100 rounded-2xl p-5 mb-4 flex items-center justify-between gap-3">
-    <div>
-      <div class="text-xs text-ink-400 font-semibold mb-0.5">Saldo disponível</div>
-      <div class="text-2xl font-extrabold text-brand-600">${fmtITL(me.balanceITL||0)}</div>
-    </div>
-    <button onclick="openWithdrawModal()"
-      class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2">
-      <i data-lucide="banknote" class="w-4 h-4"></i>Sacar
-    </button>
-  </div>
+  
 
   <!-- 2 stats principais -->
   <div class="grid grid-cols-2 gap-3 mb-4">
