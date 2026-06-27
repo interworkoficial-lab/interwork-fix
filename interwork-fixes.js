@@ -954,6 +954,12 @@ window.openEditProfileModal = function() {
             <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Skills (comma separated)</label>
             <input id="edit-skills" type="text" value="${escapeHtml((me.skills||[]).join(', '))}" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition" placeholder="Design, React, Writing..."/>
           </div>
+          <div>
+            <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Country</label>
+            <select id="edit-country" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition">
+              ${COUNTRIES.map(c => `<option value="${c.id}" ${(me.country || 'us') === c.id ? 'selected' : ''}>${c.flag} ${c.name}</option>`).join('')}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -1337,6 +1343,23 @@ window.viewEarn = function() {
       </div>
     </div>
   </div>`;
+};
+window.saveProfile = function() {
+  const me = DB.users.find(x => x.id === STATE.currentUserId);
+  if (!me) return;
+  const name = document.getElementById('edit-name')?.value.trim();
+  const bio = document.getElementById('edit-bio')?.value.trim();
+  const skills = document.getElementById('edit-skills')?.value.trim();
+  const country = document.getElementById('edit-country')?.value;
+  if (name) me.name = name;
+  if (bio !== undefined) me.bio = bio;
+  if (skills !== undefined) me.skills = skills.split(',').map(s => s.trim()).filter(Boolean);
+  if (country) me.country = country;
+  persistNow();
+  closeModal();
+  renderHeader();
+  toast('Profile updated!', 'success');
+  render();
 };
 
 console.log('[InterWork Fixes v5] ✅ Integral Patch Loaded — 1300+ lines preserved + New features.');
