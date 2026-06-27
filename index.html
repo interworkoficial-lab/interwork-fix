@@ -8919,11 +8919,13 @@ function viewEarnITL(){
   </div>
   `;
 }
-   window.toggleMocks = function() {
+    window.toggleMocks = function() {
   STATE.showMocks = !STATE.showMocks;
+  if (typeof toast === 'function') {
+    toast(STATE.showMocks ? 'Mocks ativados' : 'Mocks ocultados', 'info');
+  }
   renderView();
 };
-
 
 </script>
 <script src="service-manager.js"></script>
