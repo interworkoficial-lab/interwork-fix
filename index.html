@@ -5790,24 +5790,17 @@ const MILESTONE_PRESETS = [
 ];
 
 function openHireModal(serviceId, tierKey){
-  if (!requireAuth('contratar')) return;
+  if (!requireAuth('hire')) return;
   const s = getService(serviceId);
-  const u = getUserSafe(s.freelancerId); // ADICIONADO fallback — antes: getUser(s.freelancerId)
+  const u = getUserSafe(s.freelancerId);
   const me = getUser(STATE.currentUserId);
-  const tier = { priceITL: s.price, days: s.deadline||s.days||7, label:'Padrão', revisions: 2, includes: s.includes||[] };
+  const tier = { priceITL: s.price, days: s.deadline||s.days||7, label:'Standard', revisions: 2, includes: s.includes||[] };
   const fee = +(tier.priceITL*0.02).toFixed(2);
   const total = +(tier.priceITL+fee).toFixed(2);
   const insufficient = me.balanceITL < total;
-  const isBigProject = tier.priceITL >= 150; // só projetos grandes ganham a sugestão de negociar etapas no chat
+  const isBigProject = tier.priceITL >= 150;
 
   $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
-    <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
-
-      <!-- Header compacto -->
-      <div class="px-5 py-3.5 border-b border-ink-100 flex items-center justify-between">
-        <span class="font-extrabold text-sm flex items-center gap-2">
-          $('#modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
     <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop overflow-hidden">
 
