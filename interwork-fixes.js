@@ -917,7 +917,7 @@ window.dashFreelancer = function() {
    ───────────────────────────────────────────────────────── */
 window.openEditProfileModal = function() {
   const me = getUser(STATE.currentUserId);
-  $('#modal-root').innerHTML = `
+ document.getElementById('modal-root').innerHTML = `
   <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in">
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-pop overflow-hidden flex flex-col max-h-[90vh]">
       <div class="px-6 py-4 border-b border-ink-100 flex items-center justify-between shrink-0">
