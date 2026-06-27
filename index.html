@@ -121,6 +121,7 @@
 const STATE = {
   route: 'home',
   currentUserId: 'u_me',
+showMocks: true, // ADICIONE ESTA LINHA AQUI
   // Helper para atualizar o estado e renderizar a tela automaticamente
   set(key, val) { this[key] = val; renderView(); },
   patch(obj) { Object.assign(this, obj); renderView(); },
@@ -1193,6 +1194,10 @@ function render(){
   applyTranslations(document.body);
   initI18nObserver();
   schedulePersist();
+}
+    // ADICIONE ESTA FUNÇÃO AQUI:
+function toggleMocks() {
+  STATE.set('showMocks', !STATE.showMocks);
 }
 function renderView(){
   const v = $('#view');
@@ -2385,7 +2390,10 @@ function filterServices(){
   // reseta a página pra 1 sempre que algum filtro/busca/ordenação mudar
   const sig = [STATE.category,STATE.country,STATE.ratingMin,STATE.priceMax,STATE.priceMin,STATE.verifiedOnly,STATE.availableOnly,STATE.sort,STATE.query,STATE.trendingActive].join('|');
   if (STATE._filterSig !== sig){ STATE._filterSig = sig; STATE.page = 1; }
-  let arr = DB.services.filter(sv => sv._mock || sv.status === 'approved');
+  let arr = DB.services.filter(sv => {
+  if (sv._mock) return STATE.showMocks;
+  return sv.status === 'approved';
+});
   if (STATE.category!=='all') arr = arr.filter(s=>s.category===STATE.category);
   if (STATE.country!=='all')  arr = arr.filter(s=>s.country===STATE.country);
   if (STATE.ratingMin>0)      arr = arr.filter(s=>s.rating>=STATE.ratingMin);
@@ -7410,26 +7418,19 @@ async function sbLoadServices(){
     .from('services')
     .select('*')
     .order('created_at', { ascending: false });
+    
   if (error){ console.warn('[Supabase] Erro ao carregar serviços:', error.message); return; }
 
-  // ALTERADO — antes: qualquer linha no banco (mesmo pending/rejected) já mesclava com mocks.
-  // Agora: os mocks só permanecem como fallback até existir pelo menos 1 serviço REAL APROVADO.
-  // Assim que o primeiro serviço real for aprovado, os mocks somem por completo da listagem.
-  const approvedReal = (data || []).filter(s => s.status === 'approved');
-  if (approvedReal.length > 0) {
-    DB.services = data.map(sbSvcToLocal); // só dados reais (todos os status, p/ admin/dono ver os próprios)
-  }
-  // Se ainda não há nenhum serviço real aprovado, DB.services continua com os mocks do initMock,
-  // mas qualquer serviço real (mesmo pending) já fica disponível pra quem precisa vê-lo (admin/dono).
-  else if (data && data.length > 0) {
-    const dbIds = new Set(data.map(s => s.id));
-    DB.services = [
-  ...data.filter(s => s.status === 'approved').map(sbSvcToLocal),
-  ...DB.services.filter(s => s._mock && !dbIds.has(s.id)),
-];
-  }
+  // SUBSTITUA O RESTANTE DA FUNÇÃO POR ISSO:
+  const realServices = (data || []).map(sbSvcToLocal);
+  const mockServices = DB.services.filter(s => s._mock);
+  
+  // Mantém os mocks originais e adiciona os reais do banco
+  DB.services = [...realServices, ...mockServices];
+  
   renderView();
 }
+
 
 // Salva um serviço novo no Supabase
 async function sbCreateService(svc){
@@ -7935,6 +7936,7 @@ function viewAdmin(){
       </div>
     </div>`;
   }
+    
 
   const pending  = DB.services.filter(s => s.status === 'pending' || s.status === 'pending_approval');
   const approved = DB.services.filter(s => s.status === 'approved');
@@ -8025,6 +8027,39 @@ function viewAdmin(){
         </button>
       </div>
     </div>
+        <!-- Header -->
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-8">
+      <div>
+        <div class="chip bg-violet-50 text-violet-700 mb-2">🛡️ Painel Admin</div>
+        <h1 class="text-3xl font-extrabold tracking-tight">Moderação de Serviços</h1>
+        <p class="text-ink-500 text-sm mt-1">Conectado como <strong class="text-ink-700">${STATE.sbUser?.email}</strong></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="sbLoadServices().then(()=>toast('Atualizado!','success'))"
+          class="px-4 py-2.5 border border-ink-200 hover:bg-ink-100/50 rounded-xl text-sm font-bold flex items-center gap-2">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>Atualizar
+        </button>
+        <button onclick="sbSignOut()"
+          class="px-4 py-2.5 bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 rounded-xl text-sm font-bold flex items-center gap-2">
+          <i data-lucide="log-out" class="w-4 h-4"></i>Sair
+        </button>
+      </div>
+    </div>
+
+    <!-- INSERIR O TRECHO ABAIXO AQUI -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 mb-6 shadow-sm flex items-center justify-between">
+      <div>
+        <h3 class="font-bold text-slate-900 text-sm">Controle de Mocks</h3>
+        <p class="text-[11px] text-slate-500">Exibir serviços de exemplo na vitrine principal.</p>
+      </div>
+      <button onclick="toggleMocks()" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${STATE.showMocks ? 'bg-rose-50 text-rose-600 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}">
+        ${STATE.showMocks ? 'Desativar Mocks' : 'Ativar Mocks'}
+      </button>
+    </div>
+
+    ${!SB_READY ? `
+    <div class="rounded-2xl bg-amber-50 border border-amber-200 p-6 mb-8">
+
 
     ${!SB_READY ? `
     <div class="rounded-2xl bg-amber-50 border border-amber-200 p-6 mb-8">
@@ -8884,6 +8919,14 @@ function viewEarnITL(){
   </div>
   `;
 }
+    window.toggleMocks = function() {
+  STATE.showMocks = !STATE.showMocks;
+  if (typeof toast === 'function') {
+    toast(STATE.showMocks ? 'Mocks ativados' : 'Mocks ocultados', 'info');
+  }
+  renderView();
+};
+
 </script>
 <script src="service-manager.js"></script>
 <link rel="stylesheet" href="interwork-fixes.css">
