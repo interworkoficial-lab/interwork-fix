@@ -2208,7 +2208,7 @@ function viewHeroPage(){
         <p class="mt-1 text-sm text-slate-500">Try different keywords or clear your filters.</p>
         <button onclick="clearAllFilters()" class="mt-5 px-6 py-2 rounded-full bg-[#8b7cff] text-white text-sm font-bold hover:bg-[#7a6cf0] transition">Clear all filters</button>
       </div>` : `
-      <div id="gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div id="gigs" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         ${pageItems.map(serviceCard).join('')}
       </div>
       ${paginationBar(filtered.length)}`}
@@ -2531,7 +2531,7 @@ function serviceCard(s){
 
   return `
   <a href="#/service/${s.id}" class="gig-card group block min-w-0">
-    <div class="gig-thumb gig-carousel aspect-[4/3] rounded-xl overflow-hidden relative bg-ink-100 mb-1.5"
+    <div class="gig-thumb gig-carousel aspect-square rounded-xl overflow-hidden relative bg-ink-100 mb-1.5"
   data-imgcount="${imgs.length}" data-idx="0"
   onmouseenter="gigCarouselShowControls(this)"
   onmouseleave="gigCarouselHideControls(this)">
@@ -2575,7 +2575,7 @@ function serviceCard(s){
       </div>
     </div>
 
-    <h3 class="gig-title text-[12px] text-ink-900 leading-tight group-hover:underline font-medium mb-1.5 line-clamp-2">${
+    <h3 class="gig-title text-[12px] text-ink-900 leading-tight group-hover:underline font-medium mb-1.5 line-clamp-1">${
         
       s.title.toLowerCase().startsWith('i will ')
         ? '<span class="font-semibold text-ink-500">I will </span>' + escapeHtml(s.title.slice(7))
@@ -3013,7 +3013,7 @@ function viewService(id){
       <h2 class="text-xl font-extrabold text-slate-900">People also viewed</h2>
       <a href="#/home" class="text-sm font-semibold text-[#5b4ee0] hover:underline">View all gigs →</a>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
       ${recommended.slice(0, 4).map(r => `
         <a href="#/service/${r.id}" class="bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-lg hover:border-[#c7c0ff] transition">
           <div class="relative overflow-hidden">
@@ -8496,7 +8496,7 @@ window.viewProfile = function(handle){
     </section>
 
     <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <div id="pane-gigs" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div id="pane-gigs" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         ${services.map(s=>`
           <a href="#/service/${s.id}" class="card bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col hover:shadow-lg transition-all duration-300">
             <div class="relative overflow-hidden aspect-[3/2]">
