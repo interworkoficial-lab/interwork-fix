@@ -954,12 +954,6 @@ window.openEditProfileModal = function() {
             <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Skills (comma separated)</label>
             <input id="ep-skills" type="text" value="${escapeHtml((me.skills||[]).join(', '))}" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition" placeholder="Design, React, Writing..."/>
           </div>
-          <div>
-            <label class="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-1.5 ml-1">Country</label>
-            <select id="ep-country" class="w-full bg-ink-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500/20 transition">
-              ${COUNTRIES.map(c => `<option value="${c.id}" ${me.country === c.id ? 'selected' : ''}>${c.flag} ${c.name}</option>`).join('')}
-            </select>
-          </div>
         </div>
       </div>
 
@@ -1356,7 +1350,7 @@ window.saveProfile = function() {
   u.bio    = document.getElementById('ep-bio')?.value.trim() || '';
   u.skills = (document.getElementById('ep-skills')?.value || '')
                .split(',').map(s => s.trim()).filter(Boolean);
-  u.country = document.getElementById('ep-country')?.value || u.country;
+ 
 
   closeModal();
 
