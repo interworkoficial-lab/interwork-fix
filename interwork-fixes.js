@@ -1339,4 +1339,22 @@ window.viewEarn = function() {
   </div>`;
 };
 
+window.saveProfile = function() {
+  const u = DB.users.find(x => x.id === STATE.currentUserId);
+  if (!u) return;
+
+  const name = document.getElementById('ep-name')?.value.trim();
+  if (!name) { toast('Enter a name.', 'warn'); return; }
+
+  u.name   = name;
+  u.bio    = document.getElementById('ep-bio')?.value.trim() || '';
+  u.skills = (document.getElementById('ep-skills')?.value || '')
+               .split(',').map(s => s.trim()).filter(Boolean);
+
+  closeModal();
+  persistNow();
+  toast('Profile saved!', 'success');
+  render();
+};
+
 console.log('[InterWork Fixes v5] ✅ Integral Patch Loaded — 1300+ lines preserved + New features.');
