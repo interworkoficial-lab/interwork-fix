@@ -1600,7 +1600,6 @@ function openConnectWallet(reason) {
   }, 300);
 }
 
-// Chamado pelo módulo Reown quando carteira conecta com sucesso
 window._handleReownConnected = async function(address) {
   // ── ADICIONADO: garante sessão real no Supabase (Anonymous Auth) ligada à wallet ──
   try {
@@ -1621,31 +1620,51 @@ window._handleReownConnected = async function(address) {
   } catch (e) {
     console.warn('[Supabase] Falha ao sincronizar sessão da wallet:', e);
   }
-  // ── A PARTIR DAQUI: código original, 100% intacto ──
-  const shortW = address.slice(0,6) + '...' + address.slice(-4);
-  const me = getUser(STATE.currentUserId) || DB.users[0];
-  if (!STATE.onboardingComplete) {
-    me.name    = 'User';
-    me.handle  = shortW + '.interlink';
-    me.wallet  = address;
-    me.country = 'US'; 
-    var av     = getAvatarSrc('U', '#1a73e8');
-    me.avatar  = av.src;
-    me.avatarType = av.type;
-    me.bio     = 'Cliente Web3.';
-    me.verified = true;
-    me.online  = true;
-    STATE.userRole          = 'client';
-    STATE.onboardingComplete = true;
-    STATE.dashboardTab      = 'client';
-  } else {
-    me.wallet = address;
+
+  // ── CORRIGIDO: cada endereço de wallet tem seu próprio perfil local ──
+  const addrKey = address.toLowerCase();
+  let me = DB.users.find(u => (u.wallet || '').toLowerCase() === addrKey);
+
+  if (!me) {
+    // Endereço novo nesta sessão do navegador → cria perfil novo (não reaproveita u_me)
+    const shortW = address.slice(0,6) + '...' + address.slice(-4);
+    var av = getAvatarSrc('U', '#1a73e8');
+    me = {
+      id: 'u_' + addrKey.slice(2, 10),
+      name: 'User',
+      handle: shortW + '.interlink',
+      wallet: address,
+      country: 'US',
+      avatar: av.src,
+      avatarType: av.type,
+      bio: 'Cliente Web3.',
+      verified: true,
+      online: true,
+      jobs: 0,
+      rating: 5,
+      balanceITL: 1250.50,
+      languages: ['en'],
+      skills: [],
+      portfolio: [],
+      joinedTs: Date.now(),
+      responseHours: 1,
+      repeatClientsPct: 0,
+      approvalPct: 0,
+      referralCode: 'INTERWORK-' + shortW.toUpperCase(),
+      pendingPayoutITL: 0,
+    };
+    DB.users.push(me);
+    STATE.userRole = 'client';
+    STATE.dashboardTab = 'client';
   }
-  STATE.walletProvider  = 'WalletConnect';
-  STATE.walletConnected = true;
-  STATE.authenticated   = true;
+
+  STATE.currentUserId      = me.id;
+  STATE.onboardingComplete = true;
+  STATE.walletProvider     = 'WalletConnect';
+  STATE.walletConnected    = true;
+  STATE.authenticated      = true;
+
   closeModal();
-  // toast removido — sem popup ao conectar
   persistNow();
   render();
 };
@@ -1837,8 +1856,9 @@ function disconnectWallet(){
   if (window._reownModal) {
     try { window._reownModal.disconnect(); } catch(e) {}
   }
-  STATE.walletConnected = false;
-  STATE.authenticated   = false;
+  STATE.walletConnected    = false;
+  STATE.authenticated      = false;
+  STATE.onboardingComplete = false; // força re-checagem de perfil na próxima conexão
   closeModal();
   render();
 }
