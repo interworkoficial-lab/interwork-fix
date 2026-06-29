@@ -78,7 +78,7 @@ function openNewServiceModal(editId) {
     title : editing ? existing.title          : '',
     cat   : editing ? existing.category       : (CATEGORIES[0]?.id || ''),
     co    : editing ? existing.country        : (COUNTRIES[0]?.id  || ''),
-    price : editing ? existing.price          : 250,
+    price : editing ? existing.price          : 0,
     days  : editing ? existing.deliveryDays   : 7,
     desc  : editing ? existing.description    : '',
     inc   : editing ? (existing.includes || []).join(', ') : '',
@@ -214,23 +214,20 @@ function viewNewServicePage() {
 
   const step3 = `
   <div class="space-y-5">
-    <div class="flex items-start gap-2.5 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-800">
-      <i data-lucide="lightbulb" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5"></i>
-      <span>Services between <strong>48 and 280 ITL</strong> have the highest conversion rate on the platform.</span>
-    </div>
+    
     <div class="grid grid-cols-2 gap-3">
       <div>
         <label class="text-xs font-bold uppercase tracking-wider text-ink-500">PRICE (ITL) *</label>
         <div class="relative mt-1.5">
           <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400 font-bold">⬡</span>
-          <input id="ns-price" type="number" min="1" max="9999" value="${v.price || 120}"
+          <input id="ns-price" type="number" min="0" max="9999" value="${v.price !== undefined ? v.price : 0}"
             class="w-full border border-ink-200 rounded-xl pl-8 pr-3 py-2.5 text-sm outline-none focus:border-brand-400 transition"/>
         </div>
       </div>
       <div>
         <label class="text-xs font-bold uppercase tracking-wider text-ink-500">DELIVERY TIME (DAYS) *</label>
         <div class="relative mt-1.5">
-          <input id="ns-days" type="number" min="1" max="90" value="${v.days || 7}"
+          <input id="ns-days" type="number" min="1" max="30" value="${v.days || 7}"
             class="w-full border border-ink-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-brand-400 transition pr-12"/>
           <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400 text-xs">days</span>
         </div>
@@ -464,7 +461,7 @@ function nsWizardNavPage(dir) {
     const price = parseFloat(document.getElementById('ns-price')?.value || '0');
     const days  = parseInt(document.getElementById('ns-days')?.value  || '0', 10);
     /* [H3] Validation only when going forward; when going back, save whatever is there */
-    if (dir === 1 && (!price || price < 1)) { toast('Please set a valid price.', 'warn'); return; }
+    if (dir === 1 && (price < 0 || price === null || isNaN(price))) { toast('Please set a valid price.', 'warn'); return; }
     if (dir === 1 && (!days  || days  < 1)) { toast('Please set a valid delivery time.', 'warn'); return; }
     /* Save preserving previous value if field comes empty (don't overwrite with 0) */
     if (price && price > 0) STATE._nsV.price = price;
