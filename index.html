@@ -196,7 +196,7 @@ const SBT_BADGES = [
   { id:'cem',      label:'100+ Entregas',   desc:'Cem ou mais pedidos concluídos on-chain',  icon:'package-check',color:'#10b981', test: u => (u.jobs||0) >= 100 },
   { id:'top',      label:'Top Rated',       desc:'Rating ≥ 4.85 com 50+ avaliações',         icon:'award',        color:'#f59e0b', test: u => u.rating >= 4.85 && (u.jobs||0) >= 25 },
   { id:'fast',     label:'Express Pro',     desc:'Responde em ≤ 3h em média',                icon:'rocket',       color:'#ef4444', test: u => (u.responseHours||99) <= 3 },
-  { id:'trust',    label:'Zero Disputas',   desc:'Nenhuma disputa em 20+ pedidos',           icon:'shield-check', color:'#06b6d4', test: u => ((u.disputes||0)===0) && (u.jobs||0) >= 20 },
+ 
   { id:'recur',    label:'Cliente Fiel',    desc:'90%+ de clientes recorrentes',             icon:'repeat',       color:'#0ea5e9', test: u => (u.repeatClientsPct||0) >= 90 },
 ];
 function sbtTxForUser(uid, badgeId){
@@ -451,9 +451,9 @@ const TR = {
   'Resolução pedida':{en:'Resolution requested',es:'Resolución solicitada',de:'Gewünschte Lösung',ja:'希望する解決',hi:'अनुरोधित समाधान'},
   'Reembolso total':{en:'Full refund',es:'Reembolso total',de:'Volle Rückerstattung',ja:'全額返金',hi:'पूर्ण रिफंड'},
   'Sua versão dos fatos':{en:'Your side of the story',es:'Tu versión de los hechos',de:'Deine Sicht der Dinge',ja:'あなたの主張',hi:'आपका पक्ष'},
-  'Abrir disputa on-chain':{en:'Open dispute on-chain',es:'Abrir disputa on-chain',de:'On-Chain-Streit eröffnen',ja:'オンチェーンで紛争を開く',hi:'ऑन-चेन विवाद खोलें'},
-  'votação ativa':{en:'voting active',es:'votación activa',de:'Abstimmung läuft',ja:'投票中',hi:'मतदान जारी'},
-  'encerrada':{en:'closed',es:'cerrada',de:'beendet',ja:'終了',hi:'समाप्त'},
+  
+  
+  
 
   // Wallet & notifications
   'Wallet conectada':{en:'Wallet connected',es:'Wallet conectada',de:'Wallet verbunden',ja:'ウォレット接続済み',hi:'वॉलेट कनेक्ट हुआ'},
@@ -461,8 +461,8 @@ const TR = {
   'Pagamento liberado':{en:'Payment released',es:'Pago liberado',de:'Zahlung freigegeben',ja:'支払い解放',hi:'भुगतान जारी'},
   'Perfil atualizado on-chain':{en:'Profile updated on-chain',es:'Perfil actualizado on-chain',de:'Profil on-chain aktualisiert',ja:'プロフィールをオンチェーン更新',hi:'प्रोफ़ाइल ऑन-चेन अपडेट'},
   'Avaliação registrada on-chain':{en:'Review recorded on-chain',es:'Valoración registrada on-chain',de:'Bewertung on-chain registriert',ja:'評価をオンチェーン記録',hi:'समीक्षा ऑन-चेन दर्ज'},
-  'Disputa aberta':{en:'Dispute opened',es:'Disputa abierta',de:'Streit eröffnet',ja:'紛争を開始',hi:'विवाद खुला'},
-  'Disputa resolvida':{en:'Dispute resolved',es:'Disputa resuelta',de:'Streit gelöst',ja:'紛争解決済み',hi:'विवाद हल'},
+ 
+  
   'Sem notificações':{en:'No notifications',es:'Sin notificaciones',de:'Keine Benachrichtigungen',ja:'通知なし',hi:'कोई सूचना नहीं'},
 
   // Footer / legal
@@ -973,7 +973,7 @@ function mkOrder(service, clientId, brief, status='in_progress', progress=10){
     clientRated: false,
     escrowTx: txHash(),
     milestones: null,
-    dispute: null,
+   
     cancelRequest: null,
     refundRequested: false,
     tipITL: 0,
@@ -2065,7 +2065,7 @@ function statusChip(status){
     delivered:          [t('order_delivered'),'bg-blue-50 text-blue-700','package'],
     approved:           [t('order_approved'),'bg-emerald-50 text-emerald-700','check-circle-2'],
     cancelled:          [tr('Cancelado'),'bg-slate-100 text-slate-700','x-circle'],
-    disputed:           [t('order_disputed'),'bg-rose-50 text-rose-700','alert-octagon'],
+   
   };
   const [lbl,c,i] = map[status] || ['—','bg-ink-100 text-ink-700','circle'];
   return `<span class="chip ${c}"><i data-lucide="${i}" class="w-3.5 h-3.5"></i>${lbl}</span>`;
@@ -2083,7 +2083,7 @@ const ORDER_STEPS = [
 ];
 function orderStepState(o){
   if (o.status === 'cancelled') return { cancelled:true, activeIndex:-1, doneUpTo:-1, disputed:false };
-  if (o.status === 'disputed')  return { disputed:true, activeIndex:5, doneUpTo:4, cancelled:false };
+  
   const map = { awaiting_requirements:3, in_progress:3, awaiting_delivery:3, delivered:5, approved:6 };
   const idx = map[o.status] ?? 3;
   const doneUpTo = o.status === 'approved' ? 6 : idx - 1;
@@ -2097,10 +2097,10 @@ function orderProgressStepper(o, opts={}){
   }
   const stepHtml = (step,i)=>{
     const isDone = i <= st.doneUpTo;
-    const isDisputed = st.disputed && i === st.activeIndex;
+    
     const isCurrent = i === st.activeIndex && !isDone && !isDisputed;
-    const circleCls = isDisputed ? 'bg-rose-500 text-white' : isDone ? 'bg-emerald-500 text-white' : isCurrent ? 'bg-brand-500 text-white animate-pulse' : 'bg-ink-100 text-ink-400';
-    const iconName = isDisputed ? 'alert-triangle' : (isDone ? 'check' : step.icon);
+    const circleCls = isDone ? 'bg-emerald-500 text-white' : isCurrent ? 'bg-brand-500 text-white animate-pulse' : 'bg-ink-100 text-ink-400';
+    const iconName = isDone ? 'check' : step.icon;
     const lineCls = i < st.doneUpTo ? 'bg-emerald-400' : 'bg-ink-100';
     const isLast = i === ORDER_STEPS.length-1;
     return `
@@ -3112,8 +3112,7 @@ function txLabel(type){
     deposit:'Depósito',
     rating:'Avaliação',
     profile_update:'Perfil atualizado',
-    dispute_open:'Disputa aberta',
-    dispute_resolve:'Disputa resolvida',
+    
     order_cancel_refund:'Reembolso (cancelamento)',
   }[type] || type;
 }
@@ -3126,8 +3125,7 @@ function txIcon(type){
     deposit:'arrow-down-to-line',
     rating:'star',
     profile_update:'user-cog',
-    dispute_open:'gavel',
-    dispute_resolve:'shield-check',
+    
     order_cancel_refund:'rotate-ccw',
   }[type] || 'arrow-left-right';
 }
@@ -3203,7 +3201,7 @@ function notifIcon(type){
     message: 'message-circle',
     tx: 'wallet',
     rating: 'star',
-    dispute: 'gavel',
+   
     cancel: 'x-circle',
     withdrawal: 'banknote',
   }[type] || 'bell';
@@ -3214,7 +3212,7 @@ function notifColor(type){
     message: 'bg-violet-50 text-violet-600',
     tx: 'bg-emerald-50 text-emerald-600',
     rating: 'bg-amber-50 text-amber-600',
-    dispute: 'bg-rose-50 text-rose-600',
+    
     cancel: 'bg-slate-100 text-slate-600',
     withdrawal: 'bg-cyan-50 text-cyan-600',
   }[type] || 'bg-ink-100 text-ink-500';
@@ -3484,7 +3482,7 @@ function orderRow(o, perspective){
     <div class="md:col-span-2 flex flex-wrap items-center gap-1.5 justify-end">
       <button onclick="openChat('${o.id}')" class="chip bg-ink-100/60 hover:bg-ink-100 text-ink-700"><i data-lucide="message-circle" class="w-3.5 h-3.5"></i>Chat</button>
       ${perspective==='client' ? clientActions(o) : freelancerActions(o)}
-      ${(o.status==='in_progress'||o.status==='awaiting_delivery'||o.status==='delivered') && !o.dispute && !o.cancelRequest ? `<button onclick="openDisputeModal('${o.id}','${perspective}')" class="chip bg-rose-50 hover:bg-rose-100 text-rose-700" title="Abrir disputa"><i data-lucide="gavel" class="w-3.5 h-3.5"></i></button>` : ''}
+    
       ${o.dispute ? `<button onclick="openDisputeView('${o.id}')" class="chip bg-rose-500 text-white"><i data-lucide="gavel" class="w-3.5 h-3.5"></i>${o.dispute.status==='resolved'?'Resolvida':'Em disputa'}</button>` : ''}
     </div>
     </div>
@@ -4534,281 +4532,7 @@ function showProfileTab(tab, btn){
   if(btn) btn.classList.add('tab-active');
 }
 
-/* ============ SBT Card (sidebar) ============ */
-function sbtCard(u){
-  const badges = sbtBadgesOf(u);
-  if (!badges.length) return `
-    <div class="bg-white border border-ink-100 rounded-2xl p-5">
-      <div class="font-extrabold mb-2 flex items-center gap-2"><i data-lucide="gem" class="w-4 h-4 text-violet-500"></i>Reputação</div>
-      <div class="text-xs text-ink-500">Complete pedidos para construir sua reputação on-chain.</div>
-    </div>`;
-  return `
-    <div class="bg-gradient-to-br from-violet-50 via-white to-brand-50/40 border border-violet-100 rounded-2xl p-5">
-      <div class="flex items-center justify-between mb-3">
-        <div class="font-extrabold flex items-center gap-2"><i data-lucide="gem" class="w-4 h-4 text-violet-500"></i>Reputação</div>
-        <span class="chip bg-violet-100 text-violet-700 text-[10px]">${badges.length} on-chain</span>
-      </div>
-      <div class="text-[10px] text-ink-500 font-mono mb-3 truncate">${SBT_CONTRACT.slice(0,10)}…${SBT_CONTRACT.slice(-6)}</div>
-      <div class="space-y-2">
-        ${badges.map(b => `
-          <a href="${explorerURL(b.txHash)}" target="_blank" rel="noopener" class="group flex items-center gap-3 p-2.5 rounded-xl bg-white border border-ink-100 hover:border-violet-300 transition">
-            <div class="w-9 h-9 rounded-lg grid place-items-center shrink-0" style="background:${b.color}1a">
-              <i data-lucide="${b.icon}" class="w-4 h-4" style="color:${b.color}"></i>
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="text-[13px] font-bold text-ink-900 truncate flex items-center gap-1">${b.label}<i data-lucide="external-link" class="w-3 h-3 text-ink-300 group-hover:text-violet-500"></i></div>
-              <div class="text-[10px] text-ink-500 font-mono truncate">SBT ${b.tokenId} · block ${b.block.toLocaleString('en-US')}</div>
-            </div>
-          </a>
-        `).join('')}
-      </div>
-      <div class="mt-3 pt-3 border-t border-violet-100 text-[10px] text-ink-500 flex items-center gap-1.5">
-        <i data-lucide="lock" class="w-3 h-3 text-violet-500"></i>Soulbound · não transferível · permanente
-      </div>
-    </div>`;
-}
 
-/* ============ On-Chain Immutable History — removed from profile per product decision ============ */
-
-/* ---------- DISPUTE SYSTEM (F2) ---------- */
-function pickArbiters(excludeIds=[]){
-  // pick 3 random verified users not involved
-  const pool = DB.users.filter(u=>u.verified && !excludeIds.includes(u.id) && u.id!=='u_me');
-  const arr = [...pool].sort(()=>Math.random()-0.5).slice(0,3);
-  return arr.map(u=>({ id:u.id, name:u.name, avatar:u.avatar, handle:u.handle, vote:null }));
-}
-
-function openDisputeModal(orderId, perspective){
-  const o = STATE.orders.find(x=>x.id===orderId);
-  const s = getService(o.serviceId);
-  $('#modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
-    <div class="bg-white w-full max-w-lg rounded-2xl shadow-pop overflow-hidden">
-      <div class="p-5 border-b border-ink-100 flex items-center justify-between bg-rose-50">
-        <div class="font-extrabold flex items-center gap-2 text-rose-700"><i data-lucide="gavel" class="w-5 h-5"></i>Abrir disputa on-chain</div>
-        <button onclick="closeModal()" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-white/60"><i data-lucide="x" class="w-4 h-4"></i></button>
-      </div>
-      <div class="p-5 space-y-4 max-h-[70vh] overflow-y-auto scrollbar-thin">
-        <div class="p-3 rounded-xl bg-amber-50 border border-amber-100 text-xs text-amber-800 flex items-start gap-2">
-          <i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5"></i>
-          <div>
-            <b>Antes de abrir:</b> tente resolver no chat. Disputas são públicas, custam <b>5 ITL</b> de bond e ficam registradas on-chain. O bond é devolvido se você vencer.
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3 p-3 rounded-xl bg-ink-100/40 border border-ink-100">
-          <img src="${s.thumb}" class="w-12 h-12 rounded-lg object-cover"/>
-          <div class="flex-1 min-w-0">
-            <div class="font-bold text-sm truncate">${escapeHtml(s.title)}</div>
-            <div class="text-xs text-ink-500">Pedido #${o.id.slice(-5)} • ${fmtITL(o.total)} em escrow</div>
-          </div>
-        </div>
-
-        <div>
-          <label class="text-sm font-bold">Motivo</label>
-          <select aria-label="Motivo da disputa" id="disp-reason" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm">
-            <option value="not_delivered">Não entregue no prazo</option>
-            <option value="bad_quality">Qualidade abaixo do contratado</option>
-            <option value="scope_change">Escopo alterado sem acordo</option>
-            <option value="no_response">Sem resposta do ${perspective==='client'?'freelancer':'cliente'}</option>
-            <option value="other">Outro</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="text-sm font-bold">Sua versão dos fatos</label>
-          <textarea id="disp-desc" rows="4" class="mt-1 w-full border border-ink-100 rounded-xl px-3 py-2 text-sm" placeholder="Explique o que aconteceu. Os 3 árbitros leem isso para decidir."></textarea>
-        </div>
-
-        <div>
-          <label class="text-sm font-bold">Resolução pedida</label>
-          <div class="grid grid-cols-2 gap-2 mt-1">
-            <label class="flex items-center gap-2 p-3 border border-ink-100 rounded-xl cursor-pointer hover:bg-ink-100/30">
-              <input type="radio" name="disp-want" value="refund" checked/>
-              <div><div class="font-semibold text-sm">Reembolso total</div><div class="text-xs text-ink-500">${fmtITL(o.total)} → cliente</div></div>
-            </label>
-            <label class="flex items-center gap-2 p-3 border border-ink-100 rounded-xl cursor-pointer hover:bg-ink-100/30">
-              <input type="radio" name="disp-want" value="split"/>
-              <div><div class="font-semibold text-sm">Divisão 50/50</div><div class="text-xs text-ink-500">${fmtITL(o.total/2)} cada</div></div>
-            </label>
-          </div>
-        </div>
-
-        <div class="rounded-xl bg-brand-50/50 border border-brand-100 p-3 text-xs">
-          <div class="font-bold text-brand-700 mb-1 flex items-center gap-1"><i data-lucide="users" class="w-3.5 h-3.5"></i>Como funciona</div>
-          <ol class="list-decimal pl-4 space-y-0.5 text-ink-700">
-            <li>3 árbitros verificados são sorteados on-chain</li>
-            <li>Eles têm 72h para revisar mensagens e entrega</li>
-            <li>Decisão por maioria simples (2 de 3)</li>
-            <li>Perdedor da disputa perde o bond de 5 ITL</li>
-          </ol>
-        </div>
-      </div>
-      <div class="p-5 border-t border-ink-100 flex gap-2">
-        <button onclick="closeModal()" class="flex-1 border border-ink-100 hover:bg-ink-100/50 font-semibold py-2.5 rounded-xl">Cancelar</button>
-        <button onclick="confirmDispute('${orderId}','${perspective}')" class="flex-[2] bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2"><i data-lucide="gavel" class="w-4 h-4"></i>Abrir disputa (bond 5 ITL)</button>
-      </div>
-    </div>
-  </div>`;
-  icons();
-}
-
-function confirmDispute(orderId, perspective){
-  const o = STATE.orders.find(x=>x.id===orderId);
-  const reason = $('#disp-reason').value;
-  const desc = $('#disp-desc').value.trim();
-  const want = (document.querySelector('input[name="disp-want"]:checked')||{value:'refund'}).value;
-  if (!desc || desc.length<20){ toast('Descreva os fatos com pelo menos 20 caracteres.', 'warn'); return; }
-
-  const hash = txHash();
-  o.dispute = {
-    openedBy: perspective==='client' ? o.clientId : o.freelancerId,
-    openedTs: Date.now(),
-    reason, desc, want,
-    bondITL: 5,
-    txHash: hash,
-    status: 'pending',
-    arbiters: pickArbiters([o.clientId, o.freelancerId]),
-    votes: { refund:0, split:0, release:0 },
-    resolution: null,
-  };
-  o.status = 'disputed';
-  STATE.txHistory.unshift({ hash, type:'dispute_open', amount:5, token:'ITL', ts:Date.now(), orderId:o.id });
-  addNotification({ type:'dispute', title:'Disputa aberta', body:`Pedido #${o.id.slice(-5)} entrou em disputa.`, link:'#/dashboard/'+perspective });
-  closeModal();
-  toast('Disputa registrada on-chain. 3 árbitros sorteados.', 'info');
-  openDisputeView(orderId);
-
-  // ADICIONADO — tenta salvar a disputa de verdade no Supabase. Se não houver sessão real
-  // ou o pedido não tiver UUID real (order.sbId), segue 100% local como já funcionava.
-  sbCreateDispute(o, o.dispute).then(({ data, error }) => {
-    if (data) {
-      o.disputeSbId = data.id;
-      console.log('✅ Disputa salva no Supabase:', data.id);
-      sbSubscribeDispute(o);
-    } else if (error) {
-      console.warn('[Supabase] Disputa não salva no banco (seguindo apenas local):', error.message);
-    }
-  });
-
-  // simulate voting over a few seconds
-  setTimeout(()=>simulateVote(orderId, 0), 1500);
-  setTimeout(()=>simulateVote(orderId, 1), 3200);
-  setTimeout(()=>simulateVote(orderId, 2), 4800);
-}
-
-function simulateVote(orderId, idx){
-  const o = STATE.orders.find(x=>x.id===orderId);
-  if (!o || !o.dispute || o.dispute.status!=='pending') return;
-  // bias toward what the opener asked, but with noise
-  const opts = ['refund','split','release'];
-  const weights = o.dispute.want==='refund' ? [0.55,0.25,0.20] : [0.25,0.50,0.25];
-  let r = Math.random(), acc=0, choice='refund';
-  for (let i=0;i<3;i++){ acc+=weights[i]; if (r<=acc){ choice=opts[i]; break; } }
-  o.dispute.arbiters[idx].vote = choice;
-  o.dispute.votes[choice]++;
-
-  // if 3 votes cast → resolve
-  if (o.dispute.arbiters.every(a=>a.vote)) resolveDispute(orderId);
-  if ($('#dispute-modal')) renderDisputeView(o);
-
-  // ADICIONADO — sincroniza o voto simulado com o Supabase, se a disputa tiver UUID real.
-  if (o.disputeSbId) sbUpdateDispute(o, o.dispute);
-}
-
-function resolveDispute(orderId){
-  const o = STATE.orders.find(x=>x.id===orderId);
-  const v = o.dispute.votes;
-  let winner = 'refund';
-  if (v.split >= v.refund && v.split >= v.release) winner='split';
-  if (v.release >  v.refund && v.release >  v.split)  winner='release';
-  const hash = txHash();
-  o.dispute.status = 'resolved';
-  o.dispute.resolution = { winner, txHash: hash, ts: Date.now() };
-  STATE.txHistory.unshift({ hash, type:'dispute_resolve', amount:o.total, token:'ITL', ts:Date.now(), orderId:o.id });
-  const me = getUser(STATE.currentUserId);
-  if (winner==='refund'){ me.balanceITL += o.total; o.status='approved'; o.progress=100; }
-  else if (winner==='split'){ me.balanceITL += o.total/2; o.status='approved'; o.progress=100; }
-  else { o.status='approved'; o.progress=100; } // release → freelancer
-  addNotification({ type:'dispute', title:'Disputa resolvida', body:`Resultado: ${winner==='refund'?'reembolso total':winner==='split'?'divisão 50/50':'liberação ao freelancer'}.`, link:'#/dashboard/client' });
-  if ($('#dispute-modal')) renderDisputeView(o);
-}
-
-function openDisputeView(orderId){
-  const o = STATE.orders.find(x=>x.id===orderId);
-  if (!o || !o.dispute) return;
-  if (o.disputeSbId) sbSubscribeDispute(o); // ADICIONADO — escuta votos/resolução em tempo real
-  renderDisputeView(o);
-}
-function renderDisputeView(o){
-  const s = getService(o.serviceId);
-  const opener = getUser(o.dispute.openedBy);
-  const totalVotes = o.dispute.arbiters.filter(a=>a.vote).length;
-  $('#modal-root').innerHTML = `
-  <div id="dispute-modal" class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in" onclick="if(event.target===this)closeModal()">
-    <div class="bg-white w-full max-w-xl rounded-2xl shadow-pop overflow-hidden">
-      <div class="p-5 border-b border-ink-100 flex items-center justify-between bg-rose-50">
-        <div class="font-extrabold flex items-center gap-2 text-rose-700"><i data-lucide="gavel" class="w-5 h-5"></i>Disputa do pedido #${o.id.slice(-5)}</div>
-        <button onclick="closeModal()" class="w-8 h-8 grid place-items-center rounded-lg hover:bg-white/60"><i data-lucide="x" class="w-4 h-4"></i></button>
-      </div>
-      <div class="p-5 space-y-4 max-h-[75vh] overflow-y-auto scrollbar-thin">
-
-        <div class="flex items-center gap-3 p-3 rounded-xl bg-ink-100/40 border border-ink-100">
-          <img src="${s.thumb}" class="w-12 h-12 rounded-lg object-cover"/>
-          <div class="flex-1 min-w-0">
-            <div class="font-bold text-sm truncate">${escapeHtml(s.title)}</div>
-            <div class="text-xs text-ink-500">Aberta por ${opener.name} • ${timeAgo(o.dispute.openedTs)} atrás</div>
-            <a href="${explorerURL(o.dispute.txHash)}" target="_blank" class="text-[10px] font-mono text-brand-500 mt-0.5 inline-flex items-center gap-1"><i data-lucide="link" class="w-2.5 h-2.5"></i>${shortHash(o.dispute.txHash)}</a>
-          </div>
-        </div>
-
-        <div class="rounded-xl border border-ink-100 p-3">
-          <div class="text-xs font-bold text-ink-500 uppercase tracking-wider mb-1">Reclamação</div>
-          <div class="text-sm text-ink-700">${escapeHtml(o.dispute.desc)}</div>
-          <div class="mt-2 flex items-center gap-2 text-xs">
-            <span class="chip bg-ink-100/60 text-ink-700">Motivo: ${o.dispute.reason}</span>
-            <span class="chip bg-ink-100/60 text-ink-700">Pede: ${o.dispute.want==='refund'?'reembolso total':'divisão 50/50'}</span>
-          </div>
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <div class="font-bold text-sm flex items-center gap-2"><i data-lucide="users" class="w-4 h-4 text-brand-500"></i>Árbitros sorteados (${totalVotes}/3 votaram)</div>
-            ${o.dispute.status==='pending'?`<span class="chip bg-amber-50 text-amber-700"><i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>votação ativa</span>`:`<span class="chip bg-emerald-50 text-emerald-700"><i data-lucide="check" class="w-3 h-3"></i>encerrada</span>`}
-          </div>
-          <div class="space-y-2">
-            ${o.dispute.arbiters.map(a=>{
-              const voteLabel = { refund:'Reembolso', split:'Divisão 50/50', release:'Liberar p/ freelancer' }[a.vote] || 'Aguardando…';
-              const voteColor = a.vote==='refund'?'bg-emerald-50 text-emerald-700':a.vote==='split'?'bg-amber-50 text-amber-700':a.vote==='release'?'bg-brand-50 text-brand-700':'bg-ink-100/60 text-ink-500';
-              return `
-              <div class="flex items-center gap-3 p-2 rounded-xl border border-ink-100">
-                <img src="${a.avatar}" class="w-9 h-9 rounded-lg"/>
-                <div class="flex-1 min-w-0">
-                  <a href="#/u/${a.handle}" onclick="closeModal()" class="font-semibold text-sm hover:text-brand-500">${a.name}</a>
-                  <div class="text-[10px] font-mono text-ink-500">@${a.handle}</div>
-                </div>
-                <span class="chip ${voteColor}">${a.vote?`<i data-lucide="check" class="w-3 h-3"></i>`:`<i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>`}${voteLabel}</span>
-              </div>`;
-            }).join('')}
-          </div>
-        </div>
-
-        ${o.dispute.status==='resolved' ? `
-          <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-3">
-            <div class="font-extrabold text-emerald-700 flex items-center gap-2"><i data-lucide="check-circle-2" class="w-5 h-5"></i>Resolução: ${o.dispute.resolution.winner==='refund'?'Reembolso total ao cliente':o.dispute.resolution.winner==='split'?'Divisão 50/50':'Liberar para o freelancer'}</div>
-            <div class="text-xs text-ink-700 mt-1">Votação: ${o.dispute.votes.refund} reembolso • ${o.dispute.votes.split} divisão • ${o.dispute.votes.release} liberar</div>
-            <a href="${explorerURL(o.dispute.resolution.txHash)}" target="_blank" class="mt-2 inline-flex items-center gap-1 text-brand-500 text-xs font-semibold">Tx da resolução <i data-lucide="external-link" class="w-3 h-3"></i></a>
-          </div>
-        ` : `
-          <div class="rounded-xl bg-amber-50 border border-amber-100 p-3 text-xs text-amber-800">
-            ⏳ Aguardando 3 votos dos árbitros…
-          </div>
-        `}
-      </div>
-    </div>
-  </div>`;
-  icons();
-}
 
 /* ---------- C3: EDIT OWN PROFILE ---------- */
 function openEditProfileModal(){
@@ -7455,67 +7179,8 @@ async function sbCreateOrder(order, freelancerUuid){
   return { data };
 }
 
-// ADICIONADO — salva a disputa de verdade na tabela "disputes" do Supabase, para que
-// cliente e freelancer vejam a mesma disputa e o mesmo resultado em qualquer dispositivo.
-// A votação dos árbitros continua simulada localmente (Math.random em simulateVote) —
-// isso só sincroniza o estado, não torna a arbitragem real.
-async function sbCreateDispute(order, dispute){
-  if (!sb) return { error: { message: 'Supabase não configurado.' } };
-  if (!order || !order.sbId) return { error: { message: 'Pedido sem UUID real — disputa ficou apenas local.' } };
-  if (!STATE.sbProfile || !STATE.sbProfile.id) return { error: { message: 'Sem sessão real da wallet — disputa ficou apenas local.' } };
-  const payload = {
-    order_id:      order.sbId,
-    opened_by:     STATE.sbProfile.id,
-    reason:        dispute.reason,
-    description:   dispute.desc,
-    want:          dispute.want,
-    bond_itl:      dispute.bondITL,
-    open_tx_hash:  dispute.txHash,
-    status:        dispute.status,
-    arbiters:      dispute.arbiters,
-    votes:         dispute.votes,
-    resolution:    dispute.resolution,
-  };
-  const { data, error } = await sb.from('disputes').insert(payload).select().single();
-  if (error){ console.warn('[Supabase] Erro ao criar disputa:', error.message); return { error }; }
-  return { data };
-}
 
-// ADICIONADO — atualiza a disputa real (chamado a cada voto simulado e na resolução final).
-async function sbUpdateDispute(order, dispute){
-  if (!sb || !order || !order.disputeSbId) return { error: { message: 'Disputa sem UUID real — atualização ficou apenas local.' } };
-  const payload = {
-    status:     dispute.status,
-    arbiters:   dispute.arbiters,
-    votes:      dispute.votes,
-    resolution: dispute.resolution,
-  };
-  const { data, error } = await sb.from('disputes').update(payload).eq('id', order.disputeSbId).select().single();
-  if (error){ console.warn('[Supabase] Erro ao atualizar disputa:', error.message); return { error }; }
-  return { data };
-}
 
-// ADICIONADO — escuta mudanças em tempo real na disputa de um pedido (votos chegando,
-// resolução acontecendo), para que a outra parte veja sem precisar atualizar a página.
-let _sbDisputeChannel = null;
-function sbSubscribeDispute(order){
-  sbUnsubscribeDispute();
-  if (!sb || !order || !order.disputeSbId) return;
-  _sbDisputeChannel = sb.channel('dispute-'+order.disputeSbId)
-    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'disputes', filter: 'id=eq.'+order.disputeSbId }, payload => {
-      const incoming = payload.new;
-      if (!order.dispute) return;
-      order.dispute.status     = incoming.status;
-      order.dispute.arbiters   = incoming.arbiters;
-      order.dispute.votes      = incoming.votes;
-      order.dispute.resolution = incoming.resolution;
-      if ($('#dispute-modal')) renderDisputeView(order);
-    })
-    .subscribe();
-}
-function sbUnsubscribeDispute(){
-  if (_sbDisputeChannel){ sb.removeChannel(_sbDisputeChannel); _sbDisputeChannel = null; }
-}
 
 // Aprova um serviço (admin only)
 async function sbApproveService(id){
