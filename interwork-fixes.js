@@ -6,13 +6,134 @@
 
 /* ─────────────────────────────────────────────────────────
    CONFIGURAÇÃO DE MOCKS (Adicionado para Vitrine Permanente)
+   FIX #3: campos completos para serviceCard() + FIX #4: freelancerId dinâmico
    ───────────────────────────────────────────────────────── */
 const MOCK_SERVICES = [
-  { id: 'm1', title: 'Professional Logo Design', price: 50, freelancerId: 'u_ana', rating: 4.9, reviews: [], category: 'design', thumbnail: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400', status: 'active' },
-  { id: 'm2', title: 'Smart Contract Audit', price: 200, freelancerId: 'u_ana', rating: 5.0, reviews: [], category: 'dev', thumbnail: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400', status: 'active' },
-  { id: 'm3', title: 'Social Media Management', price: 80, freelancerId: 'u_ana', rating: 4.8, reviews: [], category: 'marketing', thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400', status: 'active' },
-  { id: 'm4', title: 'Website Bug Fixing', price: 40, freelancerId: 'u_ana', rating: 4.7, reviews: [], category: 'dev', thumbnail: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=400', status: 'active' },
-  { id: 'm5', title: 'English to Portuguese Translation', price: 30, freelancerId: 'u_ana', rating: 4.9, reviews: [], category: 'writing', thumbnail: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400', status: 'active' }
+  {
+    id: 'm1',
+    title: 'Professional Logo Design',
+    price: 50,
+    freelancerId: 'u_ana',
+    rating: 4.9,
+    reviewsCount: 42,
+    reviews: [],
+    category: 'design',
+    thumb: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400',
+    thumbnail: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400',
+    gallery: [],
+    deliveryDays: 5,
+    description: 'Professional logo design for your Web3 project.',
+    includes: ['Source files', '3 concepts', 'Unlimited revisions'],
+    tags: ['logo', 'design', 'branding'],
+    tiers: {
+      basic:    { label: 'Basic',    priceITL: 30,  days: 3, includes: ['1 concept'], revisions: 1, badge: 'Essential' },
+      standard: { label: 'Standard', priceITL: 50,  days: 5, includes: ['3 concepts', 'Source files'], revisions: 3, badge: 'Recommended' },
+      premium:  { label: 'Premium',  priceITL: 85,  days: 7, includes: ['3 concepts', 'Source files', 'Brand guide'], revisions: 999, badge: 'Complete' },
+    },
+    status: 'approved',
+    createdTs: Date.now() - 86400000 * 10,
+    _mock: true,
+  },
+  {
+    id: 'm2',
+    title: 'Smart Contract Audit',
+    price: 200,
+    freelancerId: 'u_leo',
+    rating: 5.0,
+    reviewsCount: 18,
+    reviews: [],
+    category: 'audit',
+    thumb: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400',
+    thumbnail: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400',
+    gallery: [],
+    deliveryDays: 14,
+    description: 'Full security audit of your Solidity smart contract.',
+    includes: ['PDF report', 'Fix recommendations', 'Free re-audit'],
+    tags: ['audit', 'solidity', 'security'],
+    tiers: {
+      basic:    { label: 'Basic',    priceITL: 120, days: 7,  includes: ['Basic report'], revisions: 1, badge: 'Essential' },
+      standard: { label: 'Standard', priceITL: 200, days: 14, includes: ['PDF report', 'Fix recommendations'], revisions: 2, badge: 'Recommended' },
+      premium:  { label: 'Premium',  priceITL: 340, days: 21, includes: ['PDF report', 'Fix recommendations', 'Free re-audit'], revisions: 999, badge: 'Complete' },
+    },
+    status: 'approved',
+    createdTs: Date.now() - 86400000 * 20,
+    _mock: true,
+  },
+  {
+    id: 'm3',
+    title: 'Social Media Management',
+    price: 80,
+    freelancerId: 'u_kai',
+    rating: 4.8,
+    reviewsCount: 31,
+    reviews: [],
+    category: 'marketing',
+    thumb: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400',
+    thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400',
+    gallery: [],
+    deliveryDays: 30,
+    description: 'Full social media management for your crypto project.',
+    includes: ['30-day calendar', 'Twitter + Discord', 'Weekly report'],
+    tags: ['marketing', 'social', 'community'],
+    tiers: {
+      basic:    { label: 'Basic',    priceITL: 50,  days: 30, includes: ['Twitter only'], revisions: 1, badge: 'Essential' },
+      standard: { label: 'Standard', priceITL: 80,  days: 30, includes: ['Twitter + Discord', '30-day calendar'], revisions: 2, badge: 'Recommended' },
+      premium:  { label: 'Premium',  priceITL: 135, days: 30, includes: ['Twitter + Discord', '30-day calendar', 'Weekly report'], revisions: 999, badge: 'Complete' },
+    },
+    status: 'approved',
+    createdTs: Date.now() - 86400000 * 5,
+    _mock: true,
+  },
+  {
+    id: 'm4',
+    title: 'Website Bug Fixing',
+    price: 40,
+    freelancerId: 'u_max',
+    rating: 4.7,
+    reviewsCount: 55,
+    reviews: [],
+    category: 'dev',
+    thumb: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=400',
+    thumbnail: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=400',
+    gallery: [],
+    deliveryDays: 3,
+    description: 'Fast and reliable bug fixing for your website or DApp.',
+    includes: ['Bug diagnosis', 'Fix + tests', '7-day guarantee'],
+    tags: ['dev', 'bugs', 'nextjs'],
+    tiers: {
+      basic:    { label: 'Basic',    priceITL: 25, days: 2, includes: ['1 bug fix'], revisions: 1, badge: 'Essential' },
+      standard: { label: 'Standard', priceITL: 40, days: 3, includes: ['Up to 5 bugs', 'Tests'], revisions: 2, badge: 'Recommended' },
+      premium:  { label: 'Premium',  priceITL: 70, days: 5, includes: ['Unlimited bugs', 'Tests', '7-day guarantee'], revisions: 999, badge: 'Complete' },
+    },
+    status: 'approved',
+    createdTs: Date.now() - 86400000 * 15,
+    _mock: true,
+  },
+  {
+    id: 'm5',
+    title: 'English to Portuguese Translation',
+    price: 30,
+    freelancerId: 'u_sof',
+    rating: 4.9,
+    reviewsCount: 27,
+    reviews: [],
+    category: 'writing',
+    thumb: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400',
+    thumbnail: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400',
+    gallery: [],
+    deliveryDays: 7,
+    description: 'Professional translation from English to Portuguese for Web3 content.',
+    includes: ['Up to 2,000 words', 'Proofreading', 'Crypto terminology'],
+    tags: ['writing', 'translation', 'portuguese'],
+    tiers: {
+      basic:    { label: 'Basic',    priceITL: 20, days: 5, includes: ['Up to 1,000 words'], revisions: 1, badge: 'Essential' },
+      standard: { label: 'Standard', priceITL: 30, days: 7, includes: ['Up to 2,000 words', 'Proofreading'], revisions: 2, badge: 'Recommended' },
+      premium:  { label: 'Premium',  priceITL: 50, days: 7, includes: ['Up to 5,000 words', 'Proofreading', 'Crypto terminology'], revisions: 999, badge: 'Complete' },
+    },
+    status: 'approved',
+    createdTs: Date.now() - 86400000 * 8,
+    _mock: true,
+  },
 ];
 
 /* ─────────────────────────────────────────────────────────
@@ -26,7 +147,6 @@ window.viewProfile = function(handle) {
   </div>`;
 
   const co = getCountry(u.country);
-  // Filtro de serviços: Remove recusados
   const services = DB.services.filter(s => s.freelancerId === u.id && s.status === 'approved');
   const ordersDone = STATE.orders.filter(o => o.freelancerId === u.id && o.status === 'approved').length + (u.jobs || 0);
   const lvl = u.level || levelOf(u.jobs);
@@ -124,7 +244,7 @@ window.viewProfile = function(handle) {
     <div class="flex flex-col lg:flex-row gap-8 pb-16">
       <div class="flex-1 min-w-0">
 
-        <!-- GIGS (AJUSTADO PARA DESKTOP: xl:grid-cols-3) -->
+        <!-- GIGS -->
         <div id="pane-gigs">
           ${services.length === 0
             ? `<div class="bg-white border border-ink-100 rounded-2xl p-10 text-center text-ink-500">
@@ -203,7 +323,7 @@ window.viewProfile = function(handle) {
 
       </div><!-- /MAIN -->
 
-      <!-- SIDEBAR — limpa, só skills e about -->
+      <!-- SIDEBAR -->
       <aside class="w-full lg:w-72 shrink-0 space-y-4">
         <div class="bg-white border border-ink-100 rounded-2xl p-5">
           <h3 class="font-extrabold text-ink-900 mb-4 flex items-center gap-2">
@@ -237,7 +357,7 @@ window.viewProfile = function(handle) {
 };
 
 /* ─────────────────────────────────────────────────────────
-   2. OVERRIDE: changeProfileAvatar — atualiza TODAS as imgs corretas
+   2. OVERRIDE: changeProfileAvatar
    ───────────────────────────────────────────────────────── */
 window.changeProfileAvatar = function(userId) {
   const input = document.createElement('input');
@@ -273,11 +393,14 @@ window.changeProfileAvatar = function(userId) {
 };
 
 /* ─────────────────────────────────────────────────────────
-   3. OVERRIDE: viewWallet — oculta dados falsos para não-admin
+   3. OVERRIDE: viewWallet
+   FIX #5: usuário conectado (não-admin) vê saldo real do STATE, não tela vazia
    ───────────────────────────────────────────────────────── */
 window.viewWallet = function() {
-  if (!STATE.isAdmin) {
-    const me = getUser(STATE.currentUserId);
+  const me = getUser(STATE.currentUserId);
+  const isConnected = !!(STATE.walletConnected && STATE.authenticated && me);
+
+  if (!isConnected) {
     return `
     <div class="max-w-2xl mx-auto px-5 py-14 text-center">
       <div class="w-16 h-16 rounded-2xl bg-brand-50 grid place-items-center mx-auto mb-5">
@@ -288,7 +411,6 @@ window.viewWallet = function() {
         Connect your real wallet via WalletConnect or ITLX to see your balance,
         transactions and withdraw ITL directly.
       </p>
-
       <div class="bg-white border border-ink-100 rounded-2xl p-6 mb-6 text-left space-y-4">
         <div class="flex items-center justify-between border-b border-ink-100 pb-4">
           <div class="text-sm font-bold text-ink-900">Available balance</div>
@@ -302,7 +424,6 @@ window.viewWallet = function() {
           <div class="font-bold text-ink-500 text-sm italic">Available after real integration with the Interlink Network</div>
         </div>
       </div>
-
       <div class="grid grid-cols-2 gap-3 mb-8">
         <a href="https://explorer.interlinklabs.ai" target="_blank" rel="noopener"
            class="bg-white border border-ink-100 rounded-2xl p-4 text-left hover:border-brand-200 transition">
@@ -317,7 +438,6 @@ window.viewWallet = function() {
           <div class="text-xs text-ink-500 mt-0.5">Understand ITL payments</div>
         </a>
       </div>
-
       <button onclick="openConnectWallet()"
         class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-8 py-3 rounded-xl text-sm flex items-center gap-2 mx-auto shadow-pop">
         <i data-lucide="wallet" class="w-4 h-4"></i>Connect real wallet
@@ -325,8 +445,7 @@ window.viewWallet = function() {
     </div>`;
   }
 
-  // Admin vê tudo (dados mock para testar)
-  const me = getUser(STATE.currentUserId);
+  // Usuário conectado (qualquer usuário autenticado) vê saldo e histórico
   const history = STATE.txHistory || [];
   const payouts = STATE.payouts || [];
 
@@ -351,13 +470,12 @@ window.viewWallet = function() {
   <div class="max-w-6xl mx-auto px-5 py-10">
     <div class="flex items-end justify-between mb-6 flex-wrap gap-3">
       <div>
-        <div class="chip bg-amber-50 text-amber-700 mb-2">🔧 Admin Mode — Test Data</div>
         <h1 class="text-3xl font-extrabold tracking-tight">ITL Wallet</h1>
-        <p class="text-ink-500 text-sm">Simulated data for interface testing.</p>
+        <p class="text-ink-500 text-sm">Balance, withdrawals and transactions on the Interlink Network.</p>
       </div>
       <button onclick="openWithdrawModal()"
         class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-pop">
-        <i data-lucide="banknote" class="w-4 h-4"></i>Test Withdrawal
+        <i data-lucide="banknote" class="w-4 h-4"></i>Withdraw ITL
       </button>
     </div>
 
@@ -368,16 +486,16 @@ window.viewWallet = function() {
             <i data-lucide="wallet" class="w-3.5 h-3.5"></i>${STATE.walletProvider} • Interlink Network
           </div>
           <div class="mt-4 text-4xl font-extrabold text-sonic">${fmtITL(me.balanceITL || 0)}</div>
-          <div class="text-xs opacity-90 mt-1">Simulated balance (admin)</div>
+          <div class="text-xs opacity-90 mt-1">Available balance for escrow or withdrawal</div>
           <div class="mt-4 pt-4 border-t border-white/20">
-            <div class="text-[10px] uppercase tracking-wider opacity-75 font-bold">Wallet</div>
-            <div class="font-mono text-xs break-all mt-1">${me.wallet}</div>
+            <div class="text-[10px] uppercase tracking-wider opacity-75 font-bold">Connected wallet</div>
+            <div class="font-mono text-xs break-all mt-1">${me.wallet || '—'}</div>
           </div>
         </div>
 
         <div class="bg-white border border-ink-100 rounded-2xl p-5">
           <div class="font-extrabold flex items-center gap-2 mb-3">
-            <i data-lucide="receipt" class="w-5 h-5 text-brand-500"></i>Withdrawals (mock)
+            <i data-lucide="receipt" class="w-5 h-5 text-brand-500"></i>Recent withdrawals
           </div>
           ${payouts.length
             ? `<div class="space-y-2">${payouts.slice(0, 5).map(p => `
@@ -388,14 +506,14 @@ window.viewWallet = function() {
                 </div>
                 <div class="font-mono text-[10px] text-brand-500 mt-1">${shortHash(p.hash)}</div>
               </div>`).join('')}</div>`
-            : `<div class="text-sm text-ink-500 border border-dashed border-ink-100 rounded-xl p-3 text-center">No withdrawals.</div>`}
+            : `<div class="text-sm text-ink-500 border border-dashed border-ink-100 rounded-xl p-3 text-center">No withdrawals yet.</div>`}
         </div>
       </div>
 
       <div class="lg:col-span-2 bg-white border border-ink-100 rounded-2xl overflow-hidden">
         <div class="p-5 border-b border-ink-100 flex items-center justify-between">
           <div class="font-extrabold flex items-center gap-2">
-            <i data-lucide="history" class="w-5 h-5 text-brand-500"></i>History (mock)
+            <i data-lucide="history" class="w-5 h-5 text-brand-500"></i>Transaction history
           </div>
           <span class="text-xs text-ink-500">${history.length} records</span>
         </div>
@@ -437,7 +555,7 @@ window.openChat = function(orderId, otherUserId) {
 };
 
 /* ─────────────────────────────────────────────────────────
-   5. OVERRIDE: renderChat — corrige re-render e stepper em efêmeros
+   5. OVERRIDE: renderChat
    ───────────────────────────────────────────────────────── */
 window.renderChat = function(order, ephemeral) {
   const other = getUser(order.clientId === STATE.currentUserId ? order.freelancerId : order.clientId);
@@ -599,7 +717,6 @@ window.renderChat = function(order, ephemeral) {
         return;
       }
 
-      // Demo mode — simulated replies
       setTimeout(() => {
         if (msg.status === 'sent') msg.status = 'delivered';
         if (STATE.chatOpenOrderId === order.id) window.renderChat(order, ephemeral);
@@ -628,6 +745,9 @@ window.renderChat = function(order, ephemeral) {
   }
 };
 
+/* ─────────────────────────────────────────────────────────
+   6. FIX: pickTrendingTag — versão única e correta
+   ───────────────────────────────────────────────────────── */
 /* ─────────────────────────────────────────────────────────
    6. FIX: pickTrendingTag — versão única e correta
    ───────────────────────────────────────────────────────── */
@@ -973,6 +1093,8 @@ window.openEditProfileModal = function() {
 
 /* ─────────────────────────────────────────────────────────
    v2.7 QR CODE VÁLIDO no modal de pagamento
+   FIX: confirmHire agora respeita o tierKey selecionado (basic/standard/premium)
+   ao invés de sempre cobrar s.price fixo, ignorando o tier escolhido pelo usuário.
    ───────────────────────────────────────────────────────── */
 (function patchQRCode() {
   const _orig = window.confirmHire;
@@ -980,7 +1102,18 @@ window.openEditProfileModal = function() {
     const briefEl = document.getElementById('hire-brief');
     const brief = briefEl ? briefEl.value.trim() : '';
     const s = getService(serviceId);
-    const tier = { priceITL: s.price, days: s.deadline||s.days||7, revisions: 2, includes: s.includes||[] };
+
+    const selectedTierKey = tierKey || STATE.selectedTier || 'standard';
+    const tierData = s.tiers && s.tiers[selectedTierKey];
+    const tier = tierData
+      ? {
+          priceITL: tierData.priceITL,
+          days: tierData.days,
+          revisions: tierData.revisions,
+          includes: tierData.includes || [],
+        }
+      : { priceITL: s.price, days: s.deadline||s.days||7, revisions: 2, includes: s.includes||[] };
+
     const me = getUser(STATE.currentUserId);
     const total = +(tier.priceITL * 1.02).toFixed(2);
 
@@ -1339,6 +1472,7 @@ window.viewEarn = function() {
   </div>`;
 };
 
+/* FIX: removida a segunda chamada duplicada de closeModal() que existia aqui */
 window.saveProfile = function() {
   const u = DB.users.find(x => x.id === STATE.currentUserId);
   if (!u) return;
@@ -1350,9 +1484,6 @@ window.saveProfile = function() {
   u.bio    = document.getElementById('ep-bio')?.value.trim() || '';
   u.skills = (document.getElementById('ep-skills')?.value || '')
                .split(',').map(s => s.trim()).filter(Boolean);
- 
-
-  closeModal();
 
   closeModal();
   persistNow();
