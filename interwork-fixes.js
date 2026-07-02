@@ -834,7 +834,7 @@ window.dashClient = function() {
    v2.5 dashFreelancer em inglês
    ───────────────────────────────────────────────────────── */
 window.dashFreelancer = function() {
-  const freelancerId = 'u_ana';
+  const freelancerId = STATE.currentUserId;
   const u       = getUserSafe(freelancerId);
   const me      = getUserSafe(STATE.currentUserId);
   const mySvc   = DB.services.filter(sv => sv.freelancerId === freelancerId);
@@ -1272,10 +1272,10 @@ window.viewExplore = function() {
   let realServices = DB.services.filter(s => {
     const matchCat = cat === 'all' || s.category === cat;
     const matchQuery = s.title.toLowerCase().includes(query) || (s.description && s.description.toLowerCase().includes(query));
-    return matchCat && matchQuery && (s.status === 'approved' || s._mock);
+    return matchCat && matchQuery && s.status === 'approved';
   });
 
-  const allToShow = [...realServices, ...MOCK_SERVICES];
+  const allToShow = STATE.showMocks ? [...realServices, ...MOCK_SERVICES] : realServices;
 
   return `
     <div class="max-w-7xl mx-auto px-4 py-8">
