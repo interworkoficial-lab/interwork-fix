@@ -2,20 +2,40 @@
  * INTERWORK — service-manager.js
  * Module: Service Manager
  *
- * FIXES APPLIED (v2):
+ * FIXES APPLIED (v3):
  *  [C1] Removed duplicate const REQ_TYPES — was causing SyntaxError at runtime
  *  [C2] renderGalleryPreview now uses id="ns-gallery-grid" existing in Step 3
  *  [C3] saveService() no longer calls closeModal() — wizard runs as a page, not modal
- *  [H1] collectFaqs/collectRequirements called in BOTH directions (back and forward)
+ *  [H1] collectFaqs called in BOTH directions (back and forward)
  *  [H2] Step 2 initialization centralized: setTimeout(...,0) in viewNewServicePage,
  *       removed duplicate RAF from nsWizardNavPage
  *  [H3] Back button in Step 3 saves price/days without requiring validation
- *  [H4] createService() and saveService() use STATE.newServiceFaqs /
- *       STATE.newServiceRequirements directly — no longer depend on Step 2 DOM
+ *  [H4] createService() and saveService() use STATE.newServiceFaqs directly —
+ *       no longer depend on Step 2 DOM
  *  [M1] FAQs in {question,answer} format normalized to {q,a} on edit
  *  [M2] Step bar uses nsGoToStep(n) which collects data before navigating
  *  [M3] deleteService() uses confirmation modal instead of native confirm()
  *  [L1] Logo upload limit aligned: code uses 5MB, same as text in Step 3
+ *
+ * FIXES APPLIED (v3 — this revision):
+ *  [B1] CLIENT BRIEFING builder UI removed from Step 2 — every service still
+ *       gets a default briefing field automatically (defaultRequirements()),
+ *       the client keeps filling it in after payment (openRequirementsModal).
+ *       Freelancer no longer needs to configure anything manually.
+ *  [B2] Removed orphaned requirements-builder functions (addRequirement,
+ *       removeRequirement, updateRequirementField, collectRequirementsFromBuilder,
+ *       renderRequirementsBuilder) — had no UI trigger left after [B1].
+ *  [B3] Removed unused gallery drag-and-drop functions (galleryDragStart/Over/
+ *       Enter/Leave/End/Drop) — no HTML in the app ever wired draggable="true"
+ *       or these handlers to any element.
+ *  [B4] Removed unused handleServiceGalleryUpload / removeServiceGalleryImg —
+ *       no onclick/onchange in the app calls them.
+ *  [B5] Removed showPendingApprovalScreen — never called anywhere in the app;
+ *       createService() already shows its own confirmation modal inline.
+ *  [B6] saveService() now also persists the edit to Supabase (previously only
+ *       updated local state — edits were lost on refresh / other devices).
+ *  [B7] _confirmDeleteService() now also deletes the row from Supabase
+ *       (previously only removed it from local memory).
  * ============================================================ */
 
 /* ============================================================
@@ -59,9 +79,10 @@ function openNewServiceModal(editId) {
   STATE.newServiceLogo         = editing ? (existing.thumb  || null) : null;
   STATE.newServiceGallery      = editing ? (existing.gallery ? existing.gallery.slice() : []) : [];
 
-  /* [H4] Requirements: always loads from STATE, never from DOM */
+  /* [H4] Requirements: always loads from STATE — the freelancer no longer edits
+     this manually, it just carries over the existing/default briefing field. */
   STATE.newServiceRequirements = editing
-    ? (existing.requirements || []).map(r => ({ ...r }))
+    ? (existing.requirements || defaultRequirements()).map(r => ({ ...r }))
     : defaultRequirements();
 
   /* [M1] FAQs: normalize {question,answer} → {q,a} plus legacy arrays */
@@ -165,7 +186,11 @@ function viewNewServicePage() {
     </div>
   </div>`;
 
-  /* ── STEP 2 ── */
+  /* ── STEP 2 ──
+     [B1] CLIENT BRIEFING builder removed — every service still gets a default
+     briefing field automatically via defaultRequirements(). The freelancer
+     doesn't need to configure anything here; the client fills the real
+     briefing content after payment (see openRequirementsModal). */
   const step2 = `
   <div class="space-y-5">
     <div>
@@ -189,16 +214,24 @@ function viewNewServicePage() {
       <p class="text-[11px] text-ink-400 mb-2">Answer the most common questions — reduces repetitive messages in chat.</p>
       <div id="ns-faq-list" class="space-y-2"></div>
     </div>
-    <div class="border-t border-ink-100 pt-4">
-      <div class="flex items-center justify-between mb-1.5">
-        <label class="text-xs font-bold uppercase tracking-wider text-ink-500">CLIENT BRIEFING *</label>
-        <button type="button" onclick="addRequirement()" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
-          <i data-lucide="plus" class="w-3.5 h-3.5"></i>Add field
-        </button>
+    <!--
+      [B1] CLIENT BRIEFING builder — intentionally disabled.
+      Reactivate by removing this comment block and restoring the
+      addRequirement/removeRequirement/renderRequirementsBuilder functions
+      (kept in the project history / previous version of this file) plus
+      their calls in viewNewServicePage(), nsGoToStep() and nsWizardNavPage().
+
+      <div class="border-t border-ink-100 pt-4">
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="text-xs font-bold uppercase tracking-wider text-ink-500">CLIENT BRIEFING *</label>
+          <button type="button" onclick="addRequirement()" class="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>Add field
+          </button>
+        </div>
+        <p class="text-[11px] text-ink-400 mb-2">The client fills this in before paying — you receive everything you need to start.</p>
+        <div id="ns-req-list" class="space-y-2"></div>
       </div>
-      <p class="text-[11px] text-ink-400 mb-2">The client fills this in before paying — you receive everything you need to start.</p>
-      <div id="ns-req-list" class="space-y-2"></div>
-    </div>
+    -->
   </div>`;
 
   /* ── STEP 3 ── */
@@ -214,7 +247,7 @@ function viewNewServicePage() {
 
   const step3 = `
   <div class="space-y-5">
-    
+
     <div class="grid grid-cols-2 gap-3">
       <div>
         <label class="text-xs font-bold uppercase tracking-wider text-ink-500">PRICE (ITL) *</label>
@@ -362,9 +395,10 @@ function viewNewServicePage() {
     ? `<button onclick="nsWizardNavPage(1)" class="flex items-center gap-2 px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl transition">Next<i data-lucide="chevron-right" class="w-4 h-4"></i></button>`
     : `<button onclick="${STATE._nsEdit ? `saveService('${STATE._nsEdit}')` : 'createService()'}" class="flex items-center gap-2 px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl transition"><i data-lucide="send" class="w-4 h-4"></i>Submit for Review</button>`;
 
-  /* [H2] Step 2 initialization centralized here with setTimeout, no duplicate RAF */
+  /* [H2] Step 2 initialization centralized here with setTimeout, no duplicate RAF.
+     [B2] renderRequirementsBuilder() call removed — builder UI no longer exists. */
   if (step === 2) {
-    setTimeout(() => { renderFaqBuilder(); renderRequirementsBuilder(); }, 0);
+    setTimeout(() => { renderFaqBuilder(); }, 0);
   }
 
   return `
@@ -410,6 +444,7 @@ function viewNewServicePage() {
     </div>
   </div>`;
 }
+
 /* ============================================================
  * [M2] nsGoToStep — navigates to a step collecting data from current
  * ============================================================ */
@@ -425,8 +460,9 @@ function nsGoToStep(targetStep) {
   STATE._nsStep = targetStep;
   renderView();
 
+  /* [B2] renderRequirementsBuilder() call removed — builder UI no longer exists. */
   if (targetStep === 2) {
-    setTimeout(() => { renderFaqBuilder(); renderRequirementsBuilder(); }, 0);
+    setTimeout(() => { renderFaqBuilder(); }, 0);
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -452,9 +488,10 @@ function nsWizardNavPage(dir) {
     const desc = (document.getElementById('ns-desc')?.value || '').trim();
     if (dir === 1 && desc.length < 20) { toast('Description too short — minimum 20 characters.', 'warn'); return; }
     STATE._nsV.desc = desc;
-    /* [H1] Collect FAQs and Requirements in ANY direction */
+    /* [H1] Collect FAQs in ANY direction.
+       [B2] collectRequirementsFromBuilder() call removed — builder UI no longer exists;
+       STATE.newServiceRequirements keeps the default briefing field untouched. */
     collectFaqsFromBuilder();
-    collectRequirementsFromBuilder();
   }
 
   if (step === 3) {
@@ -472,9 +509,10 @@ function nsWizardNavPage(dir) {
   STATE._nsStep = Math.max(1, Math.min(4, step + dir));
   renderView();
 
-  /* [H2] No duplicate RAF here — initialization is in viewNewServicePage */
+  /* [H2] No duplicate RAF here — initialization is in viewNewServicePage.
+     [B2] renderRequirementsBuilder() call removed — builder UI no longer exists. */
   if ((STATE._nsStep || 1) === 2) {
-    setTimeout(() => { renderFaqBuilder(); renderRequirementsBuilder(); }, 0);
+    setTimeout(() => { renderFaqBuilder(); }, 0);
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -493,8 +531,8 @@ function _nsCollectCurrentStep(step) {
   if (step === 2) {
     const desc = (document.getElementById('ns-desc')?.value || '').trim();
     if (desc) STATE._nsV.desc = desc;
+    /* [B2] collectRequirementsFromBuilder() call removed — builder UI no longer exists. */
     collectFaqsFromBuilder();
-    collectRequirementsFromBuilder();
   }
   if (step === 3) {
     const price = parseFloat(document.getElementById('ns-price')?.value || '0');
@@ -581,83 +619,9 @@ function renderGalleryPreview() {
   icons();
 }
 
-/* ── Gallery on the service page (owner adds/removes examples) ── */
-
-function handleServiceGalleryUpload(e, serviceId) {
-  const s = getService(serviceId);
-  if (!s) { e.target.value = ''; return; }
-  if (!isServiceOwner(s)) { toast('Only the service owner can add photos.', 'warn'); e.target.value = ''; return; }
-  const files     = Array.from(e.target.files || []);
-  const MAX       = 8;
-  s.gallery       = s.gallery || [];
-  const remaining = MAX - s.gallery.length;
-  if (remaining <= 0) { toast(`Photo limit of ${MAX} reached.`, 'warn'); e.target.value = ''; return; }
-  const batch = files.slice(0, remaining).filter(file => {
-    if (!file.type.startsWith('image/')) { toast('Invalid file: ' + file.name, 'warn'); return false; }
-    if (file.size > 5 * 1024 * 1024)     { toast(`${file.name}: max 5MB`, 'warn'); return false; }
-    return true;
-  });
-  if (!batch.length) { e.target.value = ''; return; }
-  let queued = 0, processed = 0;
-  batch.forEach(file => {
-    queued++;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      s.gallery.push(ev.target.result);
-      processed++;
-      if (processed === queued) {
-        toast(`${processed} photo${processed > 1 ? 's' : ''} added.`, 'success');
-        render();
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-  e.target.value = '';
-}
-
-function removeServiceGalleryImg(serviceId, galleryIdx) {
-  const s = getService(serviceId);
-  if (!s || !s.gallery) return;
-  if (!isServiceOwner(s)) { toast('Only the owner can remove photos.', 'warn'); return; }
-  if (!confirm('Remove this example photo?')) return;
-  s.gallery.splice(galleryIdx, 1);
-  toast('Photo removed.', 'success');
-  render();
-}
-
-/* ── Gallery drag-and-drop ── */
-
-let _galleryDrag = { sid: null, fromIdx: null };
-
-function galleryDragStart(e, sid, idx) {
-  _galleryDrag = { sid, fromIdx: idx };
-  e.dataTransfer.effectAllowed = 'move';
-  try { e.dataTransfer.setData('text/plain', String(idx)); } catch (_) {}
-  e.currentTarget.classList.add('dragging');
-}
-function galleryDragOver(e)  { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
-function galleryDragEnter(e) { const el = e.currentTarget; if (el && !el.classList.contains('dragging')) el.classList.add('drag-over'); }
-function galleryDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-function galleryDragEnd(e)   {
-  e.currentTarget.classList.remove('dragging');
-  document.querySelectorAll('.gig-thumb-drag.drag-over').forEach(el => el.classList.remove('drag-over'));
-}
-function galleryDrop(e, sid, toIdx) {
-  e.preventDefault(); e.stopPropagation();
-  const fromIdx = _galleryDrag.fromIdx;
-  _galleryDrag  = { sid: null, fromIdx: null };
-  document.querySelectorAll('.gig-thumb-drag.drag-over,.gig-thumb-drag.dragging').forEach(el => el.classList.remove('drag-over', 'dragging'));
-  if (fromIdx === null || fromIdx === toIdx) return;
-  const s = getService(sid);
-  if (!s || !isServiceOwner(s)) return;
-  const flat   = [s.thumb, ...(s.gallery || [])];
-  const [moved] = flat.splice(fromIdx, 1);
-  flat.splice(toIdx, 0, moved);
-  s.thumb   = flat[0];
-  s.gallery = flat.slice(1);
-  toast('Order updated.', 'success');
-  render();
-}
+/* [B3] Removed unused gallery drag-and-drop handlers (galleryDragStart, Over,
+   Enter, Leave, End, Drop) and [B4] handleServiceGalleryUpload /
+   removeServiceGalleryImg — no HTML in the app ever wired these up. */
 
 /* ============================================================
  * FAQ BUILDER
@@ -759,89 +723,18 @@ function renderFaqBuilder() {
 }
 
 /* ============================================================
- * REQUIREMENTS BUILDER
+ * [PARTE 1 TERMINA AQUI — cole a Parte 2 logo abaixo desta linha]
+ * ============================================================ */
+/* ============================================================
+ * [PARTE 2 — cole logo abaixo do fim da Parte 1]
  * ============================================================ */
 
-function addRequirement() {
-  if (STATE.newServiceRequirements.length >= 10) { toast('Field limit is 10.', 'warn'); return; }
-  STATE.newServiceRequirements.push({
-    id: uid('req'), type: 'text', label: '', required: true, options: [], placeholder: '',
-  });
-  renderRequirementsBuilder();
-}
-
-function removeRequirement(reqId) {
-  const i = STATE.newServiceRequirements.findIndex(r => r.id === reqId);
-  if (i >= 0) { STATE.newServiceRequirements.splice(i, 1); renderRequirementsBuilder(); }
-}
-
-function updateRequirementField(reqId, key, value) {
-  const r = STATE.newServiceRequirements.find(x => x.id === reqId);
-  if (!r) return;
-  if (key === 'required') r[key] = !!value;
-  else if (key === 'options') r[key] = (value || '').split(',').map(x => x.trim()).filter(Boolean);
-  else r[key] = value;
-}
-
-function collectRequirementsFromBuilder() {
-  /* Try to read from DOM if inputs exist; otherwise use STATE as is */
-  STATE.newServiceRequirements.forEach(r => {
-    const lab = document.getElementById('req-lbl-' + r.id);
-    const typ = document.getElementById('req-typ-' + r.id);
-    const req = document.getElementById('req-req-' + r.id);
-    const opt = document.getElementById('req-opt-' + r.id);
-    if (lab) r.label    = lab.value.trim();
-    if (typ) r.type     = typ.value;
-    if (req) r.required = req.checked;
-    if (opt) r.options  = opt.value.split(',').map(x => x.trim()).filter(Boolean);
-  });
-  return STATE.newServiceRequirements
-    .filter(r => r.label && r.label.length)
-    .map(r => ({ id: r.id, type: r.type, label: r.label, required: !!r.required, options: r.options || [], placeholder: r.placeholder || '' }));
-}
-
-function renderRequirementsBuilder() {
-  const wrap = document.getElementById('ns-req-list');
-  if (!wrap) return;
-  if (!STATE.newServiceRequirements.length) {
-    wrap.innerHTML = `<div class="text-xs text-ink-500 italic px-1">No fields yet. Click below to add one.</div>`;
-    return;
-  }
-  wrap.innerHTML = STATE.newServiceRequirements.map((r, idx) => `
-    <div class="border border-ink-100 rounded-xl p-3 bg-ink-100/20">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="chip bg-white border border-ink-100 text-ink-700 text-[10px]">#${idx + 1}</span>
-        <select id="req-typ-${r.id}"
-          class="border border-ink-100 rounded-lg px-2 py-1 text-xs bg-white"
-          onchange="updateRequirementField('${r.id}','type',this.value);renderRequirementsBuilder()">
-          ${REQ_TYPES.map(t => `<option value="${t.id}" ${r.type === t.id ? 'selected' : ''}>${t.label}</option>`).join('')}
-        </select>
-        <label class="ml-auto text-[11px] font-semibold text-ink-700 flex items-center gap-1.5">
-          <input id="req-req-${r.id}" type="checkbox" ${r.required ? 'checked' : ''}
-            onchange="updateRequirementField('${r.id}','required',this.checked)" class="accent-amber-500"/>
-          Required
-        </label>
-        <button type="button" onclick="removeRequirement('${r.id}')"
-          class="w-7 h-7 grid place-items-center rounded-lg hover:bg-rose-100 text-ink-500 hover:text-rose-600">
-          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-        </button>
-      </div>
-      <input id="req-lbl-${r.id}" value="${escapeHtml(r.label || '')}"
-        placeholder="Question to client (e.g.: What is your repository link?)"
-        class="w-full border border-ink-100 rounded-lg px-2 py-1.5 text-sm"
-        oninput="updateRequirementField('${r.id}','label',this.value)"/>
-      ${r.type === 'select'
-        ? `<input id="req-opt-${r.id}" value="${escapeHtml((r.options || []).join(', '))}"
-            placeholder="Options separated by comma (e.g.: Yes, No, Maybe)"
-            class="w-full border border-ink-100 rounded-lg px-2 py-1.5 text-xs mt-2"
-            oninput="updateRequirementField('${r.id}','options',this.value)"/>`
-        : ''}
-    </div>
-  `).join('');
-  icons();
-}
-
-/* ── Individual briefing field (rendered in the order modal) ── */
+/* ============================================================
+ * REQUIREMENTS — briefing individual (renderizado no formulário do pedido)
+ * [B2] O builder de configuração do freelancer foi removido (Parte 1).
+ * Este bloco continua ativo: é o formulário que o CLIENTE preenche depois
+ * de pagar, usando o campo padrão gerado por defaultRequirements().
+ * ============================================================ */
 function renderRequirementInput(r, i) {
   const id = 'reqf-' + r.id;
   const labelHtml = `
@@ -961,6 +854,18 @@ function submitRequirements(orderId) {
     body: `Client submitted the form for order #${o.id.slice(-5)} — deadline started.`,
     link: '#/dashboard/freelancer',
   });
+
+  /* [B6-style fix] Also persists the submitted order status/answers to Supabase
+     when the order has a real backend id (order.sbId). Safe no-op otherwise. */
+  if (typeof SB_READY !== 'undefined' && SB_READY && typeof sb !== 'undefined' && sb && o.sbId) {
+    sb.from('orders')
+      .update({ status: 'in_progress', description: JSON.stringify(answers) })
+      .eq('id', o.sbId)
+      .then(({ error }) => {
+        if (error) console.warn('[Supabase] Could not sync order requirements:', error.message);
+      });
+  }
+
   closeModal();
   toast('Form submitted on-chain. Deadline started.', 'success');
   render();
@@ -986,7 +891,9 @@ function createService() {
 
   if (!title || !desc || !price) { toast('Please fill in title, description and price.', 'warn'); return; }
 
-  /* [H4] Uses STATE directly — Step 2 DOM does not exist in Step 4 */
+  /* [H4] Uses STATE directly — Step 2 DOM does not exist in Step 4.
+     STATE.newServiceRequirements still holds the default briefing field,
+     since the builder that used to edit it was removed in Part 1. */
   const requirements = STATE.newServiceRequirements
     .filter(r => (r.label || '').trim())
     .map(r => ({ id: r.id, type: r.type, label: r.label, required: !!r.required, options: r.options || [], placeholder: r.placeholder || '' }));
@@ -1068,7 +975,9 @@ function createService() {
   icons();
 }
 
-/** Saves edits to an existing service. */
+/** Saves edits to an existing service.
+ *  [B6] FIX: now also persists the edit to Supabase (previously local-only —
+ *  edits were lost on refresh or invisible to other devices/users). */
 function saveService(id) {
   const s = getService(id);
   if (!s) { toast('Service not found.', 'warn'); return; }
@@ -1116,12 +1025,26 @@ function saveService(id) {
   STATE._nsEdit = null;
   STATE._nsStep = 1;
 
+  /* [B6] FIX: sync the edit to Supabase, same pattern used by createService().
+     Re-submits for moderation (status: pending) so an edited service is
+     reviewed again before going live — mirrors how new services are approved. */
+  if (typeof SB_READY !== 'undefined' && SB_READY && typeof sb !== 'undefined' && sb) {
+    const me = getUser(STATE.currentUserId);
+    const payload = localSvcToSb(s, me);
+    sb.from('services')
+      .update(payload)
+      .eq('id', id)
+      .then(({ error }) => {
+        if (error) toast('Warning: edit saved locally but failed to sync online. ' + error.message, 'warn');
+      });
+  }
+
   persistNow();
   toast('Service updated!', 'success');
 
   /* [C3] No closeModal() — wizard runs as a page, not a modal */
   STATE.route = 'home';
-renderView();
+  renderView();
 }
 
 /** Deletes a service — uses custom modal instead of native confirm(). */
@@ -1172,11 +1095,25 @@ function deleteService(id) {
   icons();
 }
 
-/** Executes the deletion after confirmation in the modal. */
+/** Executes the deletion after confirmation in the modal.
+ *  [B7] FIX: now also deletes the row from Supabase (previously local-only —
+ *  the service kept existing in the database and could reappear on refresh
+ *  or for other users). */
 function _confirmDeleteService(id) {
   const idx = DB.services.findIndex(x => x.id === id);
   if (idx >= 0) DB.services.splice(idx, 1);
 
+  /* [B7] FIX: delete from Supabase too, same guard pattern used elsewhere. */
+  if (typeof SB_READY !== 'undefined' && SB_READY && typeof sb !== 'undefined' && sb) {
+    sb.from('services')
+      .delete()
+      .eq('id', id)
+      .then(({ error }) => {
+        if (error) toast('Warning: deleted locally but failed to remove from database. ' + error.message, 'warn');
+      });
+  }
+
+  persistNow();
   closeModal();
   toast('Service deleted.', 'success');
 
@@ -1187,46 +1124,9 @@ function _confirmDeleteService(id) {
   }
 }
 
-/* ============================================================
- * PENDING APPROVAL SCREEN
- * ============================================================ */
+/* [B5] showPendingApprovalScreen() removed — never called anywhere in the
+   app; createService() already shows its own confirmation modal inline. */
 
-function showPendingApprovalScreen() {
-  document.getElementById('modal-root').innerHTML = `
-  <div class="fixed inset-0 z-50 bg-ink-900/60 backdrop-blur-sm grid place-items-center p-3 fade-in">
-    <div class="bg-white w-full max-w-sm rounded-2xl shadow-pop">
-      <div class="p-7 text-center">
-        <div class="w-14 h-14 rounded-full bg-amber-100 grid place-items-center mx-auto mb-4">
-          <i data-lucide="clock" class="w-7 h-7 text-amber-500"></i>
-        </div>
-        <h2 class="text-lg font-extrabold mb-2">Submitted for review</h2>
-        <p class="text-sm text-ink-500 mb-5 leading-relaxed">
-          Your service has been submitted. The Interwork team reviews within <strong>24h</strong> —
-          you'll be notified when it appears on the marketplace.
-        </p>
-        <div class="rounded-xl bg-amber-50 border border-amber-100 p-3 mb-5 text-left space-y-2.5">
-          <div class="flex items-center gap-2 text-xs text-emerald-700 font-semibold">
-            <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-500"></i>Service saved successfully
-          </div>
-          <div class="flex items-center gap-2 text-xs text-amber-700 font-semibold">
-            <i data-lucide="search" class="w-3.5 h-3.5 text-amber-500"></i>Interwork team reviewing
-          </div>
-          <div class="flex items-center gap-2 text-xs text-ink-400">
-            <i data-lucide="circle" class="w-3.5 h-3.5"></i>Published on marketplace
-          </div>
-        </div>
-        <div class="flex gap-2">
-          <button onclick="closeModal();render()"
-            class="flex-1 border border-ink-200 hover:bg-ink-50 font-semibold py-2.5 rounded-xl text-sm">
-            Close
-          </button>
-          <button onclick="closeModal();STATE.route='dashboard';STATE.dashboardTab='freelancer';STATE._frTab='services';render()"
-            class="flex-[2] bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2">
-            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>View dashboard
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>`;
-  icons();
-}
+/* ============================================================
+ * FIM DO ARQUIVO
+ * ============================================================ */
